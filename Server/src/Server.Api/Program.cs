@@ -1,6 +1,6 @@
-using BookBook.Application;
-using BookBook.Domain;
-using BookBook.Infrastructure;
+using Server.Application;
+using Server.Domain;
+using Server.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 

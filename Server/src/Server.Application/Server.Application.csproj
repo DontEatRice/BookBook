@@ -4,10 +4,11 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>Server.Application</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BookBook.Domain\BookBook.Domain.csproj" />
+        <ProjectReference Include="..\Server.Domain\Server.Domain.csproj" />
     </ItemGroup>
     
 </Project>

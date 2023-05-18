@@ -1,10 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BookBook.Application;
+namespace Server.Domain;
 
 public static class Extensions
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    public static IServiceCollection AddDomain(this IServiceCollection services)
     {
         return services;
     }

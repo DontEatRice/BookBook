@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BookBook.Infrastructure;
+namespace Server.Infrastructure;
 
 public static class Extensions
 {
