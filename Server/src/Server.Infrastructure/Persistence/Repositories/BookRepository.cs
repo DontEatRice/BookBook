@@ -15,7 +15,5 @@ internal sealed class BookRepository : IBookRepository
     public async Task AddAsync(Book book)
     {
         await _dbContext.AddAsync(book);
-
-        await _dbContext.SaveChangesAsync();
     }
 }
