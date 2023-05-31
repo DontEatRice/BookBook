@@ -22,6 +22,7 @@ namespace Server.Domain.Entities
         public double AvarageCriticRating { get; set; }
         public Publisher Publisher { get; set; }
         public ICollection<Author> Authors { get; set; }
+        public ICollection<BookCategory> BookCategories { get; set; }
 
     }
 }
