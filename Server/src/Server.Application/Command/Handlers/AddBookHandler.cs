@@ -5,7 +5,7 @@ using Server.Domain.Repositories;
 
 namespace Server.Application.Command.Handlers;
 
-public sealed class AddBookHandler : ICommandHandler<AddBook, Guid>
+public sealed class AddBookHandler : ICommandHandler<AddBook>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IBookRepository _bookRepository;
@@ -16,14 +16,12 @@ public sealed class AddBookHandler : ICommandHandler<AddBook, Guid>
         _bookRepository = bookRepository;
     }
 
-    public async Task<Guid> HandleAsync(AddBook command)
+    public async Task HandleAsync(AddBook command)
     {
         var book = Book.Create(command.Name);
 
         await _bookRepository.AddAsync(book);
 
         await _unitOfWork.SaveChangesAsync();
-
-        return book.Id;
     }
 }

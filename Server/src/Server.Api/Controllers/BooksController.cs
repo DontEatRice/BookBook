@@ -12,11 +12,11 @@ public class BooksController : ControllerBase
 {
     private readonly IQueryHandler<GetBooks, IEnumerable<BookViewModel>> _getBooksHandler;
     
-    private readonly ICommandHandler<AddBook, Guid> _addBookHandler;
+    private readonly ICommandHandler<AddBook> _addBookHandler;
 
     public BooksController(
         IQueryHandler<GetBooks, IEnumerable<BookViewModel>> getBooksHandler,
-        ICommandHandler<AddBook, Guid> addBookHandler)
+        ICommandHandler<AddBook> addBookHandler)
     {
         _getBooksHandler = getBooksHandler;
         _addBookHandler = addBookHandler;

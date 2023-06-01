@@ -4,7 +4,7 @@ using Server.Domain.Repositories;
 
 namespace Server.Application.Command.Handlers;
 
-public class RemoveAuthorHandler : ICommandHandler<RemoveAuthor, bool>
+public class RemoveAuthorHandler : ICommandHandler<RemoveAuthor>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IAuthorRepository _authorRepository;
@@ -15,7 +15,7 @@ public class RemoveAuthorHandler : ICommandHandler<RemoveAuthor, bool>
         _authorRepository = authorRepository;
     }
 
-    public async Task<bool> HandleAsync(RemoveAuthor command)
+    public async Task HandleAsync(RemoveAuthor command)
     {
         var author = await _authorRepository.FirstOrDefaultByIdAsync(command.Id);
 
@@ -25,7 +25,5 @@ public class RemoveAuthorHandler : ICommandHandler<RemoveAuthor, bool>
         }
 
         await _unitOfWork.SaveChangesAsync();
-
-        return true;
     }
 }
