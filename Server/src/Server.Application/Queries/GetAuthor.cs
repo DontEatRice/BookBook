@@ -3,4 +3,4 @@ using Server.Application.ViewModels;
 
 namespace Server.Application.Queries;
 
-public record GetBooks : IQuery<IEnumerable<BookViewModel>>;
+public record GetAuthor(Guid Id) : IQuery<AuthorViewModel>;

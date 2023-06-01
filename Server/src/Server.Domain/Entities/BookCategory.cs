@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+// ReSharper disable CollectionNeverUpdated.Global
+#pragma warning disable CS8618
 
 namespace Server.Domain.Entities
 {
