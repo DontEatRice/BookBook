@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// ReSharper disable CollectionNeverUpdated.Global
+#pragma warning disable CS8618
+namespace Server.Domain.Entities;
 
-namespace Server.Domain.Entities
+public class Author
 {
-    public class Author
-    {
-        [Key]
-        public Guid Id { get; set; }
-        [Required, MaxLength(40)]
-        public string FirstName { get; set; }
-        [Required, MaxLength(50)]
-        public string LastName { get; set; }
+    public Guid Id { get; private init; }
+    public string FirstName { get; private set; }
+    public string LastName { get; private set; }
+    public ICollection<Book> Books { get; private init; }
 
-        ICollection<Book> Books { get; set; }
-
-    }
+    public static Author Create(string firstName, string lastName)
+        => new()
+        {
+            Id = Guid.NewGuid(),
+            FirstName = firstName,
+            LastName = lastName,
+            Books = new List<Book>(),
+        };
 }
