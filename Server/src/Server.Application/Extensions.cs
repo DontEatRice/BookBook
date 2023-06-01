@@ -11,7 +11,7 @@ public static class Extensions
         var assembly = Assembly.GetExecutingAssembly();
         
         services.Scan(s => s.FromAssemblies(assembly)
-            .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<>)))
+            .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<,>)))
             .AsImplementedInterfaces()
             .WithScopedLifetime());
         
