@@ -19,6 +19,7 @@ internal static class Extensions
         
         services.AddDbContext<BookBookDbContext>(x => x.UseSqlServer(options.ConnectionString));
         services.AddScoped<IBookRepository, BookRepository>();
+        services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;

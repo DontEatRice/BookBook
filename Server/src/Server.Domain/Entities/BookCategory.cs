@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Server.Domain.Entities
+﻿namespace Server.Domain.Entities
 {
     public class BookCategory
     {
