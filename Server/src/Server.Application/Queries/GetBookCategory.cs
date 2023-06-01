@@ -1,5 +1,6 @@
-﻿using Server.Application.ViewModels;
+﻿using Server.Application.Abstractions;
+using Server.Application.ViewModels;
 
 namespace Server.Application.Queries;
 
-public record GetBookCategory(Guid Id) : IQueryable<BookCategoryViewModel>
+public record GetBookCategory(Guid Id) : IQuery<BookCategoryViewModel>;

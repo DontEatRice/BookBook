@@ -1,4 +1,6 @@
-﻿using Server.Application.Queries;
+﻿using Microsoft.EntityFrameworkCore;
+using Server.Application.Abstractions;
+using Server.Application.Queries;
 using Server.Application.ViewModels;
 
 namespace Server.Infrastructure.Persistence.Handlers;

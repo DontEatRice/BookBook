@@ -1,4 +1,5 @@
-﻿using Server.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Server.Domain.Entities;
 using Server.Domain.Repositories;
 
 namespace Server.Infrastructure.Persistence.Repositories

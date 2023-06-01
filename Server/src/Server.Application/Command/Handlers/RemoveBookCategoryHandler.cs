@@ -1,7 +1,9 @@
-﻿using Server.Domain.Repositories;
+﻿using Server.Application.Abstractions;
+using Server.Application.InfrastructureInterfaces;
+using Server.Domain.Repositories;
 
 namespace Server.Application.Command.Handlers;
-public sealed class RemoveBookCategoryHandler : ICommandHandler<RemoveBookCategory, bool>
+public class RemoveBookCategoryHandler : ICommandHandler<RemoveBookCategory, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IBookCategoryRepository _bookCategoryRepository;
