@@ -5,8 +5,8 @@ namespace Server.Domain.Entities;
 public class Author
 {
     public Guid Id { get; private init; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public string FirstName { get; private set; }
+    public string LastName { get; private set; }
     public ICollection<Book> Books { get; private init; }
 
     public static Author Create(string firstName, string lastName)
