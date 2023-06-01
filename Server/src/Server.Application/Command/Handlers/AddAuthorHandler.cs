@@ -18,12 +18,12 @@ public sealed class AddAuthorHandler : ICommandHandler<AddAuthor, Guid>
 
     public async Task<Guid> HandleAsync(AddAuthor command)
     {
-        var book = Author.Create(command.FirstName, command.LastName);
+        var author = Author.Create(command.FirstName, command.LastName);
 
-        _authorRepository.Add(book);
+        _authorRepository.Add(author);
 
         await _unitOfWork.SaveChangesAsync();
 
-        return book.Id;
+        return author.Id;
     }
 }
