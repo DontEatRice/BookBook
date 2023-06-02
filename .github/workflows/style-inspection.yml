@@ -5,6 +5,9 @@ on: [pull_request]
 jobs:
   inspection:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./Server
     steps:
       - name: Checkout
         uses: actions/checkout@v3
