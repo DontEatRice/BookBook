@@ -1,10 +1,10 @@
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { BookType } from '../models';
 import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
+import { BookType } from '../models/Book';
 
 function BookTile({ book }: { book: BookType }) {
   const theme = useTheme();
