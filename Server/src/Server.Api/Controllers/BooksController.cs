@@ -7,14 +7,14 @@ using Server.Application.ViewModels;
 namespace Server.Api.Controllers;
 
 [ApiController]
-[Route("books")]
-public class BookController : ControllerBase
+[Route("[Controller]")]
+public class BooksController : ControllerBase
 {
     private readonly IQueryHandler<GetBooks, IEnumerable<BookViewModel>> _getBooksHandler;
     
     private readonly ICommandHandler<AddBook> _addBookHandler;
 
-    public BookController(
+    public BooksController(
         IQueryHandler<GetBooks, IEnumerable<BookViewModel>> getBooksHandler,
         ICommandHandler<AddBook> addBookHandler)
     {
