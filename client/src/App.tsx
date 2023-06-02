@@ -1,14 +1,19 @@
 import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
-import Examples from './pages/Examples';
+import Header from './shared/Header';
+import Container from '@mui/material/Container';
+import Footer from './shared/Footer';
 
 function App() {
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/examples" element={<Examples />} />
-      </Routes>
+      <Header />
+      <Container>
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </Container>
+      <Footer />
     </>
   );
 }

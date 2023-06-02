@@ -1,15 +1,29 @@
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { Link as RouterLink } from 'react-router-dom';
+import { BookType } from '../models';
+import BookTile from '../components/BookTile';
 
 function Home() {
+  const book: BookType = {
+    name: 'Wiedźmin',
+    price: 123.56,
+    id: 'abcde',
+  };
   return (
     <Container>
-      <Typography variant="h1">Welcome Home!</Typography>
-      <Link component={RouterLink} to={`/examples`}>
-        Examples
-      </Link>
+      <Typography variant="h3">Witamy w BookBook!</Typography>
+      <Grid container justifyContent="space-between">
+        <Grid item>
+          <BookTile book={book} />
+        </Grid>
+        <Grid item>
+          <BookTile book={book} />
+        </Grid>
+        <Grid item>
+          <BookTile book={book} />
+        </Grid>
+      </Grid>
     </Container>
   );
 }
