@@ -20,6 +20,7 @@ jobs:
       - name: Inspect code
         uses: muno92/resharper_inspectcode@1.6.5
         with:
-          solutionPath: ./Hoya360.sln
+          solutionPath: ./Server.sln
           minimumSeverity: warning
           ignoreIssueType: UnusedAutoPropertyAccessor.Global
+
