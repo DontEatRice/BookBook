@@ -12,14 +12,14 @@ public class BookCategoriesController : ControllerBase
     private readonly IQueryHandler<GetBookCategories, IEnumerable<BookCategoryViewModel>> _getBookCategoriesHandler;
     private readonly IQueryHandler<GetBookCategory, BookCategoryViewModel> _getBookCategoryHandler;
 
-    private readonly ICommandHandler<AddBookCategory, Guid> _addBookCategoryHandler;
-    private readonly ICommandHandler<RemoveBookCategory, bool> _removeBookCategoryHandler;
+    private readonly ICommandHandler<AddBookCategory> _addBookCategoryHandler;
+    private readonly ICommandHandler<RemoveBookCategory> _removeBookCategoryHandler;
 
     public BookCategoriesController(
         IQueryHandler<GetBookCategories, IEnumerable<BookCategoryViewModel>> getBookCategoriesHandler,
         IQueryHandler<GetBookCategory, BookCategoryViewModel> getBookCategoryHandler,
-        ICommandHandler<AddBookCategory, Guid> addBookCategoryHandler,
-        ICommandHandler<RemoveBookCategory, bool> removeBookCategoryHandler)
+        ICommandHandler<AddBookCategory> addBookCategoryHandler,
+        ICommandHandler<RemoveBookCategory> removeBookCategoryHandler)
     {
         _getBookCategoriesHandler = getBookCategoriesHandler;
         _getBookCategoryHandler = getBookCategoryHandler;
@@ -42,7 +42,11 @@ public class BookCategoriesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Post(AddBookCategory command)
     {
-        var id = await _addBookCategoryHandler.HandleAsync(command);
+        var id = new Guid();
+        await _addBookCategoryHandler.HandleAsync(command with
+        {
+            Id = id,
+        });
         return Created($"/bookCategories/{id}", null);
     }
 

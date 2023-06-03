@@ -3,7 +3,7 @@ using Server.Application.InfrastructureInterfaces;
 using Server.Domain.Repositories;
 
 namespace Server.Application.Command.Handlers;
-public class RemoveBookCategoryHandler : ICommandHandler<RemoveBookCategory, bool>
+public class RemoveBookCategoryHandler : ICommandHandler<RemoveBookCategory>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IBookCategoryRepository _bookCategoryRepository;
@@ -14,7 +14,7 @@ public class RemoveBookCategoryHandler : ICommandHandler<RemoveBookCategory, boo
         _bookCategoryRepository = bookCategoryRepository;
     }
 
-    public async Task<bool> HandleAsync(RemoveBookCategory command)
+    public async Task HandleAsync(RemoveBookCategory command)
     {
         var bookCategory = await _bookCategoryRepository.FirstOrDefaultByIdAsync(command.Id);
 
@@ -24,7 +24,5 @@ public class RemoveBookCategoryHandler : ICommandHandler<RemoveBookCategory, boo
         }
 
         await _unitOfWork.SaveChangesAsync();
-
-        return true;
     }
 }
