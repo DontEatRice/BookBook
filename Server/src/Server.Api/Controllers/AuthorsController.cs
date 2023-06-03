@@ -13,14 +13,14 @@ public class AuthorsController : ControllerBase
     private readonly IQueryHandler<GetAuthors, IEnumerable<AuthorViewModel>> _getAuthorsHandler;
     private readonly IQueryHandler<GetAuthor, AuthorViewModel> _getAuthorHandler;
     
-    private readonly ICommandHandler<AddAuthor, Guid> _addAuthorHandler;
-    private readonly ICommandHandler<RemoveAuthor, bool> _removeAuthorHandler;
+    private readonly ICommandHandler<AddAuthor> _addAuthorHandler;
+    private readonly ICommandHandler<RemoveAuthor> _removeAuthorHandler;
 
     public AuthorsController(
         IQueryHandler<GetAuthors, IEnumerable<AuthorViewModel>> getAuthorsHandler,
         IQueryHandler<GetAuthor, AuthorViewModel> getAuthorHandler,
-        ICommandHandler<AddAuthor, Guid> addAuthorHandler, 
-        ICommandHandler<RemoveAuthor, bool> removeAuthorHandler)
+        ICommandHandler<AddAuthor> addAuthorHandler, 
+        ICommandHandler<RemoveAuthor> removeAuthorHandler)
     {
         _getAuthorsHandler = getAuthorsHandler;
         _getAuthorHandler = getAuthorHandler;
@@ -39,7 +39,12 @@ public class AuthorsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Post(AddAuthor command)
     {
-        var id = await _addAuthorHandler.HandleAsync(command);
+        var id = Guid.NewGuid();
+        await _addAuthorHandler.HandleAsync(command with
+        {
+            Id = id
+        });
+        
         return Created($"/authors/{id}", null);
     }
     

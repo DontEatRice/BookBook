@@ -9,10 +9,10 @@ public class Author
     public string LastName { get; private set; }
     public ICollection<Book> Books { get; private init; }
 
-    public static Author Create(string firstName, string lastName)
+    public static Author Create(Guid id, string firstName, string lastName)
         => new()
         {
-            Id = Guid.NewGuid(),
+            Id = id,
             FirstName = firstName,
             LastName = lastName,
             Books = new List<Book>(),
