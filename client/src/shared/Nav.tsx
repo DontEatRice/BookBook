@@ -13,10 +13,10 @@ function Nav() {
         p={1}
         justifyContent="space-evenly"
         sx={{ backgroundColor: theme.palette.secondary.main, borderRadius: 10 }}>
-        <Grid item spacing={1}>
+        <Grid item>
           <NavItem label="Strona główna" link="/" />
         </Grid>
-        <Grid item spacing={1}>
+        <Grid item>
           <NavItem label="Ranking" link="/ranking" />
         </Grid>
       </Grid>

@@ -5,7 +5,9 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Nav from './Nav';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import TextField from '@mui/material/TextField';
 
 function Header() {
   const theme = useTheme();
@@ -21,7 +23,7 @@ function Header() {
             </Grid>
           )}
           <Grid item sm={6} xs={12}>
-            <Box>Wyszukiwanie</Box>
+            <SearchBar />
           </Grid>
           {matches && (
             <Grid item sm={3} xs={0}>
@@ -32,6 +34,35 @@ function Header() {
       </Box>
       <Nav />
     </header>
+  );
+}
+
+function SearchBar() {
+  const [query, setQuery] = useState('');
+  const navigate = useNavigate();
+  const [params, setParams] = useSearchParams();
+
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { value } = e.target;
+      setQuery(value);
+      setParams({ q: value });
+      if (location.pathname != '/search' && value != '') {
+        navigate('/search?q=' + value);
+      }
+    },
+    [navigate, setParams]
+  );
+  useEffect(() => {
+    if (!params.has('q')) {
+      setQuery('');
+    }
+  }, [params]);
+
+  return (
+    <Box>
+      <TextField fullWidth value={query} onChange={handleChange} />
+    </Box>
   );
 }
 
