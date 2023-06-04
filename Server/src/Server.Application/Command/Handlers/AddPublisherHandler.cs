@@ -5,7 +5,7 @@ using Server.Domain.Repositories;
 
 namespace Server.Application.Command.Handlers;
 
-public sealed class AddPublisherHandler : ICommandHandler<AddPublisher, Guid>
+public sealed class AddPublisherHandler : ICommandHandler<AddPublisher>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPublisherRepository _publisherRepository;
@@ -16,14 +16,12 @@ public sealed class AddPublisherHandler : ICommandHandler<AddPublisher, Guid>
         _publisherRepository = publisherRepository;
     }
 
-    public async Task<Guid> HandleAsync(AddPublisher command)
+    public async Task HandleAsync(AddPublisher command)
     {
-        var publisher = Publisher.Create(command.Name);
+        var publisher = Publisher.Create(command.Id, command.Name);
 
         _publisherRepository.Add(publisher);
 
         await _unitOfWork.SaveChangesAsync();
-
-        return publisher.Id;
     }
 }

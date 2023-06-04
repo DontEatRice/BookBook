@@ -3,4 +3,4 @@ using Server.Application.ViewModels;
 
 namespace Server.Application.Queries;
 
-public record GetPublishers(Guid Id) : IQuery<IEnumerable<PublisherViewModel>>;
+public record GetPublishers : IQuery<IEnumerable<PublisherViewModel>>;

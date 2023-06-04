@@ -11,4 +11,12 @@ public class Publisher
     [Required, MaxLength(50)]
     public string Name { get; set; }
     public ICollection<Book> Books { get; set; }
+
+    public static Publisher Create(Guid id, string name)
+        => new()
+        {
+            Id = id,
+            Name = name,
+            Books = new List<Book>()
+        };
 }

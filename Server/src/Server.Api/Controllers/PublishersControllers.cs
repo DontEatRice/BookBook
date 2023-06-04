@@ -1,48 +1,58 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Server.Application.Abstractions;
+using Server.Application.Command;
+using Server.Application.Queries;
+using Server.Application.ViewModels;
 
-namespace Server.Api.Controllers
+namespace Server.Api.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class PublishersControllers : ControllerBase
 {
-    public class PublishersControllers : ControllerBase
+    private readonly IQueryHandler<GetPublishers, IEnumerable<PublisherViewModel>> _getPublishersHandler;
+    private readonly IQueryHandler<GetPublisher, PublisherViewModel> _getPublisherHandler;
+
+    private readonly ICommandHandler<AddPublisher> _addPublisherHandler;
+    private readonly ICommandHandler<RemovePublisher> _removePublisherHandler;
+
+    public PublishersControllers(
+        IQueryHandler<GetPublishers, IEnumerable<PublisherViewModel>> getPublishersHandler,
+        IQueryHandler<GetPublisher, PublisherViewModel> getPublisherHandler,
+        ICommandHandler<AddPublisher> addPublisherHandler,
+        ICommandHandler<RemovePublisher> removePublisherHandler)
     {
-        private readonly IQueryHandler<GetPublishers, IEnumerable<PublisherViewModel>> _getPublishersHandler;
-        private readonly IQueryHandler<GetPublisher, PublisherViewModel> _getPublisherHandler;
+        _getPublishersHandler = getPublishersHandler;
+        _getPublisherHandler = getPublisherHandler;
+        _addPublisherHandler = addPublisherHandler;
+        _removePublisherHandler = removePublisherHandler;
+    }
 
-        private readonly ICommandHandler<AddPublisher, Guid> _addPublisherHandler;
-        private readonly ICommandHandler<RemovePublisher, bool> _removePublisherHandler;
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<PublisherViewModel>>> List()
+        => Ok(await _getPublishersHandler.HandleAsync(new GetPublishers()));
 
-        public PublishersController(
-            IQueryHandler<GetPublishers, IEnumerable<PublisherViewModel>> getPublishersHandler,
-            IQueryHandler<GetPublisher, PublisherViewModel> getPublisherHandler,
-            ICommandHandler<AddPublisher, Guid> addPublisherHandler,
-            ICommandHandler<RemovePublisher, bool> removePublisherHandler)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<PublisherViewModel>> Get(Guid id)
+        => Ok(await _getPublisherHandler.HandleAsync(new GetPublisher(id)));
+
+    [HttpPost]
+    public async Task<ActionResult> Post(AddPublisher command)
+    {
+        var id = Guid.NewGuid();
+        await _addPublisherHandler.HandleAsync(command with
         {
-            _getPublishersHandler = getPublishersHandler;
-            _getPublisherHandler = getPublisherHandler;
-            _addPublisherHandler = addPublisherHandler;
-            _removePublisherHandler = removePublisherHandler;
-        }
+            Id = id
+        });
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<PublisherViewModel>>> List()
-            => Ok(await _getPublishersHandler.HandleAsync(new GetPublishers()));
+        return Created($"/publishers/{id}", null);
+    }
 
-        [HttpGet("{id:guid}")]
-        public async Task<ActionResult<PublisherViewModel>> Get(Guid id)
-            => Ok(await _getPublisherHandler.HandleAsync(new GetPublisher(id)));
-
-        [HttpPost]
-        public async Task<ActionResult> Post(AddPublisher command)
-        {
-            var id = await _addPublisherHandler.HandleAsync(command);
-            return Created($"/Publishers/{id}", null);
-        }
-
-        [HttpDelete("{id:guid}")]
-        public async Task<ActionResult> Post(Guid id)
-        {
-            await _removePublisherHandler.HandleAsync(new RemovePublisher(id));
-            return NoContent();
-        }
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> Post(Guid id)
+    {
+        await _removePublisherHandler.HandleAsync(new RemovePublisher(id));
+        return NoContent();
     }
 }
+

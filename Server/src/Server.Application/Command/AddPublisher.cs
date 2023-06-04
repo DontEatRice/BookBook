@@ -2,4 +2,4 @@
 
 namespace Server.Application.Command;
 
-public record AddPublisher(string Name) : ICommand;
+public record AddPublisher(Guid Id, string Name) : ICommand;
