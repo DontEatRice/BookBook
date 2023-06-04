@@ -1,11 +1,10 @@
 ﻿using Server.Domain.Entities;
 
-namespace Server.Domain.Repositories
+namespace Server.Domain.Repositories;
+
+public interface IBookCategoryRepository
 {
-    public interface IBookCategoryRepository
-    {
-        void Add(BookCategory bookCategory);
-        void Delete(BookCategory bookCategory);
-        Task<BookCategory?> FirstOrDefaultByIdAsync(Guid id);
-    }
+    void Add(BookCategory bookCategory);
+    void Delete(BookCategory bookCategory);
+    Task<BookCategory?> FirstOrDefaultByIdAsync(Guid id);
 }

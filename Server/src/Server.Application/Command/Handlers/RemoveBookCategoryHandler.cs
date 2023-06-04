@@ -3,6 +3,7 @@ using Server.Application.InfrastructureInterfaces;
 using Server.Domain.Repositories;
 
 namespace Server.Application.Command.Handlers;
+
 public class RemoveBookCategoryHandler : ICommandHandler<RemoveBookCategory>
 {
     private readonly IUnitOfWork _unitOfWork;

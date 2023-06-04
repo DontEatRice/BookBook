@@ -5,6 +5,7 @@ using Server.Application.Queries;
 using Server.Application.ViewModels;
 
 namespace Server.Api.Controllers;
+
 [ApiController]
 [Route("[controller]")]
 public class BookCategoriesController : ControllerBase

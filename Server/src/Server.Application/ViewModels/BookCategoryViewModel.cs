@@ -1,4 +1,5 @@
 ﻿namespace Server.Application.ViewModels;
+
 public class BookCategoryViewModel
 {
     public Guid Id { get; set; }
