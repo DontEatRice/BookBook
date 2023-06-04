@@ -18,7 +18,7 @@ public sealed class AddBookCategoryHandler : ICommandHandler<AddBookCategory>
 
     public async Task HandleAsync(AddBookCategory command)
     {
-        var bookCategory = BookCategory.Create(command.Name);
+        var bookCategory = BookCategory.Create(command.Id, command.Name);
 
         _bookCategoryRepository.Add(bookCategory);
 

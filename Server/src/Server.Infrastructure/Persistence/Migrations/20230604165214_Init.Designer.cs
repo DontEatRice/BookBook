@@ -9,10 +9,10 @@ using Server.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Server.Infrastructure.Persistence.Migrations
+namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    [Migration("20230601104827_Init")]
+    [Migration("20230604165214_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -68,6 +68,21 @@ namespace Server.Infrastructure.Persistence.Migrations
                     b.HasIndex("BooksId");
 
                     b.ToTable("BookBookCategory");
+                });
+
+            modelBuilder.Entity("BookBookCategory1", b =>
+                {
+                    b.Property<Guid>("BookCategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("BookCategoryId", "BookId");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("BookBookCategory1");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Author", b =>
@@ -136,9 +151,13 @@ namespace Server.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("BookCategories");
                 });
@@ -200,6 +219,21 @@ namespace Server.Infrastructure.Persistence.Migrations
                     b.HasOne("Server.Domain.Entities.Book", null)
                         .WithMany()
                         .HasForeignKey("BooksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BookBookCategory1", b =>
+                {
+                    b.HasOne("Server.Domain.Entities.BookCategory", null)
+                        .WithMany()
+                        .HasForeignKey("BookCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Domain.Entities.Book", null)
+                        .WithMany()
+                        .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

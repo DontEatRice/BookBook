@@ -42,7 +42,7 @@ public class BookCategoriesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Post(AddBookCategory command)
     {
-        var id = new Guid();
+        var id = Guid.NewGuid();
         await _addBookCategoryHandler.HandleAsync(command with
         {
             Id = id,

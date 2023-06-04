@@ -10,7 +10,9 @@ namespace Server.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.Name).IsRequired().HasMaxLength(30);
+            builder.Property(x => x.Name).HasMaxLength(40);
+
+            builder.HasIndex(x => x.Name).IsUnique();
 
             builder.HasMany<Book>().WithMany();
 
