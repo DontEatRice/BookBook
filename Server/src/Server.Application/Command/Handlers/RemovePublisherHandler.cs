@@ -1,9 +1,10 @@
-﻿using Server.Application.InfrastructureInterfaces;
+﻿using Server.Application.Abstractions;
+using Server.Application.InfrastructureInterfaces;
 using Server.Domain.Repositories;
 
 namespace Server.Application.Command.Handlers;
 
-public class RemovePublisherHandler
+public class RemovePublisherHandler : ICommandHandler<RemovePublisher>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPublisherRepository _publisherRepository;
@@ -14,7 +15,7 @@ public class RemovePublisherHandler
         _publisherRepository = publisherRepository;
     }
 
-    public async Task<bool> HandleAsync(RemovePublisher command)
+    public async Task HandleAsync(RemovePublisher command)
     {
         var publisher = await _publisherRepository.FirstOrDefaultByIdAsync(command.Id);
 
@@ -24,7 +25,5 @@ public class RemovePublisherHandler
         }
 
         await _unitOfWork.SaveChangesAsync();
-
-        return true;
     }
 }
