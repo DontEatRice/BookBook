@@ -7,3 +7,4 @@ const Book = z.object({
 });
 
 export default Book;
+export type BookType = z.infer<typeof Book>;
