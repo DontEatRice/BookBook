@@ -10,6 +10,7 @@ public class BookCategory
     public static BookCategory Create(Guid id, string name) => new()
     {
         Id = id,
-        Name = name
+        Name = name,
+        Books = new List<Book>()
     };
 }
