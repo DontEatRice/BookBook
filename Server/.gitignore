@@ -402,3 +402,5 @@ FodyWeavers.xsd
 appsettings.local.json
 appsettings.Development.json
 module.*.local.json
+.suo
+slnx.sqlite
