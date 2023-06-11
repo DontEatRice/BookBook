@@ -34,7 +34,7 @@ public class BookCategoriesController : ControllerBase
         return Ok(await _getBookCategoriesHandler.HandleAsync(new GetBookCategories()));
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:Guid}")]
     public async Task<ActionResult<BookCategoryViewModel>> Get(Guid id)
     {
         return Ok(await _getBookCategoryHandler.HandleAsync(new GetBookCategory(id)));
