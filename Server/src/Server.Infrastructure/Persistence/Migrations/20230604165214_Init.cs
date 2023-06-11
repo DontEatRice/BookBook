@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Server.Infrastructure.Persistence.Migrations
+namespace Server.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
@@ -29,7 +29,7 @@ namespace Server.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -144,6 +144,30 @@ namespace Server.Infrastructure.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "BookBookCategory1",
+                columns: table => new
+                {
+                    BookCategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookBookCategory1", x => new { x.BookCategoryId, x.BookId });
+                    table.ForeignKey(
+                        name: "FK_BookBookCategory1_BookCategories_BookCategoryId",
+                        column: x => x.BookCategoryId,
+                        principalTable: "BookCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BookBookCategory1_Books_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Books",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AuthorBook_BooksId",
                 table: "AuthorBook",
@@ -158,6 +182,17 @@ namespace Server.Infrastructure.Persistence.Migrations
                 name: "IX_BookBookCategory_BooksId",
                 table: "BookBookCategory",
                 column: "BooksId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookBookCategory1_BookId",
+                table: "BookBookCategory1",
+                column: "BookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookCategories_Name",
+                table: "BookCategories",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Books_PublisherId",
@@ -176,6 +211,9 @@ namespace Server.Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "BookBookCategory");
+
+            migrationBuilder.DropTable(
+                name: "BookBookCategory1");
 
             migrationBuilder.DropTable(
                 name: "Authors");

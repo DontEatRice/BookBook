@@ -16,10 +16,11 @@ internal static class Extensions
         var options = new SqlServerOptions();
         var section = configuration.GetRequiredSection(OptionsSectionName);
         section.Bind(options);
-        
+
         services.AddDbContext<BookBookDbContext>(x => x.UseSqlServer(options.ConnectionString));
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IAuthorRepository, AuthorRepository>();
+        services.AddScoped<IBookCategoryRepository, BookCategoryRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;

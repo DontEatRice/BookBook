@@ -1,15 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
-// ReSharper disable CollectionNeverUpdated.Global
-#pragma warning disable CS8618
+﻿#pragma warning disable CS8618
+namespace Server.Domain.Entities;
 
-namespace Server.Domain.Entities
+public class BookCategory
 {
-    public class BookCategory
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public ICollection<Book> Books { get; set; }
+
+    public static BookCategory Create(Guid id, string name) => new()
     {
-        [Key]
-        public Guid Id { get; set; }
-        [Required]
-        public string Name { get; set; }
-        public ICollection<Book> Books { get; set; }
-    }
+        Id = id,
+        Name = name,
+        Books = new List<Book>()
+    };
 }
