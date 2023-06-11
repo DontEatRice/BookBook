@@ -25,4 +25,9 @@ internal class BookCategoryRepository : IBookCategoryRepository
     {
         return await _dbContext.BookCategories.FirstOrDefaultAsync(x => x.Id == id);
     }
+
+    public async Task<List<BookCategory>> ListByIDs(List<Guid> ids)
+    {
+        return await _dbContext.BookCategories.Where(x => ids.Contains(x.Id)).ToListAsync();
+    }
 }

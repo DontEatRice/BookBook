@@ -9,6 +9,9 @@ public sealed class AddBookHandler : ICommandHandler<AddBook>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IBookRepository _bookRepository;
+    private readonly IAuthorRepository _authorRepository;
+    private readonly IPublisherRepository _publisherRepository;
+    private readonly IBookCategoryRepository _bookCategoryRepository;
 
     public AddBookHandler(IUnitOfWork unitOfWork, IBookRepository bookRepository)
     {
@@ -18,10 +21,14 @@ public sealed class AddBookHandler : ICommandHandler<AddBook>
 
     public async Task HandleAsync(AddBook command)
     {
-        var book = Book.Create(command.Name);
+        var publisher = await _publisherRepository.FirstOrDefaultByIdAsync(command.IdPublisher);
+        var authors = await _authorRepository.ListByIDs(command.AuthorsIDs);
+        var categories = await _bookCategoryRepository.ListByIDs(command.CategoriesIDs);
 
-        await _bookRepository.AddAsync(book);
+        var book = Book.Create(command.Id, command.ISBN, command.Title, command.YearPublished,
+            command.CoverLink, publisher, authors, categories);
 
+        _bookRepository.Add(book);
         await _unitOfWork.SaveChangesAsync();
     }
 }

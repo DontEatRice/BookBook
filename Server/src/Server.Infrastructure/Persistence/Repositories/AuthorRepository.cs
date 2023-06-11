@@ -17,7 +17,7 @@ internal class AuthorRepository : IAuthorRepository
     {
         _dbContext.Add(author);
     }
-    
+
     public void Delete(Author author)
     {
         _dbContext.Remove(author);
@@ -26,5 +26,10 @@ internal class AuthorRepository : IAuthorRepository
     public async Task<Author?> FirstOrDefaultByIdAsync(Guid id)
     {
         return await _dbContext.Authors.FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task<List<Author>> ListByIDs(List<Guid> ids)
+    {
+        return await _dbContext.Authors.Where(x => ids.Contains(x.Id)).ToListAsync();
     }
 }
