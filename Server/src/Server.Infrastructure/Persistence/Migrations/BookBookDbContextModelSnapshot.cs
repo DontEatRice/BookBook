@@ -52,21 +52,6 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("BookBookCategory");
                 });
 
-            modelBuilder.Entity("BookBookCategory1", b =>
-                {
-                    b.Property<Guid>("BookCategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("BookCategoryId", "BookId");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("BookBookCategory1");
-                });
-
             modelBuilder.Entity("Server.Domain.Entities.Author", b =>
                 {
                     b.Property<Guid>("Id")
@@ -189,21 +174,6 @@ namespace Server.Infrastructure.Migrations
                     b.HasOne("Server.Domain.Entities.Book", null)
                         .WithMany()
                         .HasForeignKey("BooksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BookBookCategory1", b =>
-                {
-                    b.HasOne("Server.Domain.Entities.BookCategory", null)
-                        .WithMany()
-                        .HasForeignKey("BookCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Server.Domain.Entities.Book", null)
-                        .WithMany()
-                        .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

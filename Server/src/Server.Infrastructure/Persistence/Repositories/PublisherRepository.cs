@@ -25,6 +25,7 @@ internal class PublisherRepository : IPublisherRepository
 
     public async Task<Publisher?> FirstOrDefaultByIdAsync(Guid id)
     {
-        return await _dbContext.Publishers.FirstOrDefaultAsync(x => x.Id == id);
+        var publisher = await _dbContext.Publishers.FirstOrDefaultAsync(x => x.Id == id);
+        return publisher;
     }
 }

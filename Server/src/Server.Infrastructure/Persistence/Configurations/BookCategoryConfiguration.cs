@@ -15,8 +15,5 @@ public class BookCategoryConfiguration : IEntityTypeConfiguration<BookCategory>
 
         builder.HasIndex(x => x.Name)
             .IsUnique();
-
-        builder.HasMany<Book>().WithMany();
-
     }
 }

@@ -21,6 +21,7 @@ internal static class Extensions
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IBookCategoryRepository, BookCategoryRepository>();
+        services.AddScoped<IPublisherRepository, PublisherRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;

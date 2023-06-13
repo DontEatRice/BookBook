@@ -13,10 +13,14 @@ public sealed class AddBookHandler : ICommandHandler<AddBook>
     private readonly IPublisherRepository _publisherRepository;
     private readonly IBookCategoryRepository _bookCategoryRepository;
 
-    public AddBookHandler(IUnitOfWork unitOfWork, IBookRepository bookRepository)
+    public AddBookHandler(IUnitOfWork unitOfWork, IBookRepository bookRepository,
+        IAuthorRepository authorRepository, IPublisherRepository publisherRepository, IBookCategoryRepository bookCategoryRepository)
     {
         _unitOfWork = unitOfWork;
         _bookRepository = bookRepository;
+        _authorRepository = authorRepository;
+        _publisherRepository = publisherRepository;
+        _bookCategoryRepository = bookCategoryRepository;
     }
 
     public async Task HandleAsync(AddBook command)

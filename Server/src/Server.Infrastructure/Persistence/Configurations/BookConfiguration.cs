@@ -4,7 +4,7 @@ using Server.Domain.Entities;
 
 namespace Server.Infrastructure.Persistence.Configurations;
 
-internal sealed class BookConfiguration : IEntityTypeConfiguration<Book>
+public class BookConfiguration : IEntityTypeConfiguration<Book>
 {
     public void Configure(EntityTypeBuilder<Book> builder)
     {
@@ -26,11 +26,5 @@ internal sealed class BookConfiguration : IEntityTypeConfiguration<Book>
         builder.Property(x => x.AverageRating);
 
         builder.Property(x => x.AverageCriticRating);
-
-        //builder.HasOne(x => x.Publisher).WithMany(x => x.Books);
-
-        //builder.HasMany(x => x.Authors).WithMany();
-
-        //builder.HasMany(x => x.BookCategories).WithMany();
     }
 }
