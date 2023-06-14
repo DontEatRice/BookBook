@@ -5,8 +5,10 @@ import Container from '@mui/material/Container';
 import Footer from './shared/Footer';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
-import AdminHome from './pages/Admin/AdminHome';
+import AdminHome from './pages/admin/AdminHome';
 import CssBaseline from '@mui/material/CssBaseline';
+import AdminHeader from './shared/AdminHeader';
+import Books from './pages/admin/Books';
 
 const mainTheme = createTheme({
   palette: {
@@ -23,6 +25,8 @@ const mainTheme = createTheme({
   },
 });
 
+const adminTheme = createTheme({});
+
 function App() {
   return (
     <Routes>
@@ -30,8 +34,10 @@ function App() {
         <Route index element={<Home />} />
         <Route path="*" element={<div>NotFound</div>} />
       </Route>
-      <Route path="/admin">
+      <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminHome />} />
+        <Route path="books" element={<Books />} />
+        <Route path="*" element={<div>NotFound</div>} />
       </Route>
     </Routes>
   );
@@ -46,6 +52,18 @@ function Layout() {
         <Outlet />
       </Container>
       <Footer />
+    </ThemeProvider>
+  );
+}
+
+function AdminLayout() {
+  return (
+    <ThemeProvider theme={adminTheme}>
+      <CssBaseline />
+      <AdminHeader />
+      <Container>
+        <Outlet />
+      </Container>
     </ThemeProvider>
   );
 }

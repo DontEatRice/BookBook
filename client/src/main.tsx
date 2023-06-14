@@ -4,7 +4,6 @@ import App from './App.tsx';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter } from 'react-router-dom';
 import './index.css';
-import CssBaseline from '@mui/material/CssBaseline';
 
 const queryClient = new QueryClient();
 //https://tanstack.com/query/v3/docs/react/quick-start
@@ -14,7 +13,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <CssBaseline />
         <App />
       </BrowserRouter>
     </QueryClientProvider>
