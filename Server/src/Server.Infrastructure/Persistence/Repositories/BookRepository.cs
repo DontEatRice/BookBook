@@ -15,7 +15,7 @@ internal sealed class BookRepository : IBookRepository
 
     public void Add(Book book)
     {
-        _dbContext.AddAsync(book);
+        _dbContext.Add(book);
     }
 
     public void Delete(Book book)
