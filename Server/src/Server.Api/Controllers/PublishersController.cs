@@ -7,8 +7,8 @@ using Server.Application.ViewModels;
 namespace Server.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
-public class PublishersControllers : ControllerBase
+[Route("[Controller]")]
+public class PublishersController : ControllerBase
 {
     private readonly IQueryHandler<GetPublishers, IEnumerable<PublisherViewModel>> _getPublishersHandler;
     private readonly IQueryHandler<GetPublisher, PublisherViewModel> _getPublisherHandler;
@@ -16,7 +16,7 @@ public class PublishersControllers : ControllerBase
     private readonly ICommandHandler<AddPublisher> _addPublisherHandler;
     private readonly ICommandHandler<RemovePublisher> _removePublisherHandler;
 
-    public PublishersControllers(
+    public PublishersController(
         IQueryHandler<GetPublishers, IEnumerable<PublisherViewModel>> getPublishersHandler,
         IQueryHandler<GetPublisher, PublisherViewModel> getPublisherHandler,
         ICommandHandler<AddPublisher> addPublisherHandler,

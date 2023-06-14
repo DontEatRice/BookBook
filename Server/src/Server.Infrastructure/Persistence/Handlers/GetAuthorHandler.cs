@@ -6,11 +6,11 @@ using Server.Domain.Exceptions;
 
 namespace Server.Infrastructure.Persistence.Handlers;
 
-internal sealed class GertAuthorHandler : IQueryHandler<GetAuthor, AuthorViewModel>
+internal sealed class GetAuthorHandler : IQueryHandler<GetAuthor, AuthorViewModel>
 {
     private readonly BookBookDbContext _dbContext;
 
-    public GertAuthorHandler(BookBookDbContext dbContext)
+    public GetAuthorHandler(BookBookDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -26,7 +26,7 @@ internal sealed class GertAuthorHandler : IQueryHandler<GetAuthor, AuthorViewMod
             return new AuthorViewModel
             {
                 Id = author.Id,
-                FirstName = author.FirstName, 
+                FirstName = author.FirstName,
                 LastName = author.LastName
             };
         }

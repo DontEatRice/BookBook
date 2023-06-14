@@ -37,21 +37,6 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("AuthorBook");
                 });
 
-            modelBuilder.Entity("AuthorBook1", b =>
-                {
-                    b.Property<Guid>("AuthorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("AuthorId", "BookId");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("AuthorBook1");
-                });
-
             modelBuilder.Entity("BookBookCategory", b =>
                 {
                     b.Property<Guid>("BookCategoriesId")
@@ -65,21 +50,6 @@ namespace Server.Infrastructure.Migrations
                     b.HasIndex("BooksId");
 
                     b.ToTable("BookBookCategory");
-                });
-
-            modelBuilder.Entity("BookBookCategory1", b =>
-                {
-                    b.Property<Guid>("BookCategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("BookCategoryId", "BookId");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("BookBookCategory1");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Author", b =>
@@ -109,10 +79,10 @@ namespace Server.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("AverageCriticRating")
+                    b.Property<double?>("AverageCriticRating")
                         .HasColumnType("float");
 
-                    b.Property<double>("AverageRating")
+                    b.Property<double?>("AverageRating")
                         .HasColumnType("float");
 
                     b.Property<string>("CoverLink")
@@ -134,6 +104,9 @@ namespace Server.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ISBN")
+                        .IsUnique();
 
                     b.HasIndex("PublisherId");
 
@@ -190,21 +163,6 @@ namespace Server.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("AuthorBook1", b =>
-                {
-                    b.HasOne("Server.Domain.Entities.Author", null)
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Server.Domain.Entities.Book", null)
-                        .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("BookBookCategory", b =>
                 {
                     b.HasOne("Server.Domain.Entities.BookCategory", null)
@@ -216,21 +174,6 @@ namespace Server.Infrastructure.Migrations
                     b.HasOne("Server.Domain.Entities.Book", null)
                         .WithMany()
                         .HasForeignKey("BooksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BookBookCategory1", b =>
-                {
-                    b.HasOne("Server.Domain.Entities.BookCategory", null)
-                        .WithMany()
-                        .HasForeignKey("BookCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Server.Domain.Entities.Book", null)
-                        .WithMany()
-                        .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

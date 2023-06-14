@@ -17,6 +17,34 @@ internal sealed class GetBooksHandler : IQueryHandler<GetBooks, IEnumerable<Book
     public async Task<IEnumerable<BookViewModel>> HandleAsync(GetBooks query)
         => await _dbContext.Books
             .AsNoTracking()
-            .Select(x => new BookViewModel { Id = x.Id })
+            .Include(x => x.Publisher)
+            .Include(x => x.BookCategories)
+            .Include(x => x.Authors)
+            .Select(x => new BookViewModel
+            {
+                Id = x.Id,
+                Title = x.Title,
+                ISBN = x.ISBN,
+                YearPublished = x.YearPublished,
+                CoverLink = x.CoverLink,
+                AverageRating = x.AverageRating,
+                AverageCriticRating = x.AverageCriticRating,
+                Publisher = new PublisherViewModel
+                {
+                    Id = x.Publisher.Id,
+                    Name = x.Publisher.Name
+                },
+                Authors = x.Authors.Select(a => new AuthorViewModel
+                {
+                    Id = a.Id,
+                    FirstName = a.FirstName,
+                    LastName = a.LastName
+                }).ToList(),
+                BookCategories = x.BookCategories.Select(b => new BookCategoryViewModel
+                {
+                    Id = b.Id,
+                    Name = b.Name
+                }).ToList()
+            })
             .ToListAsync();
 }

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Server.Domain.Entities;
 using Server.Domain.Repositories;
 
@@ -12,8 +13,18 @@ internal sealed class BookRepository : IBookRepository
         _dbContext = dbContext;
     }
 
-    public async Task AddAsync(Book book)
+    public void Add(Book book)
     {
-        await _dbContext.AddAsync(book);
+        _dbContext.Add(book);
+    }
+
+    public void Delete(Book book)
+    {
+        _dbContext.Remove(book);
+    }
+
+    public async Task<Book?> FirstOrDefaultByIdAsync(Guid id)
+    {
+        return await _dbContext.Books.FirstOrDefaultAsync(x => x.Id == id);
     }
 }

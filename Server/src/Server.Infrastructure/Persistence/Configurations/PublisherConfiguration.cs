@@ -13,7 +13,5 @@ public class PublisherConfiguration : IEntityTypeConfiguration<Publisher>
         builder.Property(x => x.Name)
             .IsRequired().
             HasMaxLength(50);
-
-        builder.HasMany<Book>().WithMany();
     }
 }

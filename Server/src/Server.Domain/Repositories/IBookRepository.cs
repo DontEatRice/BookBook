@@ -4,5 +4,9 @@ namespace Server.Domain.Repositories;
 
 public interface IBookRepository
 {
-    Task AddAsync(Book book);
+    void Add(Book book);
+
+    void Delete(Book book);
+
+    Task<Book?> FirstOrDefaultByIdAsync(Guid guid);
 }
