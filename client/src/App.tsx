@@ -5,10 +5,10 @@ import Container from '@mui/material/Container';
 import Footer from './shared/Footer';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
-import AdminHome from './pages/admin/AdminHome';
 import CssBaseline from '@mui/material/CssBaseline';
+import AdminBooks from './pages/admin/AdminBooks';
+import AdminHome from './pages/admin/AdminHome';
 import AdminHeader from './shared/AdminHeader';
-import Books from './pages/admin/Books';
 
 const mainTheme = createTheme({
   palette: {
@@ -36,7 +36,7 @@ function App() {
       </Route>
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminHome />} />
-        <Route path="books" element={<Books />} />
+        <Route path="books" element={<AdminBooks />} />
         <Route path="*" element={<div>NotFound</div>} />
       </Route>
     </Routes>

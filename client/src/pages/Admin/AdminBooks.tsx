@@ -133,7 +133,7 @@ const data: BookViewModelType[] = [
   },
 ];
 
-function Books() {
+function AdminBooks() {
   const [order, setOrder] = useState<Order>('desc');
   const [orderBy, setOrderBy] = useState<keyof BookViewModelType>('id');
   const [page, setPage] = useState(0);
@@ -197,4 +197,4 @@ function Books() {
   );
 }
 
-export default Books;
+export default AdminBooks;
