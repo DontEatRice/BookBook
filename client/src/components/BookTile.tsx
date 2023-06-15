@@ -4,15 +4,15 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
-import { BookType } from '../models/Book';
+import { BookViewModelType } from '../models/BookViewModel';
 
-function BookTile({ book }: { book: BookType }) {
+function BookTile({ book }: { book: BookViewModelType }) {
   const theme = useTheme();
   const navigate = useNavigate();
   return (
     <Paper elevation={1} sx={{ width: '300px', backgroundColor: theme.palette.secondary.main, p: 1 }}>
       <Box p={1} sx={{ textAlign: 'center' }}>
-        <Typography variant="h5">{book.name}</Typography>
+        <Typography variant="h5">{book.title}</Typography>
         <Box
           ml="auto"
           mr="auto"
