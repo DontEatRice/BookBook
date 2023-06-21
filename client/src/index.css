@@ -7,3 +7,7 @@
 body {
     background-color: #F3EEE7;
 }
+
+a:visited {
+    color: inherit;
+}
