@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const BookCategoryViewModel = z.object({
-  id: z.optional(z.string().uuid()),
+  id: z.string().uuid(),
   name: z.string().max(40).nonempty(),
 });
 

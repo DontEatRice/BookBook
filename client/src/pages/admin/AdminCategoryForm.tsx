@@ -28,14 +28,12 @@ function AdminCategoryForm() {
   const onSubmit = (data: BookCategoryViewModelType) => {
     mutation.mutate(data);
   };
-
   return (
     <Box sx={{ mt: 2 }}>
       <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', justifyContent: 'center' }}>
         <Box
           sx={{
             width: { xs: '100%', sm: '85%', md: '65%' },
-            backgroundColor: 'yellow',
             textAlign: 'center',
           }}>
           <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
