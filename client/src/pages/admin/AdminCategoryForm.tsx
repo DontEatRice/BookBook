@@ -1,5 +1,4 @@
-import { useForm } from 'react-hook-form';
-import BookCategoryViewModel, { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -7,25 +6,27 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { useMutation } from 'react-query';
 import { postCategory } from '../../api/category';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import AddCategory, { AddCategoryType } from '../../models/AddCategory';
 function AdminCategoryForm() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<BookCategoryViewModelType>({
-    resolver: zodResolver(BookCategoryViewModel),
+  } = useForm<AddCategoryType>({
+    resolver: zodResolver(AddCategory),
   });
   const mutation = useMutation({
     mutationFn: postCategory,
     onSuccess: () => {
-      redirect('..');
+      navigate('..');
     },
     onError: (e: Error) => {
       console.error(e);
     },
   });
-  const onSubmit = (data: BookCategoryViewModelType) => {
+  const onSubmit: SubmitHandler<AddCategoryType> = (data) => {
     mutation.mutate(data);
   };
   return (
