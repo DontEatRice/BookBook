@@ -9,6 +9,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import AdminBooks from './pages/admin/AdminBooks';
 import AdminHome from './pages/admin/AdminHome';
 import AdminHeader from './shared/AdminHeader';
+import AdminCategories from './pages/admin/AdminCategories';
+import AdminCategoryForm from './pages/admin/AdminCategoryForm';
 
 const mainTheme = createTheme({
   palette: {
@@ -37,6 +39,10 @@ function App() {
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminHome />} />
         <Route path="books" element={<AdminBooks />} />
+        <Route path="categories">
+          <Route index element={<AdminCategories />} />
+          <Route path="add" element={<AdminCategoryForm />} />
+        </Route>
         <Route path="*" element={<div>NotFound</div>} />
       </Route>
     </Routes>

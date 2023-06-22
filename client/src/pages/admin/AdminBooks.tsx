@@ -110,7 +110,7 @@ const data: BookViewModelType[] = [
     isbn: '124343',
     yearPublished: 2019,
     bookCategories: [],
-    title: 'Biblia Skurwysynu',
+    title: 'Biblia',
     publisher: { id: 'dupa', name: 'Wydawca obiadów' },
   },
   {
@@ -152,7 +152,7 @@ function AdminBooks() {
     <Box mt={1}>
       <Grid container spacing={2} justifyContent="space-between">
         <Grid item>
-          <Typography variant="h4">Books</Typography>
+          <Typography variant="h4">Książki</Typography>
         </Grid>
         <Grid item>
           <Link to="/admin/books/add">
