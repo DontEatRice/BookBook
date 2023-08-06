@@ -24,6 +24,7 @@ function AdminHeader() {
         </Typography>
       </Link>
       <NavItem label="Książki" link="/admin/books" />
+      <NavItem label="Kategorie" link="/admin/categories" />
     </header>
   );
 }
