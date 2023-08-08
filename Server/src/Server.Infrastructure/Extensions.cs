@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Server.Application.Abstractions;
+using Server.Infrastructure.Configuration;
 using Server.Infrastructure.Persistence;
 using System.Reflection;
 
@@ -11,7 +12,10 @@ public static class Extensions
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddControllers();
+        services.AddControllers(options =>
+        {
+            options.Filters.Add(typeof(ExceptionFilter));
+        });
         services.AddDatabase(configuration);
         services.AddSwaggerGen();
         services.AddCors(options =>
