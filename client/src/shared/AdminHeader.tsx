@@ -23,6 +23,7 @@ function AdminHeader() {
           BookBook Admin
         </Typography>
       </Link>
+      <NavItem label="Autorzy" link="/admin/authors" />
       <NavItem label="Książki" link="/admin/books" />
       <NavItem label="Kategorie" link="/admin/categories" />
     </header>

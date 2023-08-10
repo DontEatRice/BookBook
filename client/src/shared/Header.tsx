@@ -14,9 +14,11 @@ function Header() {
   const matches = useMediaQuery(theme.breakpoints.up('sm'));
 
   return (
-    <header style={{ position: 'sticky', top: 0, left: 0 }}>
+    <Box
+      component="header"
+      sx={{ position: 'sticky', top: 0, left: 0, backgroundColor: theme.palette.background.default }}>
       <Box sx={{ width: '100%' }}>
-        <Grid container spacing={1}>
+        <Grid container spacing={0}>
           {matches && (
             <Grid item sm={3} xs={0} container justifyContent="center">
               <HeaderLogo />
@@ -33,7 +35,7 @@ function Header() {
         </Grid>
       </Box>
       <Nav />
-    </header>
+    </Box>
   );
 }
 
@@ -60,8 +62,8 @@ function SearchBar() {
   }, [params]);
 
   return (
-    <Box>
-      <TextField fullWidth value={query} onChange={handleChange} />
+    <Box m={1}>
+      <TextField fullWidth value={query} onChange={handleChange} placeholder="Gotowy na przygodę?" />
     </Box>
   );
 }
@@ -72,7 +74,7 @@ function HeaderLogo() {
   return (
     <Grid item m={1}>
       <Box
-        p={2}
+        p={1}
         textAlign="center"
         borderRadius={6}
         sx={{ backgroundColor: theme.palette.primary.main, display: 'inline-block', cursor: 'pointer' }}
