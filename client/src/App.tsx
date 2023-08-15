@@ -11,6 +11,8 @@ import AdminHome from './pages/admin/AdminHome';
 import AdminHeader from './shared/AdminHeader';
 import AdminCategories from './pages/admin/AdminCategories';
 import AdminCategoryForm from './pages/admin/AdminCategoryForm';
+import AdminAuthors from './pages/admin/AdminAuthors';
+import AdminAuthorForm from './pages/admin/AdminAuthorForm';
 
 const mainTheme = createTheme({
   palette: {
@@ -38,6 +40,10 @@ function App() {
       </Route>
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminHome />} />
+        <Route path="authors">
+          <Route index element={<AdminAuthors />} />
+          <Route path="add" element={<AdminAuthorForm />} />
+        </Route>
         <Route path="books" element={<AdminBooks />} />
         <Route path="categories">
           <Route index element={<AdminCategories />} />

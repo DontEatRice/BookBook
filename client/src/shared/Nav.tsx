@@ -7,7 +7,7 @@ import { NavLink } from 'react-router-dom';
 function Nav() {
   const theme = useTheme();
   return (
-    <Box component="nav" m={2}>
+    <Box component="nav" m={1}>
       <Grid
         container
         p={1}
