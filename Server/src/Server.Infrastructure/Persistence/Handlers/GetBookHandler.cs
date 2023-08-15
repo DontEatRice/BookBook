@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Server.Application.Abstractions;
+using Server.Application.Exceptions;
+using Server.Application.Exceptions.Types;
 using Server.Application.Queries;
 using Server.Application.ViewModels;
-using Server.Domain.Exceptions;
 
 namespace Server.Infrastructure.Persistence.Handlers
 {
@@ -54,7 +55,7 @@ namespace Server.Infrastructure.Persistence.Handlers
                 };
             }
 
-            throw new NotFoundException("Book not found");
+            throw new NotFoundException("Book not found", ApplicationErrorCodes.BookNotFound);
         }
     }
 }

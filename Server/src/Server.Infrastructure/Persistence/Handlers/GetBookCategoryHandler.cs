@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Server.Application.Abstractions;
+using Server.Application.Exceptions;
+using Server.Application.Exceptions.Types;
 using Server.Application.Queries;
 using Server.Application.ViewModels;
-using Server.Domain.Exceptions;
 
 namespace Server.Infrastructure.Persistence.Handlers;
 
@@ -30,6 +31,6 @@ internal sealed class GetBookCategoryHandler : IQueryHandler<GetBookCategory, Bo
             };
         }
 
-        throw new NotFoundException("Book category not found");
+        throw new NotFoundException("Book category not found", ApplicationErrorCodes.BookCategoryNotFound);
     }
 }
