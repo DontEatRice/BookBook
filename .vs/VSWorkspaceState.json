@@ -1,0 +1,11 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Server",
+    "\\Server\\src",
+    "\\Server\\src\\Server.Application",
+    "\\Server\\src\\Server.Application\\Command",
+    "\\Server\\src\\Server.Application\\Command\\Handlers"
+  ],
+  "PreviewInSolutionExplorer": false
+}

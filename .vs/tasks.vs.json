@@ -1,0 +1,15 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "task-AdminPublisherForm",
+      "appliesTo": "client/src/pages/admin/AdminPublisherForm.tsx",
+      "type": "launch"
+    },
+    {
+      "taskLabel": "task-AdminBooks",
+      "appliesTo": "client/src/pages/admin/AdminBooks.tsx",
+      "type": "launch"
+    }
+  ]
+}
