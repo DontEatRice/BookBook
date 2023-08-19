@@ -4,8 +4,8 @@ namespace Server.Domain.Repositories;
 
 public interface IAuthorRepository
 {
-    void Add(Author author);
+    Task AddAsync(Author author, CancellationToken cancellationToken);
     void Delete(Author author);
-    Task<Author?> FirstOrDefaultByIdAsync(Guid guid);
-    Task<List<Author>> ListByIDs(List<Guid> ids);
+    Task<Author?> FirstOrDefaultByIdAsync(Guid guid, CancellationToken cancellationToken);
+    Task<List<Author>> ListByIdsAsync(List<Guid> ids, CancellationToken cancellationToken);
 }

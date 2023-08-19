@@ -1,8 +1,8 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Server.Application.Abstractions;
-using Server.Application.Command;
-using Server.Application.Queries;
+using Server.Application.CommandHandlers;
 using Server.Application.ViewModels;
+using Server.Infrastructure.Persistence.QueryHandlers;
 
 namespace Server.Api.Controllers;
 
@@ -10,48 +10,34 @@ namespace Server.Api.Controllers;
 [Route("[controller]")]
 public class AuthorsController : ControllerBase
 {
-    private readonly IQueryHandler<GetAuthors, IEnumerable<AuthorViewModel>> _getAuthorsHandler;
-    private readonly IQueryHandler<GetAuthor, AuthorViewModel> _getAuthorHandler;
-    
-    private readonly ICommandHandler<AddAuthor> _addAuthorHandler;
-    private readonly ICommandHandler<RemoveAuthor> _removeAuthorHandler;
-
-    public AuthorsController(
-        IQueryHandler<GetAuthors, IEnumerable<AuthorViewModel>> getAuthorsHandler,
-        IQueryHandler<GetAuthor, AuthorViewModel> getAuthorHandler,
-        ICommandHandler<AddAuthor> addAuthorHandler, 
-        ICommandHandler<RemoveAuthor> removeAuthorHandler)
+    public AuthorsController(IMediator mediator) : base(mediator)
     {
-        _getAuthorsHandler = getAuthorsHandler;
-        _getAuthorHandler = getAuthorHandler;
-        _addAuthorHandler = addAuthorHandler;
-        _removeAuthorHandler = removeAuthorHandler;
     }
-    
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AuthorViewModel>>> List()
-        =>Ok(await _getAuthorsHandler.HandleAsync(new GetAuthors()));
-    
+        => Ok(await Mediator.Send(new GetAuthorsQuery()));
+
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<AuthorViewModel>> Get(Guid id)
-        =>Ok(await _getAuthorHandler.HandleAsync(new GetAuthor(id)));
+        => Ok(await Mediator.Send(new GetAuthorQuery(id)));
 
     [HttpPost]
-    public async Task<ActionResult> Post(AddAuthor command)
+    public async Task<ActionResult> Post(AddAuthorCommand command)
     {
         var id = Guid.NewGuid();
-        await _addAuthorHandler.HandleAsync(command with
+        await Mediator.Send(command with
         {
             Id = id
         });
-        
+
         return Created($"/authors/{id}", null);
     }
-    
+
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Post(Guid id)
     {
-        await _removeAuthorHandler.HandleAsync(new RemoveAuthor(id));
+        await Mediator.Send(new RemoveAuthorCommand(id));
         return NoContent();
     }
 }

@@ -13,9 +13,9 @@ internal class AuthorRepository : IAuthorRepository
         _dbContext = dbContext;
     }
 
-    public void Add(Author author)
+    public async Task AddAsync(Author author, CancellationToken cancellationToken)
     {
-        _dbContext.Add(author);
+        await _dbContext.AddAsync(author, cancellationToken);
     }
 
     public void Delete(Author author)
@@ -23,13 +23,13 @@ internal class AuthorRepository : IAuthorRepository
         _dbContext.Remove(author);
     }
 
-    public async Task<Author?> FirstOrDefaultByIdAsync(Guid id)
+    public async Task<Author?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _dbContext.Authors.FirstOrDefaultAsync(x => x.Id == id);
+        return await _dbContext.Authors.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public async Task<List<Author>> ListByIDs(List<Guid> ids)
+    public async Task<List<Author>> ListByIdsAsync(List<Guid> ids, CancellationToken cancellationToken)
     {
-        return await _dbContext.Authors.Where(x => ids.Contains(x.Id)).ToListAsync();
+        return await _dbContext.Authors.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
     }
 }
