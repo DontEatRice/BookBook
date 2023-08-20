@@ -7,6 +7,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
 import CssBaseline from '@mui/material/CssBaseline';
 import AdminBooks from './pages/admin/AdminBooks';
+import AdminBookForm from './pages/admin/AdminBookForm';
 import AdminHome from './pages/admin/AdminHome';
 import AdminHeader from './shared/AdminHeader';
 import AdminCategories from './pages/admin/AdminCategories';
@@ -44,7 +45,10 @@ function App() {
           <Route index element={<AdminAuthors />} />
           <Route path="add" element={<AdminAuthorForm />} />
         </Route>
-        <Route path="books" element={<AdminBooks />} />
+        <Route path="books">
+          <Route index element={<AdminBooks />} />
+          <Route path="add" element={<AdminBookForm />} />
+        </Route>
         <Route path="categories">
           <Route index element={<AdminCategories />} />
           <Route path="add" element={<AdminCategoryForm />} />
