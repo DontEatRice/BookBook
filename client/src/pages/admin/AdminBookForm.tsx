@@ -18,8 +18,7 @@ function AdminBookForm() {
     const {
         register,
         handleSubmit,
-        formState: { errors },
-        control
+        formState: { errors }
     } = useForm<AddBookType>({
         resolver: zodResolver(AddBook),
     });
