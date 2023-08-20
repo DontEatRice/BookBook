@@ -1,9 +1,18 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Server.Application.InfrastructureInterfaces;
 using Server.Domain.Entities;
 using Server.Domain.Repositories;
 
 namespace Server.Application.CommandHandlers;
+
+public sealed class AddPublisherCommandValidator : AbstractValidator<AddPublisherCommand>
+{
+    public AddPublisherCommandValidator()
+    {
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(50);
+    }
+}
 
 public sealed record AddPublisherCommand(Guid Id, string Name) : IRequest;
 

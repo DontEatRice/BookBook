@@ -10,7 +10,7 @@ public sealed class AddBookCategoryCommandValidator : AbstractValidator<AddBookC
 {
     public AddBookCategoryCommandValidator()
     {
-        RuleFor(x => x.Name).NotEmpty();
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(40);
     }
 }
 
@@ -34,7 +34,7 @@ public sealed class AddBookCategoryHandler : IRequestHandler<AddBookCategoryComm
         await _bookCategoryRepository.AddAsync(bookCategory, cancellationToken);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
     }
 }
 

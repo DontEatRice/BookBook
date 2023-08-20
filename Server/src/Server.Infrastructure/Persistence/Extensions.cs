@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Server.Application.InfrastructureInterfaces;
 using Server.Domain.Repositories;
 using Server.Infrastructure.Persistence.Repositories;
+using System.Reflection;
 
 namespace Server.Infrastructure.Persistence;
 
@@ -23,6 +24,11 @@ internal static class Extensions
         services.AddScoped<IBookCategoryRepository, BookCategoryRepository>();
         services.AddScoped<IPublisherRepository, PublisherRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+        });
 
         return services;
     }

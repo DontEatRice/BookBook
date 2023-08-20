@@ -1,8 +1,8 @@
-using System.Reflection;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Server.Application.Utils;
+using System.Reflection;
 
 namespace Server.Application.DependencyInjection;
 
@@ -14,12 +14,12 @@ public static class Extensions
 
         return services;
     }
-    
+
     private static void AddCommands(this IServiceCollection services)
     {
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-        
+
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());

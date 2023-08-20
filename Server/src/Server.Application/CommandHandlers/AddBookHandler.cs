@@ -1,3 +1,4 @@
+using FluentValidation;
 using MediatR;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
@@ -6,6 +7,18 @@ using Server.Domain.Entities;
 using Server.Domain.Repositories;
 
 namespace Server.Application.CommandHandlers;
+
+public sealed class AddBookCommandValidator : AbstractValidator<AddBookCommand>
+{
+    public AddBookCommandValidator()
+    {
+        RuleFor(x => x.Title).NotEmpty();
+        RuleFor(x => x.ISBN).NotEmpty().MaximumLength(17).Matches(@"\d{1,3}(-\d+)*");
+        RuleFor(x => x.CoverLink);
+        RuleFor(x => x.IdPublisher).NotEmpty();
+        RuleFor(x => x.AuthorsIDs).NotEmpty();
+    }
+}
 
 public sealed record AddBookCommand(Guid Id, string ISBN, string Title, int YearPublished, string? CoverLink,
     Guid IdPublisher, List<Guid> AuthorsIDs, List<Guid> CategoriesIds) : IRequest;
@@ -36,7 +49,7 @@ public sealed class AddBookHandler : IRequestHandler<AddBookCommand>
         {
             throw new NotFoundException("Publisher not found", ApplicationErrorCodes.PublisherNotFound);
         }
-        
+
         var authors = await _authorRepository.ListByIdsAsync(request.AuthorsIDs, cancellationToken);
         var categories = await _bookCategoryRepository.ListByIdsAsync(request.CategoriesIds, cancellationToken);
 
