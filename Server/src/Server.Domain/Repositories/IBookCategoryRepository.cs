@@ -4,8 +4,8 @@ namespace Server.Domain.Repositories;
 
 public interface IBookCategoryRepository
 {
-    void Add(BookCategory bookCategory);
+    Task AddAsync(BookCategory bookCategory, CancellationToken cancellationToken);
     void Delete(BookCategory bookCategory);
-    Task<BookCategory?> FirstOrDefaultByIdAsync(Guid id);
-    Task<List<BookCategory>> ListByIDs(List<Guid> ids);
+    Task<BookCategory?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<List<BookCategory>> ListByIdsAsync(List<Guid> ids, CancellationToken cancellationToken);
 }

@@ -13,9 +13,9 @@ internal sealed class BookRepository : IBookRepository
         _dbContext = dbContext;
     }
 
-    public void Add(Book book)
+    public async Task AddAsync(Book book, CancellationToken cancellationToken)
     {
-        _dbContext.Add(book);
+        await _dbContext.AddAsync(book, cancellationToken);
     }
 
     public void Delete(Book book)
@@ -23,8 +23,8 @@ internal sealed class BookRepository : IBookRepository
         _dbContext.Remove(book);
     }
 
-    public async Task<Book?> FirstOrDefaultByIdAsync(Guid id)
+    public async Task<Book?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _dbContext.Books.FirstOrDefaultAsync(x => x.Id == id);
+        return await _dbContext.Books.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 }

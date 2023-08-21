@@ -1,4 +1,4 @@
-using Server.Application;
+using Server.Application.DependencyInjection;
 using Server.Domain;
 using Server.Infrastructure;
 
