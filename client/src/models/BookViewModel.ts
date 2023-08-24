@@ -8,7 +8,7 @@ const BookViewModel = z.object({
   isbn: z.string().max(17),
   title: z.string(),
   yearPublished: z.number().int().positive(),
-  coverLink: z.union([z.null(), z.string().trim().url()]),
+  coverLink: z.union([z.null(), z.literal(""), z.string().trim().url()]), // do poprawki raczej (trzeba obsluzyc przy dodaniu że jak jest pusty string to zamieniamy na null)
   averageRating: z.nullable(z.number()),
   averageCriticRating: z.nullable(z.number()),
   publisher: PublisherViewModel,

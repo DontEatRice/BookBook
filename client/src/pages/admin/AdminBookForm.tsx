@@ -1,4 +1,4 @@
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -6,7 +6,7 @@ import Paper from '@mui/material/Paper';
 import { useMutation, useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import TextInputField from '../../components/TextInputField';
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import AddBook, { AddBookType } from '../../models/AddBook';
 import { postBook } from '../../api/book';
 import NumberInputField from '../../components/NumberInputField';
@@ -18,6 +18,7 @@ function AdminBookForm() {
     const {
         register,
         handleSubmit,
+        control,
         formState: { errors }
     } = useForm<AddBookType>({
         resolver: zodResolver(AddBook),
@@ -32,9 +33,16 @@ function AdminBookForm() {
         },
     });
     const onSubmit: SubmitHandler<AddBookType> = (data) => {
+        console.log(data);
         mutation.mutate(data);
     };
 
+    const publishersData = [
+        {
+            id: "94390855-4375-4b55-b44a-a09b20d65f40",
+            name: "Nowa Era"
+        }
+    ];
 
     const { data: categoriesData, status: categoriesStatus } = useQuery({ queryKey: ['categories'], queryFn: getCategories })
     const { data: authorsData, status: authorsStatus } = useQuery({ queryKey: ['authors'], queryFn: getAuthors });
@@ -65,32 +73,71 @@ function AdminBookForm() {
                             <TextInputField errors={errors} field="title" register={register} label="Tytuł" />
                             <NumberInputField errors={errors} field="yearPublished" register={register} label="Rok wydania" />
                             <TextInputField errors={errors} field="coverLink" register={register} label="Link do okładki" />
-                            <Autocomplete
-                                multiple
-                                sx={{ width: '100%', mb: 2 }}
-                                options={authorsData}
-                                getOptionLabel={(author) => author.firstName + " " + author.lastName}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        label="Autorzy"
-                                        placeholder='Szukaj autora'
+                            <Controller control={control} name='authorsIds' render={({ field: { onChange, }, fieldState: { error } }) => (
+                                <>
+                                    <Autocomplete
+                                        multiple
+                                        sx={{ width: '100%', mb: 2 }}
+                                        options={authorsData || []}
+                                        onChange={(_, newValue) => {
+                                            onChange(newValue);
+                                        }}
+                                        getOptionLabel={(author) => author.firstName + " " + author.lastName}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Autorzy"
+                                                placeholder='Szukaj autora'
+                                                helperText={error?.message}
+                                                error={error != undefined}
+                                            />
+                                        )}
                                     />
-                                )}
-                            />
-                            <Autocomplete
-                                multiple
-                                sx={{ width: '100%', mb: 2 }}
-                                options={categoriesData}
-                                getOptionLabel={(category) => category.name}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        label="Kategorie"
-                                        placeholder='Szukaj kategorii'
+                                </>
+                            )} />
+                            <Controller control={control} name='categoriesIds' render={({ field: { onChange, }, fieldState: { error } }) => (
+                                <>
+                                    <Autocomplete
+                                        multiple
+                                        sx={{ width: '100%', mb: 2 }}
+                                        options={categoriesData || []}
+                                        onChange={(_, newValue) => {
+                                            onChange(newValue);
+                                        }}
+                                        getOptionLabel={(category) => category.name}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Kategorie"
+                                                placeholder='Szukaj kategorii'
+                                                helperText={error?.message}
+                                                error={error != undefined}
+                                            />
+                                        )}
                                     />
-                                )}
-                            />
+                                </>
+                            )} />
+                            <Controller control={control} name='idPublisher' render={({ field: { onChange, }, fieldState: { error } }) => (
+                                <>
+                                    <Autocomplete
+                                        sx={{ width: '100%', mb: 2 }}
+                                        options={publishersData || []}
+                                        onChange={(_, newValue) => {
+                                            onChange(newValue);
+                                        }}
+                                        getOptionLabel={(publisher) => publisher.name}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Wydawca"
+                                                placeholder='Szukaj wydawcy'
+                                                helperText={error?.message}
+                                                error={error != undefined}
+                                            />
+                                        )}
+                                    />
+                                </>
+                            )} />
                             <Button type="submit" variant="contained">
                                 Zapisz
                             </Button>
