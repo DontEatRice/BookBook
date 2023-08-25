@@ -2,5 +2,5 @@ namespace Server.Application.InfrastructureInterfaces;
 
 public interface IUnitOfWork
 {
-    Task SaveChangesAsync();
+    Task SaveChangesAsync(CancellationToken cancellationToken);
 }

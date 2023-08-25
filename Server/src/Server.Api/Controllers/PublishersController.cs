@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Server.Application.Abstractions;
-using Server.Application.Command;
-using Server.Application.Queries;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Server.Application.CommandHandlers;
 using Server.Application.ViewModels;
+using Server.Infrastructure.Persistence.QueryHandlers;
 
 namespace Server.Api.Controllers;
 
@@ -10,37 +10,23 @@ namespace Server.Api.Controllers;
 [Route("[Controller]")]
 public class PublishersController : ControllerBase
 {
-    private readonly IQueryHandler<GetPublishers, IEnumerable<PublisherViewModel>> _getPublishersHandler;
-    private readonly IQueryHandler<GetPublisher, PublisherViewModel> _getPublisherHandler;
-
-    private readonly ICommandHandler<AddPublisher> _addPublisherHandler;
-    private readonly ICommandHandler<RemovePublisher> _removePublisherHandler;
-
-    public PublishersController(
-        IQueryHandler<GetPublishers, IEnumerable<PublisherViewModel>> getPublishersHandler,
-        IQueryHandler<GetPublisher, PublisherViewModel> getPublisherHandler,
-        ICommandHandler<AddPublisher> addPublisherHandler,
-        ICommandHandler<RemovePublisher> removePublisherHandler)
+    public PublishersController(IMediator mediator) : base(mediator)
     {
-        _getPublishersHandler = getPublishersHandler;
-        _getPublisherHandler = getPublisherHandler;
-        _addPublisherHandler = addPublisherHandler;
-        _removePublisherHandler = removePublisherHandler;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PublisherViewModel>>> List()
-        => Ok(await _getPublishersHandler.HandleAsync(new GetPublishers()));
+        => Ok(await Mediator.Send(new GetPublishersQuery()));
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<PublisherViewModel>> Get(Guid id)
-        => Ok(await _getPublisherHandler.HandleAsync(new GetPublisher(id)));
+        => Ok(await Mediator.Send(new GetPublisherQuery(id)));
 
     [HttpPost]
-    public async Task<ActionResult> Post(AddPublisher command)
+    public async Task<ActionResult> Post(AddPublisherCommand command)
     {
         var id = Guid.NewGuid();
-        await _addPublisherHandler.HandleAsync(command with
+        await Mediator.Send(command with
         {
             Id = id
         });
@@ -51,7 +37,7 @@ public class PublishersController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Post(Guid id)
     {
-        await _removePublisherHandler.HandleAsync(new RemovePublisher(id));
+        await Mediator.Send(new RemovePublisherCommand(id));
         return NoContent();
     }
 }

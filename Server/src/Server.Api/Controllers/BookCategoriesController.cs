@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Server.Application.Abstractions;
-using Server.Application.Command;
-using Server.Application.Queries;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Server.Application.CommandHandlers;
 using Server.Application.ViewModels;
+using Server.Infrastructure.Persistence.QueryHandlers;
 
 namespace Server.Api.Controllers;
 
@@ -10,41 +10,27 @@ namespace Server.Api.Controllers;
 [Route("[controller]")]
 public class BookCategoriesController : ControllerBase
 {
-    private readonly IQueryHandler<GetBookCategories, IEnumerable<BookCategoryViewModel>> _getBookCategoriesHandler;
-    private readonly IQueryHandler<GetBookCategory, BookCategoryViewModel> _getBookCategoryHandler;
-
-    private readonly ICommandHandler<AddBookCategory> _addBookCategoryHandler;
-    private readonly ICommandHandler<RemoveBookCategory> _removeBookCategoryHandler;
-
-    public BookCategoriesController(
-        IQueryHandler<GetBookCategories, IEnumerable<BookCategoryViewModel>> getBookCategoriesHandler,
-        IQueryHandler<GetBookCategory, BookCategoryViewModel> getBookCategoryHandler,
-        ICommandHandler<AddBookCategory> addBookCategoryHandler,
-        ICommandHandler<RemoveBookCategory> removeBookCategoryHandler)
+    public BookCategoriesController(IMediator mediator) : base(mediator)
     {
-        _getBookCategoriesHandler = getBookCategoriesHandler;
-        _getBookCategoryHandler = getBookCategoryHandler;
-        _addBookCategoryHandler = addBookCategoryHandler;
-        _removeBookCategoryHandler = removeBookCategoryHandler;
     }
-
+    
     [HttpGet]
     public async Task<ActionResult<IEnumerable<BookCategoryViewModel>>> GetAll()
     {
-        return Ok(await _getBookCategoriesHandler.HandleAsync(new GetBookCategories()));
+        return Ok(await Mediator.Send(new GetBookCategoriesQuery()));
     }
 
     [HttpGet("{id:Guid}")]
     public async Task<ActionResult<BookCategoryViewModel>> Get(Guid id)
     {
-        return Ok(await _getBookCategoryHandler.HandleAsync(new GetBookCategory(id)));
+        return Ok(await Mediator.Send(new GetBookCategoryQuery(id)));
     }
 
     [HttpPost]
-    public async Task<ActionResult> Post(AddBookCategory command)
+    public async Task<ActionResult> Post(AddBookCategoryCommand command)
     {
         var id = Guid.NewGuid();
-        await _addBookCategoryHandler.HandleAsync(command with
+        await Mediator.Send(command with
         {
             Id = id,
         });
@@ -54,7 +40,7 @@ public class BookCategoriesController : ControllerBase
     [HttpDelete("{id:Guid}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        await _removeBookCategoryHandler.HandleAsync(new RemoveBookCategory(id));
+        await Mediator.Send(new RemoveBookCategoryCommand(id));
         return NoContent();
     }
 }

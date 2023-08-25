@@ -14,6 +14,8 @@ import AdminCategories from './pages/admin/AdminCategories';
 import AdminCategoryForm from './pages/admin/AdminCategoryForm';
 import AdminAuthors from './pages/admin/AdminAuthors';
 import AdminAuthorForm from './pages/admin/AdminAuthorForm';
+import AdminPublishers from './pages/admin/AdminPublishers';
+import AdminPublisherForm from './pages/admin/AdminPublisherForm';
 
 const mainTheme = createTheme({
   palette: {
@@ -52,6 +54,10 @@ function App() {
         <Route path="categories">
           <Route index element={<AdminCategories />} />
           <Route path="add" element={<AdminCategoryForm />} />
+        </Route>
+        <Route path="publishers">
+            <Route index element={<AdminPublishers />} />
+            <Route path="add" element={<AdminPublisherForm />} />
         </Route>
         <Route path="*" element={<div>NotFound</div>} />
       </Route>
