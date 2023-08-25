@@ -16,6 +16,9 @@ function Home() {
       name: 'Be Do Gie',
     },
     bookCategories: [],
+    coverLink: null,
+    averageRating: 4,
+    averageCriticRating: 5
   };
   return (
     <Container>
