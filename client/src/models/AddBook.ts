@@ -4,14 +4,16 @@ import { BookCategoryViewModelType } from './BookCategoryViewModel';
 import { PublisherViewModelType } from './PublisherViewModel';
 
 const AddBook = z.object({
-    ISBN: z.string().min(13).max(17).nonempty(),
+    ISBN: z.string().refine((value) => /^(?=(?:[^0-9]*[0-9]){10}(?:(?:[^0-9]*[0-9]){3})?$)[\d-]+$/.test(value), 'Nieprawidłowy ISBN'),
     title: z.string().nonempty(),
     yearPublished: z.preprocess(
         (a) => parseInt(z.string().parse(a)),
-        z.number().positive()),
-    coverLink: z.union([z.literal(""), z.string().trim().url()]).optional(),
+        z.number().positive())
+        .refine((year) => year <= new Date().getFullYear(), "Rok wydania nie może być z przyszłości"),
+    coverLink: z.union([z.literal("").transform(() => null), z.string().trim().url()]).optional(),
     idPublisher: z.custom<PublisherViewModelType>()
-        .transform(publisher => publisher.id === '' ? null : publisher.id),
+        .refine((publisher) => publisher != null, "Pole wymagane")
+        .transform(publisher => publisher.id),
     categoriesIds: z.custom<BookCategoryViewModelType>()
         .array()
         .transform(categories => categories.map(category => category.id))

@@ -12,6 +12,7 @@ import { postBook } from '../../api/book';
 import NumberInputField from '../../components/NumberInputField';
 import { getCategories } from '../../api/category';
 import { getAuthors } from '../../api/author';
+import { getPublishers } from '../../api/publisher';
 
 function AdminBookForm() {
     const navigate = useNavigate();
@@ -37,16 +38,10 @@ function AdminBookForm() {
         mutation.mutate(data);
     };
 
-    const publishersData = [
-        {
-            id: "94390855-4375-4b55-b44a-a09b20d65f40",
-            name: "Nowa Era"
-        }
-    ];
-
     const { data: categoriesData, status: categoriesStatus } = useQuery({ queryKey: ['categories'], queryFn: getCategories })
     const { data: authorsData, status: authorsStatus } = useQuery({ queryKey: ['authors'], queryFn: getAuthors });
-    if (categoriesStatus == 'loading' || authorsStatus == 'loading') {
+    const { data: publishersData, status: publishersStatus } = useQuery({ queryKey: ['publishers'], queryFn: getPublishers });
+    if (categoriesStatus == 'loading' || authorsStatus == 'loading' || publishersStatus == 'loading') {
         return (
             <h1>Ładowanie...</h1>
         )
@@ -61,14 +56,6 @@ function AdminBookForm() {
                             textAlign: 'center',
                         }}>
                         <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
-                            {/* <TextField
-              id="outlined-error-helper-text"
-              label="Nazwa kategorii"
-              {...register('name')}
-              error={errors.name != undefined}
-              helperText={errors.name?.message}
-              sx={{ width: '100%', mb: 2 }}
-            /> */}
                             <TextInputField errors={errors} field="ISBN" register={register} label="ISBN" />
                             <TextInputField errors={errors} field="title" register={register} label="Tytuł" />
                             <NumberInputField errors={errors} field="yearPublished" register={register} label="Rok wydania" />
