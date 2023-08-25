@@ -4,9 +4,7 @@ namespace Server.Domain.Repositories;
 
 public interface IBookRepository
 {
-    void Add(Book book);
-
+    Task AddAsync(Book book, CancellationToken cancellationToken);
     void Delete(Book book);
-
-    Task<Book?> FirstOrDefaultByIdAsync(Guid guid);
+    Task<Book?> FirstOrDefaultByIdAsync(Guid guid, CancellationToken cancellationToken);
 }

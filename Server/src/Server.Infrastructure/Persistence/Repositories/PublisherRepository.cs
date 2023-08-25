@@ -13,9 +13,9 @@ internal class PublisherRepository : IPublisherRepository
         _dbContext = dbContext;
     }
 
-    public void Add(Publisher publisher)
+    public async Task AddAsync(Publisher publisher, CancellationToken cancellationToken)
     {
-        _dbContext.Add(publisher);
+        await _dbContext.AddAsync(publisher, cancellationToken);
     }
 
     public void Delete(Publisher publisher)
@@ -23,8 +23,8 @@ internal class PublisherRepository : IPublisherRepository
         _dbContext.Remove(publisher);
     }
 
-    public async Task<Publisher?> FirstOrDefaultByIdAsync(Guid id)
+    public async Task<Publisher?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _dbContext.Publishers.FirstOrDefaultAsync(x => x.Id == id);
+        return await _dbContext.Publishers.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 }

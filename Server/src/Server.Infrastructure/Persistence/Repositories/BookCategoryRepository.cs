@@ -11,9 +11,9 @@ internal class BookCategoryRepository : IBookCategoryRepository
     {
         _dbContext = dbContext;
     }
-    public void Add(BookCategory bookCategory)
+    public async Task AddAsync(BookCategory bookCategory, CancellationToken cancellationToken)
     {
-        _dbContext.BookCategories.Add(bookCategory);
+        await _dbContext.BookCategories.AddAsync(bookCategory, cancellationToken);
     }
 
     public void Delete(BookCategory bookCategory)
@@ -21,13 +21,13 @@ internal class BookCategoryRepository : IBookCategoryRepository
         _dbContext.BookCategories.Remove(bookCategory);
     }
 
-    public async Task<BookCategory?> FirstOrDefaultByIdAsync(Guid id)
+    public async Task<BookCategory?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _dbContext.BookCategories.FirstOrDefaultAsync(x => x.Id == id);
+        return await _dbContext.BookCategories.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public async Task<List<BookCategory>> ListByIDs(List<Guid> ids)
+    public async Task<List<BookCategory>> ListByIdsAsync(List<Guid> ids, CancellationToken cancellationToken)
     {
-        return await _dbContext.BookCategories.Where(x => ids.Contains(x.Id)).ToListAsync();
+        return await _dbContext.BookCategories.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
     }
 }

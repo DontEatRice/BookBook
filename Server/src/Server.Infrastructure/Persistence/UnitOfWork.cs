@@ -11,12 +11,12 @@ internal sealed class UnitOfWork : IUnitOfWork
         _dbContext = dbContext;
     }
 
-    public async Task SaveChangesAsync()
+    public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
-        await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
 
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
-        await transaction.CommitAsync(CancellationToken.None);
+        await transaction.CommitAsync(cancellationToken);
     }
 }
