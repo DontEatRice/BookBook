@@ -17,5 +17,10 @@ public class AuthorConfiguration : IEntityTypeConfiguration<Author>
         builder.Property(x => x.LastName)
             .IsRequired().
             HasMaxLength(50);
+
+        builder.Property(x => x.BirthYear)
+            .IsRequired();
+
+        builder.Property(x => x.PhotoLink);
     }
 }

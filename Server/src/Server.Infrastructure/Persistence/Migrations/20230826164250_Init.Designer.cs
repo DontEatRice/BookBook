@@ -12,7 +12,7 @@ using Server.Infrastructure.Persistence;
 namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    [Migration("20230613204832_Init")]
+    [Migration("20230826164250_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Server.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -61,6 +61,9 @@ namespace Server.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("BirthYear")
+                        .HasColumnType("int");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(40)
@@ -70,6 +73,9 @@ namespace Server.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PhotoLink")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -140,6 +146,12 @@ namespace Server.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LogoLink")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
