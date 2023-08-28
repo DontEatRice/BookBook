@@ -111,7 +111,7 @@ const data: BookViewModelType[] = [
     yearPublished: 2019,
     bookCategories: [],
     title: 'Biblia',
-    publisher: { id: 'dupa', name: 'Wydawca obiadów' },
+    publisher: { id: 'dupa', name: 'Wydawca obiadów', description: "Fajna ksiazka" },
   },
   {
     id: '0010-2001',
@@ -120,7 +120,7 @@ const data: BookViewModelType[] = [
     yearPublished: 1337,
     bookCategories: [],
     title: 'Książe Nieporządek',
-    publisher: { id: 'dupa', name: 'Wydawca obiadów' },
+    publisher: { id: 'dupa', name: 'Wydawca obiadów', description: null },
   },
   {
     id: '0010-2002',
@@ -129,7 +129,7 @@ const data: BookViewModelType[] = [
     yearPublished: 2024,
     bookCategories: [],
     title: 'Harry Pothead',
-    publisher: { id: 'dupa', name: 'Wydawca obiadów' },
+    publisher: { id: 'dupa', name: 'Wydawca obiadów', description: null },
   },
 ];
 

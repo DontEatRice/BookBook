@@ -12,7 +12,7 @@ using Server.Infrastructure.Persistence;
 namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    [Migration("20230826164250_Init")]
+    [Migration("20230828173626_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -74,9 +74,6 @@ namespace Server.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("PhotoLink")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Authors");
@@ -93,9 +90,6 @@ namespace Server.Infrastructure.Migrations
 
                     b.Property<double?>("AverageRating")
                         .HasColumnType("float");
-
-                    b.Property<string>("CoverLink")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ISBN")
                         .IsRequired()
@@ -148,9 +142,6 @@ namespace Server.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LogoLink")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")

@@ -20,7 +20,5 @@ public class AuthorConfiguration : IEntityTypeConfiguration<Author>
 
         builder.Property(x => x.BirthYear)
             .IsRequired();
-
-        builder.Property(x => x.PhotoLink);
     }
 }

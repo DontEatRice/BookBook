@@ -44,7 +44,6 @@ function AdminAuthorForm() {
             <TextInputField errors={errors} field="firstName" label="Imię" register={register} />
             <TextInputField errors={errors} field="lastName" label="Nazwisko/Nazwiska" register={register} />
             <NumberInputField errors={errors} field='birthYear' label='Rok urodzenia' register={register} />
-            <TextInputField errors={errors} field="photoLink" label="Link do zdjęcia" register={register} />
             <Button type="submit" variant="contained">
               Zapisz
             </Button>

@@ -40,7 +40,6 @@ function AdminPublisherForm() {
                     <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
                         <TextInputField errors={errors} field="name" register={register} label="Nazwa wydawcy" />
                         <TextInputField errors={errors} field="description" register={register} label="Opis" />
-                        <TextInputField errors={errors} field="logoLink" register={register} label="Link do logo" />
                         <Button type="submit" variant="contained">
                             Zapisz
                         </Button>

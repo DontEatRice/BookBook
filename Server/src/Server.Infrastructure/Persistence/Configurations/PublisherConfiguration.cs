@@ -15,7 +15,5 @@ public class PublisherConfiguration : IEntityTypeConfiguration<Publisher>
             HasMaxLength(50);
 
         builder.Property(x => x.Description);
-
-        builder.Property(x => x.LogoLink);
     }
 }

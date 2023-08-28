@@ -14,7 +14,7 @@ public sealed class AddPublisherCommandValidator : AbstractValidator<AddPublishe
     }
 }
 
-public sealed record AddPublisherCommand(Guid Id, string Name, string? Description, string? LogoLink) : IRequest;
+public sealed record AddPublisherCommand(Guid Id, string Name, string? Description) : IRequest;
 
 public sealed class AddPublisherHandler : IRequestHandler<AddPublisherCommand>
 {
@@ -29,7 +29,7 @@ public sealed class AddPublisherHandler : IRequestHandler<AddPublisherCommand>
 
     public async Task Handle(AddPublisherCommand request, CancellationToken cancellationToken)
     {
-        var publisher = Publisher.Create(request.Id, request.Name, request.Description, request.LogoLink);
+        var publisher = Publisher.Create(request.Id, request.Name, request.Description);
 
         await _publisherRepository.AddAsync(publisher, cancellationToken);
 
