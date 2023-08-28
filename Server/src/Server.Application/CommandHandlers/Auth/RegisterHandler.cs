@@ -52,7 +52,7 @@ public sealed class RegisterHandler : IRequestHandler<RegisterCommand>
 
         catch (DomainException exception)
         {
-            throw new AuthenticationException(exception.Message);
+            throw new AuthenticationException(exception.Message, exception.ErrorCode);
         }
         
         _identityRepository.Add(identity);

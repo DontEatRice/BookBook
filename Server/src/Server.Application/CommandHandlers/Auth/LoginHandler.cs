@@ -41,7 +41,7 @@ public class IdentityLoginCommandHandler : IRequestHandler<LoginCommand, AuthVie
         }
         catch (DomainException exception)
         {
-            throw new AuthenticationException(exception.Message);
+            throw new AuthenticationException(exception.Message, exception.ErrorCode);
         }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
