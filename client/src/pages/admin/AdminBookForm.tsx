@@ -59,7 +59,6 @@ function AdminBookForm() {
                             <TextInputField errors={errors} field="ISBN" register={register} label="ISBN" />
                             <TextInputField errors={errors} field="title" register={register} label="Tytuł" />
                             <NumberInputField errors={errors} field="yearPublished" register={register} label="Rok wydania" />
-                            <TextInputField errors={errors} field="coverLink" register={register} label="Link do okładki" />
                             <Controller control={control} name='authorsIds' render={({ field: { onChange, }, fieldState: { error } }) => (
                                 <>
                                     <Autocomplete

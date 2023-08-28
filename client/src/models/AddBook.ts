@@ -10,7 +10,6 @@ const AddBook = z.object({
         (a) => parseInt(z.string().parse(a)),
         z.number().positive())
         .refine((year) => year <= new Date().getFullYear(), "Rok wydania nie może być z przyszłości"),
-    coverLink: z.union([z.literal("").transform(() => null), z.string().trim().url()]).optional(),
     idPublisher: z.custom<PublisherViewModelType>()
         .refine((publisher) => publisher != null, "Pole wymagane")
         .transform(publisher => publisher.id),
