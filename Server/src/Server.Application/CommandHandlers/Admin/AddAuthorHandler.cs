@@ -4,7 +4,7 @@ using Server.Application.InfrastructureInterfaces;
 using Server.Domain.Entities;
 using Server.Domain.Repositories;
 
-namespace Server.Application.CommandHandlers;
+namespace Server.Application.CommandHandlers.Admin;
 
 //TODO Add validators for other commands and queries 
 public sealed class AddBookHandlerValidator : AbstractValidator<AddAuthorCommand>

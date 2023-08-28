@@ -1,12 +1,14 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Server.Application.CommandHandlers;
+using Server.Application.CommandHandlers.Admin;
 using Server.Application.ViewModels;
 using Server.Infrastructure.Persistence.QueryHandlers;
 
 namespace Server.Api.Controllers;
 
 [ApiController]
+[Authorize(Roles = "User")]
 [Route("[Controller]")]
 public class PublishersController : ControllerBase
 {
