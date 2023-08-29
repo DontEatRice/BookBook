@@ -43,7 +43,6 @@ function AdminAuthorForm() {
   const onSubmit = useCallback(
     (data: AddAuthorType) => {
       mutation.mutate(data);
-      // console.log(data);
     },
     [mutation]
   );
@@ -59,7 +58,6 @@ function AdminAuthorForm() {
               <input
                 style={{ display: 'none' }}
                 id="upload-photo"
-                // name="upload-photo"
                 type="file"
                 accept="image/png,image/jpg,image/jpeg"
                 {...register('avatarPicture')}
