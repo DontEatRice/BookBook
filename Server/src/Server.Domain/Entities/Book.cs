@@ -15,6 +15,7 @@ public class Book
     public Publisher Publisher { get; set; }
     public ICollection<Author> Authors { get; set; }
     public ICollection<BookCategory> BookCategories { get; set; }
+    public ICollection<Library> Libraries { get; set; }
 
     public static Book Create(Guid id, string isbn, string title, int yearPublished, string? coverLink,
         Publisher publisher, List<Author> authors, List<BookCategory> categories)
@@ -29,6 +30,7 @@ public class Book
             AverageCriticRating = null,
             Publisher = publisher,
             Authors = authors,
-            BookCategories = categories
+            BookCategories = categories,
+            Libraries = new List<Library>()
         };
 }
