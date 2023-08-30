@@ -1,17 +1,12 @@
 using Server.Application.Exceptions.Types;
+#pragma warning disable CS8618
 
 namespace Server.Application.Exceptions;
 
 public class ValidationError
 {
-    public string? PropertyName { get; }
-    public string ErrorMessage { get; }
-
-    public ValidationError(string errorMessage, string? propertyName = null)
-    {
-        PropertyName = propertyName;
-        ErrorMessage = errorMessage;
-    }
+    public string? PropertyName { get; init; }
+    public string ErrorMessage { get; init; }
 }
 
 public class ValidationException : ApplicationException

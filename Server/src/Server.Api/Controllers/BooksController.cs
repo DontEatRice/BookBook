@@ -1,8 +1,8 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Server.Application.Abstractions;
-using Server.Application.Command;
-using Server.Application.Queries;
+using Server.Application.CommandHandlers;
 using Server.Application.ViewModels;
+using Server.Infrastructure.Persistence.QueryHandlers;
 
 namespace Server.Api.Controllers;
 
@@ -10,37 +10,23 @@ namespace Server.Api.Controllers;
 [Route("[Controller]")]
 public class BooksController : ControllerBase
 {
-    private readonly IQueryHandler<GetBooks, IEnumerable<BookViewModel>> _getBooksHandler;
-    private readonly IQueryHandler<GetBook, BookViewModel> _getBookHandler;
-
-    private readonly ICommandHandler<AddBook> _addBookHandler;
-    private readonly ICommandHandler<RemoveBook> _removeBookHandler;
-
-    public BooksController(
-        IQueryHandler<GetBooks, IEnumerable<BookViewModel>> getBooksHandler,
-        IQueryHandler<GetBook, BookViewModel> getBookHandler,
-        ICommandHandler<AddBook> addBookHandler,
-        ICommandHandler<RemoveBook> removeBookHandler)
+    public BooksController(IMediator mediator) : base(mediator)
     {
-        _getBooksHandler = getBooksHandler;
-        _getBookHandler = getBookHandler;
-        _addBookHandler = addBookHandler;
-        _removeBookHandler = removeBookHandler;
     }
-
+    
     [HttpGet]
     public async Task<ActionResult<IEnumerable<BookViewModel>>> List()
-        => Ok(await _getBooksHandler.HandleAsync(new GetBooks()));
+        => Ok(await Mediator.Send(new GetBooksQuery()));
 
     [HttpGet("{id:Guid}")]
     public async Task<ActionResult<BookViewModel>> Get(Guid id)
-        => Ok(await _getBookHandler.HandleAsync(new GetBook(id)));
+        => Ok(await Mediator.Send(new GetBookQuery(id)));
 
     [HttpPost]
-    public async Task<ActionResult> Post(AddBook command)
+    public async Task<ActionResult> Post(AddBookCommand command)
     {
         var id = Guid.NewGuid();
-        await _addBookHandler.HandleAsync(command with
+        await Mediator.Send(command with
         {
             Id = id
         });
@@ -51,7 +37,7 @@ public class BooksController : ControllerBase
     [HttpDelete("{id:Guid}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        await _removeBookHandler.HandleAsync(new RemoveBook(id));
+        await Mediator.Send(new RemoveBookCommand(id));
         return NoContent();
     }
 }

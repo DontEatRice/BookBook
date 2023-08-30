@@ -7,12 +7,15 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
 import CssBaseline from '@mui/material/CssBaseline';
 import AdminBooks from './pages/admin/AdminBooks';
+import AdminBookForm from './pages/admin/AdminBookForm';
 import AdminHome from './pages/admin/AdminHome';
 import AdminHeader from './shared/AdminHeader';
 import AdminCategories from './pages/admin/AdminCategories';
 import AdminCategoryForm from './pages/admin/AdminCategoryForm';
 import AdminAuthors from './pages/admin/AdminAuthors';
 import AdminAuthorForm from './pages/admin/AdminAuthorForm';
+import AdminPublishers from './pages/admin/AdminPublishers';
+import AdminPublisherForm from './pages/admin/AdminPublisherForm';
 
 const mainTheme = createTheme({
   palette: {
@@ -44,10 +47,17 @@ function App() {
           <Route index element={<AdminAuthors />} />
           <Route path="add" element={<AdminAuthorForm />} />
         </Route>
-        <Route path="books" element={<AdminBooks />} />
+        <Route path="books">
+          <Route index element={<AdminBooks />} />
+          <Route path="add" element={<AdminBookForm />} />
+        </Route>
         <Route path="categories">
           <Route index element={<AdminCategories />} />
           <Route path="add" element={<AdminCategoryForm />} />
+        </Route>
+        <Route path="publishers">
+            <Route index element={<AdminPublishers />} />
+            <Route path="add" element={<AdminPublisherForm />} />
         </Route>
         <Route path="*" element={<div>NotFound</div>} />
       </Route>
