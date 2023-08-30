@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -17,7 +16,8 @@ namespace Server.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    BirthYear = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -41,7 +41,8 @@ namespace Server.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -56,7 +57,6 @@ namespace Server.Infrastructure.Migrations
                     ISBN = table.Column<string>(type: "nvarchar(17)", maxLength: 17, nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     YearPublished = table.Column<int>(type: "int", nullable: false),
-                    CoverLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AverageRating = table.Column<double>(type: "float", nullable: true),
                     AverageCriticRating = table.Column<double>(type: "float", nullable: true),
                     PublisherId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)

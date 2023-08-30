@@ -16,7 +16,7 @@ public sealed class AddBookHandlerValidator : AbstractValidator<AddAuthorCommand
     }
 }
 
-public sealed record AddAuthorCommand(Guid Id, string FirstName, string LastName) : IRequest;
+public sealed record AddAuthorCommand(Guid Id, string FirstName, string LastName, int BirthYear) : IRequest;
 
 public sealed class AddAuthorHandler : IRequestHandler<AddAuthorCommand>
 {
@@ -31,7 +31,7 @@ public sealed class AddAuthorHandler : IRequestHandler<AddAuthorCommand>
 
     public async Task Handle(AddAuthorCommand request, CancellationToken cancellationToken)
     {
-        var author = Author.Create(request.Id, request.FirstName, request.LastName);
+        var author = Author.Create(request.Id, request.FirstName, request.LastName, request.BirthYear);
 
         await _authorRepository.AddAsync(author, cancellationToken);
 
