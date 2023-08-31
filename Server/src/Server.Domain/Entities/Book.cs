@@ -9,7 +9,6 @@ public class Book
     public string ISBN { get; set; }
     public string Title { get; set; }
     public int YearPublished { get; set; }
-    public string? CoverLink { get; set; }
     public double? AverageRating { get; set; }
     public double? AverageCriticRating { get; set; }
     public Publisher Publisher { get; set; }
@@ -17,7 +16,7 @@ public class Book
     public ICollection<BookCategory> BookCategories { get; set; }
     public ICollection<Library> Libraries { get; set; }
 
-    public static Book Create(Guid id, string isbn, string title, int yearPublished, string? coverLink,
+    public static Book Create(Guid id, string isbn, string title, int yearPublished,
         Publisher publisher, List<Author> authors, List<BookCategory> categories)
         => new()
         {
@@ -25,7 +24,6 @@ public class Book
             ISBN = isbn,
             Title = title,
             YearPublished = yearPublished,
-            CoverLink = coverLink,
             AverageRating = null,
             AverageCriticRating = null,
             Publisher = publisher,

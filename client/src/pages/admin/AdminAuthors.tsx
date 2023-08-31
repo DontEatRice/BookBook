@@ -23,6 +23,7 @@ function AuthorsTable({ data }: { data: AuthorViewModelType[] }) {
             <TableCell>Id</TableCell>
             <TableCell>Imię</TableCell>
             <TableCell>Nazwisko</TableCell>
+            <TableCell>Rok urodzenia</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -31,6 +32,7 @@ function AuthorsTable({ data }: { data: AuthorViewModelType[] }) {
               <TableCell>{author.id}</TableCell>
               <TableCell>{author.firstName}</TableCell>
               <TableCell>{author.lastName}</TableCell>
+              <TableCell>{author.birthYear}</TableCell>
             </TableRow>
           ))}
         </TableBody>

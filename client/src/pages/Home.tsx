@@ -14,6 +14,7 @@ function Home() {
     publisher: {
       id: 'guid-guid',
       name: 'Be Do Gie',
+      description: null
     },
     bookCategories: [],
     averageRating: 4,

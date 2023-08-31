@@ -21,8 +21,6 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
         builder.Property(x => x.YearPublished)
             .IsRequired();
 
-        builder.Property(x => x.CoverLink);
-
         builder.Property(x => x.AverageRating);
 
         builder.Property(x => x.AverageCriticRating);
