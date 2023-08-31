@@ -19,13 +19,6 @@ public sealed class RemoveLibraryHandler : IRequestHandler<RemoveLibraryCommand>
 
     public async Task Handle(RemoveLibraryCommand request, CancellationToken cancellationToken)
     {
-        var library = await _libraryRepository.FirstOrDefaultByIdAsync(request.Id, cancellationToken);
-
-        if (library is not null)
-        {
-            _libraryRepository.Delete(library);
-        }
-
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _libraryRepository.DeleteAsync(request.Id);
     }
 }

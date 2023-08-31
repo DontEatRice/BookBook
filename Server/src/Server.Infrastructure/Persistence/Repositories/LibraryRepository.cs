@@ -18,9 +18,9 @@ internal class LibraryRepository : ILibraryRepository
         await _dbContext.AddAsync(library, cancellationToken);
     }
 
-    public void Delete(Library library)
+    public async Task DeleteAsync(Guid Id)
     {
-        _dbContext.Remove(library);
+        await _dbContext.Libraries.Where(x => x.Id == Id).ExecuteDeleteAsync();
     }
 
     public async Task<Library?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
