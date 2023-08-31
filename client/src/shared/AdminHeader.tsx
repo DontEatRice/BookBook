@@ -27,6 +27,7 @@ function AdminHeader() {
       <NavItem label="Książki" link="/admin/books" />
       <NavItem label="Kategorie" link="/admin/categories" />
       <NavItem label="Wydawcy" link="/admin/publishers" />
+      <NavItem label='Biblioteki' link="/admin/libraries" />
     </header>
   );
 }
