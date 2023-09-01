@@ -44,7 +44,7 @@ function LibrariesTable({ data }: { data: LibraryViewModelType[] }) {
 
 function AdminLibraries() {
     const theme = useTheme();
-    const { data, status } = useQuery({ queryKey: ['authors'], queryFn: getLibraries });
+    const { data, status } = useQuery({ queryKey: ['libraries'], queryFn: getLibraries });
 
     return (
         <Box mt={1}>
