@@ -2,9 +2,10 @@ import dayjs, { Dayjs } from 'dayjs';
 import { z } from 'zod';
 
 const timeField = z
-  .custom<Dayjs>((val) => val == undefined || dayjs.isDayjs(val))
+  .custom<Dayjs | null>((val) => val == undefined || val == null || dayjs.isDayjs(val))
   .optional()
-  .transform((time) => (time ? time.format('HH:mm:ss').toString() : undefined));
+  //   .transform(val)
+  .transform((time) => (time ? time.format('HH:mm:ss').toString() : null));
 
 const AddLibrary = z.object({
   name: z.string().nonempty(),

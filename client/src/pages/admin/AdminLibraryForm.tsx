@@ -1,4 +1,4 @@
-import { Control, FieldErrors, SubmitHandler, UseFormRegister, useForm } from 'react-hook-form';
+import { Control, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -57,8 +57,12 @@ function LibraryOpenHoursTimePicker({
         spacing={2}
         divider={<Divider orientation="vertical" flexItem />}>
         <Checkbox checked={open} onChange={() => handleOpenChange(!open)} />
-        <TimeInputField label="Otwarcie" field={fields[0]} control={control} disabled={!open} />
-        <TimeInputField label="Zamknięcie" field={fields[1]} control={control} disabled={!open} />
+        {open && (
+          <>
+            <TimeInputField label="Otwarcie" field={fields[0]} control={control} disabled={!open} />
+            <TimeInputField label="Zamknięcie" field={fields[1]} control={control} disabled={!open} />
+          </>
+        )}
       </Stack>
     </Box>
   );
@@ -114,7 +118,6 @@ function AdminLibraryForm() {
     register,
     handleSubmit,
     control,
-    setValue,
     formState: { errors },
   } = useForm<AddLibraryType>({
     resolver: zodResolver(AddLibrary),
@@ -133,7 +136,6 @@ function AdminLibraryForm() {
     mutation.mutate(data);
   };
 
-  console.log({ errors });
   return (
     <Box sx={{ mt: 2 }}>
       <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', justifyContent: 'center' }}>
@@ -201,13 +203,6 @@ function AdminLibraryForm() {
                     dayName={dayName}
                     fields={[openTimeField, closeTimeField]}
                     control={control}
-                    onOpenChange={(open) => {
-                      if (open) {
-                        return;
-                      }
-                      setValue(closeTimeField, undefined, { shouldTouch: true });
-                      setValue(openTimeField, undefined);
-                    }}
                   />
                 ))}
               </AccordionDetails>
