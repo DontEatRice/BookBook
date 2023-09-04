@@ -1,24 +1,42 @@
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import dayjs, { Dayjs } from "dayjs";
-import { FieldErrors, FieldValues, Path, UseFormRegister } from "react-hook-form";
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { Dayjs } from 'dayjs';
+import { useState } from 'react';
+import { Control, Controller, FieldValues, Path, UseFormRegister } from 'react-hook-form';
 
 export type TimeInputFieldProps<T extends FieldValues> = {
-    label: string;
-    field: Path<T>;
-    register: UseFormRegister<T>;
-    errors: FieldErrors<T>;
+  label: string;
+  field: Path<T>;
+  control: Control<T>;
+  disabled?: boolean;
+  register: UseFormRegister<T>;
 };
 
-function TimeInputField<T extends FieldValues>({ label, register, field, errors }: TimeInputFieldProps<T>) {
-    return (
-        <TimePicker
-            format="HH:mm"
-            ampm={false}
-            label={label}
-            errors={errors[field] != undefined}
-            {...register(field)}
-        />
-    );
+function TimeInputField<T extends FieldValues>({
+  label,
+  field,
+  control,
+  disabled,
+  register,
+}: TimeInputFieldProps<T>) {
+  // const [value, setValue] = useState<Dayjs | null>(null);
+  const { onChange, ...rest } = register(field);
+  return (
+    // <Controller
+    //   control={control}
+    //   name={field}
+    //   render={({ field: { value, onChange, ...props } }) => (
+    //     // <TimePicker format="HH:mm" ampm={false} label={label} value={value} onChange={(val) => {setValue(val); onChange(val)}} {...props} disabled={disabled} />
+    <TimePicker
+      format="HH:mm"
+      ampm={false}
+      label={label}
+      disabled={disabled}
+      {...rest}
+      onChange={(val) => onChange({ target: { value: val } })}
+    />
+    //   )}
+    // />
+  );
 }
 
 export default TimeInputField;

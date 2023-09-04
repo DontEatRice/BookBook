@@ -1,4 +1,4 @@
-import { FieldErrors, SubmitHandler, UseFormRegister, useForm } from 'react-hook-form';
+import { Control, FieldErrors, SubmitHandler, UseFormRegister, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -17,17 +17,34 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import { Checkbox } from '@mui/material';
+import { useCallback, useState } from 'react';
 
 type LibraryOpenHoursTimePickerParams = {
-  register: UseFormRegister<AddLibraryType>;
-  errors: FieldErrors<AddLibraryType>;
   fields: [keyof AddLibraryType, keyof AddLibraryType];
   dayName: string;
+  control: Control<AddLibraryType>;
+  onOpenChange?: (open: boolean) => void;
 };
 
-function LibraryOpenHoursTimePicker({ register, errors, fields, dayName }: LibraryOpenHoursTimePickerParams) {
+function LibraryOpenHoursTimePicker({
+  fields,
+  dayName,
+  control,
+  onOpenChange,
+}: LibraryOpenHoursTimePickerParams) {
+  const [open, setOpen] = useState(true);
+
+  const handleOpenChange = useCallback(
+    (newState: boolean) => {
+      setOpen(newState);
+      if (onOpenChange) {
+        onOpenChange(newState);
+      }
+    },
+    [onOpenChange]
+  );
+
   return (
     <Box>
       <Typography variant="h5" textAlign={'left'}>
@@ -39,19 +56,65 @@ function LibraryOpenHoursTimePicker({ register, errors, fields, dayName }: Libra
         direction="row"
         spacing={2}
         divider={<Divider orientation="vertical" flexItem />}>
-        <FormControlLabel label="Otwarte?" control={<Checkbox defaultChecked />} />
-        <TimeInputField label="Otwarcie" register={register} field={fields[0]} errors={errors} />
-        <TimeInputField label="Zamknięcie" register={register} field={fields[1]} errors={errors} />
+        <Checkbox checked={open} onChange={() => handleOpenChange(!open)} />
+        <TimeInputField label="Otwarcie" field={fields[0]} control={control} disabled={!open} />
+        <TimeInputField label="Zamknięcie" field={fields[1]} control={control} disabled={!open} />
       </Stack>
     </Box>
   );
 }
+
+type DayOfWeek = {
+  dayName: string;
+  openTimeField: keyof AddLibraryType;
+  closeTimeField: keyof AddLibraryType;
+};
+
+const daysOfWeek: DayOfWeek[] = [
+  {
+    dayName: 'Poniedziałek',
+    openTimeField: 'mondayOpenTime',
+    closeTimeField: 'mondayCloseTime',
+  },
+  {
+    dayName: 'Wtorek',
+    openTimeField: 'tuesdayOpenTime',
+    closeTimeField: 'tuesdayCloseTime',
+  },
+  {
+    dayName: 'Środa',
+    openTimeField: 'wednesdayOpenTime',
+    closeTimeField: 'wednesdayCloseTime',
+  },
+  {
+    dayName: 'Czwartek',
+    openTimeField: 'thursdayOpenTime',
+    closeTimeField: 'thursdayCloseTime',
+  },
+  {
+    dayName: 'Piątek',
+    openTimeField: 'fridayOpenTime',
+    closeTimeField: 'fridayCloseTime',
+  },
+  {
+    dayName: 'Sobota',
+    openTimeField: 'saturdayOpenTime',
+    closeTimeField: 'saturdayCloseTime',
+  },
+  {
+    dayName: 'Niedziela',
+    openTimeField: 'sundayOpenTime',
+    closeTimeField: 'sundayCloseTime',
+  },
+];
 
 function AdminLibraryForm() {
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
+    control,
+    setValue,
     formState: { errors },
   } = useForm<AddLibraryType>({
     resolver: zodResolver(AddLibrary),
@@ -70,6 +133,7 @@ function AdminLibraryForm() {
     mutation.mutate(data);
   };
 
+  console.log({ errors });
   return (
     <Box sx={{ mt: 2 }}>
       <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', justifyContent: 'center' }}>
@@ -131,123 +195,21 @@ function AdminLibraryForm() {
                 <Typography>Godziny otwarcia</Typography>
               </AccordionSummary>
               <AccordionDetails sx={{ width: '100%', mb: 2 }}>
-                {/* <Typography gutterBottom>Poniedziałek</Typography> */}
-                <Stack
-                  alignItems={'center'}
-                  sx={{ width: '100%', mb: 2 }}
-                  direction="row"
-                  spacing={2}
-                  divider={<Divider orientation="vertical" flexItem />}>
-                  <FormControlLabel label="Otwarte?" control={<Checkbox defaultChecked />} />
-                  <TimeInputField
-                    label="Otwarcie"
-                    register={register}
-                    field="mondayOpenTime"
-                    errors={errors}
+                {daysOfWeek.map(({ dayName, closeTimeField, openTimeField }) => (
+                  <LibraryOpenHoursTimePicker
+                    key={dayName}
+                    dayName={dayName}
+                    fields={[openTimeField, closeTimeField]}
+                    control={control}
+                    onOpenChange={(open) => {
+                      if (open) {
+                        return;
+                      }
+                      setValue(closeTimeField, undefined, { shouldTouch: true });
+                      setValue(openTimeField, undefined);
+                    }}
                   />
-                  <TimeInputField
-                    label="Zamknięcie"
-                    register={register}
-                    field="mondayCloseTime"
-                    errors={errors}
-                  />
-                </Stack>
-                <LibraryOpenHoursTimePicker
-                  dayName="Poniedziałek"
-                  errors={errors}
-                  fields={['mondayOpenTime', 'mondayCloseTime']}
-                  register={register}
-                />
-                {/* <Typography gutterBottom>Wtorek</Typography>
-                                    <Stack alignItems={'center'} sx={{ width: '100%', mb: 2 }} direction="row" spacing={2} divider={<Divider orientation="vertical" flexItem />}>
-                                        <TimeInputField
-                                            label="Otwarcie"
-                                            register={register}
-                                            field='tuesdayOpenTime'
-                                            errors={errors}
-                                        />
-                                        <TimeInputField
-                                            label="Zamknięcie"
-                                            register={register}
-                                            field='tuesdayCloseTime'
-                                            errors={errors}
-                                        />
-                                    </Stack>
-                                    <Typography gutterBottom>Środa</Typography>
-                                    <Stack alignItems={'center'} sx={{ width: '100%', mb: 2 }} direction="row" spacing={2} divider={<Divider orientation="vertical" flexItem />}>
-                                        <TimeInputField
-                                            label="Otwarcie"
-                                            register={register}
-                                            field='wednesdayOpenTime'
-                                            errors={errors}
-                                        />
-                                        <TimeInputField
-                                            label="Zamknięcie"
-                                            register={register}
-                                            field='wednesdayCloseTime'
-                                            errors={errors}
-                                        />
-                                    </Stack>
-                                    <Typography gutterBottom>Czwartek</Typography>
-                                    <Stack alignItems={'center'} sx={{ width: '100%', mb: 2 }} direction="row" spacing={2} divider={<Divider orientation="vertical" flexItem />}>
-                                        <TimeInputField
-                                            label="Otwarcie"
-                                            register={register}
-                                            field='thursdayOpenTime'
-                                            errors={errors}
-                                        />
-                                        <TimeInputField
-                                            label="Zamknięcie"
-                                            register={register}
-                                            field='thursdayCloseTime'
-                                            errors={errors}
-                                        />
-                                    </Stack>
-                                    <Typography gutterBottom>Piątek</Typography>
-                                    <Stack alignItems={'center'} sx={{ width: '100%', mb: 2 }} direction="row" spacing={2} divider={<Divider orientation="vertical" flexItem />}>
-                                        <TimeInputField
-                                            label="Otwarcie"
-                                            register={register}
-                                            field='fridayOpenTime'
-                                            errors={errors}
-                                        />
-                                        <TimeInputField
-                                            label="Zamknięcie"
-                                            register={register}
-                                            field='fridayCloseTime'
-                                            errors={errors}
-                                        />
-                                    </Stack>
-                                    <Typography gutterBottom>Sobota</Typography>
-                                    <Stack alignItems={'center'} sx={{ width: '100%', mb: 2 }} direction="row" spacing={2} divider={<Divider orientation="vertical" flexItem />}>
-                                        <TimeInputField
-                                            label="Otwarcie"
-                                            register={register}
-                                            field='saturdayOpenTime'
-                                            errors={errors}
-                                        />
-                                        <TimeInputField
-                                            label="Zamknięcie"
-                                            register={register}
-                                            field='saturdayCloseTime'
-                                            errors={errors}
-                                        />
-                                    </Stack>
-                                    <Typography >Niedziela</Typography>
-                                    <Stack alignItems={'center'} sx={{ width: '100%', mb: 2 }} direction="row" spacing={2} divider={<Divider orientation="vertical" flexItem />}>
-                                        <TimeInputField
-                                            label="Otwarcie"
-                                            register={register}
-                                            field='sundayOpenTime'
-                                            errors={errors}
-                                        />
-                                        <TimeInputField
-                                            label="Zamknięcie"
-                                            register={register}
-                                            field='sundayCloseTime'
-                                            errors={errors}
-                                        />
-                                    </Stack> */}
+                ))}
               </AccordionDetails>
             </Accordion>
             <Button type="submit" variant="contained" sx={{ mt: 2 }}>
