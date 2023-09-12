@@ -18,32 +18,16 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import { Checkbox } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 type LibraryOpenHoursTimePickerParams = {
   fields: [keyof AddLibraryType, keyof AddLibraryType];
   dayName: string;
   control: Control<AddLibraryType>;
-  onOpenChange?: (open: boolean) => void;
 };
 
-function LibraryOpenHoursTimePicker({
-  fields,
-  dayName,
-  control,
-  onOpenChange,
-}: LibraryOpenHoursTimePickerParams) {
+function LibraryOpenHoursTimePicker({ fields, dayName, control }: LibraryOpenHoursTimePickerParams) {
   const [open, setOpen] = useState(true);
-
-  const handleOpenChange = useCallback(
-    (newState: boolean) => {
-      setOpen(newState);
-      if (onOpenChange) {
-        onOpenChange(newState);
-      }
-    },
-    [onOpenChange]
-  );
 
   return (
     <Box>
@@ -52,11 +36,16 @@ function LibraryOpenHoursTimePicker({
       </Typography>
       <Stack
         alignItems={'center'}
-        sx={{ width: '100%', mb: 2 }}
+        sx={{ width: '100%', mb: 2, minHeight: '60px' }}
         direction="row"
         spacing={2}
         divider={<Divider orientation="vertical" flexItem />}>
-        <Checkbox checked={open} onChange={() => handleOpenChange(!open)} />
+        <Stack direction="row" alignItems="center">
+          <Typography onClick={() => setOpen(!open)} sx={{ cursor: 'pointer' }}>
+            Otwarte?
+          </Typography>
+          <Checkbox checked={open} onChange={() => setOpen(!open)} />
+        </Stack>
         {open && (
           <>
             <TimeInputField label="Otwarcie" field={fields[0]} control={control} disabled={!open} />
@@ -132,7 +121,6 @@ function AdminLibraryForm() {
     },
   });
   const onSubmit: SubmitHandler<AddLibraryType> = (data) => {
-    console.log(data);
     mutation.mutate(data);
   };
 
