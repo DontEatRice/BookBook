@@ -17,8 +17,8 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
-import { Checkbox } from '@mui/material';
 import { useState } from 'react';
+import Checkbox from '@mui/material/Checkbox';
 
 type LibraryOpenHoursTimePickerParams = {
   fields: [keyof AddLibraryType, keyof AddLibraryType];
