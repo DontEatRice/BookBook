@@ -41,10 +41,10 @@ function LibraryOpenHoursTimePicker({ fields, dayName, control }: LibraryOpenHou
         spacing={2}
         divider={<Divider orientation="vertical" flexItem />}>
         <Stack direction="row" alignItems="center">
+          <Checkbox checked={open} onChange={() => setOpen(!open)} />
           <Typography onClick={() => setOpen(!open)} sx={{ cursor: 'pointer' }}>
             Otwarte?
           </Typography>
-          <Checkbox checked={open} onChange={() => setOpen(!open)} />
         </Stack>
         {open && (
           <>
