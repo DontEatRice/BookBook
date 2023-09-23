@@ -17,18 +17,33 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 
 type LibraryOpenHoursTimePickerParams = {
   fields: [keyof AddLibraryType, keyof AddLibraryType];
   dayName: string;
   control: Control<AddLibraryType>;
+  onChange?: (value: boolean) => void;
 };
 
-function LibraryOpenHoursTimePicker({ fields, dayName, control }: LibraryOpenHoursTimePickerParams) {
+function LibraryOpenHoursTimePicker({
+  fields,
+  dayName,
+  control,
+  onChange,
+}: LibraryOpenHoursTimePickerParams) {
   const [open, setOpen] = useState(true);
 
+  const handleOpenChange = useCallback(
+    (value: boolean) => {
+      setOpen(value);
+      if (onChange != undefined) {
+        onChange(value);
+      }
+    },
+    [onChange]
+  );
   return (
     <Box>
       <Typography variant="h5" textAlign={'left'}>
@@ -41,8 +56,8 @@ function LibraryOpenHoursTimePicker({ fields, dayName, control }: LibraryOpenHou
         spacing={2}
         divider={<Divider orientation="vertical" flexItem />}>
         <Stack direction="row" alignItems="center">
-          <Checkbox checked={open} onChange={() => setOpen(!open)} />
-          <Typography onClick={() => setOpen(!open)} sx={{ cursor: 'pointer' }}>
+          <Checkbox checked={open} onChange={() => handleOpenChange(!open)} />
+          <Typography onClick={() => handleOpenChange(!open)} sx={{ cursor: 'pointer' }}>
             Otwarte?
           </Typography>
         </Stack>
@@ -108,6 +123,7 @@ function AdminLibraryForm() {
     handleSubmit,
     control,
     formState: { errors },
+    unregister,
   } = useForm<AddLibraryType>({
     resolver: zodResolver(AddLibrary),
   });
@@ -191,6 +207,12 @@ function AdminLibraryForm() {
                     dayName={dayName}
                     fields={[openTimeField, closeTimeField]}
                     control={control}
+                    onChange={(opened) => {
+                      if (!opened) {
+                        unregister(closeTimeField);
+                        unregister(openTimeField);
+                      }
+                    }}
                   />
                 ))}
               </AccordionDetails>
