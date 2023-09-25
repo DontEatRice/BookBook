@@ -12,5 +12,8 @@ public class ViewModelProfile : Profile
         CreateMap<Publisher, PublisherViewModel>();
         CreateMap<BookCategory, BookCategoryViewModel>();
         CreateMap<Book, BookViewModel>();
+        CreateMap<Library, LibraryViewModel>();
+        CreateMap<Address, AddressViewModel>();
+        CreateMap<OpenHours, OpenHoursViewModel>();
     }
 }
