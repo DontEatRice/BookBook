@@ -7,4 +7,5 @@ public static class ApplicationErrorCodes
     public const string BookCategoryNotFound = "BOOK_CATEGORY_NOT_FOUND";
     public const string BookNotFound = "BOOK_NOT_FOUND";
     public const string PublisherNotFound = "PUBLISHER_NOT_FOUND";
+    public const string LibraryNotFound = "LIBRARY_NOT_FOUND";
 }

@@ -17,7 +17,7 @@ namespace Server.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -52,11 +52,65 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("BookBookCategory");
                 });
 
+            modelBuilder.Entity("BookLibrary", b =>
+                {
+                    b.Property<Guid>("BooksId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("LibrariesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("BooksId", "LibrariesId");
+
+                    b.HasIndex("LibrariesId");
+
+                    b.ToTable("BookLibrary");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.Address", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AdditionalInfo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Apartment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Addresses");
+                });
+
             modelBuilder.Entity("Server.Domain.Entities.Author", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("BirthYear")
+                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -84,9 +138,6 @@ namespace Server.Infrastructure.Migrations
 
                     b.Property<double?>("AverageRating")
                         .HasColumnType("float");
-
-                    b.Property<string>("CoverLink")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ISBN")
                         .IsRequired()
@@ -132,11 +183,99 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("BookCategories");
                 });
 
+            modelBuilder.Entity("Server.Domain.Entities.Library", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AddressId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("HireTime")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("OpenHoursId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ReservationTime")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("OpenHoursId");
+
+                    b.ToTable("Libraries");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.OpenHours", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<TimeSpan?>("FridayCloseTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("FridayOpenTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("MondayCloseTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("MondayOpenTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("SaturdayCloseTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("SaturdayOpenTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("SundayCloseTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("SundayOpenTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("ThursdayCloseTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("ThursdayOpenTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("TuesdayCloseTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("TuesdayOpenTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("WednesdayCloseTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("WednesdayOpenTime")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OpenHours");
+                });
+
             modelBuilder.Entity("Server.Domain.Entities.Publisher", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -178,6 +317,21 @@ namespace Server.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BookLibrary", b =>
+                {
+                    b.HasOne("Server.Domain.Entities.Book", null)
+                        .WithMany()
+                        .HasForeignKey("BooksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Domain.Entities.Library", null)
+                        .WithMany()
+                        .HasForeignKey("LibrariesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Server.Domain.Entities.Book", b =>
                 {
                     b.HasOne("Server.Domain.Entities.Publisher", "Publisher")
@@ -187,6 +341,25 @@ namespace Server.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Publisher");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.Library", b =>
+                {
+                    b.HasOne("Server.Domain.Entities.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Domain.Entities.OpenHours", "OpenHours")
+                        .WithMany()
+                        .HasForeignKey("OpenHoursId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+
+                    b.Navigation("OpenHours");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Publisher", b =>

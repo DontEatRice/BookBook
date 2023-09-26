@@ -9,6 +9,7 @@ import { useMutation } from 'react-query';
 import { postAuthor } from '../../api/author';
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useMemo } from 'react';
+import NumberInputField from '../../components/NumberInputField';
 
 function AdminAuthorForm() {
   const navigate = useNavigate();
@@ -71,6 +72,7 @@ function AdminAuthorForm() {
             {errors.avatarPicture != undefined && <span>{errors.avatarPicture.message}</span>}
             <TextInputField errors={errors} field="firstName" label="Imię" register={register} />
             <TextInputField errors={errors} field="lastName" label="Nazwisko/Nazwiska" register={register} />
+            <NumberInputField errors={errors} field='birthYear' label='Rok urodzenia' register={register} />
             <Button type="submit" variant="contained">
               Zapisz
             </Button>
