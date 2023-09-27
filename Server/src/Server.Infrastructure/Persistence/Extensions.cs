@@ -38,6 +38,7 @@ internal static class Extensions
         services.AddScoped<IBookCategoryRepository, BookCategoryRepository>();
         services.AddScoped<IPublisherRepository, PublisherRepository>();
         services.AddScoped<IIdentityRepository, IdentityRepository>();
+        services.AddScoped<ILibraryRepository, LibraryRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddMediatR(cfg =>

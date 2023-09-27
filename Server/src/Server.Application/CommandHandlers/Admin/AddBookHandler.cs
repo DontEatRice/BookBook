@@ -13,14 +13,13 @@ public sealed class AddBookCommandValidator : AbstractValidator<AddBookCommand>
     public AddBookCommandValidator()
     {
         RuleFor(x => x.Title).NotEmpty();
-        RuleFor(x => x.ISBN).NotEmpty().MaximumLength(17).Matches(@"\d{1,3}(-\d+)*");
-        RuleFor(x => x.CoverLink);
+        RuleFor(x => x.ISBN).NotEmpty().MaximumLength(17).Matches(@"^(?=(?:[^0-9]*[0-9]){10}(?:(?:[^0-9]*[0-9]){3})?$)[\d-]+$");
         RuleFor(x => x.IdPublisher).NotEmpty();
         RuleFor(x => x.AuthorsIDs).NotEmpty();
     }
 }
 
-public sealed record AddBookCommand(Guid Id, string ISBN, string Title, int YearPublished, string? CoverLink,
+public sealed record AddBookCommand(Guid Id, string ISBN, string Title, int YearPublished,
     Guid IdPublisher, List<Guid> AuthorsIDs, List<Guid> CategoriesIds) : IRequest;
 
 public sealed class AddBookHandler : IRequestHandler<AddBookCommand>
@@ -54,7 +53,7 @@ public sealed class AddBookHandler : IRequestHandler<AddBookCommand>
         var categories = await _bookCategoryRepository.ListByIdsAsync(request.CategoriesIds, cancellationToken);
 
         var book = Book.Create(request.Id, request.ISBN, request.Title, request.YearPublished,
-            request.CoverLink, publisher, authors, categories);
+            publisher, authors, categories);
 
         await _bookRepository.AddAsync(book, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -14,8 +14,11 @@ function Home() {
     publisher: {
       id: 'guid-guid',
       name: 'Be Do Gie',
+      description: null
     },
     bookCategories: [],
+    averageRating: 4,
+    averageCriticRating: 5
   };
   return (
     <Container>

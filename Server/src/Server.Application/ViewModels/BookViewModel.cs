@@ -8,7 +8,6 @@ public class BookViewModel
     public string ISBN { get; set; }
     public string Title { get; set; }
     public int YearPublished { get; set; }
-    public string? CoverLink { get; set; }
     public double? AverageRating { get; set; }
     public double? AverageCriticRating { get; set; }
     public PublisherViewModel Publisher { get; set; }

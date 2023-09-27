@@ -15,53 +15,53 @@ import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 
 function PublishersTable({ data }: { data: PublisherViewModelType[] }) {
-    return (
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Id</TableCell>
-              <TableCell>Wydawca</TableCell>
+  return (
+    <TableContainer>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Id</TableCell>
+            <TableCell>Wydawca</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data.map((publisher) => (
+            <TableRow key={publisher.id}>
+              <TableCell>{publisher.id}</TableCell>
+              <TableCell>{publisher.name}</TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((publisher) => (
-              <TableRow key={publisher.id}>
-                <TableCell>{publisher.id}</TableCell>
-                <TableCell>{publisher.name}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    );
-  }
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}
 
 function AdminPublishers() {
-    const theme = useTheme();
-    const { data, status } = useQuery({ queryKey: ['publishers'], queryFn: getPublishers });
+  const theme = useTheme();
+  const { data, status } = useQuery({ queryKey: ['publishers'], queryFn: getPublishers });
 
-    return (
-        <Box mt={1}>
-          <Grid container spacing={2} justifyContent="space-between">
-            <Grid item>
-              <Typography variant="h4">Wydawcy</Typography>
-            </Grid>
-            <Grid item>
-              <Link to="add">
-                <Button variant="contained">Dodaj wydawcę</Button>
-              </Link>
-            </Grid>
-          </Grid>
-          {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
-          {status == 'error' && (
-            <Typography variant="h3" color={theme.palette.error.main}>
-              Błąd!
-            </Typography>
-          )}
-          {status == 'success' && <PublishersTable data={data} />}
-        </Box>
-      );
+  return (
+    <Box mt={1}>
+      <Grid container spacing={2} justifyContent="space-between">
+        <Grid item>
+          <Typography variant="h4">Wydawcy</Typography>
+        </Grid>
+        <Grid item>
+          <Link to="add">
+            <Button variant="contained">Dodaj wydawcę</Button>
+          </Link>
+        </Grid>
+      </Grid>
+      {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+      {status == 'error' && (
+        <Typography variant="h3" color={theme.palette.error.main}>
+          Błąd!
+        </Typography>
+      )}
+      {status == 'success' && <PublishersTable data={data} />}
+    </Box>
+  );
 }
 
 export default AdminPublishers;
