@@ -9,10 +9,10 @@ using Server.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Server.Infrastructure.Migrations
+namespace Server.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    [Migration("20230831194604_Init")]
+    [Migration("20230927144414_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -103,7 +103,35 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Address");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.Auth.Identity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Roles")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Identities");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Author", b =>
@@ -333,6 +361,34 @@ namespace Server.Infrastructure.Migrations
                         .HasForeignKey("LibrariesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.Auth.Identity", b =>
+                {
+                    b.OwnsMany("Server.Domain.Entities.Auth.Session", "Sessions", b1 =>
+                        {
+                            b1.Property<Guid>("IdentityId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<string>("RefreshTokenHash")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("IdentityId", "Id");
+
+                            b1.ToTable("sessions", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("IdentityId");
+                        });
+
+                    b.Navigation("Sessions");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Book", b =>

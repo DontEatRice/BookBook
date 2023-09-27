@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Server.Infrastructure.Migrations
+namespace Server.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
@@ -12,7 +12,7 @@ namespace Server.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Addresses",
+                name: "Address",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -25,7 +25,7 @@ namespace Server.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.PrimaryKey("PK_Address", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -52,6 +52,21 @@ namespace Server.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BookCategories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Identities",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Roles = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Identities", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,6 +108,26 @@ namespace Server.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "sessions",
+                columns: table => new
+                {
+                    IdentityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RefreshTokenHash = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_sessions", x => new { x.IdentityId, x.Id });
+                    table.ForeignKey(
+                        name: "FK_sessions_Identities_IdentityId",
+                        column: x => x.IdentityId,
+                        principalTable: "Identities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Libraries",
                 columns: table => new
                 {
@@ -107,9 +142,9 @@ namespace Server.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Libraries", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Libraries_Addresses_AddressId",
+                        name: "FK_Libraries_Address_AddressId",
                         column: x => x.AddressId,
-                        principalTable: "Addresses",
+                        principalTable: "Address",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -248,6 +283,12 @@ namespace Server.Infrastructure.Migrations
                 column: "PublisherId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Identities_Email",
+                table: "Identities",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Libraries_AddressId",
                 table: "Libraries",
                 column: "AddressId");
@@ -271,6 +312,9 @@ namespace Server.Infrastructure.Migrations
                 name: "BookLibrary");
 
             migrationBuilder.DropTable(
+                name: "sessions");
+
+            migrationBuilder.DropTable(
                 name: "Authors");
 
             migrationBuilder.DropTable(
@@ -283,10 +327,13 @@ namespace Server.Infrastructure.Migrations
                 name: "Libraries");
 
             migrationBuilder.DropTable(
+                name: "Identities");
+
+            migrationBuilder.DropTable(
                 name: "Publishers");
 
             migrationBuilder.DropTable(
-                name: "Addresses");
+                name: "Address");
 
             migrationBuilder.DropTable(
                 name: "OpenHours");

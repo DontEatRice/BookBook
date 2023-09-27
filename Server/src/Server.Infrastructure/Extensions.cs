@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Server.Infrastructure.Persistence;
 using Server.Application.DependencyInjection;
-using Server.Application.Utils;
 using Server.Infrastructure.Configuration;
 
 namespace Server.Infrastructure;
@@ -12,6 +11,8 @@ public static class Extensions
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddQueries(configuration);
+        services.AddDomainServices();
         services.AddControllers(options => { options.Filters.Add(typeof(ExceptionFilter)); });
         services.AddDatabase(configuration);
         services.AddSwaggerGen();
@@ -25,7 +26,6 @@ public static class Extensions
                         .AllowAnyMethod();
                 });
         });
-        services.AddQueries();
 
         return services;
     }
@@ -35,14 +35,11 @@ public static class Extensions
         app.UseSwagger();
         app.UseSwaggerUI();
         app.UseCors("_myPolicy");
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.UseMiddleware<ValidationExceptionMiddleware>();
         app.MapControllers();
 
         return app;
-    }
-
-    private static void AddQueries(this IServiceCollection services)
-    {
-        services.AddAutoMapper(typeof(ViewModelProfile));
     }
 }
