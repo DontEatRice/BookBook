@@ -13,6 +13,8 @@ internal sealed class BookBookDbContext : DbContext
     public DbSet<Identity> Identities { get; set; }
     public DbSet<Session> Sessions { get; set; }
     public DbSet<Library> Libraries { get; set; }
+    public DbSet<Address> Addresses { get; set; }
+    public DbSet<OpenHours> OpenHours { get; set; }
 
     public BookBookDbContext(DbContextOptions<BookBookDbContext> options) : base(options)
     {
