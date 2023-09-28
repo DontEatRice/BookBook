@@ -19,7 +19,7 @@ public class ImageController : ControllerBase
         {
             Id = id
         });
-        return Created($"image/{id}", null);
+        return Created($"image/{id}", id);
     }
 
     [HttpGet("{id:guid}")]
