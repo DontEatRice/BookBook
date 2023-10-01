@@ -7,8 +7,9 @@ public class Image
     public byte[] Content { get; set; } = null!;
     public string FileName { get; set; } = null!;
     public string Etag { get; set; } = null!;
+    public DateTime LastModified { get; set; }
     
-    public static Image Create(Guid id, string contentType, byte[] content, string fileName, string etag)
+    public static Image Create(Guid id, string contentType, byte[] content, string fileName, string etag, DateTime lastModified)
     {
         return new Image
         {
@@ -16,7 +17,8 @@ public class Image
             ContentType = contentType,
             Content = content,
             FileName = fileName,
-            Etag = etag
+            Etag = etag,
+            LastModified = lastModified
         };
     }
 }

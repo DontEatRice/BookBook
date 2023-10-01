@@ -1,6 +1,10 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Server.Application.CommandHandlers.Images;
+using Server.Application.InternalModels;
+using Server.Infrastructure.Persistence.QueryHandlers;
 
 namespace Server.Api.Controllers;
 
@@ -8,7 +12,13 @@ namespace Server.Api.Controllers;
 [Route("[controller]")]
 public class ImageController : ControllerBase
 {
-    public ImageController(IMediator mediator) : base(mediator) {}
+    private const string CacheImagePrefix = "IMAGE:";
+    private readonly IMemoryCache _memoryCache;
+    private const int MaxAge = 3 * 24 * 60 * 60; // Trzy dni * 24 godziny * 60 minut * 60 sekund
+    public ImageController(IMediator mediator, IMemoryCache memoryCache) : base(mediator)
+    {
+        _memoryCache = memoryCache;
+    }
 
     [HttpPost("upload")]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -25,6 +35,25 @@ public class ImageController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> Get(Guid id)
     {
-        return Ok(await Task.FromResult("hello"));
+        var etag = Request.Headers.IfNoneMatch.ToString();
+        if (_memoryCache.TryGetValue(CacheImagePrefix + id.ToString(), out var data) &&
+            data is ImageInfo imageInfo &&
+            imageInfo.Etag == etag
+        )
+        {
+            Response.Headers.ETag = imageInfo.Etag;
+            return StatusCode((int)HttpStatusCode.NotModified);
+        }
+
+        var image = await Mediator.Send(new GetImageQuery(id));
+
+        _memoryCache.Set(
+            CacheImagePrefix + id,
+            new ImageInfo { Etag = image.Etag, LastModified = image.LastModified }, 
+            TimeSpan.FromDays(3)
+        );
+        Response.Headers.CacheControl = $"max-age={MaxAge}";
+        Response.Headers.ETag = image.Etag;
+        return File(image.Content, image.ContentType);
     }
 }

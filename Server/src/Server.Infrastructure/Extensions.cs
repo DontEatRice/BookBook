@@ -16,6 +16,7 @@ public static class Extensions
         services.AddControllers(options => { options.Filters.Add(typeof(ExceptionFilter)); });
         services.AddDatabase(configuration);
         services.AddSwaggerGen();
+        services.AddMemoryCache();
         services.AddCors(options =>
         {
             options.AddPolicy(name: "_myPolicy",
