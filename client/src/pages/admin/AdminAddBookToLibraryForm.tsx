@@ -10,7 +10,6 @@ import TextField from '@mui/material/TextField';
 import AddBookToLibrary, { AddBookToLibraryType } from '../../models/AddBookToLibrary';
 import { addBookToLibrary, getBooksAvailableToAdd } from '../../api/library';
 import NumberInputField from '../../components/NumberInputField';
-import BookViewModel from '../../models/BookViewModel';
 
 function AdminAddBookToLibraryForm() {
     const libraryId = "A8CD269E-81AC-4C59-B009-1ADC78192109";
