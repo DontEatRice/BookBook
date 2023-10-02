@@ -12,7 +12,7 @@ using Server.Infrastructure.Persistence;
 namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    [Migration("20230831194604_Init")]
+    [Migration("20230927185754_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -53,21 +53,6 @@ namespace Server.Infrastructure.Migrations
                     b.HasIndex("BooksId");
 
                     b.ToTable("BookBookCategory");
-                });
-
-            modelBuilder.Entity("BookLibrary", b =>
-                {
-                    b.Property<Guid>("BooksId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("LibrariesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("BooksId", "LibrariesId");
-
-                    b.HasIndex("LibrariesId");
-
-                    b.ToTable("BookLibrary");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Address", b =>
@@ -218,6 +203,27 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("Libraries");
                 });
 
+            modelBuilder.Entity("Server.Domain.Entities.LibraryBook", b =>
+                {
+                    b.Property<Guid>("LibraryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Available")
+                        .HasColumnType("int");
+
+                    b.HasKey("LibraryId", "BookId");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("LibraryBooks");
+                });
+
             modelBuilder.Entity("Server.Domain.Entities.OpenHours", b =>
                 {
                     b.Property<Guid>("Id")
@@ -320,21 +326,6 @@ namespace Server.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BookLibrary", b =>
-                {
-                    b.HasOne("Server.Domain.Entities.Book", null)
-                        .WithMany()
-                        .HasForeignKey("BooksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Server.Domain.Entities.Library", null)
-                        .WithMany()
-                        .HasForeignKey("LibrariesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Server.Domain.Entities.Book", b =>
                 {
                     b.HasOne("Server.Domain.Entities.Publisher", "Publisher")
@@ -363,6 +354,35 @@ namespace Server.Infrastructure.Migrations
                     b.Navigation("Address");
 
                     b.Navigation("OpenHours");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.LibraryBook", b =>
+                {
+                    b.HasOne("Server.Domain.Entities.Book", "Book")
+                        .WithMany("BookLibraries")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Domain.Entities.Library", "Library")
+                        .WithMany("LibraryBooks")
+                        .HasForeignKey("LibraryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Library");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.Book", b =>
+                {
+                    b.Navigation("BookLibraries");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.Library", b =>
+                {
+                    b.Navigation("LibraryBooks");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Publisher", b =>

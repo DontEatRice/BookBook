@@ -192,24 +192,26 @@ namespace Server.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookLibrary",
+                name: "LibraryBooks",
                 columns: table => new
                 {
-                    BooksId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LibrariesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    LibraryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Amount = table.Column<int>(type: "int", nullable: false),
+                    Available = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookLibrary", x => new { x.BooksId, x.LibrariesId });
+                    table.PrimaryKey("PK_LibraryBooks", x => new { x.LibraryId, x.BookId });
                     table.ForeignKey(
-                        name: "FK_BookLibrary_Books_BooksId",
-                        column: x => x.BooksId,
+                        name: "FK_LibraryBooks_Books_BookId",
+                        column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookLibrary_Libraries_LibrariesId",
-                        column: x => x.LibrariesId,
+                        name: "FK_LibraryBooks_Libraries_LibraryId",
+                        column: x => x.LibraryId,
                         principalTable: "Libraries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -232,11 +234,6 @@ namespace Server.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookLibrary_LibrariesId",
-                table: "BookLibrary",
-                column: "LibrariesId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Books_ISBN",
                 table: "Books",
                 column: "ISBN",
@@ -256,6 +253,11 @@ namespace Server.Infrastructure.Migrations
                 name: "IX_Libraries_OpenHoursId",
                 table: "Libraries",
                 column: "OpenHoursId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LibraryBooks_BookId",
+                table: "LibraryBooks",
+                column: "BookId");
         }
 
         /// <inheritdoc />
@@ -268,7 +270,7 @@ namespace Server.Infrastructure.Migrations
                 name: "BookBookCategory");
 
             migrationBuilder.DropTable(
-                name: "BookLibrary");
+                name: "LibraryBooks");
 
             migrationBuilder.DropTable(
                 name: "Authors");

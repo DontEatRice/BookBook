@@ -40,4 +40,18 @@ public class LibrariesController : ControllerBase
         await Mediator.Send(new RemoveLibraryCommand(id));
         return NoContent();
     }
+
+    [HttpPost("books")]
+    public async Task<ActionResult> AddBook(AddBookToLibraryCommand command)
+    {
+        await Mediator.Send(command);
+
+        return Ok();
+    }
+
+    [HttpGet("{id:guid}/booksToAdd")]
+    public async Task<ActionResult<IEnumerable<BookViewModel>>> GetBooksToAdd(Guid id)
+    {
+        return Ok(await Mediator.Send(new GetBooksAvailableToAddQuery(id)));
+    }
 }

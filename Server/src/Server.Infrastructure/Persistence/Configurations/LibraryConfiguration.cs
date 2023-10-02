@@ -23,6 +23,5 @@ public class LibraryConfiguration : IEntityTypeConfiguration<Library>
         builder.HasOne(x => x.Address);
 
         builder.HasOne(x => x.OpenHours);
-
     }
 }
