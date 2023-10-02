@@ -20,9 +20,18 @@ internal sealed class GetBooksAvailableToAddHandler : IRequestHandler<GetBooksAv
 
     public async Task<List<BookViewModel>> Handle(GetBooksAvailableToAddQuery request, CancellationToken cancellationToken)
     {
-        var booksInLibrary = await _dbContext.LibraryBooks.Where(x => x.LibraryId == request.Id).Select(x => x.Book.Id).ToListAsync();
+        var booksInLibrary = await _dbContext.LibraryBooks
+            .AsNoTracking()
+            .Where(x => x.LibraryId == request.Id)
+            .Select(x => x.Book.Id)
+            .ToListAsync(cancellationToken);
 
-        var booksToAdd = await _dbContext.Books.Where(x => !booksInLibrary.Contains(x.Id)).ToListAsync();
+        var booksToAdd = await _dbContext.Books
+            .AsNoTracking()
+            .Include(x => x.Authors)
+            .Include(x => x.Publisher)
+            .Include(x => x.BookCategories)
+            .Where(x => !booksInLibrary.Contains(x.Id)).ToListAsync(cancellationToken);
 
         return _mapper.Map<List<BookViewModel>>(booksToAdd);
     }
