@@ -18,6 +18,8 @@ import AdminPublishers from './pages/admin/AdminPublishers';
 import AdminPublisherForm from './pages/admin/AdminPublisherForm';
 import AdminLibraries from './pages/admin/AdminLibraries';
 import AdminLibraryForm from './pages/admin/AdminLibraryForm';
+import AdminBooksInLibrary from './pages/admin/AdminBooksInLibrary';
+import AdminAddBookToLibraryForm from './pages/admin/AdminAddBookToLibraryForm';
 
 const mainTheme = createTheme({
   palette: {
@@ -64,6 +66,10 @@ function App() {
         <Route path="libraries">
           <Route index element={<AdminLibraries />} />
           <Route path='add' element={<AdminLibraryForm />} />
+        </Route>
+        <Route path="booksInLibrary">
+          <Route index element={<AdminBooksInLibrary />} />
+          <Route path='add' element={<AdminAddBookToLibraryForm />} />
         </Route>
         <Route path="*" element={<div>NotFound</div>} />
       </Route>
