@@ -14,3 +14,8 @@ const AddBookToLibrary = z.object({
 
 export default AddBookToLibrary;
 export type AddBookToLibraryType = z.infer<typeof AddBookToLibrary>;
+
+class NewBookInLibrary {
+    bookId: string;
+    amount: number;
+}
