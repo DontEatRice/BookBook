@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers;
 using Server.Application.ViewModels;
 using Server.Infrastructure.Persistence.QueryHandlers;
+using static Server.Application.CommandHandlers.AddBookToLibraryHandler;
 
 namespace Server.Api.Controllers;
 
@@ -41,10 +42,10 @@ public class LibrariesController : ControllerBase
         return NoContent();
     }
 
-    [HttpPost("books")]
-    public async Task<ActionResult> AddBook(AddBookToLibraryCommand command)
+    [HttpPost("{id:guid}/books")]
+    public async Task<ActionResult> AddBook(Guid id, NewBookInLibrary newBookInLibrary)
     {
-        await Mediator.Send(command);
+        await Mediator.Send(new AddBookToLibraryCommand(id, newBookInLibrary.BookId, newBookInLibrary.Amount));
 
         return Ok();
     }

@@ -55,4 +55,10 @@ public sealed class AddBookToLibraryHandler : IRequestHandler<AddBookToLibraryCo
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
+
+    public class NewBookInLibrary
+    {
+        public Guid BookId { get; set; }
+        public int Amount { get; set; }
+    }
 }
