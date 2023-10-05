@@ -1,8 +1,8 @@
+import { AddBookToLibraryType } from "../models/AddBookToLibrary";
 import { AddLibraryType } from "../models/AddLibrary";
+import BookInLibraryViewModel from "../models/BookInLibraryViewModel";
 import BookViewModel from "../models/BookViewModel";
 import LibraryViewModel from "../models/LibraryViewModel";
-import NewBookInLibrary from "../models/NewBookInLibrary";
-
 
 const base = import.meta.env.VITE_API_BASE_URL;
 
@@ -21,8 +21,8 @@ export const postLibrary = async (library: AddLibraryType) => {
     return response;
 }
 
-export const addBookToLibrary = async (libraryId: string, addBookToLibrary: NewBookInLibrary) => {
-    const response = await fetch(base + '/Libraries/' + libraryId + '/books', {
+export const addBookToLibrary = async (addBookToLibrary: AddBookToLibraryType) => {
+    const response = await fetch(base + '/Libraries/' + addBookToLibrary.libraryId + '/books', {
         method: 'post',
         body: JSON.stringify(addBookToLibrary),
         headers: new Headers({ 'Content-Type': 'application/json' }),
@@ -34,4 +34,10 @@ export async function getBooksAvailableToAdd(libraryId: string) {
     const response = await fetch(base + '/Libraries/' + libraryId + '/booksToAdd');
     const data = await response.json();
     return BookViewModel.array().parse(data);
+}
+
+export async function getBooksInLibrary(libraryId: string) {
+    const response = await fetch(base + '/Libraries/' + libraryId + '/books');
+    const data = await response.json();
+    return BookInLibraryViewModel.array().parse(data);
 }

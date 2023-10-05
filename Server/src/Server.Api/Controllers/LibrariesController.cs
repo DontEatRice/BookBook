@@ -50,6 +50,12 @@ public class LibrariesController : ControllerBase
         return Ok();
     }
 
+    [HttpGet("{id:guid}/books")]
+    public async Task<ActionResult<IEnumerable<BookInLibraryViewModel>>> GetBooks(Guid id)
+    {
+        return Ok(await Mediator.Send(new GetBooksInLibraryQuery(id)));
+    }
+
     [HttpGet("{id:guid}/booksToAdd")]
     public async Task<ActionResult<IEnumerable<BookViewModel>>> GetBooksToAdd(Guid id)
     {

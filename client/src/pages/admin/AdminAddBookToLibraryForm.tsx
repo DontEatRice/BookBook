@@ -10,7 +10,7 @@ import TextField from '@mui/material/TextField';
 import AddBookToLibrary, { AddBookToLibraryType } from '../../models/AddBookToLibrary';
 import { addBookToLibrary, getBooksAvailableToAdd } from '../../api/library';
 import NumberInputField from '../../components/NumberInputField';
-import NewBookInLibrary from '../../models/NewBookInLibrary';
+import TextInputField from '../../components/TextInputField';
 
 function AdminAddBookToLibraryForm() {
     const libraryId = "A8CD269E-81AC-4C59-B009-1ADC78192109";
@@ -34,8 +34,7 @@ function AdminAddBookToLibraryForm() {
     });
     const onSubmit: SubmitHandler<AddBookToLibraryType> = (data) => {
         console.log(data);
-        var newBookInLibrary = new NewBookInLibrary(data.bookId, data.amount);
-        mutation.mutate(data.libraryId, newBookInLibrary);
+        mutation.mutate(data);
     };
     // !!!!!!!!!!!!!!!!!!!!!!!!
     // biblioteka powinna być brana z claimów Usera

@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { BookViewModelType } from './BookViewModel';
 
 const AddBookToLibrary = z.object({
-    libraryId: z.string().uuid(),
+    libraryId: z.string(),
     bookId: z.custom<BookViewModelType>()
         .refine((book) => book != null, "Pole wymagane")
         .transform(book => book.id),
@@ -14,8 +14,3 @@ const AddBookToLibrary = z.object({
 
 export default AddBookToLibrary;
 export type AddBookToLibraryType = z.infer<typeof AddBookToLibrary>;
-
-class NewBookInLibrary {
-    bookId: string;
-    amount: number;
-}
