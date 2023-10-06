@@ -12,93 +12,94 @@ import { addBookToLibrary, getBooksAvailableToAdd } from '../../api/library';
 import NumberInputField from '../../components/NumberInputField';
 
 function AdminAddBookToLibraryForm() {
-  const libraryId = 'dd4222c7-b915-4efe-b613-8cb92651f636';
-  const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<AddBookToLibraryType>({
-    resolver: zodResolver(AddBookToLibrary),
-  });
-  const mutation = useMutation({
-    mutationFn: addBookToLibrary,
-    onSuccess: () => {
-      navigate('..');
-    },
-    onError: (e: Error) => {
-      console.error(e);
-    },
-  });
-  console.log(errors);
-  const onSubmit: SubmitHandler<AddBookToLibraryType> = (data) => {
-    console.log(data);
-    mutation.mutate(data);
-  };
-  // !!!!!!!!!!!!!!!!!!!!!!!!
-  // biblioteka powinna być brana z claimów Usera
-  // !!!!!!!!!!!!!!!!!!!!!!!!
-  const { data: availableBooks, status: availableBooksStatus } = useQuery({
-    queryKey: ['booksToAdd', libraryId],
-    queryFn: ({ queryKey }) => getBooksAvailableToAdd(queryKey[1]),
-  });
+    //na razie ręcznie wpisane (trzeba dodać swój do testów)
+    const libraryId = 'A8CD269E-81AC-4C59-B009-1ADC78192109';
+    const navigate = useNavigate();
+    const {
+        register,
+        handleSubmit,
+        control,
+        formState: { errors },
+    } = useForm<AddBookToLibraryType>({
+        resolver: zodResolver(AddBookToLibrary),
+    });
+    const mutation = useMutation({
+        mutationFn: addBookToLibrary,
+        onSuccess: () => {
+            navigate('..');
+        },
+        onError: (e: Error) => {
+            console.error(e);
+        },
+    });
+    console.log(errors);
+    const onSubmit: SubmitHandler<AddBookToLibraryType> = (data) => {
+        console.log(data);
+        mutation.mutate(data);
+    };
+    // !!!!!!!!!!!!!!!!!!!!!!!!
+    // biblioteka powinna być brana z claimów Usera
+    // !!!!!!!!!!!!!!!!!!!!!!!!
+    const { data: availableBooks, status: availableBooksStatus } = useQuery({
+        queryKey: ['booksToAdd', libraryId],
+        queryFn: ({ queryKey }) => getBooksAvailableToAdd(queryKey[1]),
+    });
 
-  if (availableBooksStatus == 'loading') {
-    return <h1>Ładowanie...</h1>;
-  } else {
-    return (
-      <Box sx={{ mt: 2 }}>
-        <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', justifyContent: 'center' }}>
-          <input type="hidden" {...register('libraryId')} value={libraryId} />
-          <Box
-            sx={{
-              width: { xs: '100%', sm: '85%', md: '65%' },
-              textAlign: 'center',
-            }}>
-            <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
-              <Controller
-                control={control}
-                name="bookId"
-                render={({ field: { onChange }, fieldState: { error } }) => (
-                  <Autocomplete
-                    sx={{ width: '100%', mb: 2 }}
-                    options={availableBooks || []}
-                    onChange={(_, newValue) => {
-                      onChange(newValue);
-                    }}
-                    getOptionLabel={(book) =>
-                      book.title +
-                      ' (' +
-                      book.yearPublished +
-                      ') ' +
-                      book.authors.map((author) => author.lastName).join(', ') +
-                      ' [' +
-                      book.isbn +
-                      ']'
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Dostępne książki"
-                        placeholder="Szukaj książki"
-                        helperText={error?.message}
-                        error={error != undefined}
-                      />
-                    )}
-                  />
-                )}
-              />
-              <NumberInputField errors={errors} field="amount" register={register} label="Ilość" />
-              <Button type="submit" variant="contained">
-                Zapisz
-              </Button>
-            </Paper>
-          </Box>
-        </form>
-      </Box>
-    );
-  }
+    if (availableBooksStatus == 'loading') {
+        return <h1>Ładowanie...</h1>;
+    } else {
+        return (
+            <Box sx={{ mt: 2 }}>
+                <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', justifyContent: 'center' }}>
+                    <input type="hidden" {...register('libraryId')} value={libraryId} />
+                    <Box
+                        sx={{
+                            width: { xs: '100%', sm: '85%', md: '65%' },
+                            textAlign: 'center',
+                        }}>
+                        <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
+                            <Controller
+                                control={control}
+                                name="bookId"
+                                render={({ field: { onChange }, fieldState: { error } }) => (
+                                    <Autocomplete
+                                        sx={{ width: '100%', mb: 2 }}
+                                        options={availableBooks || []}
+                                        onChange={(_, newValue) => {
+                                            onChange(newValue);
+                                        }}
+                                        getOptionLabel={(book) =>
+                                            book.title +
+                                            ' (' +
+                                            book.yearPublished +
+                                            ') ' +
+                                            book.authors.map((author) => author.lastName).join(', ') +
+                                            ' [' +
+                                            book.isbn +
+                                            ']'
+                                        }
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Dostępne książki"
+                                                placeholder="Szukaj książki"
+                                                helperText={error?.message}
+                                                error={error != undefined}
+                                            />
+                                        )}
+                                    />
+                                )}
+                            />
+                            <NumberInputField errors={errors} field="amount" register={register} label="Ilość" />
+                            <Button type="submit" variant="contained">
+                                Zapisz
+                            </Button>
+                        </Paper>
+                    </Box>
+                </form>
+            </Box>
+        );
+    }
 }
 
 export default AdminAddBookToLibraryForm;

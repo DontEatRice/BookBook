@@ -26,10 +26,6 @@ internal sealed class GetBooksInLibraryHandler : IRequestHandler<GetBooksInLibra
             .AsNoTracking()
             .Include(x => x.Book)
             .ThenInclude(x => x.Authors)
-            .Include(x => x.Book)
-            .ThenInclude(x => x.Publisher)
-            .Include(x => x.Book)
-            .ThenInclude(x => x.BookCategories)
             .Where(x => x.LibraryId == request.id)
             .ToListAsync();
 
