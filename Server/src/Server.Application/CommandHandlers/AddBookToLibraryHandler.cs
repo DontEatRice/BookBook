@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Text.Json.Serialization;
+using FluentValidation;
 using MediatR;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
@@ -16,7 +17,13 @@ public sealed class AddBookToLibraryHandlerValidator : AbstractValidator<AddBook
     }
 }
 
-public sealed record AddBookToLibraryCommand(Guid LibraryId, Guid BookId, int Amount) : IRequest;
+public sealed record AddBookToLibraryCommand : IRequest
+{
+    public Guid BookId { get; set; }
+    public int Amount { get; set; }
+    [JsonIgnore]
+    public Guid LibraryId { get; set; }
+}
 
 public sealed class AddBookToLibraryHandler : IRequestHandler<AddBookToLibraryCommand>
 {
@@ -55,10 +62,5 @@ public sealed class AddBookToLibraryHandler : IRequestHandler<AddBookToLibraryCo
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
-
-    public class NewBookInLibrary
-    {
-        public Guid BookId { get; set; }
-        public int Amount { get; set; }
-    }
+    
 }

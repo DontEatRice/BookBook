@@ -43,9 +43,12 @@ public class LibrariesController : ControllerBase
     }
 
     [HttpPost("{id:guid}/books")]
-    public async Task<ActionResult> AddBook(Guid id, NewBookInLibrary newBookInLibrary)
+    public async Task<ActionResult> AddBook(Guid id, AddBookToLibraryCommand newBookInLibrary)
     {
-        await Mediator.Send(new AddBookToLibraryCommand(id, newBookInLibrary.BookId, newBookInLibrary.Amount));
+        await Mediator.Send(newBookInLibrary with
+        {
+            LibraryId = id
+        });
 
         return Ok();
     }
