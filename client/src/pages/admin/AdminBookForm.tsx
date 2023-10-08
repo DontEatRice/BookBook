@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import TextInputField from '../../components/TextInputField';
 import AddBook, { AddBookType } from '../../models/AddBook';
