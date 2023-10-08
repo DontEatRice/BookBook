@@ -22,4 +22,11 @@ internal class ImageRepository : IImageRepository
     {
         return _dbContext.Images.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
+
+    public Task<int> Remove(Guid id)
+    {
+        return _dbContext.Images
+            .Where(x => x.Id == id)
+            .ExecuteDeleteAsync();
+    }
 }

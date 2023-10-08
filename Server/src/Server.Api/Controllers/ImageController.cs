@@ -30,7 +30,7 @@ public class ImageController : ControllerBase
         {
             Id = id
         });
-        return Created($"image/{id}", id);
+        return CreatedAtAction(nameof(Get), new { id }, id);
     }
 
     [HttpGet("{id:guid}")]
@@ -56,5 +56,12 @@ public class ImageController : ControllerBase
         Response.Headers.CacheControl = $"max-age={MaxAge}";
         Response.Headers.ETag = image.Etag;
         return File(image.Content, image.ContentType);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await Mediator.Send(new RemoveImageCommand(id));
+        return NoContent();
     }
 }
