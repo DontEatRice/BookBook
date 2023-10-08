@@ -1,7 +1,7 @@
 using MediatR;
 using Server.Domain.Repositories;
 
-namespace Server.Application.CommandHandlers;
+namespace Server.Application.CommandHandlers.Admin;
 
 public sealed record RemoveAuthorCommand(Guid Id) : IRequest;
 
@@ -27,6 +27,7 @@ public sealed class RemoveAuthorHandler : IRequestHandler<RemoveAuthorCommand>
 
         //await _unitOfWork.SaveChangesAsync(cancellationToken);
         // Propozycja - przejrzystrzy kod i jedno zapytanie sql mniej
+        // TODO przerobić wszystkie delety na takie
         await _authorRepository.Delete(request.Id, cancellationToken);
     }
 }

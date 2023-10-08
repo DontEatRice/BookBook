@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Server.Application.Exceptions;
+using Server.Domain.Exceptions;
 
 namespace Server.Infrastructure.Configuration;
 
@@ -49,6 +50,15 @@ public class ExceptionFilter : IExceptionFilter
             },
 
             LogicException e => new ObjectResult(new
+            {
+                Type = ExceptionFilterType.Logic.ToString(),
+                Code = e.ErrorCode
+            })
+            {
+                StatusCode = 400
+            },
+            
+            DomainException e => new ObjectResult(new
             {
                 Type = ExceptionFilterType.Logic.ToString(),
                 Code = e.ErrorCode
