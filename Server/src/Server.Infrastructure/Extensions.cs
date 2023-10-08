@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 using Server.Infrastructure.Persistence;
 using Server.Application.DependencyInjection;
 using Server.Infrastructure.Configuration;
@@ -24,7 +25,8 @@ public static class Extensions
                 {
                     policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
+                        .AllowAnyMethod()
+                        .WithExposedHeaders(HeaderNames.Location);
                 });
         });
 

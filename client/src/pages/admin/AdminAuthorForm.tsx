@@ -63,8 +63,11 @@ function AdminAuthorForm() {
       if (data.avatarPicture) {
         const uploadImageType = await fileToUploadImage(data.avatarPicture);
         const response = await uploadImageMutation.mutateAsync(uploadImageType);
+        for (const pair of response.headers.entries()) {
+          console.log(`${pair[0]}: ${pair[1]}`);
+        }
         if (response.ok) {
-          data.profilePictureUrl = response.headers.get('Location');
+          data.profilePictureUrl = response.headers.get('location');
         }
       }
       postAuthorMutation.mutate(data);

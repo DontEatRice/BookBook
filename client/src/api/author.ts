@@ -1,18 +1,13 @@
 import { AddAuthorType } from '../models/AddAuthor';
 import AuthorViewModel from '../models/AuthorViewModel';
-import { fileToBase64 } from '../utils/utils';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 
 export const postAuthor = async (author: AddAuthorType) => {
-  const { avatarPicture: file, ...authorData } = author;
-  let avatarPicture: string | undefined;
-  if (file) {
-    avatarPicture = await fileToBase64(file);
-  }
+  delete author.avatarPicture;
   const response = await fetch(base + '/Authors', {
     method: 'post',
-    body: JSON.stringify({ avatarPicture, ...authorData }),
+    body: JSON.stringify(author),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
   return response;
