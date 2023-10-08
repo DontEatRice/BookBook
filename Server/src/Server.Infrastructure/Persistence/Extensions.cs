@@ -13,6 +13,7 @@ using Server.Infrastructure.Persistence.Settings;
 using Server.Infrastructure.Services;
 using System.Reflection;
 using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace Server.Infrastructure.Persistence;
 
@@ -32,7 +33,15 @@ internal static class Extensions
         section.Bind(authSettings);
 
         services.AddAuth(authSettings);
-        services.AddDbContext<BookBookDbContext>(x => x.UseSqlServer(sqlServerSettings.ConnectionString));
+        services.AddDbContext<BookBookDbContext>(options =>
+        {
+            // https://go.microsoft.com/fwlink/?linkid=2134277 
+            options.UseSqlServer(sqlServerSettings.ConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            {
+                options.LogTo(Console.WriteLine, LogLevel.Information);
+            }
+        });
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IBookCategoryRepository, BookCategoryRepository>();

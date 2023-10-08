@@ -10,13 +10,13 @@ namespace Server.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ImageController : ControllerBase
+public class ImagesController : ControllerBase
 {
     private const string CacheImagePrefix = "IMAGE:";
     private readonly IMemoryCache _memoryCache;
     private const int MaxAge = 3 * 24 * 60 * 60; // Trzy dni * 24 godziny * 60 minut * 60 sekund
     
-    public ImageController(IMediator mediator, IMemoryCache memoryCache) : base(mediator)
+    public ImagesController(IMediator mediator, IMemoryCache memoryCache) : base(mediator)
     {
         _memoryCache = memoryCache;
     }
@@ -62,6 +62,8 @@ public class ImageController : ControllerBase
     public async Task<IActionResult> Delete(Guid id)
     {
         await Mediator.Send(new RemoveImageCommand(id));
+        
+        _memoryCache.Remove(CacheImagePrefix + id);
         return NoContent();
     }
 }

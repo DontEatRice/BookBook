@@ -13,5 +13,7 @@ public class ImageConfiguration : IEntityTypeConfiguration<Image>
             .HasMaxLength(32);
         builder.Property(x => x.FileName)
             .HasMaxLength(64);
+        builder.Property(x => x.ContentType)
+            .HasMaxLength(64);
     }
 }

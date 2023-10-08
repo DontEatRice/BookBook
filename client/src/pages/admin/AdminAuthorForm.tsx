@@ -5,11 +5,24 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import TextInputField from '../../components/TextInputField';
-import { useMutation } from 'react-query';
 import { postAuthor } from '../../api/author';
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useMemo } from 'react';
 import NumberInputField from '../../components/NumberInputField';
+import { uploadImage } from '../../api/image';
+import { fileToBase64 } from '../../utils/utils';
+import UploadImage from '../../models/UploadImage';
+import { useMutation } from '@tanstack/react-query';
+
+async function fileToUploadImage(file: File) {
+  let base64 = await fileToBase64(file);
+  base64 = base64.slice(base64.indexOf(',') + 1);
+  return UploadImage.parse({
+    content: base64,
+    contentType: file.type,
+    fileName: file.name,
+  });
+}
 
 function AdminAuthorForm() {
   const navigate = useNavigate();
@@ -31,7 +44,11 @@ function AdminAuthorForm() {
     }
     return undefined;
   }, [watchAvatarPicture]);
-  const mutation = useMutation({
+  const uploadImageMutation = useMutation({
+    mutationFn: uploadImage,
+    onError: console.error,
+  });
+  const postAuthorMutation = useMutation({
     mutationFn: postAuthor,
     onSuccess: () => {
       // response.headers.has() TODO dodać redirect na nowy obiekt
@@ -42,10 +59,17 @@ function AdminAuthorForm() {
     },
   });
   const onSubmit = useCallback(
-    (data: AddAuthorType) => {
-      mutation.mutate(data);
+    async (data: AddAuthorType) => {
+      if (data.avatarPicture) {
+        const uploadImageType = await fileToUploadImage(data.avatarPicture);
+        const response = await uploadImageMutation.mutateAsync(uploadImageType);
+        if (response.ok) {
+          data.profilePictureUrl = response.headers.get('Location');
+        }
+      }
+      postAuthorMutation.mutate(data);
     },
-    [mutation]
+    [postAuthorMutation, uploadImageMutation]
   );
   return (
     <Box sx={{ mt: 2 }}>
@@ -72,7 +96,7 @@ function AdminAuthorForm() {
             {errors.avatarPicture != undefined && <span>{errors.avatarPicture.message}</span>}
             <TextInputField errors={errors} field="firstName" label="Imię" register={register} />
             <TextInputField errors={errors} field="lastName" label="Nazwisko/Nazwiska" register={register} />
-            <NumberInputField errors={errors} field='birthYear' label='Rok urodzenia' register={register} />
+            <NumberInputField errors={errors} field="birthYear" label="Rok urodzenia" register={register} />
             <Button type="submit" variant="contained">
               Zapisz
             </Button>

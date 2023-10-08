@@ -7,10 +7,6 @@ const AddAuthor = z.object({
     .custom<FileList>((v) => v == undefined || v instanceof FileList)
     .optional()
     .transform((val) => val?.item(0))
-    .refine((file) => {
-      console.log(file);
-      return true;
-    })
     .refine((file) => file == undefined || file.size <= 1_000_000, {
       message: 'Plik musi być mniejszy niż 1 MB.',
     })
@@ -20,10 +16,10 @@ const AddAuthor = z.object({
     ),
   firstName: z.string().max(40).nonempty(),
   lastName: z.string().max(50).nonempty(),
-  birthYear: z.preprocess(
-    (a) => parseInt(z.string().parse(a)),
-    z.number().positive())
-    .refine((year) => year <= new Date().getFullYear(), "Rok urodzenia nie może być z przyszłości"),
+  birthYear: z
+    .preprocess((a) => parseInt(z.string().parse(a)), z.number().positive())
+    .refine((year) => year <= new Date().getFullYear(), 'Rok urodzenia nie może być z przyszłości'),
+  profilePictureUrl: z.string().url().optional().nullable(),
 });
 
 export default AddAuthor;
