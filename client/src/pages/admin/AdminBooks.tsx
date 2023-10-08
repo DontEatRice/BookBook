@@ -57,12 +57,11 @@ function BooksTable({ data }: { data: BookViewModelType[] }) {
               <TableCell>{book.isbn}</TableCell>
               <TableCell>{book.title}</TableCell>
               <TableCell>{book.yearPublished}</TableCell>
-              <TableCell>{book.authors.map((author) => author.firstName + " "
-                + author.lastName).join(", ")}
+              <TableCell>
+                {book.authors.map((author) => author.firstName + ' ' + author.lastName).join(', ')}
               </TableCell>
-              <TableCell>{book.bookCategories.map((category) => category.name).join(", ")}
-              </TableCell>
-              <TableCell>{book.publisher.name}</TableCell>
+              <TableCell>{book.bookCategories.map((category) => category.name).join(', ')}</TableCell>
+              <TableCell>{book.publisher?.name}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -73,7 +72,7 @@ function BooksTable({ data }: { data: BookViewModelType[] }) {
 
 function AdminBooks() {
   const theme = useTheme();
-  const { data, status } = useQuery({ queryKey: ['books'], queryFn: getBooks })
+  const { data, status } = useQuery({ queryKey: ['books'], queryFn: getBooks });
 
   return (
     <Box mt={1}>
@@ -95,7 +94,7 @@ function AdminBooks() {
       )}
       {status == 'success' && <BooksTable data={data} />}
     </Box>
-  )
+  );
 }
 
 export default AdminBooks;
