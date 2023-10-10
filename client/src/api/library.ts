@@ -31,7 +31,7 @@ export const addBookToLibrary = async (addBookToLibrary: AddBookToLibraryType) =
 }
 
 export async function getBooksAvailableToAdd(libraryId: string) {
-    const response = await fetch(base + '/Libraries/' + libraryId + '/booksToAdd');
+    const response = await fetch(base + '/Libraries/' + libraryId + '/not-added');
     const data = await response.json();
     return BookViewModel.array().parse(data);
 }

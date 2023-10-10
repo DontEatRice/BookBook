@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers;
 using Server.Application.ViewModels;
 using Server.Infrastructure.Persistence.QueryHandlers;
-using static Server.Application.CommandHandlers.AddBookToLibraryHandler;
 
 namespace Server.Api.Controllers;
 
@@ -59,7 +58,7 @@ public class LibrariesController : ControllerBase
         return Ok(await Mediator.Send(new GetBooksInLibraryQuery(id)));
     }
 
-    [HttpGet("{id:guid}/booksToAdd")]
+    [HttpGet("{id:guid}/not-added")]
     public async Task<ActionResult<IEnumerable<BookViewModel>>> GetBooksToAdd(Guid id)
     {
         return Ok(await Mediator.Send(new GetBooksAvailableToAddQuery(id)));
