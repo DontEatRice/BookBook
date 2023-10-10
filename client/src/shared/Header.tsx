@@ -16,7 +16,7 @@ function Header() {
   return (
     <Box
       component="header"
-      sx={{ position: 'sticky', top: 0, left: 0, backgroundColor: theme.palette.background.default }}>
+      sx={{ position: 'sticky', top: 0, left: 0, backgroundColor: theme.palette.secondary.main }}>
       <Box sx={{ width: '100%' }}>
         <Grid container spacing={0}>
           {matches && (

@@ -5,6 +5,7 @@ import Container from '@mui/material/Container';
 import Footer from './shared/Footer';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 import CssBaseline from '@mui/material/CssBaseline';
 import AdminBooks from './pages/admin/AdminBooks';
 import AdminBookForm from './pages/admin/AdminBookForm';
@@ -18,18 +19,19 @@ import AdminPublishers from './pages/admin/AdminPublishers';
 import AdminPublisherForm from './pages/admin/AdminPublisherForm';
 import AdminLibraries from './pages/admin/AdminLibraries';
 import AdminLibraryForm from './pages/admin/AdminLibraryForm';
+import { colors } from '@mui/material';
 
 const mainTheme = createTheme({
   palette: {
     background: {
-      default: orange[100],
+      default: '#FFFFFF',
     },
     primary: {
-      main: orange[800],
+      main: orange[600],
     },
     secondary: {
-      main: orange[200],
-      dark: orange[300],
+      main: grey[800],
+      dark: grey[500],
     },
   },
 });
