@@ -57,7 +57,7 @@ public sealed class AddBookToLibraryHandler : IRequestHandler<AddBookToLibraryCo
             throw new NotFoundException($"Book with id: {request.BookId} not found", ApplicationErrorCodes.BookNotFound);
         }
 
-        var existingAssociation = _bookInLibraryRepository.FirstOrDefaultByLibraryAndBookAsync(request.LibraryId, request.BookId, cancellationToken);
+        var existingAssociation = await _bookInLibraryRepository.FirstOrDefaultByLibraryAndBookAsync(request.LibraryId, request.BookId, cancellationToken);
 
         if (existingAssociation is not null)
         {

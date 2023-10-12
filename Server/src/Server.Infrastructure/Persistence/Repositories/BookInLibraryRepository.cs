@@ -22,6 +22,16 @@ namespace Server.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(x => x.LibraryId == libraryId && x.BookId == bookId);
         }
 
+        public async Task<List<LibraryBook>> GetAllBooksInProvidedLibrary(Guid libraryId, CancellationToken cancellationToken)
+        {
+            return await _dbContext.LibraryBooks
+            .AsNoTracking()
+            .Include(x => x.Book)
+            .ThenInclude(x => x.Authors)
+            .Where(x => x.LibraryId == libraryId)
+            .ToListAsync();
+        }
+
         public async Task<List<Guid>> GetBooksIdsInProvidedLibrary(Guid libraryId, CancellationToken cancellationToken)
         {
             return await _dbContext.LibraryBooks

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Server.Application.ViewModels;
+using Server.Domain.Repositories;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
@@ -9,12 +9,12 @@ public sealed record GetBooksInLibraryQuery(Guid id) : IRequest<List<BookInLibra
 
 internal sealed class GetBooksInLibraryHandler : IRequestHandler<GetBooksInLibraryQuery, List<BookInLibraryViewModel>>
 {
-    private readonly BookBookDbContext _dbContext;
+    private readonly IBookInLibraryRepository _bookInLibraryRepository;
     private readonly IMapper _mapper;
 
-    public GetBooksInLibraryHandler(BookBookDbContext dbContext, IMapper mapper)
+    public GetBooksInLibraryHandler(IBookInLibraryRepository bookInLibraryRepository, IMapper mapper)
     {
-        _dbContext = dbContext;
+        _bookInLibraryRepository = bookInLibraryRepository;
         _mapper = mapper;
     }
 
@@ -22,12 +22,7 @@ internal sealed class GetBooksInLibraryHandler : IRequestHandler<GetBooksInLibra
     {
         // niestety musi być tak brzydko, ewentualnie jakoś na froncie w Zodzie
         // w BookViewModel zrobić, że Publisher i BookCategories mogą być null, bo tu ich nie potrzebujemy
-        var booksInLibrary = await _dbContext.LibraryBooks
-            .AsNoTracking()
-            .Include(x => x.Book)
-            .ThenInclude(x => x.Authors)
-            .Where(x => x.LibraryId == request.id)
-            .ToListAsync();
+        var booksInLibrary = await _bookInLibraryRepository.GetAllBooksInProvidedLibrary(request.id, cancellationToken);
 
         return _mapper.Map<List<BookInLibraryViewModel>>(booksInLibrary);
     }
