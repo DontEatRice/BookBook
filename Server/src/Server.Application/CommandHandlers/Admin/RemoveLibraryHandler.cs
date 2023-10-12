@@ -2,7 +2,7 @@
 using Server.Application.InfrastructureInterfaces;
 using Server.Domain.Repositories;
 
-namespace Server.Application.CommandHandlers;
+namespace Server.Application.CommandHandlers.Admin;
 
 public sealed record RemoveLibraryCommand(Guid Id) : IRequest;
 

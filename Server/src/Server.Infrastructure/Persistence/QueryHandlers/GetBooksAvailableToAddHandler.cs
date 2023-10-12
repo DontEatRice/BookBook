@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Server.Application.ViewModels;
+using Server.Domain.Repositories;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
@@ -9,29 +9,24 @@ public sealed record GetBooksAvailableToAddQuery(Guid Id) : IRequest<List<BookVi
 
 internal sealed class GetBooksAvailableToAddHandler : IRequestHandler<GetBooksAvailableToAddQuery, List<BookViewModel>>
 {
-    private readonly BookBookDbContext _dbContext;
     private readonly IMapper _mapper;
+    private readonly IBookInLibraryRepository _bookInLibraryRepository;
+    private readonly IBookRepository _bookRepository;
 
-    public GetBooksAvailableToAddHandler(BookBookDbContext dbContext, IMapper mapper)
+    public GetBooksAvailableToAddHandler(IMapper mapper, IBookRepository bookRepository, IBookInLibraryRepository bookInLibraryRepository)
     {
-        _dbContext = dbContext;
         _mapper = mapper;
+        _bookRepository = bookRepository;
+        _bookInLibraryRepository = bookInLibraryRepository;
     }
 
     public async Task<List<BookViewModel>> Handle(GetBooksAvailableToAddQuery request, CancellationToken cancellationToken)
     {
-        var booksInLibrary = await _dbContext.LibraryBooks
-            .AsNoTracking()
-            .Where(x => x.LibraryId == request.Id)
-            .Select(x => x.Book.Id)
-            .ToListAsync(cancellationToken);
+        var booksInLibrary = await _bookInLibraryRepository.GetBooksIdsInProvidedLibrary(request.Id, cancellationToken);
 
-        var booksToAdd = await _dbContext.Books
-            .AsNoTracking()
-            .Include(x => x.Authors)
-            .Include(x => x.Publisher)
-            .Include(x => x.BookCategories)
-            .Where(x => !booksInLibrary.Contains(x.Id)).ToListAsync(cancellationToken);
+        var books = await _bookRepository.FindAllAsync(cancellationToken);
+
+        var booksToAdd = books.Where(x => !booksInLibrary.Contains(x.Id)).ToList();
 
         return _mapper.Map<List<BookViewModel>>(booksToAdd);
     }
