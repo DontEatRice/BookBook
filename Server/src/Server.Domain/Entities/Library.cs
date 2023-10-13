@@ -8,7 +8,7 @@ public class Library
     public int HireTime { get; set; }
     public Address Address { get; set; }
     public OpenHours OpenHours { get; set; }
-    public ICollection<Book> Books { get; set; }
+    public ICollection<LibraryBook> LibraryBooks { get; set; }
 
     public static Library Create(Guid id, string name, int reservationTime,
         int hireTime, Address address, OpenHours openHours) => new()
@@ -19,6 +19,6 @@ public class Library
             HireTime = hireTime,
             Address = address,
             OpenHours = openHours,
-            Books = new List<Book>()
+            LibraryBooks = new List<LibraryBook>()
         };
 }
