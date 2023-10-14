@@ -8,4 +8,5 @@ public static class ApplicationErrorCodes
     public const string BookNotFound = "BOOK_NOT_FOUND";
     public const string PublisherNotFound = "PUBLISHER_NOT_FOUND";
     public const string LibraryNotFound = "LIBRARY_NOT_FOUND";
+    public const string ImageNotFound = "IMAGE_NOT_FOUND";
 }

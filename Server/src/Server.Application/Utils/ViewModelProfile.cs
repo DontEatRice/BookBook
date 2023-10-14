@@ -1,4 +1,5 @@
 using AutoMapper;
+using Server.Application.InternalModels;
 using Server.Application.ViewModels;
 using Server.Domain.Entities;
 
@@ -15,6 +16,7 @@ public class ViewModelProfile : Profile
         CreateMap<Library, LibraryViewModel>();
         CreateMap<Address, AddressViewModel>();
         CreateMap<OpenHours, OpenHoursViewModel>();
+        CreateMap<Image, ImageWithContent>();
         CreateMap<LibraryBook, BookInLibraryViewModel>();
     }
 }

@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import { PublisherViewModelType } from '../../models/PublisherViewModel';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { getPublishers } from '../../api/publisher';
 import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';

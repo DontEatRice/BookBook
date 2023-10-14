@@ -1,44 +1,54 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Server.Application.InfrastructureInterfaces;
-using Server.Domain.Repositories;
-using Server.Infrastructure.Persistence.Repositories;
-using System.Reflection;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Server.Application.InfrastructureInterfaces;
 using Server.Application.Utils;
 using Server.Domain.DomainServices;
+using Server.Domain.Repositories;
 using Server.Infrastructure.DomainServices;
+using Server.Infrastructure.Persistence.Repositories;
 using Server.Infrastructure.Persistence.Settings;
 using Server.Infrastructure.Services;
+using System.Reflection;
+using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace Server.Infrastructure.Persistence;
 
 internal static class Extensions
 {
     private const string SqlServerSectionName = "SqlServer";
-    private const string AuthSectionName = "Auth";
+    private const string AuthSectionName = "AuthSettings";
 
     public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
         var sqlServerSettings = new SqlServerSettings();
         var section = configuration.GetRequiredSection(SqlServerSectionName);
         section.Bind(sqlServerSettings);
-        
+
         var authSettings = new AuthSettings();
         section = configuration.GetRequiredSection(AuthSectionName);
         section.Bind(authSettings);
 
         services.AddAuth(authSettings);
-        services.AddDbContext<BookBookDbContext>(x => x.UseSqlServer(sqlServerSettings.ConnectionString));
+        services.AddDbContext<BookBookDbContext>(options =>
+        {
+            // https://go.microsoft.com/fwlink/?linkid=2134277 
+            options.UseSqlServer(sqlServerSettings.ConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            {
+                options.LogTo(Console.WriteLine, LogLevel.Information);
+            }
+        });
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IBookCategoryRepository, BookCategoryRepository>();
         services.AddScoped<IPublisherRepository, PublisherRepository>();
         services.AddScoped<IIdentityRepository, IdentityRepository>();
         services.AddScoped<ILibraryRepository, LibraryRepository>();
+        services.AddScoped<IImageRepository, ImageRepository>();
         services.AddScoped<IBookInLibraryRepository, BookInLibraryRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -49,13 +59,13 @@ internal static class Extensions
 
         return services;
     }
-    
+
     public static void AddQueries(this IServiceCollection services, IConfiguration configuration)
     {
         var authSettings = new AuthSettings();
         var section = configuration.GetRequiredSection(AuthSectionName);
         section.Bind(authSettings);
-        
+
         services.AddSingleton<ISecurityTokenService, SecurityTokenService>(_ => new SecurityTokenService(authSettings));
         services.AddAutoMapper(typeof(ViewModelProfile));
     }
@@ -63,8 +73,8 @@ internal static class Extensions
     public static void AddDomainServices(this IServiceCollection services)
     {
         services.AddScoped<IIdentityDomainService, IdentityDomainService>();
-    } 
-    
+    }
+
     private static void AddAuth(this IServiceCollection services, AuthSettings authSettings)
     {
         services.AddAuthentication(x =>
