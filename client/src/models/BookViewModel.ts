@@ -10,7 +10,7 @@ const BookViewModel = z.object({
   yearPublished: z.number().int().positive(),
   averageRating: z.nullable(z.number()),
   averageCriticRating: z.nullable(z.number()),
-  publisher: PublisherViewModel,
+  publisher: PublisherViewModel.nullable(),
   authors: z.array(AuthorViewModel),
   bookCategories: z.array(BookCategoryViewModel),
 });

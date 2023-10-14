@@ -61,7 +61,7 @@ function BooksTable({ data }: { data: BookViewModelType[] }) {
                 {book.authors.map((author) => author.firstName + ' ' + author.lastName).join(', ')}
               </TableCell>
               <TableCell>{book.bookCategories.map((category) => category.name).join(', ')}</TableCell>
-              <TableCell>{book.publisher.name}</TableCell>
+              <TableCell>{book.publisher?.name}</TableCell>
             </TableRow>
           ))}
         </TableBody>

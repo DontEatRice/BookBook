@@ -16,6 +16,7 @@ internal sealed class BookBookDbContext : DbContext
     public DbSet<Address> Addresses { get; set; }
     public DbSet<OpenHours> OpenHours { get; set; }
     public DbSet<Image> Images { get; set; }
+    public DbSet<LibraryBook> LibraryBooks { get; set; }
 
     public BookBookDbContext(DbContextOptions<BookBookDbContext> options) : base(options)
     {

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Server.Infrastructure.Persistence.Migrations
+namespace Server.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
@@ -35,8 +35,7 @@ namespace Server.Infrastructure.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    BirthYear = table.Column<int>(type: "int", nullable: false),
-                    ProfilePictureUrl = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true)
+                    BirthYear = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -68,22 +67,6 @@ namespace Server.Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Identities", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Images",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ContentType = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    Content = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    FileName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    Etag = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
-                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Images", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -244,24 +227,26 @@ namespace Server.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookLibrary",
+                name: "LibraryBooks",
                 columns: table => new
                 {
-                    BooksId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LibrariesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    LibraryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Amount = table.Column<int>(type: "int", nullable: false),
+                    Available = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookLibrary", x => new { x.BooksId, x.LibrariesId });
+                    table.PrimaryKey("PK_LibraryBooks", x => new { x.LibraryId, x.BookId });
                     table.ForeignKey(
-                        name: "FK_BookLibrary_Books_BooksId",
-                        column: x => x.BooksId,
+                        name: "FK_LibraryBooks_Books_BookId",
+                        column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookLibrary_Libraries_LibrariesId",
-                        column: x => x.LibrariesId,
+                        name: "FK_LibraryBooks_Libraries_LibraryId",
+                        column: x => x.LibraryId,
                         principalTable: "Libraries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -282,11 +267,6 @@ namespace Server.Infrastructure.Persistence.Migrations
                 table: "BookCategories",
                 column: "Name",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BookLibrary_LibrariesId",
-                table: "BookLibrary",
-                column: "LibrariesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Books_ISBN",
@@ -314,6 +294,11 @@ namespace Server.Infrastructure.Persistence.Migrations
                 name: "IX_Libraries_OpenHoursId",
                 table: "Libraries",
                 column: "OpenHoursId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LibraryBooks_BookId",
+                table: "LibraryBooks",
+                column: "BookId");
         }
 
         /// <inheritdoc />
@@ -326,10 +311,7 @@ namespace Server.Infrastructure.Persistence.Migrations
                 name: "BookBookCategory");
 
             migrationBuilder.DropTable(
-                name: "BookLibrary");
-
-            migrationBuilder.DropTable(
-                name: "Images");
+                name: "LibraryBooks");
 
             migrationBuilder.DropTable(
                 name: "sessions");

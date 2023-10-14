@@ -9,10 +9,10 @@ using Server.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Server.Infrastructure.Persistence.Migrations
+namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    [Migration("20231008141700_Init")]
+    [Migration("20231008212953_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Server.Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.11")
+                .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -53,21 +53,6 @@ namespace Server.Infrastructure.Persistence.Migrations
                     b.HasIndex("BooksId");
 
                     b.ToTable("BookBookCategory");
-                });
-
-            modelBuilder.Entity("BookLibrary", b =>
-                {
-                    b.Property<Guid>("BooksId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("LibrariesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("BooksId", "LibrariesId");
-
-                    b.HasIndex("LibrariesId");
-
-                    b.ToTable("BookLibrary");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Address", b =>
@@ -153,10 +138,6 @@ namespace Server.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("ProfilePictureUrl")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Authors");
@@ -218,39 +199,6 @@ namespace Server.Infrastructure.Persistence.Migrations
                     b.ToTable("BookCategories");
                 });
 
-            modelBuilder.Entity("Server.Domain.Entities.Image", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte[]>("Content")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<string>("Etag")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<DateTime>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Images");
-                });
-
             modelBuilder.Entity("Server.Domain.Entities.Library", b =>
                 {
                     b.Property<Guid>("Id")
@@ -281,6 +229,27 @@ namespace Server.Infrastructure.Persistence.Migrations
                     b.HasIndex("OpenHoursId");
 
                     b.ToTable("Libraries");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.LibraryBook", b =>
+                {
+                    b.Property<Guid>("LibraryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Available")
+                        .HasColumnType("int");
+
+                    b.HasKey("LibraryId", "BookId");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("LibraryBooks");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.OpenHours", b =>
@@ -385,21 +354,6 @@ namespace Server.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BookLibrary", b =>
-                {
-                    b.HasOne("Server.Domain.Entities.Book", null)
-                        .WithMany()
-                        .HasForeignKey("BooksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Server.Domain.Entities.Library", null)
-                        .WithMany()
-                        .HasForeignKey("LibrariesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Server.Domain.Entities.Auth.Identity", b =>
                 {
                     b.OwnsMany("Server.Domain.Entities.Auth.Session", "Sessions", b1 =>
@@ -456,6 +410,35 @@ namespace Server.Infrastructure.Persistence.Migrations
                     b.Navigation("Address");
 
                     b.Navigation("OpenHours");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.LibraryBook", b =>
+                {
+                    b.HasOne("Server.Domain.Entities.Book", "Book")
+                        .WithMany("BookLibraries")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Domain.Entities.Library", "Library")
+                        .WithMany("LibraryBooks")
+                        .HasForeignKey("LibraryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Library");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.Book", b =>
+                {
+                    b.Navigation("BookLibraries");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.Library", b =>
+                {
+                    b.Navigation("LibraryBooks");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Publisher", b =>

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Server.Application.CommandHandlers;
+using Server.Application.CommandHandlers.Admin;
 using Server.Application.ViewModels;
 using Server.Infrastructure.Persistence.QueryHandlers;
 
@@ -39,5 +39,28 @@ public class LibrariesController : ControllerBase
     {
         await Mediator.Send(new RemoveLibraryCommand(id));
         return NoContent();
+    }
+
+    [HttpPost("{id:guid}/books")]
+    public async Task<ActionResult> AddBook(Guid id, AddBookToLibraryCommand newBookInLibrary)
+    {
+        await Mediator.Send(newBookInLibrary with
+        {
+            LibraryId = id
+        });
+
+        return Ok();
+    }
+
+    [HttpGet("{id:guid}/books")]
+    public async Task<ActionResult<IEnumerable<BookInLibraryViewModel>>> GetBooks(Guid id)
+    {
+        return Ok(await Mediator.Send(new GetBooksInLibraryQuery(id)));
+    }
+
+    [HttpGet("{id:guid}/not-added")]
+    public async Task<ActionResult<IEnumerable<BookViewModel>>> GetBooksToAdd(Guid id)
+    {
+        return Ok(await Mediator.Send(new GetBooksAvailableToAddQuery(id)));
     }
 }
