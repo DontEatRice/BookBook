@@ -34,7 +34,7 @@ public sealed class AddLibraryHandler : IRequestHandler<AddLibraryCommand>
 
     public async Task Handle(AddLibraryCommand request, CancellationToken cancellationToken)
     {
-        var addres = new Address
+        var address = new Address
         {
             PostalCode = request.PostalCode,
             City = request.City,
@@ -62,9 +62,9 @@ public sealed class AddLibraryHandler : IRequestHandler<AddLibraryCommand>
             SundayCloseTime = request.SundayCloseTime
         };
 
-        var library = Library.Create(request.Id, request.Name, request.ReservationTime, request.HireTime, addres, openHours);
+        var library = Library.Create(request.Id, request.Name, request.ReservationTime, request.HireTime, address, openHours);
 
-        await _libraryRepository.AddAsync(library, cancellationToken);
+        _libraryRepository.Add(library);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

@@ -13,9 +13,9 @@ internal class LibraryRepository : ILibraryRepository
         _dbContext = dbContext;
     }
 
-    public async Task AddAsync(Library library, CancellationToken cancellationToken)
+    public void Add(Library library)
     {
-        await _dbContext.AddAsync(library, cancellationToken);
+        _dbContext.Add(library);
     }
 
     public async Task DeleteAsync(Guid id)
