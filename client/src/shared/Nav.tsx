@@ -1,3 +1,4 @@
+import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
@@ -10,7 +11,7 @@ function Nav() {
   const theme = useTheme();
   return (
     <Box sx={{ width: '100%', bgcolor: theme.palette.secondary.main }} component="nav" m={0}>
-      <Tabs aria-label="nav tabs example">
+      <Tabs aria-label="nav tabs example" centered>
         <NavItem label="Strona główna" link="/"/>
         <NavItem label="Ranking" link="/ranking" />
         <NavItem label="Test" link="/" />
@@ -25,9 +26,9 @@ function NavItem({ label, link }: { label: string; link: string }) {
   return (
     <NavLink to={link} style={{ textDecoration: 'none' }}>
       <Box
-        sx={{ backgroundColor: theme.palette.secondary.main, p: 1, '&:hover': { backgroundColor: 'orange'}, width: window.innerWidth/4}}
+        sx={{ backgroundColor: theme.palette.secondary.main, p: 1, '&:hover': { backgroundColor: 'orange'}}}
         color={theme.palette.text.primary}>
-        <Typography variant="h6" align="center">{label}</Typography>
+      <Typography variant="h6" align="center">{label}</Typography>
       </Box>
     </NavLink>
   );
