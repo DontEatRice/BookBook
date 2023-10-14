@@ -29,7 +29,6 @@ function Header() {
           </Grid>
           {matches && (
             <Grid item sm={3} xs={0}>
-              Profile itp
             </Grid>
           )}
         </Grid>
@@ -77,7 +76,7 @@ function HeaderLogo() {
         p={1}
         textAlign="center"
         borderRadius={6}
-        sx={{ backgroundColor: theme.palette.primary.main, display: 'inline-block', cursor: 'pointer' }}
+        sx={{display: 'inline-block', cursor: 'pointer' }}
         onClick={() => navigate('/')}>
         <Typography variant="h4">
           <AutoStoriesIcon /> BookBook

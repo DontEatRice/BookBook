@@ -14,8 +14,8 @@ function Nav() {
       <Tabs aria-label="nav tabs example" centered>
         <NavItem label="Strona główna" link="/"/>
         <NavItem label="Ranking" link="/ranking" />
-        <NavItem label="Test" link="/" />
-        <NavItem label="Testunio" link="/" />
+        <NavItem label="Test" link="/test1" />
+        <NavItem label="Testunio" link="/test2" />
       </Tabs>
     </Box>
   );
@@ -24,11 +24,11 @@ function Nav() {
 function NavItem({ label, link }: { label: string; link: string }) {
   const theme = useTheme();
   return (
-    <NavLink to={link} style={{ textDecoration: 'none' }}>
+    <NavLink to={link} style={{ textDecoration: 'none', color: theme.palette.secondary.dark}}>
       <Box
-        sx={{ backgroundColor: theme.palette.secondary.main, p: 1, '&:hover': { backgroundColor: 'orange'}}}
-        color={theme.palette.text.primary}>
-      <Typography variant="h6" align="center">{label}</Typography>
+        sx={{ p: 1, '&:hover': { backgroundColor: 'darkOrange'}}}
+        >
+      <Typography variant="h6" align="center" fontFamily='Lato'>{label}</Typography>
       </Box>
     </NavLink>
   );

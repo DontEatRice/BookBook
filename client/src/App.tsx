@@ -5,6 +5,7 @@ import Container from '@mui/material/Container';
 import Footer from './shared/Footer';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
+import { yellow } from '@mui/material/colors';
 import { grey } from '@mui/material/colors';
 import CssBaseline from '@mui/material/CssBaseline';
 import AdminBooks from './pages/admin/AdminBooks';
@@ -24,15 +25,15 @@ import { colors } from '@mui/material';
 const mainTheme = createTheme({
   palette: {
     background: {
-      default: '#FFFFFF',
+      default: grey[50],
     },
     primary: {
       main: orange[600],
     },
     secondary: {
-      main: grey[800],
-      dark: grey[500],
-    },
+      main: grey[200],
+      dark: grey[900],
+    }
   },
   typography: {
     fontFamily: [

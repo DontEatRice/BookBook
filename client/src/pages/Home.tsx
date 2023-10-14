@@ -22,8 +22,8 @@ function Home() {
   };
   return (
     <Container>
-      <Typography variant="h3">Witamy w BookBook!</Typography>
-      <Grid container justifyContent="space-between">
+      <Typography variant="h3"></Typography>
+      <Grid container justifyContent="space-between" m={2}>
         <Grid item>
           <BookTile book={book} />
         </Grid>
