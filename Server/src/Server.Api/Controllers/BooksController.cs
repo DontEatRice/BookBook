@@ -40,4 +40,10 @@ public class BooksController : ControllerBase
         await Mediator.Send(new RemoveBookCommand(id));
         return NoContent();
     }
+
+    [HttpGet("search")]
+    public async Task<ActionResult<IEnumerable<BookViewModel>>> Search([FromQuery] string query)
+    {
+        return Ok(await Mediator.Send(new SearchBooksQuery(query)));
+    }
 }
