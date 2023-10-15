@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Server.Application.CommandHandlers.Images;
 using Server.Application.InternalModels;
+using Server.Application.Utils;
 using Server.Infrastructure.Persistence.QueryHandlers;
 
 namespace Server.Api.Controllers;
@@ -16,7 +17,7 @@ public class ImagesController : ControllerBase
     private readonly IMemoryCache _memoryCache;
     private const int MaxAge = 3 * 24 * 60 * 60; // Trzy dni * 24 godziny * 60 minut * 60 sekund
     
-    public ImagesController(IMediator mediator, IMemoryCache memoryCache) : base(mediator)
+    public ImagesController(IMediator mediator, ISecurityTokenService securityTokenService, IMemoryCache memoryCache) : base(mediator, securityTokenService)
     {
         _memoryCache = memoryCache;
     }

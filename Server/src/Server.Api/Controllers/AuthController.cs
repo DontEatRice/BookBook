@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Auth;
+using Server.Application.Utils;
 
 namespace Server.Api.Controllers;
 
@@ -8,7 +9,7 @@ namespace Server.Api.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    public AuthController(IMediator mediator) : base(mediator)
+    public AuthController(IMediator mediator, ISecurityTokenService securityTokenService) : base(mediator, securityTokenService)
     {
     }
     

@@ -3,19 +3,12 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Extensions;
+using Server.Application.Utils;
 using Server.Domain.Entities.Auth;
 using Server.Infrastructure.Persistence.Settings;
 using Server.Utils;
 
 namespace Server.Infrastructure.Services;
-
-public interface ISecurityTokenService
-{
-    string GenerateAccessToken(Guid identityId, string email, Role role = Role.User);
-    string GenerateRefreshToken(Guid identityId, string email, Role role = Role.User);
-    Guid? GetIdentityIdFromRefreshToken(string token);
-    Role? GetIdentityRoleFromRefreshToken(string token);
-}
 
 public enum SecurityTokenType
 {
@@ -44,7 +37,7 @@ internal class SecurityTokenService : ISecurityTokenService
         return GenerateToken(identityId, email, AuthConstants.RefreshTokenDuration, role);
     }
 
-    public Guid? GetIdentityIdFromRefreshToken(string token)
+    public Guid? GetIdentityIdFromToken(string token)
     {
         var claimsPrincipal = ReadAndValidateToken(token);
     
@@ -52,23 +45,15 @@ internal class SecurityTokenService : ISecurityTokenService
         {
             return null;
         }
-    
-        var claimsArray = claimsPrincipal.Claims.ToArray();
-        var isTokenTypeCorrect = claimsArray
-            .FirstOrDefault(ca => ca.Type == JwtRegisteredClaimNames.Typ)?
-            .Value == SecurityTokenType.RefreshToken.GetDisplayName();
-    
-        if (!isTokenTypeCorrect)
-        {
-            return null;
-        }
-    
-        var identityId = claimsPrincipal.Claims.ToList().First(c => c.Value == AuthConstants.IdClaim).Value;
+
+        var claims = claimsPrincipal.Claims.ToList();
+        
+        var identityId = claims.First(c => c.Type == AuthConstants.IdClaim).Value;
     
         return Guid.Parse(identityId);
     }
     
-    public Role? GetIdentityRoleFromRefreshToken(string token)
+    public Role? GetIdentityRoleFromToken(string token)
     {
         var claimsPrincipal = ReadAndValidateToken(token);
         if (claimsPrincipal == null)
@@ -94,18 +79,18 @@ internal class SecurityTokenService : ISecurityTokenService
     private ClaimsPrincipal? ReadAndValidateToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-    
+
         return tokenHandler.ValidateToken(token,
             new TokenValidationParameters
             {
-                IssuerSigningKey = _securityKey,
                 ValidateIssuerSigningKey = true,
-                ValidateIssuer = true,
-                ValidateAudience = true,
+                IssuerSigningKey = _securityKey,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = false,
                 ClockSkew = TimeSpan.Zero
             }, out _);
     }
-    
     private string GenerateToken(Guid identityId, string email, TimeSpan expires,  Role role = Role.User)
     {
         var claims = new List<Claim>
@@ -121,7 +106,7 @@ internal class SecurityTokenService : ISecurityTokenService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow + AuthConstants.RefreshTokenDuration,
+            Expires = DateTime.UtcNow + expires,
             SigningCredentials = _signingCredentials
         };
         

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Admin;
+using Server.Application.Utils;
 using Server.Application.ViewModels;
 using Server.Infrastructure.Persistence.QueryHandlers;
 
@@ -10,7 +11,7 @@ namespace Server.Api.Controllers;
 [Route("[controller]")]
 public class LibrariesController : ControllerBase
 {
-    public LibrariesController(IMediator mediator) : base(mediator)
+    public LibrariesController(IMediator mediator, ISecurityTokenService securityTokenService) : base(mediator, securityTokenService)
     {
     }
 

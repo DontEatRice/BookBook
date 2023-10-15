@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Admin;
+using Server.Application.Utils;
 using Server.Application.ViewModels;
 using Server.Infrastructure.Persistence.QueryHandlers;
 
@@ -10,7 +11,7 @@ namespace Server.Api.Controllers;
 [Route("[Controller]")]
 public class BooksController : ControllerBase
 {
-    public BooksController(IMediator mediator) : base(mediator)
+    public BooksController(IMediator mediator, ISecurityTokenService securityTokenService) : base(mediator, securityTokenService)
     {
     }
     
@@ -21,6 +22,10 @@ public class BooksController : ControllerBase
     [HttpGet("{id:Guid}")]
     public async Task<ActionResult<BookViewModel>> Get(Guid id)
         => Ok(await Mediator.Send(new GetBookQuery(id)));
+    
+    [HttpGet("{id:Guid}/libraries")]
+    public async Task<ActionResult<List<LibraryViewModel>>> GetLibraries(Guid id)
+        => Ok(await Mediator.Send(new GetLibrariesWithBookQuery(id)));
 
     [HttpPost]
     public async Task<ActionResult> Post(AddBookCommand command)
