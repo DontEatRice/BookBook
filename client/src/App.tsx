@@ -72,7 +72,7 @@ function App() {
           <Route index element={<AdminLibraries />} />
           <Route path="add" element={<AdminLibraryForm />} />
         </Route>
-        <Route path="reservations">
+        <Route path="booksInLibrary">
           <Route index element={<AdminBooksInLibrary />} />
           <Route path="add" element={<AdminAddBookToLibraryForm />} />
         </Route>

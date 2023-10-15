@@ -11,7 +11,7 @@ function LibraryDropdown({
 }) {
   const [selectedOption, setSelectedOption] = useState<string>('');
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleChange = (event: { target: { value: string } }) => {
     setSelectedOption(event.target.value as string);
     data.setSelectedLibrary(event.target.value as string);
   };
@@ -19,7 +19,7 @@ function LibraryDropdown({
   return (
     <FormControl>
       <InputLabel>Select an Option</InputLabel>
-      <Select labelId="demo-simple-select-label" value={selectedOption} onChange={() => handleChange}>
+      <Select labelId="demo-simple-select-label" value={selectedOption} onChange={handleChange}>
         {data.data.map((library) => (
           <MenuItem key={library.id} value={library.id}>
             {library.name}

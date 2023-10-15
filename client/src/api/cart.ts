@@ -1,5 +1,6 @@
 import { AddToCartType } from '../models/AddToCart';
 import CartViewModel from '../models/CartViewModel';
+
 const base = import.meta.env.VITE_API_BASE_URL;
 
 export async function getCart() {
@@ -9,9 +10,10 @@ export async function getCart() {
     },
   });
   const data = await response.json();
-  if (response.status !== 200) {
-    throw new Error(data.code);
+  if (data.code === 'CART_NOT_FOUND') {
+    return { librariesInCart: [] };
   }
+  console.log(data);
   return CartViewModel.parse(data);
 }
 
