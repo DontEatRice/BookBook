@@ -37,7 +37,7 @@ export default function Reservations() {
       try {
         await addToCart({ bookId, libraryId });
         setError('');
-      } catch (error) {
+      } catch (error: any) {
         switch (error.message) {
           case 'BOOK_ALREADY_IN_CART':
             setError('Książka została już dodana do koszyka');

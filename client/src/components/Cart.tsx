@@ -2,7 +2,7 @@ import { useCartStore } from '../../src/store';
 import { getCart, removeFromCart } from '../api/cart';
 import { Button, Typography } from '@mui/material';
 import { CartViewModelType } from '../models/CartViewModel';
-import { useTheme } from '@emotion/react';
+import { useTheme } from '@mui/material/styles';
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 

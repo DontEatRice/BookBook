@@ -11,7 +11,7 @@ function LibraryDropdown({
 }) {
   const [selectedOption, setSelectedOption] = useState('');
 
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     setSelectedOption(event.target.value);
     data.setSelectedLibrary(event.target.value);
   };
