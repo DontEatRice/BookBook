@@ -64,9 +64,9 @@ public class AuthController : ControllerBase
             HttpOnly = true,
             // Path = "/",
             Secure = false,
-            IsEssential = true,
+            // IsEssential = true,
             Expires = DateTimeOffset.Now.Add(AuthConstants.RefreshTokenDuration),
-            SameSite = SameSiteMode.Strict
+            // SameSite = SameSiteMode.None,
         };
     }
 

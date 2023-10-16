@@ -8,8 +8,10 @@ import { login } from '../api/auth';
 import { useCallback } from 'react';
 import { LoginRequestType } from '../models/LoginRequest';
 import { ErrorResponse } from '../utils/constants';
+import { useAuth } from '../utils/auth/useAuth';
 
 function Login() {
+  const { login: setAccessToken } = useAuth();
   const navigate = useNavigate();
   const loginMutation = useMutation({
     mutationFn: login,
@@ -19,14 +21,15 @@ function Login() {
     async (data: LoginRequestType) => {
       const result = await loginMutation.mutateAsync(data);
       if (result.ok) {
-        //set access token
+        const responseBody = (await result.json()) as { accessToken: string };
+        setAccessToken(responseBody.accessToken);
         navigate('/');
         return;
       }
       const error = (await result.json()) as ErrorResponse;
       console.log({ error });
     },
-    [loginMutation, navigate]
+    [loginMutation, navigate, setAccessToken]
   );
   return (
     <Box width="100%">

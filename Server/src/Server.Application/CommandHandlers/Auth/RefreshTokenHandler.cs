@@ -32,8 +32,11 @@ public class RefreshTokenHandler : IRequestHandler<RefreshTokenCommand, AuthView
         {
             throw new AuthenticationException(exception.Message, exception.ErrorCode);
         }
+        finally
+        {
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+        }
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new AuthViewModel {AccessToken = accessToken, RefreshToken = refreshToken};
     }

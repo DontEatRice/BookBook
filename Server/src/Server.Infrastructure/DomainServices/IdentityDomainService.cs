@@ -1,3 +1,4 @@
+using Server.Application.InfrastructureInterfaces;
 using Server.Domain.DomainServices;
 using Server.Domain.Entities.Auth;
 using Server.Domain.Exceptions;
@@ -63,7 +64,7 @@ public class IdentityDomainService : IIdentityDomainService
 
     public async Task<AuthTokens> RefreshAccessTokenAsync(string oldRefreshToken, CancellationToken cancellationToken)
     {
-        var identityId = _securityTokenService.GetIdentityIdFromRefreshToken(oldRefreshToken);
+        var (identityId, validTo) = _securityTokenService.GetIdentityIdAndExpirationTimeFromToken(oldRefreshToken);
         // var loggedAs = _securityTokenService.GetIdentityRoleFromRefreshToken(oldRefreshToken);
 
         if (!identityId.HasValue)
@@ -75,6 +76,12 @@ public class IdentityDomainService : IIdentityDomainService
         
         if (identity == default)
         {
+            throw new DomainException("Invalid refresh token", DomainErrorCodes.InvalidRefreshToken);
+        }
+
+        if (validTo <= DateTime.Now)
+        {
+            identity.RemoveRefreshToken(oldRefreshToken);
             throw new DomainException("Invalid refresh token", DomainErrorCodes.InvalidRefreshToken);
         }
 

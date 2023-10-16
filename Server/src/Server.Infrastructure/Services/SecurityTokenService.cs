@@ -14,8 +14,9 @@ public interface ISecurityTokenService
 {
     string GenerateAccessToken(Guid identityId, string email, Role role = Role.User);
     string GenerateRefreshToken(Guid identityId);
-    Guid? GetIdentityIdFromRefreshToken(string token);
+    Guid? GetIdentityIdFromToken(string token);
     Role? GetIdentityRoleFromRefreshToken(string token);
+    (Guid?, DateTime) GetIdentityIdAndExpirationTimeFromToken(string rawToken);
 }
 
 public enum SecurityTokenType
@@ -59,7 +60,14 @@ internal class SecurityTokenService : ISecurityTokenService
         return GenerateToken(AuthConstants.RefreshTokenDuration, claims);
     }
 
-    public Guid? GetIdentityIdFromRefreshToken(string token)
+    public (Guid?, DateTime) GetIdentityIdAndExpirationTimeFromToken(string rawToken)
+    {
+        var token = ReadToken(rawToken);
+        var identityId = token.Claims.First(c => c.Type == AuthConstants.IdClaim).Value;
+        return (Guid.Parse(identityId), token.ValidTo);
+    }
+
+    public Guid? GetIdentityIdFromToken(string token)
     {
         var claimsPrincipal = ReadAndValidateToken(token);
     
@@ -68,17 +76,7 @@ internal class SecurityTokenService : ISecurityTokenService
             return null;
         }
     
-        // var claimsArray = claimsPrincipal.Claims.ToArray();
-        // var isTokenTypeCorrect = claimsArray
-        //     .FirstOrDefault(ca => ca.Type == JwtRegisteredClaimNames.Typ)?
-        //     .Value == SecurityTokenType.RefreshToken.GetDisplayName();
-        //
-        // if (!isTokenTypeCorrect)
-        // {
-        //     return null;
-        // }
-    
-        var identityId = claimsPrincipal.Claims.ToList().First(c => c.Value == AuthConstants.IdClaim).Value;
+        var identityId = claimsPrincipal.Claims.ToList().First(c => c.Type == AuthConstants.IdClaim).Value;
     
         return Guid.Parse(identityId);
     }
@@ -121,6 +119,12 @@ internal class SecurityTokenService : ISecurityTokenService
                 ValidAudience = _authSettings.Audience,
                 ValidIssuer = _authSettings.Issuer
             }, out _);
+    }
+
+    public JwtSecurityToken ReadToken(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        return tokenHandler.ReadJwtToken(token);
     }
     
     private string GenerateToken(TimeSpan expires, IEnumerable<Claim> claims)

@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
 using Server.Infrastructure.Persistence;
 using Server.Application.DependencyInjection;
@@ -48,6 +49,11 @@ public static class Extensions
         app.UseAuthorization();
         app.UseMiddleware<ValidationExceptionMiddleware>();
         app.MapControllers();
+        if (app.Environment.IsDevelopment())
+        {
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
+        }
 
         return app;
     }
