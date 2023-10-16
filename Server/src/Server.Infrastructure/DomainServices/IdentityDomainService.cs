@@ -50,7 +50,7 @@ public class IdentityDomainService : IIdentityDomainService
         }
 
         var accessToken = _securityTokenService.GenerateAccessToken(identity.Id, identity.Email, loginAs);
-        var refreshToken = _securityTokenService.GenerateRefreshToken(identity.Id, identity.Email, loginAs);
+        var refreshToken = _securityTokenService.GenerateRefreshToken(identity.Id);
 
         identity.Login(
             password: password,
@@ -64,9 +64,9 @@ public class IdentityDomainService : IIdentityDomainService
     public async Task<AuthTokens> RefreshAccessTokenAsync(string oldRefreshToken, CancellationToken cancellationToken)
     {
         var identityId = _securityTokenService.GetIdentityIdFromRefreshToken(oldRefreshToken);
-        var loggedAs = _securityTokenService.GetIdentityRoleFromRefreshToken(oldRefreshToken);
+        // var loggedAs = _securityTokenService.GetIdentityRoleFromRefreshToken(oldRefreshToken);
 
-        if (!identityId.HasValue || !loggedAs.HasValue)
+        if (!identityId.HasValue)
         {
             throw new DomainException("Invalid refresh token", DomainErrorCodes.InvalidRefreshToken);
         }
@@ -78,8 +78,12 @@ public class IdentityDomainService : IIdentityDomainService
             throw new DomainException("Invalid refresh token", DomainErrorCodes.InvalidRefreshToken);
         }
 
-        var accessToken = _securityTokenService.GenerateAccessToken(identity.Id, identity.Email, loggedAs.Value);
-        var refreshToken = _securityTokenService.GenerateRefreshToken(identity.Id, identity.Email, loggedAs.Value);
+        if (!Enum.TryParse<Role>(identity.Roles[0], out var loggedAs))
+        {
+            loggedAs = Role.User;
+        }
+        var accessToken = _securityTokenService.GenerateAccessToken(identity.Id, identity.Email, loggedAs);
+        var refreshToken = _securityTokenService.GenerateRefreshToken(identity.Id);
 
         identity.UpdateRefreshToken(
             oldRefreshToken: oldRefreshToken,

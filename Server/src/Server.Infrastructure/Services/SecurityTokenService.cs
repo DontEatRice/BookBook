@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Extensions;
@@ -12,7 +13,7 @@ namespace Server.Infrastructure.Services;
 public interface ISecurityTokenService
 {
     string GenerateAccessToken(Guid identityId, string email, Role role = Role.User);
-    string GenerateRefreshToken(Guid identityId, string email, Role role = Role.User);
+    string GenerateRefreshToken(Guid identityId);
     Guid? GetIdentityIdFromRefreshToken(string token);
     Role? GetIdentityRoleFromRefreshToken(string token);
 }
@@ -27,21 +28,35 @@ internal class SecurityTokenService : ISecurityTokenService
 {
     private readonly SecurityKey _securityKey;
     private readonly SigningCredentials _signingCredentials;
+    private readonly AuthSettings _authSettings;
 
     public SecurityTokenService(AuthSettings authSettings)
     {
         _securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSettings.Key));
         _signingCredentials = new SigningCredentials(_securityKey, SecurityAlgorithms.HmacSha256);
+        _authSettings = authSettings;
     }
 
     public string GenerateAccessToken(Guid identityId, string email, Role role = Role.User)
     {
-        return GenerateToken(identityId, email, AuthConstants.AccessTokenDuration, role);
+        var claims = new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(JwtRegisteredClaimNames.Sub, identityId.ToString()),
+            new(JwtRegisteredClaimNames.Email, email),
+            new(AuthConstants.IdClaim, identityId.ToString()),
+            new(AuthConstants.RoleClaim, role.ToString())
+        };
+        return GenerateToken(AuthConstants.AccessTokenDuration, claims);
     }
 
-    public string GenerateRefreshToken(Guid identityId, string email, Role role = Role.User)
+    public string GenerateRefreshToken(Guid identityId)
     {
-        return GenerateToken(identityId, email, AuthConstants.RefreshTokenDuration, role);
+        var claims = new List<Claim>
+        {
+            new(AuthConstants.IdClaim, identityId.ToString())
+        };
+        return GenerateToken(AuthConstants.RefreshTokenDuration, claims);
     }
 
     public Guid? GetIdentityIdFromRefreshToken(string token)
@@ -53,15 +68,15 @@ internal class SecurityTokenService : ISecurityTokenService
             return null;
         }
     
-        var claimsArray = claimsPrincipal.Claims.ToArray();
-        var isTokenTypeCorrect = claimsArray
-            .FirstOrDefault(ca => ca.Type == JwtRegisteredClaimNames.Typ)?
-            .Value == SecurityTokenType.RefreshToken.GetDisplayName();
-    
-        if (!isTokenTypeCorrect)
-        {
-            return null;
-        }
+        // var claimsArray = claimsPrincipal.Claims.ToArray();
+        // var isTokenTypeCorrect = claimsArray
+        //     .FirstOrDefault(ca => ca.Type == JwtRegisteredClaimNames.Typ)?
+        //     .Value == SecurityTokenType.RefreshToken.GetDisplayName();
+        //
+        // if (!isTokenTypeCorrect)
+        // {
+        //     return null;
+        // }
     
         var identityId = claimsPrincipal.Claims.ToList().First(c => c.Value == AuthConstants.IdClaim).Value;
     
@@ -102,27 +117,21 @@ internal class SecurityTokenService : ISecurityTokenService
                 ValidateIssuerSigningKey = true,
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                ClockSkew = TimeSpan.Zero
+                ClockSkew = TimeSpan.Zero,
+                ValidAudience = _authSettings.Audience,
+                ValidIssuer = _authSettings.Issuer
             }, out _);
     }
     
-    private string GenerateToken(Guid identityId, string email, TimeSpan expires,  Role role = Role.User)
+    private string GenerateToken(TimeSpan expires, IEnumerable<Claim> claims)
     {
-        var claims = new List<Claim>
-        {
-            new(JwtRegisteredClaimNames.Typ, SecurityTokenType.RefreshToken.GetDisplayName()),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(JwtRegisteredClaimNames.Sub, identityId.ToString()),
-            new(JwtRegisteredClaimNames.Email, email),
-            new(AuthConstants.IdClaim, identityId.ToString()),
-            new(AuthConstants.RoleClaim, role.ToString())
-        };
-        
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow + AuthConstants.RefreshTokenDuration,
-            SigningCredentials = _signingCredentials
+            Expires = DateTime.Now.Add(expires),
+            SigningCredentials = _signingCredentials,
+            Issuer = _authSettings.Issuer,
+            Audience = _authSettings.Audience
         };
         
         var tokenHandler = new JwtSecurityTokenHandler();

@@ -20,6 +20,8 @@ import AdminLibraries from './pages/admin/AdminLibraries';
 import AdminLibraryForm from './pages/admin/AdminLibraryForm';
 import AdminBooksInLibrary from './pages/admin/AdminBooksInLibrary';
 import AdminAddBookToLibraryForm from './pages/admin/AdminAddBookToLibraryForm';
+import Login from './pages/Login';
+import Box from '@mui/material/Box';
 
 const mainTheme = createTheme({
   palette: {
@@ -43,6 +45,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="login" element={<Login />} />
         <Route path="*" element={<div>NotFound</div>} />
       </Route>
       <Route path="/admin" element={<AdminLayout />}>
@@ -65,11 +68,11 @@ function App() {
         </Route>
         <Route path="libraries">
           <Route index element={<AdminLibraries />} />
-          <Route path='add' element={<AdminLibraryForm />} />
+          <Route path="add" element={<AdminLibraryForm />} />
         </Route>
         <Route path="booksInLibrary">
           <Route index element={<AdminBooksInLibrary />} />
-          <Route path='add' element={<AdminAddBookToLibraryForm />} />
+          <Route path="add" element={<AdminAddBookToLibraryForm />} />
         </Route>
         <Route path="*" element={<div>NotFound</div>} />
       </Route>
@@ -81,10 +84,12 @@ function Layout() {
   return (
     <ThemeProvider theme={mainTheme}>
       <CssBaseline />
-      <Header />
-      <Container>
-        <Outlet />
-      </Container>
+      <Box sx={{ minHeight: '100vh' }}>
+        <Header />
+        <Container>
+          <Outlet />
+        </Container>
+      </Box>
       <Footer />
     </ThemeProvider>
   );

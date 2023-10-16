@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +15,11 @@ public static class Extensions
     {
         services.AddQueries(configuration);
         services.AddDomainServices();
-        services.AddControllers(options => { options.Filters.Add(typeof(ExceptionFilter)); });
+        services.AddControllers(options => { options.Filters.Add(typeof(ExceptionFilter)); })
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
         services.AddDatabase(configuration);
         services.AddSwaggerGen();
         services.AddMemoryCache();
@@ -26,6 +31,7 @@ public static class Extensions
                     policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
+                        .AllowCredentials()
                         .WithExposedHeaders(HeaderNames.Location);
                 });
         });

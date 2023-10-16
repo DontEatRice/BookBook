@@ -15,7 +15,9 @@ public class IdentityConfiguration : IEntityTypeConfiguration<Identity>
             .Property(x => x.Roles)
             .HasConversion(new ValueConverter<List<string>, string>(
                 v => JsonSerializer.Serialize(v, new JsonSerializerOptions(JsonSerializerOptions.Default)),
-                v => JsonSerializer.Deserialize<List<string>>(v, new JsonSerializerOptions(JsonSerializerDefaults.General)) ?? new List<string>()));
+                v => JsonSerializer.Deserialize<List<string>>(v,
+                    new JsonSerializerOptions(JsonSerializerDefaults.General)) ?? new List<string>()));
+        
         
         builder.HasIndex(i => i.Email).IsUnique();
     }
