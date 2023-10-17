@@ -23,7 +23,6 @@ import AdminAddBookToLibraryForm from './pages/admin/AdminAddBookToLibraryForm';
 import Login from './pages/Login';
 import Box from '@mui/material/Box';
 import Reservations from './components/reservations/Books';
-import AuthorizedView from './components/auth/AuthorizedView';
 
 const mainTheme = createTheme({
   palette: {
