@@ -8,4 +8,5 @@ public interface IBookRepository
     void Delete(Book book);
     Task<Book?> FirstOrDefaultByIdAsync(Guid guid, CancellationToken cancellationToken);
     Task<List<Book>> FindAllAsync(CancellationToken cancellationToken);
+    Task<Book?> FirstOrDefaultByISBNAsync(string isbn, CancellationToken cancellationToken);
 }

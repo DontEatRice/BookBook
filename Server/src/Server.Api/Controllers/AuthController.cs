@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Auth;
+using Server.Application.Utils;
 
 namespace Server.Api.Controllers;
 

@@ -49,10 +49,17 @@ public sealed class AddBookHandler : IRequestHandler<AddBookCommand>
             throw new NotFoundException("Publisher not found", ApplicationErrorCodes.PublisherNotFound);
         }
 
+        var book = await _bookRepository.FirstOrDefaultByISBNAsync(request.ISBN, cancellationToken);
+
+        if (book is not null)
+        {
+            throw new LogicException("Book with this ISBN already exists", ApplicationErrorCodes.BookAlreadyAdded);
+        }
+
         var authors = await _authorRepository.ListByIdsAsync(request.AuthorsIDs, cancellationToken);
         var categories = await _bookCategoryRepository.ListByIdsAsync(request.CategoriesIds, cancellationToken);
 
-        var book = Book.Create(request.Id, request.ISBN, request.Title, request.YearPublished,
+        book = Book.Create(request.Id, request.ISBN, request.Title, request.YearPublished,
             publisher, authors, categories);
 
         await _bookRepository.AddAsync(book, cancellationToken);
