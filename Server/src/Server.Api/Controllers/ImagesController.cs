@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Server.Application.CommandHandlers.Images;
 using Server.Application.InternalModels;
+using Server.Application.Utils;
 using Server.Infrastructure.Persistence.QueryHandlers;
 
 namespace Server.Api.Controllers;

@@ -31,7 +31,12 @@ internal sealed class BookRepository : IBookRepository
             .Include(x => x.Authors)
             .Include(x => x.BookCategories)
             .Include(x => x.Publisher)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<Book?> FirstOrDefaultByISBNAsync(string isbn, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Books.FirstOrDefaultAsync(b => b.ISBN == isbn, cancellationToken);
     }
 
     public async Task<Book?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
