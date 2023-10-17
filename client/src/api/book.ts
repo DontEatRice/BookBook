@@ -20,3 +20,12 @@ export async function getBooks() {
     //w takim przypadku można by coś zlogować i wyświetlić stosowny komunikat
     return BookViewModel.array().parse(data);
 }
+
+export async function getBook(id: number) {
+    const response = await fetch(base + '/Books/' + id);
+    const data = await response.json();
+    //https://zod.dev/?id=basic-usage
+    //można też użyć funkcji .safeParse(data), która nie rzucałaby błędem
+    //w takim przypadku można by coś zlogować i wyświetlić stosowny komunikat
+    return BookViewModel.parse(data);
+}
