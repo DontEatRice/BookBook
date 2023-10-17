@@ -8,10 +8,14 @@ import Nav from './Nav';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
+import CartTab from '../components/CartTab';
+import { useCartStore } from '../../src/store';
+import { Button } from '@mui/material';
 
 function Header() {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up('sm'));
+  const cartStore = useCartStore();
 
   return (
     <Box
@@ -32,6 +36,10 @@ function Header() {
               Profile itp
             </Grid>
           )}
+          <Grid item sm={3} xs={0}>
+            {cartStore.isOpen && <CartTab />}
+            <Button onClick={() => cartStore.toggleCart()}>KOSZYK</Button>
+          </Grid>
         </Grid>
       </Box>
       <Nav />
@@ -88,3 +96,4 @@ function HeaderLogo() {
 }
 
 export default Header;
+

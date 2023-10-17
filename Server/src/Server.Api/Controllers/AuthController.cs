@@ -7,6 +7,7 @@ using Server.Application.Exceptions;
 using Server.Domain.Exceptions;
 using Server.Utils;
 using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
+using Server.Application.Utils;
 
 namespace Server.Api.Controllers;
 

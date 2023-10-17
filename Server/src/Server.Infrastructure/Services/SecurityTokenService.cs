@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Extensions;
+using Server.Application.Utils;
 using Server.Domain.Entities.Auth;
 using Server.Infrastructure.Persistence.Settings;
 using Server.Utils;
@@ -81,7 +82,7 @@ internal class SecurityTokenService : ISecurityTokenService
         return Guid.Parse(identityId);
     }
     
-    public Role? GetIdentityRoleFromRefreshToken(string token)
+    public Role? GetIdentityRoleFromToken(string token)
     {
         var claimsPrincipal = ReadAndValidateToken(token);
         if (claimsPrincipal == null)
@@ -107,10 +108,11 @@ internal class SecurityTokenService : ISecurityTokenService
     private ClaimsPrincipal? ReadAndValidateToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-    
+
         return tokenHandler.ValidateToken(token,
             new TokenValidationParameters
             {
+                ValidateIssuerSigningKey = true,
                 IssuerSigningKey = _securityKey,
                 ValidateIssuerSigningKey = true,
                 ValidateIssuer = true,

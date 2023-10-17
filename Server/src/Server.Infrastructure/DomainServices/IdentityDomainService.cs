@@ -1,9 +1,9 @@
 using Server.Application.InfrastructureInterfaces;
+using Server.Application.Utils;
 using Server.Domain.DomainServices;
 using Server.Domain.Entities.Auth;
 using Server.Domain.Exceptions;
 using Server.Domain.Repositories;
-using Server.Infrastructure.Services;
 
 namespace Server.Infrastructure.DomainServices;
 

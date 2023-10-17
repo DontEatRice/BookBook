@@ -17,6 +17,9 @@ function Nav() {
           <NavItem label="Strona główna" link="/" />
         </Grid>
         <Grid item>
+          <NavItem label="Rezerwuj(tymczasowe)" link="/reservations" />
+        </Grid>
+        <Grid item>
           <NavItem label="Ranking" link="/ranking" />
         </Grid>
       </Grid>
@@ -39,3 +42,4 @@ function NavItem({ label, link }: { label: string; link: string }) {
 }
 
 export default Nav;
+
