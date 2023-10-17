@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import BookTile from '../components/BookTile';
 import { BookViewModelType } from '../models/BookViewModel';
+import AuthorizedView from '../components/auth/AuthorizedView';
 import { useAuth } from '../utils/auth/useAuth';
 
 function Home() {
@@ -24,7 +25,9 @@ function Home() {
   };
   return (
     <Container>
-      <Typography variant="h3">Witamy w BookBook! {user !== null && user.email}</Typography>
+      <Typography variant="h3">
+        Witamy w BookBook<AuthorizedView roles={['User']}> {user?.email}</AuthorizedView>!
+      </Typography>
       <Grid container justifyContent="space-between">
         <Grid item>
           <BookTile book={book} />

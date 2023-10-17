@@ -18,7 +18,7 @@ public class IdentityLoginCommandValidator : AbstractValidator<LoginCommand>
     }
 }
 
-public sealed record LoginCommand(string Email, string Password, Role LoginAs) : IRequest<AuthViewModel>;
+public sealed record LoginCommand(string Email, string Password) : IRequest<AuthViewModel>;
 
 public class IdentityLoginCommandHandler : IRequestHandler<LoginCommand, AuthViewModel>
 {
@@ -37,7 +37,7 @@ public class IdentityLoginCommandHandler : IRequestHandler<LoginCommand, AuthVie
         try
         {
             (accessToken, refreshToken) = await _identityDomainService
-                .LoginAsync(command.Email.ToLower(), command.Password, command.LoginAs, cancellationToken);
+                .LoginAsync(command.Email.ToLower(), command.Password, cancellationToken);
         }
         catch (DomainException exception)
         {

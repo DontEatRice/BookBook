@@ -13,7 +13,7 @@ function AuthProvider({ children }: { children?: ReactNode }) {
     (token: string) => {
       const claims = getJwtBody(token);
       setItem('token', token);
-      setExpires(new Date(claims.exp));
+      setExpires(new Date(claims.exp * 1000));
       setUser(convertJwtToUser(token));
     },
     [setItem]

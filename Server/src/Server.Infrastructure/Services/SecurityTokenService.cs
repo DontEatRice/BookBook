@@ -13,7 +13,7 @@ namespace Server.Infrastructure.Services;
 
 public interface ISecurityTokenService
 {
-    string GenerateAccessToken(Guid identityId, string email, Role role = Role.User);
+    string GenerateAccessToken(Guid identityId, string email, ICollection<string> roles);
     string GenerateRefreshToken(Guid identityId);
     Guid? GetIdentityIdFromToken(string token);
     Role? GetIdentityRoleFromRefreshToken(string token);
@@ -39,16 +39,17 @@ internal class SecurityTokenService : ISecurityTokenService
         _authSettings = authSettings;
     }
 
-    public string GenerateAccessToken(Guid identityId, string email, Role role = Role.User)
+    public string GenerateAccessToken(Guid identityId, string email, ICollection<string> roles)
     {
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(JwtRegisteredClaimNames.Sub, identityId.ToString()),
             new(JwtRegisteredClaimNames.Email, email),
-            new(AuthConstants.IdClaim, identityId.ToString()),
-            new(AuthConstants.RoleClaim, role.ToString())
+            new(AuthConstants.IdClaim, identityId.ToString())
         };
+        claims.AddRange(roles.Select(role => new Claim(AuthConstants.RoleClaim, role)));
+
         return GenerateToken(AuthConstants.AccessTokenDuration, claims);
     }
 
@@ -82,7 +83,7 @@ internal class SecurityTokenService : ISecurityTokenService
         return Guid.Parse(identityId);
     }
     
-    public Role? GetIdentityRoleFromToken(string token)
+    public Role? GetIdentityRoleFromRefreshToken(string token)
     {
         var claimsPrincipal = ReadAndValidateToken(token);
         if (claimsPrincipal == null)
@@ -108,11 +109,10 @@ internal class SecurityTokenService : ISecurityTokenService
     private ClaimsPrincipal? ReadAndValidateToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-
+    
         return tokenHandler.ValidateToken(token,
             new TokenValidationParameters
             {
-                ValidateIssuerSigningKey = true,
                 IssuerSigningKey = _securityKey,
                 ValidateIssuerSigningKey = true,
                 ValidateIssuer = true,

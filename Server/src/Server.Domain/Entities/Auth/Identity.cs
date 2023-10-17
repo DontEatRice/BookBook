@@ -29,9 +29,9 @@ public class Identity
         return identity;
     }
 
-    public void Login(string password, string refreshToken, Role role = Role.User)
+    public void Login(string password, string refreshToken)
     {
-        if (PasswordHash == default || !PasswordHasher.Verify(password, PasswordHash) || !Roles.Contains(role.GetDisplayName()))
+        if (PasswordHash == default || !PasswordHasher.Verify(password, PasswordHash))
         {
             throw new DomainException("Invalid Credentials", DomainErrorCodes.InvalidCredentials);
         }

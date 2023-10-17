@@ -23,6 +23,7 @@ import AdminAddBookToLibraryForm from './pages/admin/AdminAddBookToLibraryForm';
 import Login from './pages/Login';
 import Box from '@mui/material/Box';
 import Reservations from './components/reservations/Books';
+import AuthorizedView from './components/auth/AuthorizedView';
 
 const mainTheme = createTheme({
   palette: {
@@ -47,14 +48,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
-        <Route path="*" element={<div>NotFound</div>} />
-      </Route>
-      <Route path="/reservations" element={<Layout />}>
-        <Route index element={<Reservations />} />
-        <Route path="*" element={<div>NotFound</div>} />
-      </Route>
-      <Route path="/reservations" element={<Layout />}>
-        <Route index element={<Reservations />} />
+        <Route path="reservations" element={<Reservations />} />
         <Route path="*" element={<div>NotFound</div>} />
       </Route>
       <Route path="/admin" element={<AdminLayout />}>
@@ -78,11 +72,9 @@ function App() {
         <Route path="libraries">
           <Route index element={<AdminLibraries />} />
           <Route path="add" element={<AdminLibraryForm />} />
-          <Route path="add" element={<AdminLibraryForm />} />
         </Route>
         <Route path="booksInLibrary">
           <Route index element={<AdminBooksInLibrary />} />
-          <Route path="add" element={<AdminAddBookToLibraryForm />} />
           <Route path="add" element={<AdminAddBookToLibraryForm />} />
         </Route>
         <Route path="*" element={<div>NotFound</div>} />

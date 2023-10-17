@@ -49,7 +49,6 @@ public class AuthController : ControllerBase
         }
 
         var tokens = await Mediator.Send(new RefreshTokenCommand(refreshToken));
-        // Response.Cookies.Delete(RefreshTokenCookieName);
         Response.Cookies.Append(RefreshTokenCookieName, tokens.RefreshToken, CreateCookieOptionsForRefreshToken());
         return Ok(tokens);
     }
@@ -63,11 +62,8 @@ public class AuthController : ControllerBase
             Domain = Request.Host.Host,
             Path = "/Auth/refresh",
             HttpOnly = true,
-            // Path = "/",
             Secure = false,
-            // IsEssential = true,
             Expires = DateTimeOffset.Now.Add(AuthConstants.RefreshTokenDuration),
-            // SameSite = SameSiteMode.None,
         };
     }
 
