@@ -8,7 +8,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';

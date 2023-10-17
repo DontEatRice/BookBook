@@ -1,8 +1,8 @@
+using Server.Application.Utils;
 using Server.Domain.DomainServices;
 using Server.Domain.Entities.Auth;
 using Server.Domain.Exceptions;
 using Server.Domain.Repositories;
-using Server.Infrastructure.Services;
 
 namespace Server.Infrastructure.DomainServices;
 
@@ -63,8 +63,8 @@ public class IdentityDomainService : IIdentityDomainService
 
     public async Task<AuthTokens> RefreshAccessTokenAsync(string oldRefreshToken, CancellationToken cancellationToken)
     {
-        var identityId = _securityTokenService.GetIdentityIdFromRefreshToken(oldRefreshToken);
-        var loggedAs = _securityTokenService.GetIdentityRoleFromRefreshToken(oldRefreshToken);
+        var identityId = _securityTokenService.GetIdentityIdFromToken(oldRefreshToken);
+        var loggedAs = _securityTokenService.GetIdentityRoleFromToken(oldRefreshToken);
 
         if (!identityId.HasValue || !loggedAs.HasValue)
         {

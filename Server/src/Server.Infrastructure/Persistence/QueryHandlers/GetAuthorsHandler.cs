@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.ViewModels;
@@ -21,6 +22,6 @@ internal sealed class GetAuthorsHandler : IRequestHandler<GetAuthorsQuery, IEnum
     public async Task<IEnumerable<AuthorViewModel>> Handle(GetAuthorsQuery request, CancellationToken cancellationToken)
         => await _dbContext.Authors
             .AsNoTracking()
-            .Select(x => _mapper.Map<AuthorViewModel>(x))
+            .ProjectTo<AuthorViewModel>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 }

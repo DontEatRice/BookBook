@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { postCategory } from '../../api/category';
 import { useNavigate } from 'react-router-dom';
 import AddCategory, { AddCategoryType } from '../../models/AddCategory';

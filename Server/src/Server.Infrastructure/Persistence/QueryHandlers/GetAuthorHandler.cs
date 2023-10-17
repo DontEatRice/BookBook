@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.Exceptions;
@@ -22,15 +23,17 @@ internal sealed class GetAuthorHandler : IRequestHandler<GetAuthorQuery, AuthorV
 
     public async Task<AuthorViewModel> Handle(GetAuthorQuery request, CancellationToken cancellationToken)
     {
-        var author = await _dbContext.Authors
+        var authorViewModel = await _dbContext.Authors
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+            .Where(x => x.Id == request.Id)
+            .ProjectTo<AuthorViewModel>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        if (author is null)
+        if (authorViewModel is null)
         {
             throw new NotFoundException("Author not found", ApplicationErrorCodes.AuthorNotFound);
         }
 
-        return _mapper.Map<AuthorViewModel>(author);
+        return authorViewModel;
     }
 }

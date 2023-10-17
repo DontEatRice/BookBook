@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { getBooks } from '../../api/book';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting

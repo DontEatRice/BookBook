@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Domain.Entities;
 using Server.Domain.Entities.Auth;
+using Server.Domain.Entities.Reservations;
 
 namespace Server.Infrastructure.Persistence;
 
@@ -15,7 +16,10 @@ internal sealed class BookBookDbContext : DbContext
     public DbSet<Library> Libraries { get; set; }
     public DbSet<Address> Addresses { get; set; }
     public DbSet<OpenHours> OpenHours { get; set; }
+    public DbSet<Image> Images { get; set; }
     public DbSet<LibraryBook> LibraryBooks { get; set; }
+    public DbSet<Cart> Carts { get; set; }
+    public DbSet<Reservation> Reservations { get; set; }
 
     public BookBookDbContext(DbContextOptions<BookBookDbContext> options) : base(options)
     {
