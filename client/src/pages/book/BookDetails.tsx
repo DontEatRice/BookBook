@@ -21,7 +21,7 @@ function AuthorsTable({ authors }: { authors: AuthorViewModelType[] }) {
         <Table>
             <TableHead>
                 <TableRow>
-                    <TableCell>Autor</TableCell>
+                    <TableCell>Autorzy</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -37,7 +37,7 @@ function AuthorsTable({ authors }: { authors: AuthorViewModelType[] }) {
 
 function BookDetails() {
     const params = useParams();
-    const { book, status } = useQuery({ queryKey: ['book'], queryFn: getBook(parseInt(params.bookId+"")) });
+    const { data, status } = useQuery({ queryKey: ['books', params.bookId], queryFn: () => getBook(params.bookId+"") });
 
     return (
         <Box mt={2}>
@@ -45,12 +45,12 @@ function BookDetails() {
             {status == 'error' && (
               'Błąd!'
             )}
-            {status == 'success' && (
+            {status == 'success' && <div>essa</div> && (
                 <Grid container spacing={2} direction="column">
-                    <Grid item><FilledComponent label="ISBN" value={book.isbn}/></Grid>
-                    <Grid item><FilledComponent label="Tytuł" value={book.title}/></Grid>
-                    <Grid item><FilledComponent label="Wydawca" value={book.publisher?.name+""} /></Grid>
-                    <AuthorsTable authors = {book.authors}/>
+                    <Grid item><FilledComponent label="ISBN" value={data.isbn}/></Grid>
+                    <Grid item><FilledComponent label="Tytuł" value={data.title}/></Grid>
+                    <Grid item><FilledComponent label="Wydawca" value={data.publisher?.name+""} /></Grid>
+                    <AuthorsTable authors = {data.authors}/>
                 </Grid>
             )}
         </Box>
