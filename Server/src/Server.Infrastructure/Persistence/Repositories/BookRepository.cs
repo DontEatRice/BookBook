@@ -44,14 +44,22 @@ internal sealed class BookRepository : IBookRepository
         return await _dbContext.Books.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public async Task<List<Book>> SearchBooks(string query, CancellationToken cancellationToken)
+    public async Task<List<Book>> FindAsync(string? query, CancellationToken cancellationToken)
     {
+        if (query == null || query == "")
+        {
+            return await _dbContext.Books
+                .Include(x => x.Authors)
+                .Include(x => x.BookCategories)
+                .Include(x => x.Publisher)
+                .ToListAsync();
+        }
+
         return await _dbContext.Books
-            .AsNoTracking()
-            .Include(x => x.Authors)
-            .Include(x => x.BookCategories)
-            .Include(x => x.Publisher)
-            .Where(x => EF.Functions.FreeText(x.FullText, $"{query}"))
-            .ToListAsync();
+                .Include(x => x.Authors)
+                .Include(x => x.BookCategories)
+                .Include(x => x.Publisher)
+                .Where(x => EF.Functions.FreeText(x.FullText, $"{query}"))
+                .ToListAsync();
     }
 }

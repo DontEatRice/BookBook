@@ -16,8 +16,8 @@ public class BooksController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BookViewModel>>> List()
-        => Ok(await Mediator.Send(new GetBooksQuery()));
+    public async Task<ActionResult<IEnumerable<BookViewModel>>> List([FromQuery] string? query)
+        => Ok(await Mediator.Send(new GetBooksQuery(query)));
 
     [HttpGet("{id:Guid}")]
     public async Task<ActionResult<BookViewModel>> Get(Guid id)
@@ -44,11 +44,5 @@ public class BooksController : ControllerBase
     {
         await Mediator.Send(new RemoveBookCommand(id));
         return NoContent();
-    }
-
-    [HttpGet("search")]
-    public async Task<ActionResult<IEnumerable<BookViewModel>>> Search([FromQuery] string query)
-    {
-        return Ok(await Mediator.Send(new SearchBooksQuery(query)));
     }
 }
