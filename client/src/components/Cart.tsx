@@ -23,7 +23,7 @@ export default function Cart() {
 
       {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
       {status == 'error' && (
-        <Typography variant="h3" color={theme.palette.error.main}>
+        <Typography variant="h3" color={'error'}>
           Błąd!
         </Typography>
       )}
