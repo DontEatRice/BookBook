@@ -1,6 +1,6 @@
-import { useTheme } from '@mui/material/styles';
 import Cart from './Cart';
 import { useCartStore } from '../store';
+import { useTheme } from '@emotion/react';
 
 export default function CartTab() {
   const theme = useTheme();

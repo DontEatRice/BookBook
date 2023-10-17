@@ -1,20 +1,14 @@
 import { useCartStore } from '../../src/store';
 import { getCart, removeFromCart } from '../api/cart';
-import { Button, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 import { CartViewModelType } from '../models/CartViewModel';
-import { useTheme } from '@mui/material/styles';
-import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 export default function Cart() {
-  const theme = useTheme();
   const cartStore = useCartStore();
 
   const { data, status, refetch } = useQuery({ queryKey: ['cart'], queryFn: getCart });
-
-  useEffect(() => {
-    //
-  }, [cartStore.isChanged]);
 
   const removeItem = async (bookId: string) => {
     await removeFromCart(bookId);

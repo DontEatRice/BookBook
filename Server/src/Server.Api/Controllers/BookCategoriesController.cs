@@ -11,7 +11,7 @@ namespace Server.Api.Controllers;
 [Route("[controller]")]
 public class BookCategoriesController : ControllerBase
 {
-    public BookCategoriesController(IMediator mediator, ISecurityTokenService securityTokenService) : base(mediator, securityTokenService)
+    public BookCategoriesController(IMediator mediator) : base(mediator)
     {
     }
     

@@ -8,7 +8,7 @@ namespace Server.Api.Controllers;
 [Route("[controller]")]
 public class ReservationsController : ControllerBase
 {
-    public ReservationsController(IMediator mediator, ISecurityTokenService securityTokenService) : base(mediator, securityTokenService)
+    public ReservationsController(IMediator mediator) : base(mediator)
     {
     }
 }

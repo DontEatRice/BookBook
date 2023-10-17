@@ -9,7 +9,7 @@ namespace Server.Api.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    public AuthController(IMediator mediator, ISecurityTokenService securityTokenService) : base(mediator, securityTokenService)
+    public AuthController(IMediator mediator) : base(mediator)
     {
     }
     

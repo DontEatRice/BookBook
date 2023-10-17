@@ -4,17 +4,16 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 import { BookViewModelType } from '../../models/BookViewModel';
-import { useTheme } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import { getBooks } from '../../api/book';
-import { Button, Typography } from '@mui/material';
 import { useState } from 'react';
 import LibrariesWithBook from './BookLibraryDropdown';
 import { addToCart } from '../../api/cart';
 
 export default function Reservations() {
-  const theme = useTheme();
   const { data, status } = useQuery({ queryKey: ['books'], queryFn: getBooks });
   const [selectedLibrary, setSelectedLibrary] = useState('');
 
@@ -22,7 +21,7 @@ export default function Reservations() {
     <div>
       {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
       {status == 'error' && (
-        <Typography variant="h3" color={theme.palette.error.main}>
+        <Typography variant="h3" color={'error'}>
           Błąd!
         </Typography>
       )}
@@ -48,9 +47,6 @@ export default function Reservations() {
             break;
           case 'LIBRARY_NOT_FOUND':
             setError('Biblioteka nie została znaleziona');
-            break;
-          case 'Unexpected end of JSON input':
-            setError('');
             break;
           default:
             setError(`Wystąpił nieznany błąd: ${err.message}`);

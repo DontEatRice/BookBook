@@ -11,7 +11,7 @@ namespace Server.Api.Controllers;
 [Route("[controller]")]
 public class AuthorsController : ControllerBase
 {
-    public AuthorsController(IMediator mediator, ISecurityTokenService securityTokenService) : base(mediator, securityTokenService)
+    public AuthorsController(IMediator mediator) : base(mediator)
     {
     }
 
