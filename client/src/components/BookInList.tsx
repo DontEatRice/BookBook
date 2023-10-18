@@ -1,10 +1,8 @@
-import { useTheme } from '@mui/material/styles';
 import { BookViewModelType } from '../models/BookViewModel';
 import { useNavigate } from 'react-router-dom';
 import { Button, Grid, Paper, Rating, Typography, styled } from '@mui/material';
 
 function BookInList({ book }: { book: BookViewModelType }) {
-  const theme = useTheme();
   const navigate = useNavigate();
 
   const Img = styled('img')({
