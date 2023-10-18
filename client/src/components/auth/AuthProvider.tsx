@@ -31,7 +31,7 @@ function AuthProvider({ children }: { children?: ReactNode }) {
   useEffect(() => {
     handleTokenChange();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [handleTokenChange]);
 
   useEffect(() => {
     window.addEventListener('storage', handleTokenChange);
@@ -39,7 +39,7 @@ function AuthProvider({ children }: { children?: ReactNode }) {
   }, []);
 
   const logout = useCallback(() => {
-    setItem(LocalStorageTokenName, '');
+    setItem(LocalStorageTokenKey, '');
     setExpires(null);
   }, [setItem]);
 
