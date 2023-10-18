@@ -25,17 +25,16 @@ function AuthProvider({ children }: { children?: ReactNode }) {
     if (token) {
       login(token);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) 
+  }, [getItem, login]) 
 
   useEffect(() => {
     handleTokenChange();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     window.addEventListener('storage', handleTokenChange);
-    return () => window.removeEventListener('storage', handleStorage());
+    return () => window.removeEventListener('storage', handleStorage);
   }, [handleTokenChange]);
 
   const logout = useCallback(() => {
