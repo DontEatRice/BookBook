@@ -9,4 +9,5 @@ public interface IAuthorRepository
     Task<int> Delete(Guid id, CancellationToken cancellationToken = default);
     Task<Author?> FirstOrDefaultByIdAsync(Guid guid, CancellationToken cancellationToken);
     Task<List<Author>> ListByIdsAsync(List<Guid> ids, CancellationToken cancellationToken);
+    Task<List<Author>> FindAllAsync(CancellationToken cancellationToken);
 }

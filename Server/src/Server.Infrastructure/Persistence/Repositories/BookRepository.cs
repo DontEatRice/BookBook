@@ -41,7 +41,11 @@ internal sealed class BookRepository : IBookRepository
 
     public async Task<Book?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _dbContext.Books.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        return await _dbContext.Books
+            .Include(x => x.Authors)
+            .Include(x => x.BookCategories)
+            .Include(x => x.Publisher)
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
     public async Task<List<Book>> FindAsync(string? query, CancellationToken cancellationToken)
