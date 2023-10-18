@@ -34,7 +34,7 @@ function AuthProvider({ children }: { children?: ReactNode }) {
 
   useEffect(() => {
     window.addEventListener('storage', handleTokenChange);
-    return () => window.removeEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleTokenChange);
   }, [handleTokenChange]);
 
   const logout = useCallback(() => {
