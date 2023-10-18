@@ -1,6 +1,6 @@
 import { LoginRequestType } from '../models/LoginRequest';
 import { getJwtBody } from '../utils/utils';
-import { LocalStorageTokenName } from '../utils/constants';
+import { LocalStorageTokenKey } from '../utils/constants';
 
 const base = import.meta.env.VITE_API_BASE_URL + '/Auth';
 
@@ -21,7 +21,7 @@ export const login = async (request: LoginRequestType) => {
 };
 
 export async function getAuthToken() {
-  const token = localStorage.getItem(LocalStorageTokenName);
+  const token = localStorage.getItem(LocalStorageTokenKey);
   if (token === null) {
     throw new AuthError('UNATHORIZED');
   }
@@ -31,7 +31,7 @@ export async function getAuthToken() {
       throw new AuthError('UNATHORIZED');
     }
     const responseBody = (await refreshResponse.json()) as { accessToken: string };
-    localStorage.setItem(LocalStorageTokenName, responseBody.accessToken);
+    localStorage.setItem(LocalStorageTokenKey, responseBody.accessToken);
     window.dispatchEvent(new Event('storage'));
     return `Bearer ${responseBody.accessToken}`;
   }

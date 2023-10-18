@@ -3,7 +3,7 @@ import { AuthContext } from '../../utils/auth/AuthContext';
 import { User } from '../../models/User';
 import { useLocalStorage } from '../../utils/auth/useLocalStorage';
 import { getJwtBody, convertJwtToUser } from '../../utils/utils';
-import { LocalStorageTokenName } from '../../utils/constants';
+import { LocalStorageTokenKey } from '../../utils/constants';
 
 function AuthProvider({ children }: { children?: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -13,7 +13,7 @@ function AuthProvider({ children }: { children?: ReactNode }) {
   const login = useCallback(
     (token: string) => {
       const claims = getJwtBody(token);
-      setItem(LocalStorageTokenName, token);
+      setItem(LocalStorageTokenKey, token);
       setExpires(new Date(claims.exp * 1000));
       setUser(convertJwtToUser(token));
     },
@@ -21,7 +21,7 @@ function AuthProvider({ children }: { children?: ReactNode }) {
   );
 
   const handleTokenChange = useCallback(() => {
-    const token = getItem(LocalStorageTokenName);
+    const token = getItem(LocalStorageTokenKey);
     if (token) {
       login(token);
     }
