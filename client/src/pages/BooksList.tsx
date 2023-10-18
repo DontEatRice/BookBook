@@ -34,9 +34,9 @@ import { useLocation } from 'react-router-dom';
 
 function Books({ data }: { data: BookViewModelType[] }) {
   return (
-    <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+    <Grid container spacing={1}>
       {data.map((book) => (
-        <Grid xs={6}>
+        <Grid item xs={6}>
           <BookInList book={book} />
         </Grid>
       ))}
@@ -56,7 +56,7 @@ function BooksList() {
   });
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box>
       {searchStatus == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
       {searchStatus == 'error' && (
         <Typography variant="h3" color={theme.palette.error.main}>
