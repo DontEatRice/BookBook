@@ -5,6 +5,8 @@ export type ErrorResponse = {
   code: string;
 };
 
+export const LocalStorageTokenKey = 'token';
+
 export type Claims = {
   idenityid: string;
   role: string | Array<string>;

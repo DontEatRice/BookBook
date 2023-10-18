@@ -3,6 +3,7 @@ import { AuthContext } from '../../utils/auth/AuthContext';
 import { User } from '../../models/User';
 import { useLocalStorage } from '../../utils/auth/useLocalStorage';
 import { getJwtBody, convertJwtToUser } from '../../utils/utils';
+import { LocalStorageTokenName } from '../../utils/constants';
 
 function AuthProvider({ children }: { children?: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -12,23 +13,33 @@ function AuthProvider({ children }: { children?: ReactNode }) {
   const login = useCallback(
     (token: string) => {
       const claims = getJwtBody(token);
-      setItem('token', token);
+      setItem(LocalStorageTokenName, token);
       setExpires(new Date(claims.exp * 1000));
       setUser(convertJwtToUser(token));
     },
     [setItem]
   );
 
-  useEffect(() => {
-    const token = getItem('token');
+  const handleTokenChange = useCallback(() => {
+    const token = getItem(LocalStorageTokenName);
     if (token) {
       login(token);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) 
+
+  useEffect(() => {
+    handleTokenChange();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('storage', handleTokenChange);
+    return () => window.removeEventListener('storage', handleStorage());
   }, []);
 
   const logout = useCallback(() => {
-    setItem('token', '');
+    setItem(LocalStorageTokenName, '');
     setExpires(null);
   }, [setItem]);
 
