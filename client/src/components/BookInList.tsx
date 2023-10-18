@@ -1,7 +1,7 @@
 import { useTheme } from '@mui/material/styles';
 import { BookViewModelType } from '../models/BookViewModel';
 import { useNavigate } from 'react-router-dom';
-import { ButtonBase, Grid, Paper, Rating, Typography, styled } from '@mui/material';
+import { Button, Grid, Paper, Rating, Typography, styled } from '@mui/material';
 
 function BookInList({ book }: { book: BookViewModelType }) {
   const theme = useTheme();
@@ -24,14 +24,14 @@ function BookInList({ book }: { book: BookViewModelType }) {
       }}>
       <Grid container spacing={2}>
         <Grid item>
-          <ButtonBase sx={{ width: 128, height: 128 }}>
-            <Img alt="complex" src="/krew-elfow-wiedzmin-tom-3-w-iext133112616.jpg" />
-          </ButtonBase>
+          <Button sx={{ width: 128, height: 128 }} onClick={() => navigate(`/books/${book.id}`)}>
+            <Img alt="complex" src="" />
+          </Button>
         </Grid>
         <Grid item xs={12} sm container>
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
-              <Typography gutterBottom variant="subtitle1" component="div">
+              <Typography gutterBottom variant="h5" component="div">
                 {book.title}
               </Typography>
               <Typography variant="body2" gutterBottom>
@@ -45,7 +45,7 @@ function BookInList({ book }: { book: BookViewModelType }) {
           <Grid item>
             <Rating
               name="half-rating-read"
-              value={book.averageRating == null ? 2.5 : book.averageRating}
+              value={book.averageRating == null ? 2.25 : book.averageRating}
               precision={0.25}
               readOnly
             />

@@ -1,11 +1,13 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useQuery } from 'react-query';
+
 import { BookViewModelType } from '../models/BookViewModel';
 import { useTheme } from '@mui/material/styles';
-import { getBooks } from '../api/book';
-import { Grid, Stack } from '@mui/material';
+import { searchBooks } from '../api/book';
+import { Grid } from '@mui/material';
 import BookInList from '../components/BookInList';
+import { useQuery } from '@tanstack/react-query';
+import { useLocation } from 'react-router-dom';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 
@@ -44,17 +46,24 @@ function Books({ data }: { data: BookViewModelType[] }) {
 
 function BooksList() {
   const theme = useTheme();
-  const { data, status } = useQuery({ queryKey: ['books'], queryFn: getBooks });
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const q = queryParams.get('q');
+  //const { data, status } = useQuery({ queryKey: ['books'], queryFn: getBooks });
+  const { data: searchData, status: searchStatus } = useQuery({
+    queryKey: ['searchBooks', q],
+    queryFn: () => searchBooks(q == null ? '' : q),
+  });
 
   return (
     <Box sx={{ width: '100%' }}>
-      {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
-      {status == 'error' && (
+      {searchStatus == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+      {searchStatus == 'error' && (
         <Typography variant="h3" color={theme.palette.error.main}>
           Błąd!
         </Typography>
       )}
-      {status == 'success' && <Books data={data} />}
+      {searchStatus == 'success' && <Books data={searchData} />}
     </Box>
   );
 }

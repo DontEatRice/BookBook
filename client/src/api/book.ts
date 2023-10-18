@@ -29,3 +29,9 @@ export async function getLibrariesWithBook(bookId: string) {
   return LibraryViewModel.array().parse(data);
 }
 
+export async function searchBooks(query: string) {
+  const response = await fetch(base + "/Books?query=" + query);
+  const data = await response.json();
+  return BookViewModel.array().parse(data);
+}
+
