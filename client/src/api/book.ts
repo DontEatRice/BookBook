@@ -21,7 +21,7 @@ export async function getBooks() {
     return BookViewModel.array().parse(data);
 }
 
-export async function getBook(id: number) {
+export async function getBook(id: string) {
     const response = await fetch(base + '/Books/' + id);
     const data = await response.json();
     //https://zod.dev/?id=basic-usage
