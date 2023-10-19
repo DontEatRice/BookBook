@@ -1,6 +1,4 @@
-using Azure.Core;
 using Microsoft.EntityFrameworkCore;
-using Server.Application.ViewModels;
 using Server.Domain.Entities;
 using Server.Domain.Repositories;
 
@@ -25,23 +23,13 @@ internal sealed class BookRepository : IBookRepository
         _dbContext.Remove(book);
     }
 
-    public async Task<List<Book>> FindAsync(CancellationToken cancellationToken, string? query = null)
+    public async Task<List<Book>> FindAllAsync(CancellationToken cancellationToken)
     {
-        if(query == null || query == "")
-        {
-            return await _dbContext.Books
-                .Include(x => x.Authors)
-                .Include(x => x.BookCategories)
-                .Include(x => x.Publisher)
-                .ToListAsync();
-        }
-
         return await _dbContext.Books
-                .Include(x => x.Authors)
-                .Include(x => x.BookCategories)
-                .Include(x => x.Publisher)
-                .Where(x => EF.Functions.FreeText(x.FullText, $"{ query}"))
-                .ToListAsync();
+            .Include(x => x.Authors)
+            .Include(x => x.BookCategories)
+            .Include(x => x.Publisher)
+            .ToListAsync();
     }
 
     public async Task<Book?> FirstOrDefaultByISBNAsync(string isbn, CancellationToken cancellationToken)

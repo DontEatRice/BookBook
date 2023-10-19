@@ -24,7 +24,7 @@ internal sealed class GetBooksAvailableToAddHandler : IRequestHandler<GetBooksAv
     {
         var booksInLibrary = await _bookInLibraryRepository.GetBooksIdsInProvidedLibrary(request.Id, cancellationToken);
 
-        var books = await _bookRepository.FindAsync(cancellationToken, default);
+        var books = await _bookRepository.FindAllAsync(cancellationToken);
 
         var booksToAdd = books.Where(x => !booksInLibrary.Contains(x.Id)).ToList();
 
