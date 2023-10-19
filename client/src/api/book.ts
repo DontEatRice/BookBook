@@ -25,9 +25,6 @@ export async function getBooks() {
 export async function getBook(id: string) {
     const response = await fetch(base + '/Books/' + id);
     const data = await response.json();
-    //https://zod.dev/?id=basic-usage
-    //można też użyć funkcji .safeParse(data), która nie rzucałaby błędem
-    //w takim przypadku można by coś zlogować i wyświetlić stosowny komunikat
     return BookViewModel.parse(data);
 }
 
