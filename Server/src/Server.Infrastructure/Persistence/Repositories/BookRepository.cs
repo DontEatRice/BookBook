@@ -1,4 +1,6 @@
+using Azure.Core;
 using Microsoft.EntityFrameworkCore;
+using Server.Application.ViewModels;
 using Server.Domain.Entities;
 using Server.Domain.Repositories;
 
@@ -49,6 +51,29 @@ internal sealed class BookRepository : IBookRepository
 
     public async Task<Book?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _dbContext.Books.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        return await _dbContext.Books
+            .Include(x => x.Authors)
+            .Include(x => x.BookCategories)
+            .Include(x => x.Publisher)
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
+
+    public async Task<List<Book>> FindAsync(string? query, CancellationToken cancellationToken)
+    {
+        if (query == null || query == "")
+        {
+            return await _dbContext.Books
+                .Include(x => x.Authors)
+                .Include(x => x.BookCategories)
+                .Include(x => x.Publisher)
+                .ToListAsync();
+        }
+
+        return await _dbContext.Books
+                .Include(x => x.Authors)
+                .Include(x => x.BookCategories)
+                .Include(x => x.Publisher)
+                .Where(x => EF.Functions.FreeText(x.FullText, $"{query}"))
+                .ToListAsync();
     }
 }

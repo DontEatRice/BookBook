@@ -21,7 +21,8 @@ internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, IEnumerab
 
     public async Task<IEnumerable<BookViewModel>> Handle(GetBooksQuery request, CancellationToken cancellationToken)
     {
-        var books =  await _bookRepository.FindAsync(cancellationToken, request.query);
+        var books = await _bookRepository.FindAsync(request.query, cancellationToken);
+
         return _mapper.Map<List<BookViewModel>>(books);
     }
 }
