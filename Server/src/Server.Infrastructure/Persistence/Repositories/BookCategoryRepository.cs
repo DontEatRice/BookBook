@@ -21,6 +21,11 @@ internal class BookCategoryRepository : IBookCategoryRepository
         _dbContext.BookCategories.Remove(bookCategory);
     }
 
+    public async Task<List<BookCategory>> FindAllAsync(CancellationToken cancellationToken)
+    {
+       return await _dbContext.BookCategories.ToListAsync();
+    }
+
     public async Task<BookCategory?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _dbContext.BookCategories.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);

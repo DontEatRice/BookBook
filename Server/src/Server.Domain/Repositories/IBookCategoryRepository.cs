@@ -8,4 +8,5 @@ public interface IBookCategoryRepository
     void Delete(BookCategory bookCategory);
     Task<BookCategory?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<List<BookCategory>> ListByIdsAsync(List<Guid> ids, CancellationToken cancellationToken);
+    Task<List<BookCategory>> FindAllAsync (CancellationToken cancellationToken);
 }
