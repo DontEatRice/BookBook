@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
 using Server.Application.ViewModels;
+using Server.Domain.Repositories;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
@@ -12,28 +13,24 @@ public sealed record GetAuthorQuery(Guid Id) : IRequest<AuthorViewModel>;
 
 internal sealed class GetAuthorHandler : IRequestHandler<GetAuthorQuery, AuthorViewModel>
 {
-    private readonly BookBookDbContext _dbContext;
+    private readonly IAuthorRepository _authorRepository;
     private readonly IMapper _mapper;
 
-    public GetAuthorHandler(BookBookDbContext dbContext, IMapper mapper)
+    public GetAuthorHandler(IAuthorRepository authorRepository, IMapper mapper)
     {
-        _dbContext = dbContext;
+        _authorRepository = authorRepository;
         _mapper = mapper;
     }
 
     public async Task<AuthorViewModel> Handle(GetAuthorQuery request, CancellationToken cancellationToken)
     {
-        var authorViewModel = await _dbContext.Authors
-            .AsNoTracking()
-            .Where(x => x.Id == request.Id)
-            .ProjectTo<AuthorViewModel>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(cancellationToken);
+        var authorViewModel = await _authorRepository.FirstOrDefaultByIdAsync(request.Id, cancellationToken);
 
         if (authorViewModel is null)
         {
             throw new NotFoundException("Author not found", ApplicationErrorCodes.AuthorNotFound);
         }
 
-        return authorViewModel;
+        return _mapper.Map<AuthorViewModel>(authorViewModel);
     }
 }

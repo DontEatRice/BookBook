@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Server.Infrastructure.Migrations
+namespace Server.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    partial class BookBookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231015092442_Fulltext_search")]
+    partial class Fulltext_search
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -362,43 +365,6 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("Publishers");
                 });
 
-            modelBuilder.Entity("Server.Domain.Entities.Reservations.Cart", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Carts");
-                });
-
-            modelBuilder.Entity("Server.Domain.Entities.Reservations.Reservation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("LibraryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("ReservationEndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Reservations");
-                });
-
             modelBuilder.Entity("AuthorBook", b =>
                 {
                     b.HasOne("Server.Domain.Entities.Author", null)
@@ -504,62 +470,6 @@ namespace Server.Infrastructure.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("Library");
-                });
-
-            modelBuilder.Entity("Server.Domain.Entities.Reservations.Cart", b =>
-                {
-                    b.OwnsMany("Server.Domain.Entities.Reservations.CartBook", "CartItems", b1 =>
-                        {
-                            b1.Property<Guid>("CartId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<Guid>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<Guid>("BookId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<Guid>("LibraryId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.HasKey("CartId", "Id");
-
-                            b1.ToTable("CartBook");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CartId");
-                        });
-
-                    b.Navigation("CartItems");
-                });
-
-            modelBuilder.Entity("Server.Domain.Entities.Reservations.Reservation", b =>
-                {
-                    b.OwnsMany("Server.Domain.Entities.Reservations.ReservationBook", "ReservationItems", b1 =>
-                        {
-                            b1.Property<Guid>("ReservationId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<Guid>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<Guid>("BookId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<Guid>("LibraryId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.HasKey("ReservationId", "Id");
-
-                            b1.ToTable("ReservationBook");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ReservationId");
-                        });
-
-                    b.Navigation("ReservationItems");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Book", b =>
