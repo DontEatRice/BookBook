@@ -50,10 +50,9 @@ function App() {
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="reservations" element={<Reservations />} />
-        <Route path="books" element={<BooksList />} />
         <Route path="*" element={<div>NotFound</div>} />
         <Route path="books">
-          <Route index element={<BookDetails />} />
+          <Route index element={<BooksList />} />
           <Route path=":bookId" element={<BookDetails />} />
         </Route>
       </Route>
