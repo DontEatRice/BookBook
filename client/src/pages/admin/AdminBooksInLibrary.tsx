@@ -52,7 +52,7 @@ function BooksInLibraryTable({ data }: { data: BookInLibraryViewModelType[] }) {
 function AdminBooksInLibrary() {
   const theme = useTheme();
   //dodane ręcznie póki nie ma Usera (do testów trzeba wkleić ze swojej bazy)
-  const libraryId = 'A8CD269E-81AC-4C59-B009-1ADC78192109';
+  const libraryId = '69C96AB3-1177-479D-841C-5674AA877909';
   const { data: booksInLibrary, status: booksInLibraryStatus } = useQuery({
     queryKey: ['booksInLibrary', libraryId],
     queryFn: ({ queryKey }) => getBooksInLibrary(queryKey[1]),
@@ -82,3 +82,4 @@ function AdminBooksInLibrary() {
 }
 
 export default AdminBooksInLibrary;
+

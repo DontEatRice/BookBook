@@ -13,7 +13,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 function AdminAddBookToLibraryForm() {
   //na razie ręcznie wpisane (trzeba dodać swój do testów)
-  const libraryId = 'A8CD269E-81AC-4C59-B009-1ADC78192109';
+  const libraryId = '69C96AB3-1177-479D-841C-5674AA877909';
   const navigate = useNavigate();
   const {
     register,
@@ -103,3 +103,4 @@ function AdminAddBookToLibraryForm() {
 }
 
 export default AdminAddBookToLibraryForm;
+

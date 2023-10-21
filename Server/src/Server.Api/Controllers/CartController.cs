@@ -7,6 +7,7 @@ using Server.Application.Exceptions.Types;
 using Server.Application.Utils;
 using Server.Application.ViewModels;
 using Server.Infrastructure.Persistence.QueryHandlers;
+using Server.Infrastructure.Persistence.QueryHandlers.Reservations;
 using Server.Utils;
 
 namespace Server.Api.Controllers;
