@@ -4,7 +4,6 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Extensions;
-using Server.Application.Utils;
 using Server.Domain.Entities.Auth;
 using Server.Infrastructure.Persistence.Settings;
 using Server.Utils;
@@ -13,7 +12,7 @@ namespace Server.Infrastructure.Services;
 
 public interface ISecurityTokenService
 {
-    string GenerateAccessToken(Guid identityId, string email, ICollection<string> roles);
+    string GenerateAccessToken(Guid identityId, string email, Guid? libraryId, ICollection<string> roles);
     string GenerateRefreshToken(Guid identityId);
     Guid? GetIdentityIdFromToken(string token);
     Role? GetIdentityRoleFromRefreshToken(string token);
@@ -39,7 +38,7 @@ internal class SecurityTokenService : ISecurityTokenService
         _authSettings = authSettings;
     }
 
-    public string GenerateAccessToken(Guid identityId, string email, ICollection<string> roles)
+    public string GenerateAccessToken(Guid identityId, string email, Guid? libraryId, ICollection<string> roles)
     {
         var claims = new List<Claim>
         {
@@ -49,6 +48,11 @@ internal class SecurityTokenService : ISecurityTokenService
             new(AuthConstants.IdClaim, identityId.ToString())
         };
         claims.AddRange(roles.Select(role => new Claim(AuthConstants.RoleClaim, role)));
+
+        if (roles.Contains(Role.Employee.GetDisplayName()) && libraryId is not null)
+        {
+            claims.Add(new Claim(AuthConstants.LibraryIdClaim, libraryId.ToString()));
+        }
 
         return GenerateToken(AuthConstants.AccessTokenDuration, claims);
     }
