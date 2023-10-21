@@ -50,7 +50,7 @@ public class IdentityDomainService : IIdentityDomainService
             throw new DomainException("Invalid credentials", DomainErrorCodes.InvalidCredentials);
         }
 
-        var accessToken = _securityTokenService.GenerateAccessToken(identity.Id, identity.Email, identity.Library.Id,  identity.Roles);
+        var accessToken = _securityTokenService.GenerateAccessToken(identity.Id, identity.Email, identity.Library?.Id,  identity.Roles);
         var refreshToken = _securityTokenService.GenerateRefreshToken(identity.Id);
 
         identity.Login(
