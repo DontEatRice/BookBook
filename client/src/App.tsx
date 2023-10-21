@@ -20,6 +20,7 @@ import AdminLibraries from './pages/admin/AdminLibraries';
 import AdminLibraryForm from './pages/admin/AdminLibraryForm';
 import AdminBooksInLibrary from './pages/admin/AdminBooksInLibrary';
 import AdminAddBookToLibraryForm from './pages/admin/AdminAddBookToLibraryForm';
+import BookDetails from './pages/book/BookDetails';
 import Reservations from './components/reservations/Books';
 
 const mainTheme = createTheme({
@@ -45,6 +46,10 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="*" element={<div>NotFound</div>} />
+        <Route path="books">
+          <Route index element={<BookDetails />} />
+          <Route path=":bookId" element={<BookDetails />} />
+        </Route>
       </Route>
       <Route path="/reservations" element={<Layout />}>
         <Route index element={<Reservations />} />
