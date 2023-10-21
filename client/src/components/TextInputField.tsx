@@ -1,4 +1,4 @@
-import TextField from '@mui/material/TextField';
+import TextField, { TextFieldProps, TextFieldVariants } from '@mui/material/TextField';
 import { FieldErrors, FieldValues, Path, UseFormRegister } from 'react-hook-form';
 
 export type TextInputFieldProps<T extends FieldValues> = {
@@ -6,12 +6,23 @@ export type TextInputFieldProps<T extends FieldValues> = {
   field: Path<T>;
   register: UseFormRegister<T>;
   errors: FieldErrors<T>;
+  additionalProps?: { variant?: TextFieldVariants } & Omit<
+    TextFieldProps,
+    'label' | 'helperText' | 'error' | 'variant'
+  >;
 };
 
-function TextInputField<T extends FieldValues>({ label, register, field, errors }: TextInputFieldProps<T>) {
+function TextInputField<T extends FieldValues>({
+  label,
+  register,
+  field,
+  errors,
+  additionalProps,
+}: TextInputFieldProps<T>) {
   const helper = errors[field]?.message?.toString();
   return (
     <TextField
+      {...additionalProps}
       label={label}
       {...register(field)}
       error={errors[field] != undefined}

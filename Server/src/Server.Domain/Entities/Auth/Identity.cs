@@ -29,9 +29,9 @@ public class Identity
         return identity;
     }
 
-    public void Login(string password, string refreshToken, Role role = Role.User)
+    public void Login(string password, string refreshToken)
     {
-        if (PasswordHash == default || !PasswordHasher.Verify(password, PasswordHash) || !Roles.Contains(role.GetDisplayName()))
+        if (PasswordHash == default || !PasswordHasher.Verify(password, PasswordHash))
         {
             throw new DomainException("Invalid Credentials", DomainErrorCodes.InvalidCredentials);
         }
@@ -39,10 +39,22 @@ public class Identity
         Sessions.Add(Session.Create(TokenHasher.Hash(refreshToken)));
     }
 
+    public void RemoveRefreshToken(string refreshToken)
+    {
+        var tokenHash = TokenHasher.Hash(refreshToken);
+        var session = Sessions
+            .FirstOrDefault(session => session.RefreshTokenHash == tokenHash);
+        if (session is not null)
+        {
+            Sessions.Remove(session);
+        }
+    }
+
     public void UpdateRefreshToken(string oldRefreshToken, string newRefreshToken)
     {
+        var tokenHash = TokenHasher.Hash(oldRefreshToken);
         var session = Sessions
-            .FirstOrDefault(session => session.RefreshTokenHash == TokenHasher.Hash(oldRefreshToken));
+            .FirstOrDefault(session => session.RefreshTokenHash == tokenHash);
         if (session == default)
         {
             throw new DomainException("Session Does Not Exists", DomainErrorCodes.SessionNotExists);

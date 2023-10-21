@@ -20,6 +20,8 @@ import AdminLibraries from './pages/admin/AdminLibraries';
 import AdminLibraryForm from './pages/admin/AdminLibraryForm';
 import AdminBooksInLibrary from './pages/admin/AdminBooksInLibrary';
 import AdminAddBookToLibraryForm from './pages/admin/AdminAddBookToLibraryForm';
+import Login from './pages/Login';
+import Box from '@mui/material/Box';
 import BooksList from './pages/BooksList';
 import BookDetails from './pages/book/BookDetails';
 import Reservations from './components/reservations/Books';
@@ -46,6 +48,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="login" element={<Login />} />
+        <Route path="reservations" element={<Reservations />} />
         <Route path="books" element={<BooksList />} />
         <Route path="*" element={<div>NotFound</div>} />
         <Route path="books">
@@ -93,10 +97,12 @@ function Layout() {
   return (
     <ThemeProvider theme={mainTheme}>
       <CssBaseline />
-      <Header />
-      <Container>
-        <Outlet />
-      </Container>
+      <Box sx={{ minHeight: '100vh' }}>
+        <Header />
+        <Container>
+          <Outlet />
+        </Container>
+      </Box>
       <Footer />
     </ThemeProvider>
   );
@@ -115,4 +121,3 @@ function AdminLayout() {
 }
 
 export default App;
-

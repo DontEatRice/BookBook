@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Extensions;
@@ -9,6 +10,15 @@ using Server.Infrastructure.Persistence.Settings;
 using Server.Utils;
 
 namespace Server.Infrastructure.Services;
+
+public interface ISecurityTokenService
+{
+    string GenerateAccessToken(Guid identityId, string email, ICollection<string> roles);
+    string GenerateRefreshToken(Guid identityId);
+    Guid? GetIdentityIdFromToken(string token);
+    Role? GetIdentityRoleFromRefreshToken(string token);
+    (Guid?, DateTime) GetIdentityIdAndExpirationTimeFromToken(string rawToken);
+}
 
 public enum SecurityTokenType
 {
@@ -20,21 +30,43 @@ internal class SecurityTokenService : ISecurityTokenService
 {
     private readonly SecurityKey _securityKey;
     private readonly SigningCredentials _signingCredentials;
+    private readonly AuthSettings _authSettings;
 
     public SecurityTokenService(AuthSettings authSettings)
     {
         _securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSettings.Key));
         _signingCredentials = new SigningCredentials(_securityKey, SecurityAlgorithms.HmacSha256);
+        _authSettings = authSettings;
     }
 
-    public string GenerateAccessToken(Guid identityId, string email, Role role = Role.User)
+    public string GenerateAccessToken(Guid identityId, string email, ICollection<string> roles)
     {
-        return GenerateToken(identityId, email, AuthConstants.AccessTokenDuration, role);
+        var claims = new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(JwtRegisteredClaimNames.Sub, identityId.ToString()),
+            new(JwtRegisteredClaimNames.Email, email),
+            new(AuthConstants.IdClaim, identityId.ToString())
+        };
+        claims.AddRange(roles.Select(role => new Claim(AuthConstants.RoleClaim, role)));
+
+        return GenerateToken(AuthConstants.AccessTokenDuration, claims);
     }
 
-    public string GenerateRefreshToken(Guid identityId, string email, Role role = Role.User)
+    public string GenerateRefreshToken(Guid identityId)
     {
-        return GenerateToken(identityId, email, AuthConstants.RefreshTokenDuration, role);
+        var claims = new List<Claim>
+        {
+            new(AuthConstants.IdClaim, identityId.ToString())
+        };
+        return GenerateToken(AuthConstants.RefreshTokenDuration, claims);
+    }
+
+    public (Guid?, DateTime) GetIdentityIdAndExpirationTimeFromToken(string rawToken)
+    {
+        var token = ReadToken(rawToken);
+        var identityId = token.Claims.First(c => c.Type == AuthConstants.IdClaim).Value;
+        return (Guid.Parse(identityId), token.ValidTo);
     }
 
     public Guid? GetIdentityIdFromToken(string token)
@@ -45,15 +77,13 @@ internal class SecurityTokenService : ISecurityTokenService
         {
             return null;
         }
-
-        var claims = claimsPrincipal.Claims.ToList();
-        
-        var identityId = claims.First(c => c.Type == AuthConstants.IdClaim).Value;
+    
+        var identityId = claimsPrincipal.Claims.ToList().First(c => c.Type == AuthConstants.IdClaim).Value;
     
         return Guid.Parse(identityId);
     }
     
-    public Role? GetIdentityRoleFromToken(string token)
+    public Role? GetIdentityRoleFromRefreshToken(string token)
     {
         var claimsPrincipal = ReadAndValidateToken(token);
         if (claimsPrincipal == null)
@@ -79,35 +109,35 @@ internal class SecurityTokenService : ISecurityTokenService
     private ClaimsPrincipal? ReadAndValidateToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-
+    
         return tokenHandler.ValidateToken(token,
             new TokenValidationParameters
             {
-                ValidateIssuerSigningKey = true,
                 IssuerSigningKey = _securityKey,
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ValidateLifetime = false,
-                ClockSkew = TimeSpan.Zero
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ClockSkew = TimeSpan.Zero,
+                ValidAudience = _authSettings.Audience,
+                ValidIssuer = _authSettings.Issuer
             }, out _);
     }
-    private string GenerateToken(Guid identityId, string email, TimeSpan expires,  Role role = Role.User)
+
+    public JwtSecurityToken ReadToken(string token)
     {
-        var claims = new List<Claim>
-        {
-            new(JwtRegisteredClaimNames.Typ, SecurityTokenType.RefreshToken.GetDisplayName()),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(JwtRegisteredClaimNames.Sub, identityId.ToString()),
-            new(JwtRegisteredClaimNames.Email, email),
-            new(AuthConstants.IdClaim, identityId.ToString()),
-            new(AuthConstants.RoleClaim, role.ToString())
-        };
-        
+        var tokenHandler = new JwtSecurityTokenHandler();
+        return tokenHandler.ReadJwtToken(token);
+    }
+    
+    private string GenerateToken(TimeSpan expires, IEnumerable<Claim> claims)
+    {
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow + expires,
-            SigningCredentials = _signingCredentials
+            Expires = DateTime.Now.Add(expires),
+            SigningCredentials = _signingCredentials,
+            Issuer = _authSettings.Issuer,
+            Audience = _authSettings.Audience
         };
         
         var tokenHandler = new JwtSecurityTokenHandler();
