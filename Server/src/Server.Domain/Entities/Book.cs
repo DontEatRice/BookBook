@@ -11,6 +11,7 @@ public class Book
     public int YearPublished { get; set; }
     public double? AverageRating { get; set; }
     public double? AverageCriticRating { get; set; }
+    public string FullText { get; set; }
     public Publisher Publisher { get; set; }
     public ICollection<Author> Authors { get; set; }
     public ICollection<BookCategory> BookCategories { get; set; }
@@ -29,6 +30,7 @@ public class Book
             Publisher = publisher,
             Authors = authors,
             BookCategories = categories,
-            BookLibraries = new List<LibraryBook>()
+            BookLibraries = new List<LibraryBook>(),
+            FullText = isbn + " " + title + " " + yearPublished + " " + publisher.Name + " " + string.Join(" ", authors.Select(x => x.LastName))
         };
 }

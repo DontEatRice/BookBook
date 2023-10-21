@@ -17,11 +17,12 @@ function Nav() {
         <Grid item>
           <NavItem label="Strona główna" link="/" />
         </Grid>
-        <AuthorizedView>
-          <Grid item>
-            <NavItem label="Rezerwuj(tymczasowe)" link="/reservations" />
-          </Grid>
-        </AuthorizedView>
+        <Grid item>
+          <NavItem label="Książki" link="/books" />
+        </Grid>
+        <Grid item>
+          <NavItem label="Rezerwuj(tymczasowe)" link="/reservations" />
+        </Grid>
         <Grid item>
           <NavItem label="Ranking" link="/ranking" />
         </Grid>

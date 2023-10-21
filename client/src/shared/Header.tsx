@@ -57,8 +57,8 @@ function SearchBar() {
       const { value } = e.target;
       setQuery(value);
       setParams({ q: value });
-      if (location.pathname != '/search' && value != '') {
-        navigate('/search?q=' + value);
+      if (location.pathname != '/books' && value != '') {
+        navigate('/books?q=' + value);
       }
     },
     [navigate, setParams]
@@ -96,4 +96,3 @@ function HeaderLogo() {
 }
 
 export default Header;
-

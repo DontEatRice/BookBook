@@ -16,8 +16,8 @@ public class BooksController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BookViewModel>>> List()
-        => Ok(await Mediator.Send(new GetBooksQuery()));
+    public async Task<ActionResult<IEnumerable<BookViewModel>>> List([FromQuery] string? query)
+        => Ok(await Mediator.Send(new GetBooksQuery(query)));
 
     [HttpGet("{id:Guid}")]
     public async Task<ActionResult<BookViewModel>> Get(Guid id)
