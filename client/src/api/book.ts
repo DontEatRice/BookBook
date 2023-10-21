@@ -22,6 +22,12 @@ export async function getBooks() {
   return BookViewModel.array().parse(data);
 }
 
+export async function getBook(id: string) {
+    const response = await fetch(base + '/Books/' + id);
+    const data = await response.json();
+    return BookViewModel.parse(data);
+}
+
 export async function getLibrariesWithBook(bookId: string) {
   const response = await fetch(base + '/Books/' + bookId + '/Libraries');
   const data = await response.json();
@@ -34,4 +40,3 @@ export async function searchBooks(query: string) {
   const data = await response.json();
   return BookViewModel.array().parse(data);
 }
-
