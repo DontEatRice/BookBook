@@ -20,6 +20,7 @@ import AdminLibraries from './pages/admin/AdminLibraries';
 import AdminLibraryForm from './pages/admin/AdminLibraryForm';
 import AdminBooksInLibrary from './pages/admin/AdminBooksInLibrary';
 import AdminAddBookToLibraryForm from './pages/admin/AdminAddBookToLibraryForm';
+import BooksList from './pages/BooksList';
 import BookDetails from './pages/book/BookDetails';
 import Reservations from './components/reservations/Books';
 
@@ -45,6 +46,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="books" element={<BooksList />} />
         <Route path="*" element={<div>NotFound</div>} />
         <Route path="books">
           <Route index element={<BookDetails />} />

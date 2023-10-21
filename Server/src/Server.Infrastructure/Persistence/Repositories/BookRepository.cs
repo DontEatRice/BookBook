@@ -1,6 +1,4 @@
-using Azure.Core;
 using Microsoft.EntityFrameworkCore;
-using Server.Application.ViewModels;
 using Server.Domain.Entities;
 using Server.Domain.Repositories;
 
@@ -56,7 +54,7 @@ internal sealed class BookRepository : IBookRepository
                 .Include(x => x.Authors)
                 .Include(x => x.BookCategories)
                 .Include(x => x.Publisher)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
         return await _dbContext.Books
@@ -64,6 +62,6 @@ internal sealed class BookRepository : IBookRepository
                 .Include(x => x.BookCategories)
                 .Include(x => x.Publisher)
                 .Where(x => EF.Functions.FreeText(x.FullText, $"{query}"))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
     }
 }

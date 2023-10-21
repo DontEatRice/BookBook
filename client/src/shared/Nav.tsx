@@ -17,6 +17,9 @@ function Nav() {
           <NavItem label="Strona główna" link="/" />
         </Grid>
         <Grid item>
+          <NavItem label="Książki" link="/books" />
+        </Grid>
+        <Grid item>
           <NavItem label="Rezerwuj(tymczasowe)" link="/reservations" />
         </Grid>
         <Grid item>

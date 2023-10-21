@@ -9,5 +9,5 @@ public interface IBookRepository
     Task<Book?> FirstOrDefaultByIdAsync(Guid guid, CancellationToken cancellationToken);
     Task<List<Book>> FindAllAsync(CancellationToken cancellationToken);
     Task<Book?> FirstOrDefaultByISBNAsync(string isbn, CancellationToken cancellationToken);
-    Task<List<Book>> FindAsync (string? query, CancellationToken cancellationToken);
+    Task<List<Book>> FindAsync(string? query, CancellationToken cancellationToken);
 }
