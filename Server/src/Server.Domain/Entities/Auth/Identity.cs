@@ -13,6 +13,7 @@ public class Identity
     public string? Name { get; private set; }
     public List<string> Roles { get; private init; }
     public List<Session> Sessions { get; private init; }
+    public ICollection<Book> BooksObserved { get; private init; }
 
     public static Identity Register(Guid id, string email, string password, string name)
     {
@@ -23,7 +24,8 @@ public class Identity
             PasswordHash = PasswordHasher.Hash(password),
             Name = name,
             Sessions = new List<Session>(),
-            Roles = new List<string> { Role.User.GetDisplayName() }
+            Roles = new List<string> { Role.User.GetDisplayName() },
+            BooksObserved = new List<Book>()
         };
 
         return identity;

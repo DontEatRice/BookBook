@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Admin;
+using Server.Application.CommandHandlers.User;
 using Server.Application.Utils;
 using Server.Application.ViewModels;
 using Server.Infrastructure.Persistence.QueryHandlers;
@@ -44,5 +45,15 @@ public class BooksController : ControllerBase
     {
         await Mediator.Send(new RemoveBookCommand(id));
         return NoContent();
+    }
+
+    [HttpPost("{id:Guid}/observe")]
+    public async Task<ActionResult> Observe(Guid id, [FromBody] ToggleBookInUsersListCommand command)
+    {
+        await Mediator.Send(command with
+        {
+            Id = id
+        });
+        return Ok();
     }
 }

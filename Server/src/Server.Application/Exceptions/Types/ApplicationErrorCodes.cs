@@ -20,4 +20,5 @@ public static class ApplicationErrorCodes
     public const string ReservationCannotBeCancelled = "RESERVATION_CANNOT_BE_CANCELLED";
     public const string CannotMakeAnotherReservation = "CANNOT_MAKE_ANOTHER_RESERVATION";
     public const string NotAuthenticated = "NOT_AUTHENTICATED";
+    public const string UserNotFound = "USER_NOT_FOUND";
 }
