@@ -54,11 +54,9 @@ function AdminBooksInLibrary() {
   const theme = useTheme();
   const { user } = useAuth();
   const { data: booksInLibrary, status: booksInLibraryStatus } = useQuery({
-    queryKey: ['booksInLibrary', user?.libraryId!],
+    queryKey: ['booksInLibrary', user!.libraryId!],
     queryFn: ({ queryKey }) => getBooksInLibrary(queryKey[1]!),
   });
-  console.log(user?.libraryId);
-  console.log(user?.email);
 
   return (
     <Box mt={1}>

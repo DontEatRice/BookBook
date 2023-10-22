@@ -38,7 +38,7 @@ function AdminAddBookToLibraryForm() {
     mutation.mutate(data);
   };
   const { data: availableBooks, status: availableBooksStatus } = useQuery({
-    queryKey: ['booksToAdd', user?.libraryId!],
+    queryKey: ['booksToAdd', user!.libraryId!],
     queryFn: ({ queryKey }) => getBooksAvailableToAdd(queryKey[1]),
   });
 
@@ -48,7 +48,7 @@ function AdminAddBookToLibraryForm() {
     return (
       <Box sx={{ mt: 2 }}>
         <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', justifyContent: 'center' }}>
-          <input type="hidden" {...register('libraryId')} value={user?.libraryId!} />
+          <input type="hidden" {...register('libraryId')} value={user!.libraryId!} />
           <Box
             sx={{
               width: { xs: '100%', sm: '85%', md: '65%' },
