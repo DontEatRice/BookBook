@@ -10,6 +10,11 @@ export const postBook = async (book: AddBookType) => {
     body: JSON.stringify(book),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
+  if (response.status !== 201) {
+    const data = await response.json();
+    throw new Error(`${data.code}:${data.resourceId}`);
+  }
+
   return response;
 };
 
