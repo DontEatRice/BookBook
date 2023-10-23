@@ -8,7 +8,7 @@ using Server.Infrastructure.Persistence.QueryHandlers;
 namespace Server.Api.Controllers;
 
 [ApiController]
-[Route("[Controller]")]
+[Route("[controller]")]
 public class BooksController : ControllerBase
 {
     public BooksController(IMediator mediator) : base(mediator)

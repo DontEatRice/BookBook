@@ -11,6 +11,7 @@ internal sealed class BookBookDbContext : DbContext
     public DbSet<Book> Books { get; set; }
     public DbSet<BookCategory> BookCategories { get; set; }
     public DbSet<Publisher> Publishers { get; set; }
+    public DbSet<Review> Reviews { get; set; }
     public DbSet<Identity> Identities { get; set; }
     public DbSet<Session> Sessions { get; set; }
     public DbSet<Library> Libraries { get; set; }
