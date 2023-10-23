@@ -1,0 +1,11 @@
+version: "3.2"
+services:
+  sqlserver:
+    container_name: sqlserver
+    build:
+      dockerfile: sqlserver-fulltext.Dockerfile
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "myStrongPassword!"
+      ACCEPT_EULA: "Y"
