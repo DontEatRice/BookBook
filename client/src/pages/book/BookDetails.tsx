@@ -1,5 +1,9 @@
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
+import * as React from 'react';
+import { TableHead, TableBody, Table, Rating, Grid, Box, TableRow, TableContainer, Paper, Avatar, Button } from '@mui/material';
+import FilledField from '../../components/FilledField';
+import StyledTableCell from '../../components/tableComponents/StyledTableCell';
+import StyledTableRow from '../../components/tableComponents/StyledTableRow';
+import TextInputField from '../../components/TextInputField';
 import { useParams } from 'react-router';
 import { AuthorViewModelType } from '../../models/AuthorViewModel';
 import { getBook } from '../../api/book';
@@ -8,7 +12,14 @@ import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
 import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
 import { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
-import FilledField from '../../components/FilledField';
+import { ReviewViewModelType } from '../../models/ReviewViewModel';
+import { useTheme } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import { postReview } from '../../api/review';
+import AddReview, { AddReviewType } from '../../models/AddReview';
 
 function AuthorsTable({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
@@ -20,6 +31,105 @@ function CategoryTable({ categories }: { categories: BookCategoryViewModelType[]
   const categoriesNames = categories.map((category) => category.name).join(', ');
 
   return <FilledField label={categories.length > 1 ? 'kategorie' : 'kategoria'} value={categoriesNames} />;
+}
+
+function ReviewsTable({ reviews }: { reviews: ReviewViewModelType[] }) {
+  const theme = useTheme();
+  const navigate = useNavigate();
+
+  return (
+    <TableContainer component={Paper} sx={{ maxWidth: 800}}>
+    <Table aria-label="customized table">
+      <TableHead>
+        <TableRow>
+          <StyledTableCell>Użytkownik</StyledTableCell>
+          <StyledTableCell>Ocena</StyledTableCell>
+          <StyledTableCell>Komentarz</StyledTableCell>
+          <StyledTableCell>Akcje</StyledTableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+      {reviews.map((review) => (
+          <StyledTableRow key={review.id}>
+            <StyledTableCell >
+              <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>N</Avatar>
+              <div>username</div>
+            </StyledTableCell>
+            <StyledTableCell>
+            <Rating
+              name="half-rating-read"
+              value={review.rating == null ? 0 : review.rating}
+              precision={0.25}
+              readOnly
+            />
+            </StyledTableCell>
+            <StyledTableCell>
+              {review.description}
+              {review.title}
+            </StyledTableCell>
+            <StyledTableCell>
+              <Button sx={{ width: 50, height: 40 }} onClick={() => navigate(`/reviews/${review.id}`)}>
+                Usuń
+              </Button>
+            </StyledTableCell>
+          </StyledTableRow>
+        ))}
+      </TableBody>
+    </Table>
+    <Grid item><ReviewForm/></Grid>
+  </TableContainer>
+  );
+}
+
+function ReviewForm() {
+  const navigate = useNavigate();
+  const [value, setValue] = React.useState<number | null>(0);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AddReviewType>({
+    resolver: zodResolver(AddReview),
+  });
+  const mutation = useMutation({
+    mutationFn: postReview,
+    onSuccess: () => {
+      navigate('..');
+    },
+    onError: (e: Error) => {
+      console.error(e);
+    },
+  });
+  const onSubmit: SubmitHandler<AddReviewType> = (data) => {
+    mutation.mutate(data);
+  };
+  
+  return (
+    <Box sx={{ mt: 2 }}>
+      <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', justifyContent: 'center' }}>
+        <Box
+          sx={{
+            width: { xs: '100%', sm: '85%', md: '65%' },
+            textAlign: 'left',
+          }}>
+          <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
+            <Rating
+              name="simple-controlled"
+              value={value}
+              onChange={(event, newValue) => {
+                setValue(newValue);
+              }}
+            />
+            <TextInputField errors={errors} field="title" register={register} label="Tytuł" />
+            <TextInputField errors={errors} field="description" register={register} label="Komentarz" />
+            <Button type="submit" variant="contained">
+              Dodaj
+            </Button>
+          </Paper>
+        </Box>
+      </form>
+    </Box>
+  );
 }
 
 function BookDetails() {
