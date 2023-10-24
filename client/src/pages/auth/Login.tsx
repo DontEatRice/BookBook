@@ -35,7 +35,7 @@ function Login() {
     <Box width="100%">
       <Stack direction="row" justifyContent="center">
         <Box sx={{ width: { xs: '90%', sm: '70%', md: '45%' } }}>
-          <LoginForm onSubmit={(data) => onSubmit(data)} loginAs="User" sx={{ mt: 2, mb: 2 }} />
+          <LoginForm onSubmit={(data) => onSubmit(data)} sx={{ mt: 2, mb: 2 }} />
           <Link to={'/register'}>
             <Button fullWidth={true}>Rejestracja</Button>
           </Link>

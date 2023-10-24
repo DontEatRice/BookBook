@@ -30,5 +30,6 @@ export function convertJwtToUser(token: string): User {
     token,
     roles,
     email: claims.email,
+    libraryId: claims.libraryid
   };
 }
