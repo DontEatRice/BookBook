@@ -20,7 +20,7 @@ import AdminLibraries from './pages/admin/AdminLibraries';
 import AdminLibraryForm from './pages/admin/AdminLibraryForm';
 import AdminBooksInLibrary from './pages/admin/AdminBooksInLibrary';
 import AdminAddBookToLibraryForm from './pages/admin/AdminAddBookToLibraryForm';
-import Login from './pages/Login';
+import Login from './pages/auth/Login';
 import Box from '@mui/material/Box';
 import BooksList from './pages/BooksList';
 import BookDetails from './pages/book/BookDetails';

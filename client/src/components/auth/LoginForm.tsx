@@ -1,9 +1,9 @@
 import Box from '@mui/material/Box';
-import { Role } from '../utils/constants';
+import { Role } from '../../utils/constants';
 import { SxProps, Theme } from '@mui/material/styles';
-import LoginRequest, { LoginRequestType } from '../models/LoginRequest';
+import LoginRequest, { LoginRequestType } from '../../models/LoginRequest';
 import { useForm } from 'react-hook-form';
-import TextInputField from './TextInputField';
+import TextInputField from '../TextInputField';
 import Button from '@mui/material/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -31,7 +31,7 @@ function LoginForm({ onSubmit, loginAs, sx }: LoginFormProps) {
           field="email"
           label="E-mail"
           register={register}
-          additionalProps={{ variant: 'filled' }}
+          additionalProps={{ variant: 'filled', type: 'email' }}
         />
         <TextInputField
           errors={errors}

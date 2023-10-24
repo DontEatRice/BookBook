@@ -1,14 +1,14 @@
 import Box from '@mui/material/Box';
-import LoginForm from '../components/LoginForm';
+import LoginForm from '../../components/auth/LoginForm';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { login } from '../api/auth';
+import { login } from '../../api/auth';
 import { useCallback } from 'react';
-import { LoginRequestType } from '../models/LoginRequest';
-import { ErrorResponse } from '../utils/constants';
-import { useAuth } from '../utils/auth/useAuth';
+import { LoginRequestType } from '../../models/LoginRequest';
+import { ErrorResponse } from '../../utils/constants';
+import { useAuth } from '../../utils/auth/useAuth';
 
 function Login() {
   const { login: setAccessToken } = useAuth();
@@ -27,7 +27,7 @@ function Login() {
         return;
       }
       const error = (await result.json()) as ErrorResponse;
-      console.log({ error });
+      console.error({ error });
     },
     [loginMutation, navigate, setAccessToken]
   );
