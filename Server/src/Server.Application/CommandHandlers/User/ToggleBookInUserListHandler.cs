@@ -3,24 +3,25 @@ using MediatR;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
 using Server.Application.InfrastructureInterfaces;
+using Server.Domain.Entities.User;
 using Server.Domain.Repositories;
 using System.Text.Json.Serialization;
 
 namespace Server.Application.CommandHandlers.User;
 
-public sealed class ToggleBookInUsersListHandlerValidator : AbstractValidator<ToggleBookInUsersListCommand>
+public sealed class ToggleBookInUserListHandlerValidator : AbstractValidator<ToggleBookInUsersListCommand>
 {
-    public ToggleBookInUsersListHandlerValidator()
+    public ToggleBookInUserListHandlerValidator()
     {
-        RuleFor(x => x.UserId).NotEmpty();
+        RuleFor(x => x.BookId).NotEmpty();
     }
 }
 
 public sealed record ToggleBookInUsersListCommand : IRequest
 {
     [JsonIgnore]
-    public Guid Id { get; set; }
     public Guid UserId { get; set; }
+    public Guid BookId { get; set; }
 }
 
 public sealed class ToggleBookInUsersListHandler : IRequestHandler<ToggleBookInUsersListCommand>
@@ -28,12 +29,15 @@ public sealed class ToggleBookInUsersListHandler : IRequestHandler<ToggleBookInU
     private readonly IUnitOfWork _unitOfWork;
     private readonly IIdentityRepository _identityRepository;
     private readonly IBookRepository _bookRepository;
+    private readonly IUserBookRepository _userBookRepository;
 
-    public ToggleBookInUsersListHandler(IUnitOfWork unitOfWork, IIdentityRepository identityRepository, IBookRepository bookRepository)
+    public ToggleBookInUsersListHandler(IUnitOfWork unitOfWork, IIdentityRepository identityRepository,
+        IBookRepository bookRepository, IUserBookRepository userBookRepository)
     {
         _unitOfWork = unitOfWork;
         _identityRepository = identityRepository;
         _bookRepository = bookRepository;
+        _userBookRepository = userBookRepository;
     }
 
     public async Task Handle(ToggleBookInUsersListCommand request, CancellationToken cancellationToken)
@@ -44,22 +48,23 @@ public sealed class ToggleBookInUsersListHandler : IRequestHandler<ToggleBookInU
             throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
         }
 
-        var book = await _bookRepository.FirstOrDefaultByIdAsync(request.Id, cancellationToken);
+        var book = await _bookRepository.FirstOrDefaultByIdAsync(request.BookId, cancellationToken);
         if (book == null)
         {
             throw new NotFoundException("Book not found", ApplicationErrorCodes.BookNotFound);
         }
 
-        var isObservedByUser = user.BooksObserved.SingleOrDefault(x => x.Id == request.Id);
+        var userBook = await _userBookRepository.FirstOrDefaultByIdsAsync(request.BookId, request.UserId);
 
-        if (isObservedByUser == null)
+        if(userBook is null)
         {
-            user.BooksObserved.Add(book);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return;
+            _userBookRepository.Add(UserBook.Create(request.UserId, request.BookId));
+        }
+        else
+        {
+            _userBookRepository.Remove(userBook);
         }
 
-        user.BooksObserved.Remove(book);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }
