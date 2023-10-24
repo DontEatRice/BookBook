@@ -1,10 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Extensions;
-using Server.Application.Utils;
 using Server.Domain.Entities.Auth;
 using Server.Infrastructure.Persistence.Settings;
 using Server.Utils;
@@ -13,7 +11,7 @@ namespace Server.Infrastructure.Services;
 
 public interface ISecurityTokenService
 {
-    string GenerateAccessToken(Guid identityId, string email, ICollection<string> roles);
+    string GenerateAccessToken(Identity identity);
     string GenerateRefreshToken(Guid identityId);
     Guid? GetIdentityIdFromToken(string token);
     Role? GetIdentityRoleFromRefreshToken(string token);
@@ -39,16 +37,21 @@ internal class SecurityTokenService : ISecurityTokenService
         _authSettings = authSettings;
     }
 
-    public string GenerateAccessToken(Guid identityId, string email, ICollection<string> roles)
+    public string GenerateAccessToken(Identity identity)
     {
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(JwtRegisteredClaimNames.Sub, identityId.ToString()),
-            new(JwtRegisteredClaimNames.Email, email),
-            new(AuthConstants.IdClaim, identityId.ToString())
+            new(JwtRegisteredClaimNames.Sub, identity.Id.ToString()),
+            new(JwtRegisteredClaimNames.Email, identity.Email),
+            new(AuthConstants.IdClaim, identity.Id.ToString())
         };
-        claims.AddRange(roles.Select(role => new Claim(AuthConstants.RoleClaim, role)));
+        claims.AddRange(identity.Roles.Select(role => new Claim(AuthConstants.RoleClaim, role)));
+
+        if (identity.Roles.Contains(Role.Employee.GetDisplayName()) && identity.Library is not null)
+        {
+            claims.Add(new Claim(AuthConstants.LibraryIdClaim, identity.Library.Id.ToString()));
+        }
 
         return GenerateToken(AuthConstants.AccessTokenDuration, claims);
     }

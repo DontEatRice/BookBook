@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box';
-import { Role } from '../utils/constants';
 import { SxProps, Theme } from '@mui/material/styles';
 import LoginRequest, { LoginRequestType } from '../models/LoginRequest';
 import { useForm } from 'react-hook-form';
@@ -9,11 +8,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 type LoginFormProps = {
   onSubmit: (data: LoginRequestType) => void;
-  loginAs: Role;
   sx?: SxProps<Theme>;
 };
 
-function LoginForm({ onSubmit, loginAs, sx }: LoginFormProps) {
+function LoginForm({ onSubmit, sx }: LoginFormProps) {
   const {
     handleSubmit,
     register,
@@ -25,7 +23,6 @@ function LoginForm({ onSubmit, loginAs, sx }: LoginFormProps) {
   return (
     <Box sx={sx}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <input type="hidden" {...register('loginAs')} value={loginAs} />
         <TextInputField
           errors={errors}
           field="email"

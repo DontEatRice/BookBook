@@ -3,4 +3,5 @@ export type User = {
   roles: string[];
   token: string;
   email: string;
+  libraryId?: string;
 };

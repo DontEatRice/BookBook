@@ -1,4 +1,4 @@
-export type Role = 'User' | 'Admin';
+export type Role = 'User' | 'Admin' | 'Employee';
 
 export type ErrorResponse = {
   type: string;
@@ -12,4 +12,5 @@ export type Claims = {
   role: string | Array<string>;
   exp: number;
   email: string;
+  libraryid?: string;
 };

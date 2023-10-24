@@ -10,10 +10,10 @@ import AddBookToLibrary, { AddBookToLibraryType } from '../../models/AddBookToLi
 import { addBookToLibrary, getBooksAvailableToAdd } from '../../api/library';
 import NumberInputField from '../../components/NumberInputField';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useAuth } from '../../utils/auth/useAuth';
 
 function AdminAddBookToLibraryForm() {
-  //na razie ręcznie wpisane (trzeba dodać swój do testów)
-  const libraryId = 'A8CD269E-81AC-4C59-B009-1ADC78192109';
+  const { user } = useAuth();
   const navigate = useNavigate();
   const {
     register,
@@ -37,11 +37,8 @@ function AdminAddBookToLibraryForm() {
     console.log(data);
     mutation.mutate(data);
   };
-  // !!!!!!!!!!!!!!!!!!!!!!!!
-  // biblioteka powinna być brana z claimów Usera
-  // !!!!!!!!!!!!!!!!!!!!!!!!
   const { data: availableBooks, status: availableBooksStatus } = useQuery({
-    queryKey: ['booksToAdd', libraryId],
+    queryKey: ['booksToAdd', user!.libraryId!],
     queryFn: ({ queryKey }) => getBooksAvailableToAdd(queryKey[1]),
   });
 
@@ -51,7 +48,7 @@ function AdminAddBookToLibraryForm() {
     return (
       <Box sx={{ mt: 2 }}>
         <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', justifyContent: 'center' }}>
-          <input type="hidden" {...register('libraryId')} value={libraryId} />
+          <input type="hidden" {...register('libraryId')} value={user!.libraryId!} />
           <Box
             sx={{
               width: { xs: '100%', sm: '85%', md: '65%' },
