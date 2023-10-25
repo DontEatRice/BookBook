@@ -23,6 +23,7 @@ public class IdentityDomainService : IIdentityDomainService
         string email,
         string password,
         string name,
+        string? avatarImageUrl,
         CancellationToken cancellationToken = default)
     {
         var existing = await _identityRepository.FirstOrDefaultByEmailAsync(email, cancellationToken);
@@ -35,7 +36,8 @@ public class IdentityDomainService : IIdentityDomainService
             id: id,
             email: email,
             password: password,
-            name: name
+            name: name,
+            avatarImageUrl
         );
 
         return identity;

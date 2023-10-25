@@ -1,3 +1,4 @@
+import UploadImage from '../models/UploadImage';
 import { User } from '../models/User';
 import { Claims } from './constants';
 
@@ -7,6 +8,16 @@ export function fileToBase64(file: File): Promise<string> {
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = reject;
+  });
+}
+
+export async function fileToUploadImage(file: File) {
+  let base64 = await fileToBase64(file);
+  base64 = base64.slice(base64.indexOf(',') + 1);
+  return UploadImage.parse({
+    content: base64,
+    contentType: file.type,
+    fileName: file.name,
   });
 }
 
@@ -30,6 +41,6 @@ export function convertJwtToUser(token: string): User {
     token,
     roles,
     email: claims.email,
-    libraryId: claims.libraryid
+    libraryId: claims.libraryid,
   };
 }

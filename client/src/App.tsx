@@ -25,6 +25,7 @@ import Box from '@mui/material/Box';
 import BooksList from './pages/BooksList';
 import BookDetails from './pages/book/BookDetails';
 import Reservations from './components/reservations/Books';
+import Register from './pages/auth/Register';
 
 const mainTheme = createTheme({
   palette: {
@@ -49,6 +50,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
         <Route path="reservations" element={<Reservations />} />
         <Route path="*" element={<div>NotFound</div>} />
         <Route path="books">

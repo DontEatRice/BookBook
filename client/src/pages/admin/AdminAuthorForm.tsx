@@ -10,21 +10,10 @@ import { useNavigate } from 'react-router-dom';
 import { useCallback, useMemo, useState } from 'react';
 import NumberInputField from '../../components/NumberInputField';
 import { uploadImage } from '../../api/image';
-import { fileToBase64 } from '../../utils/utils';
-import UploadImage from '../../models/UploadImage';
+import { fileToUploadImage } from '../../utils/utils';
 import { useMutation } from '@tanstack/react-query';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
-
-async function fileToUploadImage(file: File) {
-  let base64 = await fileToBase64(file);
-  base64 = base64.slice(base64.indexOf(',') + 1);
-  return UploadImage.parse({
-    content: base64,
-    contentType: file.type,
-    fileName: file.name,
-  });
-}
 
 function AdminAuthorForm() {
   const [fileUrl, setFileUrl] = useState<string | undefined>(undefined);
@@ -71,12 +60,7 @@ function AdminAuthorForm() {
       if (data.avatarPicture) {
         const uploadImageType = await fileToUploadImage(data.avatarPicture);
         const response = await uploadImageMutation.mutateAsync(uploadImageType);
-        for (const pair of response.headers.entries()) {
-          console.log(`${pair[0]}: ${pair[1]}`);
-        }
-        if (response.ok) {
-          data.profilePictureUrl = response.headers.get('location');
-        }
+        data.profilePictureUrl = response;
       }
       postAuthorMutation.mutate(data);
     },

@@ -11,11 +11,12 @@ public class Identity
     public string Email { get; private init; }
     public string? PasswordHash { get; private set; }
     public string? Name { get; private set; }
+    public string? AvatarImageUrl { get; private set; }
     public Library? Library { get; private set; }
     public List<string> Roles { get; private init; }
     public List<Session> Sessions { get; private init; }
 
-    public static Identity Register(Guid id, string email, string password, string name)
+    public static Identity Register(Guid id, string email, string password, string name, string? avatarImageUrl)
     {
         var identity = new Identity
         {
@@ -23,6 +24,7 @@ public class Identity
             Email = email.ToLower(),
             PasswordHash = PasswordHasher.Hash(password),
             Name = name,
+            AvatarImageUrl = avatarImageUrl,
             Sessions = new List<Session>(),
             Roles = new List<string> { Role.User.GetDisplayName() }
         };
