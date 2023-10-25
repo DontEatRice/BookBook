@@ -22,7 +22,7 @@ public class ReviewsController : ControllerBase
             Id = id
         });
 
-        return Created($"/publishers/{id}", null);
+        return Created($"/reviews/{id}", null);
     }
 
     [HttpDelete("{id:guid}")]

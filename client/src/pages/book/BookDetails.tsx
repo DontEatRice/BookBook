@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TableHead, TableBody, Table, Rating, Grid, Box, TableRow, TableContainer, Paper, Avatar, Button } from '@mui/material';
+import { Typography, TableHead, TableBody, Table, Rating, Grid, Box, TableRow, TableContainer, Paper, Avatar, Button, Hidden } from '@mui/material';
 import FilledField from '../../components/FilledField';
 import StyledTableCell from '../../components/tableComponents/StyledTableCell';
 import StyledTableRow from '../../components/tableComponents/StyledTableRow';
@@ -11,15 +11,15 @@ import { useQuery } from '@tanstack/react-query';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
 import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
 import { useEffect, useState } from 'react';
-import Typography from '@mui/material/Typography';
 import { ReviewViewModelType } from '../../models/ReviewViewModel';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { postReview } from '../../api/review';
+import { deleteReview, postReview } from '../../api/review';
 import AddReview, { AddReviewType } from '../../models/AddReview';
+import { BookViewModelType } from '../../models/BookViewModel';
 
 function AuthorsTable({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
@@ -33,9 +33,18 @@ function CategoryTable({ categories }: { categories: BookCategoryViewModelType[]
   return <FilledField label={categories.length > 1 ? 'kategorie' : 'kategoria'} value={categoriesNames} />;
 }
 
-function ReviewsTable({ reviews }: { reviews: ReviewViewModelType[] }) {
+function ReviewsTable({ reviews, book }: { reviews: ReviewViewModelType[], book: BookViewModelType }) {
   const theme = useTheme();
-  const navigate = useNavigate();
+
+  const mutation = useMutation({
+    mutationFn: deleteReview,
+    onSuccess: () => {
+      window.location.reload();
+    },
+    onError: (e: Error) => {
+      console.error(e);
+    },
+  });
 
   return (
     <TableContainer component={Paper} sx={{ maxWidth: 800}}>
@@ -64,11 +73,11 @@ function ReviewsTable({ reviews }: { reviews: ReviewViewModelType[] }) {
             />
             </StyledTableCell>
             <StyledTableCell>
+            <Typography variant="h5">{review.title}</Typography>
               {review.description}
-              {review.title}
             </StyledTableCell>
             <StyledTableCell>
-              <Button sx={{ width: 50, height: 40 }} onClick={() => navigate(`/reviews/${review.id}`)}>
+              <Button sx={{ width: 50, height: 40 }} onClick={() => mutation.mutate(review.id)}>
                 Usuń
               </Button>
             </StyledTableCell>
@@ -76,13 +85,12 @@ function ReviewsTable({ reviews }: { reviews: ReviewViewModelType[] }) {
         ))}
       </TableBody>
     </Table>
-    <Grid item><ReviewForm/></Grid>
+    <Grid item><ReviewForm book={book}/></Grid>
   </TableContainer>
   );
 }
 
-function ReviewForm() {
-  const navigate = useNavigate();
+function ReviewForm({ book }: { book: BookViewModelType }) {
   const [value, setValue] = React.useState<number | null>(0);
   const {
     register,
@@ -94,13 +102,15 @@ function ReviewForm() {
   const mutation = useMutation({
     mutationFn: postReview,
     onSuccess: () => {
-      navigate('..');
+      window.location.reload();
     },
     onError: (e: Error) => {
       console.error(e);
     },
   });
   const onSubmit: SubmitHandler<AddReviewType> = (data) => {
+    data.rating = value == null ? 0 : value;
+    data.idBook = book.id;
     mutation.mutate(data);
   };
   
@@ -122,6 +132,7 @@ function ReviewForm() {
             />
             <TextInputField errors={errors} field="title" register={register} label="Tytuł" />
             <TextInputField errors={errors} field="description" register={register} label="Komentarz" />
+            <input type="hidden" {...register("idBook")} value={book.id}/>
             <Button type="submit" variant="contained">
               Dodaj
             </Button>
@@ -197,6 +208,8 @@ function BookDetails() {
       {AddBookToCart(bookId)}
     </div>
   );
+
+  
 }
 
 export default BookDetails;

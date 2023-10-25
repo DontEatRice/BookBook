@@ -2,12 +2,10 @@ import { z } from 'zod';
 import { BookViewModelType } from './BookViewModel';
 
 const AddReview = z.object({
+    id: z.string().uuid(),
     title: z.string().optional(),
     description: z.string().optional(),
-    rating: z.number().optional(),
-    idBook: z.custom<BookViewModelType>()
-        .refine((book) => book != null, "Pole wymagane")
-        .transform(book => book.id),
+    rating: z.number(),
 });
 
 export default AddReview;
