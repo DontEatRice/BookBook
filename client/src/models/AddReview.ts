@@ -4,7 +4,7 @@ import { BookViewModelType } from './BookViewModel';
 const AddReview = z.object({
     title: z.string().optional(),
     description: z.string().optional(),
-    rating: z.number(),
+    rating: z.number().optional(),
     idBook: z.custom<BookViewModelType>()
         .refine((book) => book != null, "Pole wymagane")
         .transform(book => book.id),
