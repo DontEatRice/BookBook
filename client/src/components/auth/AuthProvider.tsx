@@ -6,18 +6,42 @@ import { getJwtBody, convertJwtToUser } from '../../utils/utils';
 import { LocalStorageTokenKey } from '../../utils/constants';
 
 function AuthProvider({ children }: { children?: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
   const [expires, setExpires] = useState<Date | null>(null);
-  const { getItem, setItem } = useLocalStorage();
+  const { getItem, setItem, removeItem } = useLocalStorage();
+
+  const init = () => {
+    const token = localStorage.getItem(LocalStorageTokenKey);
+    if (!token) {
+      return null;
+    }
+    const claims = getJwtBody(token);
+    const expires = new Date(claims.exp * 1000);
+    if (expires < new Date()) {
+      // removeItem(LocalStorageTokenKey);
+      return null;
+    }
+    // setItem(LocalStorageTokenKey, token);
+    // setExpires(new Date(claims.exp * 1000));
+    return convertJwtToUser(token);
+  };
+
+  const [user, setUser] = useState<User | null>(init());
 
   const login = useCallback(
     (token: string) => {
       const claims = getJwtBody(token);
+      const expires = new Date(claims.exp * 1000);
+      if (expires < new Date()) {
+        removeItem(LocalStorageTokenKey);
+        return null;
+      }
       setItem(LocalStorageTokenKey, token);
       setExpires(new Date(claims.exp * 1000));
-      setUser(convertJwtToUser(token));
+      const user = convertJwtToUser(token);
+      setUser(user);
+      return user;
     },
-    [setItem]
+    [removeItem, setItem]
   );
 
   const handleTokenChange = useCallback(() => {
@@ -25,11 +49,11 @@ function AuthProvider({ children }: { children?: ReactNode }) {
     if (token) {
       login(token);
     }
-  }, [getItem, login]) 
+  }, [getItem, login]);
 
   useEffect(() => {
     handleTokenChange();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

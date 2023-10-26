@@ -97,6 +97,18 @@ public class IdentityDomainService : IIdentityDomainService
         return new AuthTokens(accessToken, refreshToken);
     }
 
+    public async Task ChangePassword(Guid id, string oldPassword, string newPassword, CancellationToken cancellationToken = default)
+    {
+        if (oldPassword == newPassword)
+        {
+            throw new DomainException("New password can not be the same as the old one",
+                DomainErrorCodes.SamePasswords);
+        }
+        var identity = await _identityRepository.FirstOrDefaultByIdAsync(id, cancellationToken) ??
+                       throw new DomainException("Identity does not exists", DomainErrorCodes.IdentityDoesNotExists);
+        identity.ChangePassword(oldPassword, newPassword);
+    }
+
     public async Task<Identity> RegisterEmployeeAsync(
         Guid id,
         string email,

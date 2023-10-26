@@ -26,6 +26,7 @@ import BooksList from './pages/BooksList';
 import BookDetails from './pages/book/BookDetails';
 import Reservations from './components/reservations/Books';
 import Register from './pages/auth/Register';
+import ChangePassword from './pages/account/ChangePassword';
 
 const mainTheme = createTheme({
   palette: {
@@ -51,6 +52,9 @@ function App() {
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="account">
+          <Route path="change-password" element={<ChangePassword />} />
+        </Route>
         <Route path="reservations" element={<Reservations />} />
         <Route path="*" element={<div>NotFound</div>} />
         <Route path="books">

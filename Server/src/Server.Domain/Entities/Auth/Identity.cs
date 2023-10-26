@@ -68,6 +68,17 @@ public class Identity
             Sessions.Remove(session);
         }
     }
+    
+    public void ChangePassword(string oldPassword, string newPassword) 
+    {
+        if (PasswordHash == default || !PasswordHasher.Verify(oldPassword, PasswordHash))
+        {
+            throw new DomainException("Invalid Credentials", DomainErrorCodes.InvalidCredentials);
+        }
+
+        PasswordHash = PasswordHasher.Hash(newPassword);
+        Sessions.Clear();
+    }
 
     public void UpdateRefreshToken(string oldRefreshToken, string newRefreshToken)
     {
