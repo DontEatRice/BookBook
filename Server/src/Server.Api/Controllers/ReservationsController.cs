@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Reservations;
 using Server.Application.Exceptions;
@@ -18,6 +19,7 @@ public class ReservationsController : ControllerBase
     }
     
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult> Post(MakeReservationCommand command)
     {
         var id = Guid.NewGuid();
@@ -45,6 +47,7 @@ public class ReservationsController : ControllerBase
     }
     
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult> Get()
     {
         var userId = User.FindFirstValue(AuthConstants.IdClaim) ??
