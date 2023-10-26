@@ -33,7 +33,9 @@ internal class IdentityRepository : IIdentityRepository
 
     public async Task<Identity?> FirstOrDefaultByEmailAsync(string email, CancellationToken cancellationToken)
     {
-        return await _dbContext.Identities.FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
+        return await _dbContext.Identities
+            .Include(x => x.Library)
+            .FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
 
     }
 

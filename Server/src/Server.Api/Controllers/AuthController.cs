@@ -53,6 +53,18 @@ public class AuthController : ControllerBase
         return Ok(tokens);
     }
 
+    [HttpPost("employee/register")]
+    public async Task<ActionResult> RegisterEmployee(RegisterEmployeeCommand command)
+    {
+        var id = Guid.NewGuid();
+        await Mediator.Send(command with 
+        { 
+            Id = id 
+        });
+
+        return Created($"/identities/{id}", id);
+    }
+
     private CookieOptions CreateCookieOptionsForRefreshToken()
     {
         // tutaj będzie problem przy deploymencie, jak będziemy mieć gdzie indziej front a gdzie indziej backend

@@ -1,4 +1,5 @@
 using Server.Domain.DomainServices;
+using Server.Domain.Entities;
 using Server.Domain.Entities.Auth;
 using Server.Domain.Exceptions;
 using Server.Domain.Repositories;
@@ -49,7 +50,7 @@ public class IdentityDomainService : IIdentityDomainService
             throw new DomainException("Invalid credentials", DomainErrorCodes.InvalidCredentials);
         }
 
-        var accessToken = _securityTokenService.GenerateAccessToken(identity.Id, identity.Email, identity.Roles);
+        var accessToken = _securityTokenService.GenerateAccessToken(identity);
         var refreshToken = _securityTokenService.GenerateRefreshToken(identity.Id);
 
         identity.Login(
@@ -83,7 +84,7 @@ public class IdentityDomainService : IIdentityDomainService
             throw new DomainException("Invalid refresh token", DomainErrorCodes.InvalidRefreshToken);
         }
         
-        var accessToken = _securityTokenService.GenerateAccessToken(identity.Id, identity.Email, identity.Roles);
+        var accessToken = _securityTokenService.GenerateAccessToken(identity);
         var refreshToken = _securityTokenService.GenerateRefreshToken(identity.Id);
 
         identity.UpdateRefreshToken(
@@ -92,5 +93,30 @@ public class IdentityDomainService : IIdentityDomainService
         );
 
         return new AuthTokens(accessToken, refreshToken);
+    }
+
+    public async Task<Identity> RegisterEmployeeAsync(
+        Guid id,
+        string email,
+        string password,
+        string name,
+        Library library,
+        CancellationToken cancellationToken = default)
+    {
+        var existing = await _identityRepository.FirstOrDefaultByEmailAsync(email, cancellationToken);
+        if (existing != default)
+        {
+            throw new DomainException("Identity with provided email already exists.", DomainErrorCodes.IdentityExists);
+        }
+
+        var identity = Identity.RegisterEmployee(
+            id: id,
+            email: email,
+            password: password,
+            name: name,
+            library: library
+        );
+
+        return identity;
     }
 }

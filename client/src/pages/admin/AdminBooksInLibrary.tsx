@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { getBooksInLibrary } from '../../api/library';
 import { BookInLibraryViewModelType } from '../../models/BookInLibraryViewModel';
 import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '../../utils/auth/useAuth';
 
 function BooksInLibraryTable({ data }: { data: BookInLibraryViewModelType[] }) {
   return (
@@ -51,11 +52,10 @@ function BooksInLibraryTable({ data }: { data: BookInLibraryViewModelType[] }) {
 
 function AdminBooksInLibrary() {
   const theme = useTheme();
-  //dodane ręcznie póki nie ma Usera (do testów trzeba wkleić ze swojej bazy)
-  const libraryId = '69C96AB3-1177-479D-841C-5674AA877909';
+  const { user } = useAuth();
   const { data: booksInLibrary, status: booksInLibraryStatus } = useQuery({
-    queryKey: ['booksInLibrary', libraryId],
-    queryFn: ({ queryKey }) => getBooksInLibrary(queryKey[1]),
+    queryKey: ['booksInLibrary', user!.libraryId!],
+    queryFn: ({ queryKey }) => getBooksInLibrary(queryKey[1]!),
   });
 
   return (
@@ -82,4 +82,3 @@ function AdminBooksInLibrary() {
 }
 
 export default AdminBooksInLibrary;
-

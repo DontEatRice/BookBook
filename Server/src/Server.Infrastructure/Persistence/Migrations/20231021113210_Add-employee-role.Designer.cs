@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Server.Infrastructure.Migrations
+namespace Server.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    partial class BookBookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231021113210_Add-employee-role")]
+    partial class Addemployeerole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -387,9 +390,6 @@ namespace Server.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<Guid>("LibraryId")
                         .HasColumnType("uniqueidentifier");
 
@@ -560,6 +560,9 @@ namespace Server.Infrastructure.Migrations
                                 .HasColumnType("uniqueidentifier");
 
                             b1.Property<Guid>("BookId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<Guid>("LibraryId")
                                 .HasColumnType("uniqueidentifier");
 
                             b1.HasKey("ReservationId", "Id");
