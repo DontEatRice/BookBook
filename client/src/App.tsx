@@ -26,7 +26,6 @@ import BooksList from './pages/book/BooksList';
 import BookDetails from './pages/book/BookDetails';
 import ReservationList from './pages/Reservations/ReservationList';
 import AdminReservationList from './pages/admin/AdminReservations';
-import Reservations from './components/reservations/Books';
 import UserBooksList from './pages/user/UserBooks';
 
 const mainTheme = createTheme({
@@ -59,10 +58,6 @@ function App() {
           <Route path=":bookId" element={<BookDetails />} />
         </Route>
         <Route path="user-books" element={<UserBooksList />} />
-      </Route>
-      <Route path="/reservations" element={<Layout />}>
-        <Route index element={<Reservations />} />
-        <Route path="*" element={<div>NotFound</div>} />
       </Route>
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminHome />} />
@@ -127,4 +122,3 @@ function AdminLayout() {
 }
 
 export default App;
-
