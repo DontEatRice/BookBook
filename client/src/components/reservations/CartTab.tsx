@@ -1,6 +1,7 @@
 import Cart from './Cart';
-import { useCartStore } from '../store';
+import { useCartStore } from '../../store';
 import { useTheme } from '@mui/material/styles';
+
 export default function CartTab() {
   const theme = useTheme();
   const cartStore = useCartStore();

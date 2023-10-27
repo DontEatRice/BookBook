@@ -15,7 +15,7 @@ function AdminHeader() {
         color: theme.palette.text.primary,
         backgroundColor: theme.palette.grey[100],
         padding: theme.spacing(2),
-        zIndex: 3
+        zIndex: 3,
       }}>
       <Link to="/admin" style={{ textDecoration: 'none' }}>
         <Typography
@@ -28,8 +28,9 @@ function AdminHeader() {
       <NavItem label="Książki" link="/admin/books" />
       <NavItem label="Kategorie" link="/admin/categories" />
       <NavItem label="Wydawcy" link="/admin/publishers" />
-      <NavItem label='Biblioteki' link="/admin/libraries" />
-      <NavItem label='Oferta' link='/admin/booksInLibrary' />
+      <NavItem label="Biblioteki" link="/admin/libraries" />
+      <NavItem label="Oferta" link="/admin/booksInLibrary" />
+      <NavItem label="Rezerwacje" link="/admin/reservations" />
     </header>
   );
 }
@@ -61,3 +62,4 @@ function NavItem({ label, link }: { label: string; link: string }) {
 }
 
 export default AdminHeader;
+

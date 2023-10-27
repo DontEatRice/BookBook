@@ -1,11 +1,11 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
-import { BookViewModelType } from '../models/BookViewModel';
+import { BookViewModelType } from '../../models/BookViewModel';
 import { useTheme } from '@mui/material/styles';
-import { searchBooks } from '../api/book';
+import { searchBooks } from '../../api/book';
 import { Grid } from '@mui/material';
-import BookInList from '../components/BookInList';
+import BookInList from '../../components/BookInList';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
 
@@ -68,3 +68,4 @@ function BooksList() {
 }
 
 export default BooksList;
+

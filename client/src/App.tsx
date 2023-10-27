@@ -22,8 +22,10 @@ import AdminBooksInLibrary from './pages/admin/AdminBooksInLibrary';
 import AdminAddBookToLibraryForm from './pages/admin/AdminAddBookToLibraryForm';
 import Login from './pages/Login';
 import Box from '@mui/material/Box';
-import BooksList from './pages/BooksList';
+import BooksList from './pages/book/BooksList';
 import BookDetails from './pages/book/BookDetails';
+import ReservationList from './pages/Reservations/ReservationList';
+import AdminReservationList from './pages/admin/AdminReservations';
 import Reservations from './components/reservations/Books';
 import UserBooksList from './pages/user/UserBooks';
 
@@ -50,8 +52,8 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
-        <Route path="reservations" element={<Reservations />} />
-        <Route path="*" element={<div>NotFound</div>} />
+        <Route path="books" element={<BooksList />} />
+        <Route path="reservations" element={<ReservationList />} />
         <Route path="books">
           <Route index element={<BooksList />} />
           <Route path=":bookId" element={<BookDetails />} />
@@ -88,6 +90,9 @@ function App() {
           <Route index element={<AdminBooksInLibrary />} />
           <Route path="add" element={<AdminAddBookToLibraryForm />} />
         </Route>
+        <Route path="reservations">
+          <Route index element={<AdminReservationList />} />
+        </Route>
         <Route path="*" element={<div>NotFound</div>} />
       </Route>
     </Routes>
@@ -122,3 +127,4 @@ function AdminLayout() {
 }
 
 export default App;
+

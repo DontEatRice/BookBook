@@ -22,7 +22,7 @@ function Nav() {
         </Grid>
         <AuthorizedView>
           <Grid item>
-            <NavItem label="Rezerwuj(tymczasowe)" link="/reservations" />
+            <NavItem label="Rezerwacje" link="/reservations" />
           </Grid>
         </AuthorizedView>
         <AuthorizedView>

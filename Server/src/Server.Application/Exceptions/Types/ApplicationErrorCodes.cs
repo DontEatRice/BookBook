@@ -18,6 +18,7 @@ public static class ApplicationErrorCodes
     public const string NoBooksToReserve = "NO_BOOKS_TO_RESERVE";
     public const string ReservationNotFound = "RESERVATION_NOT_FOUND";
     public const string ReservationCannotBeCancelled = "RESERVATION_CANNOT_BE_CANCELLED";
+    public const string ReservationCannotBeReturned = "RESERVATION_CANNOT_BE_RETURNED";
     public const string CannotMakeAnotherReservation = "CANNOT_MAKE_ANOTHER_RESERVATION";
     public const string NotAuthenticated = "NOT_AUTHENTICATED";
     public const string UserNotFound = "USER_NOT_FOUND";

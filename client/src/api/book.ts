@@ -11,6 +11,11 @@ export const postBook = async (book: AddBookType) => {
     body: JSON.stringify(book),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
+  if (response.status !== 201) {
+    const data = await response.json();
+    throw new Error(`${data.code}:${data.resourceId}`);
+  }
+
   return response;
 };
 
@@ -44,11 +49,12 @@ export async function getLibrariesWithBook(bookId: string) {
   const response = await fetch(base + '/Books/' + bookId + '/Libraries');
   const data = await response.json();
 
-  return LibraryViewModel.array().parse(data);
+  return LibraryViewModel.array().parse(data) ?? [];
 }
 
 export async function searchBooks(query: string) {
-  const response = await fetch(base + "/Books?query=" + query);
+  const response = await fetch(base + '/Books?query=' + query);
   const data = await response.json();
   return BookViewModel.array().parse(data);
 }
+

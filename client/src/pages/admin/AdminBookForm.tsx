@@ -14,9 +14,12 @@ import { getAuthors } from '../../api/author';
 import { getPublishers } from '../../api/publisher';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import { useState } from 'react';
+import { Typography } from '@mui/material';
 
 function AdminBookForm() {
   const navigate = useNavigate();
+  const [apiError, setApiError] = useState<string>('');
   const {
     register,
     handleSubmit,
@@ -30,8 +33,13 @@ function AdminBookForm() {
     onSuccess: () => {
       navigate('..');
     },
-    onError: (e: Error) => {
-      console.error(e);
+    onError: (err) => {
+      const error = err as Error;
+      console.error(error);
+      const errorCode = error.message.split(':')[0];
+      if (errorCode == 'BOOK_ALREADY_ADDED') {
+        setApiError('Podany ISBN jest już zajęty');
+      }
     },
   });
   const onSubmit: SubmitHandler<AddBookType> = (data) => {
@@ -64,6 +72,11 @@ function AdminBookForm() {
             }}>
             <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
               <TextInputField errors={errors} field="ISBN" register={register} label="ISBN" />
+              {apiError && (
+                <Typography variant="body2" color="error">
+                  {apiError}
+                </Typography>
+              )}
               <TextInputField errors={errors} field="title" register={register} label="Tytuł" />
               <NumberInputField
                 errors={errors}
@@ -154,3 +167,4 @@ function AdminBookForm() {
 }
 
 export default AdminBookForm;
+

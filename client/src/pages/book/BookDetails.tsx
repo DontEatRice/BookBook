@@ -20,6 +20,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toggleBookInUserList } from '../../api/user';
 import AuthorizedView from '../../components/auth/AuthorizedView';
+import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
+import { useEffect, useState } from 'react';
 
 function AuthorsTable({ authors }: { authors: AuthorViewModelType[] }) {
   return (
@@ -89,9 +91,17 @@ function BookDetails() {
     queryKey: ['books', params.bookId],
     queryFn: () => getBook(params.bookId + ''),
   });
+    const [bookId, setBookId] = useState<string>('');
+    useEffect(() => {
+        if (status === 'success' && data?.id) {
+            setBookId(data.id);
+        }
+    }, [data?.id, status]);
+
   const item = { img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e', title: 'hardcodedImg' };
 
-  return (
+    return (
+      <div>
     <Box mt={2}>
       {status == 'loading' && 'Ładowanie...'}
       {status == 'error' && 'Błąd!'}
@@ -137,8 +147,11 @@ function BookDetails() {
           </Grid>
         </Grid>
       )}
-    </Box>
+            </Box>
+            {AddBookToCart(bookId)}
+        </div>
   );
 }
 
 export default BookDetails;
+

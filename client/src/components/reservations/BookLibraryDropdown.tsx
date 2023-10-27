@@ -7,11 +7,13 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import { LibraryViewModelType } from '../../models/LibraryViewModel';
+import { Button } from '@mui/material';
+import { addToCart } from '../../api/cart';
 
 function LibraryDropdown({
   data,
 }: {
-  data: { data: LibraryViewModelType[]; setSelectedLibrary: (libraryId: string) => void };
+  data: { data: LibraryViewModelType[] | undefined; setSelectedLibrary: (libraryId: string) => void };
 }) {
   const [selectedOption, setSelectedOption] = useState<string>('');
 
@@ -24,21 +26,51 @@ function LibraryDropdown({
     <FormControl>
       <InputLabel>Select an Option</InputLabel>
       <Select labelId="demo-simple-select-label" value={selectedOption} onChange={handleChange}>
-        {data.data.map((library) => (
-          <MenuItem key={library.id} value={library.id}>
-            {library.name}
-          </MenuItem>
-        ))}
+        {data.data &&
+          data.data?.length > 0 &&
+          data.data.map((library) => (
+            <MenuItem key={library.id} value={library.id}>
+              {library.name}
+            </MenuItem>
+          ))}
       </Select>
     </FormControl>
   );
 }
 
-export default function LibrariesWithBook(bookId: string, setSelectedLibrary: (libraryId: string) => void) {
+export default function AddBookToCart(bookId: string) {
+  const [error, setError] = useState<string>('');
+  const [selectedLibrary, setSelectedLibrary] = useState<string>('');
   const { data, status } = useQuery(['booksInLibrary', bookId], async (context) => {
-    const bookId = context.queryKey[1] as string;
-    return await getLibrariesWithBook(bookId);
+    if (context.queryKey[1] != '') {
+      const bookId = context.queryKey[1] as string;
+      return await getLibrariesWithBook(bookId);
+    }
+    return [];
   });
+
+  const handleAddToCart = async (bookId: string, libraryId: string) => {
+    try {
+      await addToCart({ bookId, libraryId });
+      setError('');
+    } catch (error) {
+      const err = error as Error;
+      switch (err.message) {
+        case 'BOOK_ALREADY_IN_CART':
+          setError('Książka została już dodana do koszyka');
+          break;
+        case 'BOOK_NOT_FOUND':
+          setError('Książka nie została znaleziona');
+          break;
+        case 'LIBRARY_NOT_FOUND':
+          setError('Biblioteka nie została znaleziona');
+          break;
+        default:
+          setError(`Wystąpił nieznany błąd: ${err.message}`);
+          break;
+      }
+    }
+  };
 
   return (
     <div>
@@ -49,7 +81,23 @@ export default function LibrariesWithBook(bookId: string, setSelectedLibrary: (l
         </Typography>
       )}
 
-      {status == 'success' && <LibraryDropdown data={{ data, setSelectedLibrary }} />}
+      {status == 'success' && (
+        <div>
+          <LibraryDropdown data={{ data, setSelectedLibrary }} />
+          <Button
+            disabled={selectedLibrary == ''}
+            variant="contained"
+            color="primary"
+            onClick={() => handleAddToCart(bookId, selectedLibrary)}>
+            Dodaj
+          </Button>
+          {error && (
+            <Typography variant="body1" color="error">
+              {error}
+            </Typography>
+          )}
+        </div>
+      )}
     </div>
   );
 }
