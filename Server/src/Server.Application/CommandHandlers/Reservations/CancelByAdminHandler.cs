@@ -7,19 +7,18 @@ using Server.Domain.Repositories;
 
 namespace Server.Application.CommandHandlers.Reservations;
 
-public sealed record CancelReservationCommand(Guid ReservationId) : IRequest;
+public sealed record CancelReservationByAdminCommand(Guid ReservationId) : IRequest;
 
-public class CancelReservationHandler : IRequestHandler<CancelReservationCommand>
+public class CancelByAdminHandler : IRequestHandler<CancelReservationByAdminCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IReservationRepository _reservationRepository;
     private readonly ILibraryRepository _libraryRepository;
     private readonly IBookInLibraryRepository _bookInLibraryRepository;
 
-    public CancelReservationHandler(
-        IUnitOfWork unitOfWork,
-        IReservationRepository reservationRepository, 
-        ILibraryRepository libraryRepository, 
+    public CancelByAdminHandler(IUnitOfWork unitOfWork, 
+        IReservationRepository reservationRepository,
+        ILibraryRepository libraryRepository,
         IBookInLibraryRepository bookInLibraryRepository)
     {
         _unitOfWork = unitOfWork;
@@ -27,8 +26,8 @@ public class CancelReservationHandler : IRequestHandler<CancelReservationCommand
         _libraryRepository = libraryRepository;
         _bookInLibraryRepository = bookInLibraryRepository;
     }
-
-    public async Task Handle(CancelReservationCommand request, CancellationToken cancellationToken)
+    
+    public async Task Handle(CancelReservationByAdminCommand request, CancellationToken cancellationToken)
     {
         var reservation = await _reservationRepository.FirstOrDefaultByIdAsync(request.ReservationId, cancellationToken);
 
@@ -57,7 +56,7 @@ public class CancelReservationHandler : IRequestHandler<CancelReservationCommand
             if (bookInLibrary != null) bookInLibrary.Available++;
         }
 
-        reservation.Status = ReservationStatus.Cancelled;
+        reservation.Status = ReservationStatus.CancelledByAdmin;
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

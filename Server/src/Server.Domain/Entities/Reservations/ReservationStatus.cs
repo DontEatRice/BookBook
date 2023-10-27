@@ -3,9 +3,8 @@ namespace Server.Domain.Entities.Reservations;
 public enum ReservationStatus
 {
     Pending,
-    Fulfilled,
+    GivenOut,
     Returned,
-    Overdue,
     Cancelled,
     CancelledByAdmin
 }

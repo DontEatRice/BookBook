@@ -5,7 +5,7 @@ using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
 using Server.Application.ViewModels;
 
-namespace Server.Infrastructure.Persistence.QueryHandlers;
+namespace Server.Infrastructure.Persistence.QueryHandlers.Reservations;
 
 public sealed record GetCartQuery(Guid UserId) : IRequest<CartViewModel>;
 
