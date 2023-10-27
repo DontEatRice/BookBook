@@ -19,15 +19,6 @@ public class UserController : ControllerBase
 
     }
 
-    //[HttpGet("{id:Guid}/does-observe")]
-    //public async Task<ActionResult<DoesUserObserveBook>> DoesUserObserveBook(Guid id, DoesUserObserveBookQuery query)
-    //{
-    //    return Ok(await Mediator.Send(query with
-    //    {
-    //        UserId = id
-    //    }));
-    //}
-
     [HttpPost("toggle-observe")]
     public async Task<ActionResult> ToggleBookInUserList (ToggleBookInUsersListCommand command)
     {

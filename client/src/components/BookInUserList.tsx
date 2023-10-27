@@ -37,7 +37,6 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['getUserBooks'] });
     },
-    onSuccess: () => {},
   });
   const onClick: SubmitHandler<ToggleBookInUserListType> = (toggleData) => {
     mutation.mutate(toggleData);

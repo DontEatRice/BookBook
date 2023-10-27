@@ -1,7 +1,6 @@
 // ReSharper disable CollectionNeverUpdated.Global
 #pragma warning disable CS8618
 
-using Server.Domain.Entities.Auth;
 using Server.Domain.Entities.User;
 
 namespace Server.Domain.Entities;

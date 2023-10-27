@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Admin;
-using Server.Application.Exceptions.Types;
 using Server.Application.ViewModels;
 using Server.Infrastructure.Persistence.QueryHandlers;
 using Server.Utils;

@@ -1,5 +1,4 @@
 using Server.Domain.Entities.Auth;
-using Server.Domain.Entities.User;
 
 namespace Server.Domain.Repositories;
 

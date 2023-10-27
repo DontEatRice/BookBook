@@ -30,7 +30,7 @@ export async function getBooks() {
 
 export async function getBook(id: string) {
   //endpoint powinien działać zarówno dla zalogowanego i anonima
-    var auth = '';
+    let auth = '';
     try{
       auth = await getAuthToken()
     } catch(err){}

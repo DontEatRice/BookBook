@@ -91,67 +91,66 @@ function BookDetails() {
     queryKey: ['books', params.bookId],
     queryFn: () => getBook(params.bookId + ''),
   });
-    const [bookId, setBookId] = useState<string>('');
-    useEffect(() => {
-        if (status === 'success' && data?.id) {
-            setBookId(data.id);
-        }
-    }, [data?.id, status]);
+  const [bookId, setBookId] = useState<string>('');
+  useEffect(() => {
+    if (status === 'success' && data?.id) {
+      setBookId(data.id);
+    }
+  }, [data?.id, status]);
 
   const item = { img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e', title: 'hardcodedImg' };
 
-    return (
-      <div>
-    <Box mt={2}>
-      {status == 'loading' && 'Ładowanie...'}
-      {status == 'error' && 'Błąd!'}
-      {status == 'success' && (
-        <Grid container spacing={2} direction="column">
-          <div>
+  return (
+    <div>
+      <Box mt={2}>
+        {status == 'loading' && 'Ładowanie...'}
+        {status == 'error' && 'Błąd!'}
+        {status == 'success' && (
+          <Grid container spacing={2} direction="column">
+            <div>
+              <Grid item>
+                <img
+                  srcSet={`${item.img}`}
+                  src={`${item.img}`}
+                  alt={item.title}
+                  width="300"
+                  height="400"
+                  loading="lazy"
+                />
+              </Grid>
+              <AuthorizedView>
+                <input type="hidden" {...register('bookId')} value={data.id} />
+                {data.doesUserObserve != null && (
+                  <Button onClick={handleSubmit(onClick)}>
+                    {data.doesUserObserve ? 'Usuń z obserwowanych' : 'Dodaj do obserwowanych'}
+                  </Button>
+                )}
+              </AuthorizedView>
+            </div>
             <Grid item>
-              <img
-                srcSet={`${item.img}`}
-                src={`${item.img}`}
-                alt={item.title}
-                width="300"
-                height="400"
-                loading="lazy"
-              />
+              <FilledField label="ISBN" value={data.isbn} />
             </Grid>
-            <AuthorizedView>
-              <input type="hidden" {...register('bookId')} value={data.id} />
-              {data.doesUserObserve != null && (
-                <Button onClick={handleSubmit(onClick)}>
-                  {data.doesUserObserve ? 'Usuń z obserwowanych' : 'Dodaj do obserwowanych'}
-                </Button>
-              )}
-            </AuthorizedView>
-          </div>
-          <Grid item>
-            <FilledField label="ISBN" value={data.isbn} />
+            <Grid item>
+              <FilledField label="Tytuł" value={data.title} />
+            </Grid>
+            <Grid item>
+              <FilledField label="Rok wydania" value={data.yearPublished + ''} />
+            </Grid>
+            <Grid item>
+              <FilledField label="Wydawca" value={data.publisher?.name + ''} />
+            </Grid>
+            <Grid item>
+              <CategoryTable categories={data.bookCategories} />
+            </Grid>
+            <Grid item>
+              <AuthorsTable authors={data.authors} />
+            </Grid>
           </Grid>
-          <Grid item>
-            <FilledField label="Tytuł" value={data.title} />
-          </Grid>
-          <Grid item>
-            <FilledField label="Rok wydania" value={data.yearPublished + ''} />
-          </Grid>
-          <Grid item>
-            <FilledField label="Wydawca" value={data.publisher?.name + ''} />
-          </Grid>
-          <Grid item>
-            <CategoryTable categories={data.bookCategories} />
-          </Grid>
-          <Grid item>
-            <AuthorsTable authors={data.authors} />
-          </Grid>
-        </Grid>
-      )}
-            </Box>
-            {AddBookToCart(bookId)}
-        </div>
+        )}
+      </Box>
+      {AddBookToCart(bookId)}
+    </div>
   );
 }
 
 export default BookDetails;
-
