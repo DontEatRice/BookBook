@@ -1,8 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.User;
+using Server.Application.Exceptions;
+using Server.Application.Exceptions.Types;
 using Server.Domain.Entities;
 using Server.Infrastructure.Persistence.QueryHandlers.User;
+using Server.Utils;
+using System.Security.Claims;
 
 namespace Server.Api.Controllers;
 
@@ -15,29 +19,38 @@ public class UserController : ControllerBase
 
     }
 
-    [HttpGet("{id:Guid}/does-observe")]
-    public async Task<ActionResult<DoesUserObserveBook>> DoesUserObserveBook(Guid id, DoesUserObserveBookQuery query)
-    {
-        return Ok(await Mediator.Send(query with
-        {
-            UserId = id
-        }));
-    }
+    //[HttpGet("{id:Guid}/does-observe")]
+    //public async Task<ActionResult<DoesUserObserveBook>> DoesUserObserveBook(Guid id, DoesUserObserveBookQuery query)
+    //{
+    //    return Ok(await Mediator.Send(query with
+    //    {
+    //        UserId = id
+    //    }));
+    //}
 
-    [HttpPost("{id:Guid}/toggle-observe")]
-    public async Task<ActionResult> ToggleBookInUserList (Guid id, ToggleBookInUsersListCommand command)
+    [HttpPost("toggle-observe")]
+    public async Task<ActionResult> ToggleBookInUserList (ToggleBookInUsersListCommand command)
     {
+        var userId = User.FindFirstValue(AuthConstants.IdClaim) ??
+                     throw new AuthenticationException(
+                         "User is not authenticated",
+                         ApplicationErrorCodes.NotAuthenticated);
+
         await Mediator.Send(command with
         {
-            UserId = id
+            UserId = Guid.Parse(userId)
         });
 
         return NoContent();
     }
 
-    [HttpGet("{id:Guid}/user-books")]
-    public async Task<ActionResult<IEnumerable<Book>>> GetUserObservedBooks(Guid id)
+    [HttpGet("user-books")]
+    public async Task<ActionResult<IEnumerable<Book>>> GetUserObservedBooks()
     {
-        return Ok(await Mediator.Send(new GetUserObservedBooksQuery(id)));
+        var userId = User.FindFirstValue(AuthConstants.IdClaim) ??
+                     throw new AuthenticationException(
+                         "User is not authenticated",
+                         ApplicationErrorCodes.NotAuthenticated);
+        return Ok(await Mediator.Send(new GetUserObservedBooksQuery(Guid.Parse(userId))));
     }
 }

@@ -62,7 +62,7 @@ public sealed class ToggleBookInUsersListHandler : IRequestHandler<ToggleBookInU
         }
         else
         {
-            _userBookRepository.Remove(userBook);
+            await _userBookRepository.RemoveAsync(userBook);
         }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);

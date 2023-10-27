@@ -13,6 +13,7 @@ const BookViewModel = z.object({
   publisher: PublisherViewModel.nullable(),
   authors: z.array(AuthorViewModel),
   bookCategories: z.array(BookCategoryViewModel),
+  doesUserObserve: z.nullable(z.boolean())
 });
 
 export default BookViewModel;

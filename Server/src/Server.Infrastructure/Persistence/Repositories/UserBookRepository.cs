@@ -38,8 +38,8 @@ internal sealed class UserBookRepository : IUserBookRepository
             .ToListAsync(cancellationToken);
     }
 
-    public void Remove(UserBook userBook)
+    public Task<int> RemoveAsync(UserBook userBook)
     {
-       _dbContext.Remove(userBook);
+       return _dbContext.UserBooks.Where(x => x.UserId == userBook.UserId && x.BookId == userBook.BookId).ExecuteDeleteAsync();
     }
 }

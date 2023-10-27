@@ -1,6 +1,7 @@
 import { AddBookType } from '../models/AddBook';
 import BookViewModel from '../models/BookViewModel';
 import LibraryViewModel from '../models/LibraryViewModel';
+import {getAuthToken } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 
@@ -23,7 +24,18 @@ export async function getBooks() {
 }
 
 export async function getBook(id: string) {
-    const response = await fetch(base + '/Books/' + id);
+  //endpoint powinien działać zarówno dla zalogowanego i anonima
+    var auth = '';
+    try{
+      auth = await getAuthToken()
+    } catch(err){}
+
+    const response = await fetch(base + '/Books/' + id, {
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        Authorization: auth
+      })
+    });
     const data = await response.json();
     return BookViewModel.parse(data);
 }

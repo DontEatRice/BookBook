@@ -8,5 +8,5 @@ public interface IUserBookRepository
     Task<UserBook?> FirstOrDefaultByIdsAsync(Guid bookId, Guid userId, CancellationToken cancellationToken = default);
     void Add(UserBook userBook);
     Task<List<Book>> GetAllByUserId(Guid userId, CancellationToken cancellationToken = default);
-    void Remove(UserBook userBook);
+    Task<int> RemoveAsync(UserBook userBook);
 }

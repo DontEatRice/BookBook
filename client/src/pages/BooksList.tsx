@@ -36,7 +36,7 @@ function Books({ data }: { data: BookViewModelType[] }) {
   return (
     <Grid container spacing={1}>
       {data.map((book) => (
-        <Grid item xs={6}>
+        <Grid item xs={6} key={book.id}>
           <BookInList book={book} />
         </Grid>
       ))}
@@ -49,7 +49,6 @@ function BooksList() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const q = queryParams.get('q');
-  //const { data, status } = useQuery({ queryKey: ['books'], queryFn: getBooks });
   const { data: searchData, status: searchStatus } = useQuery({
     queryKey: ['searchBooks', q],
     queryFn: () => searchBooks(q == null ? '' : q),
