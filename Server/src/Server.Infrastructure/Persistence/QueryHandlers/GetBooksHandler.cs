@@ -22,7 +22,7 @@ internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, IEnumerab
     {
         var queryable = _dbContext.Books
             .AsNoTracking()
-            .OrderBy(x => x.ISBN)
+            .OrderBy(x => x.Id)
             .Include(x => x.Authors)
             .Include(x => x.BookCategories)
             .Include(x => x.Publisher)
