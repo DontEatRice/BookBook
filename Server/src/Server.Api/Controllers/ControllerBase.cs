@@ -11,3 +11,5 @@ public class ControllerBase : Microsoft.AspNetCore.Mvc.ControllerBase
         Mediator = mediator;
     }
 }
+
+public record PaginationRequest(int Offset = 10, int Limit = 0);

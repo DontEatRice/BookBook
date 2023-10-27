@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Admin;
-using Server.Application.Utils;
 using Server.Application.ViewModels;
 using Server.Infrastructure.Persistence.QueryHandlers;
 
@@ -16,8 +15,10 @@ public class BooksController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BookViewModel>>> List([FromQuery] string? query)
-        => Ok(await Mediator.Send(new GetBooksQuery(query)));
+    public async Task<ActionResult<IEnumerable<BookViewModel>>> List(
+        [FromQuery] string? query, 
+        [FromBody] PaginationRequest request)
+        => Ok(await Mediator.Send(new GetBooksQuery(query, request.Offset, request.Limit)));
 
     [HttpGet("{id:Guid}")]
     public async Task<ActionResult<BookViewModel>> Get(Guid id)
