@@ -22,6 +22,7 @@ function Home() {
     bookCategories: [],
     averageRating: 4,
     averageCriticRating: 5,
+    doesUserObserve: false,
   };
   return (
     <Container>
