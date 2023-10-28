@@ -55,3 +55,4 @@ function BookInList({ book }: { book: BookViewModelType }) {
 }
 
 export default BookInList;
+

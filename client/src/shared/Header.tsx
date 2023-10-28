@@ -15,13 +15,19 @@ import AuthorizedView from '../components/auth/AuthorizedView';
 
 function Header() {
   const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.up('sm'));
+  const matches = useMediaQuery(theme.breakpoints.up('xs'));
   const cartStore = useCartStore();
 
   return (
     <Box
       component="header"
-      sx={{ position: 'sticky', top: 0, left: 0, backgroundColor: theme.palette.secondary.main }}>
+      sx={{
+        position: 'sticky',
+        top: 0,
+        left: 0,
+        backgroundColor: theme.palette.secondary.main,
+        zIndex: 100,
+      }}>
       <Box sx={{ width: '100%' }}>
         <Grid container spacing={0}>
           {matches && (
@@ -33,15 +39,13 @@ function Header() {
             <SearchBar />
           </Grid>
           {matches && (
-            <Grid item sm={3} xs={0}>
+            <Grid item sm={3} xs={3} paddingLeft={3} paddingY={2}>
+              <AuthorizedView>
+                {cartStore.isOpen && <CartTab />}
+                <Button onClick={() => cartStore.toggleCart()}>Koszyk</Button>
+              </AuthorizedView>
             </Grid>
           )}
-          <AuthorizedView>
-            <Grid item sm={3} xs={0}>
-              {cartStore.isOpen && <CartTab />}
-              <Button onClick={() => cartStore.toggleCart()}>KOSZYK</Button>
-            </Grid>
-          </AuthorizedView>
         </Grid>
       </Box>
       <Nav />
@@ -87,7 +91,7 @@ function HeaderLogo() {
         p={1}
         textAlign="center"
         borderRadius={6}
-        sx={{display: 'inline-block', cursor: 'pointer' }}
+        sx={{ backgroundColor: theme.palette.primary.main, display: 'inline-block', cursor: 'pointer' }}
         onClick={() => navigate('/')}>
         <Typography variant="h4">
           <AutoStoriesIcon /> BookBook

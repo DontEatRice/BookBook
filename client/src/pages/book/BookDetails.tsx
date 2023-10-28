@@ -4,7 +4,6 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import FilledField from '../../components/FilledField';
 import TableContainer from '@mui/material/TableContainer';
 import StyledTableCell from '../../components/tableComponents/StyledTableCell';
 import StyledTableRow from '../../components/tableComponents/StyledTableRow';
@@ -16,50 +15,29 @@ import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
 import Paper from '@mui/material/Paper';
 import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
 import { useEffect, useState } from 'react';
+import { TextField, Typography } from '@mui/material';
 
 function AuthorsTable({ authors }: { authors: AuthorViewModelType[] }) {
+  const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
+
   return (
-    <TableContainer component={Paper} sx={{ maxWidth: 400 }}>
-      <Table aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Autorzy</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {authors.map((author) => (
-            <StyledTableRow key={author.id}>
-              <StyledTableCell component="th" scope="row">
-                {author.firstName + ' ' + author.lastName}
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <TextField
+      sx={{ marginBottom: 3 }}
+      label={authors.length > 1 ? 'autorzy' : 'autor'}
+      value={authorNames}
+    />
   );
 }
 
 function CategoryTable({ categories }: { categories: BookCategoryViewModelType[] }) {
+  const categoriesNames = categories.map((category) => category.name).join(', ');
+
   return (
-    <TableContainer component={Paper} sx={{ maxWidth: 400 }}>
-      <Table aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Kategorie</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {categories.map((category) => (
-            <StyledTableRow key={category.id}>
-              <StyledTableCell component="th" scope="row">
-                {category.name}
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <TextField
+      sx={{ marginBottom: 3 }}
+      label={categories.length > 1 ? 'kategorie' : 'kategoria'}
+      value={categoriesNames}
+    />
   );
 }
 
@@ -82,40 +60,37 @@ function BookDetails() {
 
   return (
     <div>
-      <Box mt={2}>
+      <Box m={4}>
         {status == 'loading' && 'Ładowanie...'}
         {status == 'error' && 'Błąd!'}
         {status == 'success' && (
-          <Grid container spacing={2} direction="column">
-            <Grid item>
-              <img
-                srcSet={`${item.img}`}
-                src={`${item.img}`}
-                alt={item.title}
-                width="300"
-                height="400"
-                loading="lazy"
-              />
+          <div>
+            <Typography variant="h4" padding={2} marginTop={8} marginBottom={4}>
+              {data.title}
+            </Typography>
+            <Grid container spacing={1}>
+              <Grid item xs={12} md={5}>
+                <img
+                  srcSet={`${item.img}`}
+                  src={`${item.img}`}
+                  alt={item.title}
+                  width="300px"
+                  height="400px"
+                  loading="lazy"
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
+                  <TextField sx={{ marginBottom: 3 }} label="ISBN" value={data.isbn} />
+                  <TextField sx={{ marginBottom: 3 }} label="Rok wydania" value={data.yearPublished + ''} />
+                  <TextField sx={{ marginBottom: 3 }} label="Wydawca" value={data.publisher?.name + ''} />
+                  <AuthorsTable authors={data.authors} />
+                  <CategoryTable categories={data.bookCategories} />
+                </Box>
+              </Grid>
+              <Grid></Grid>
             </Grid>
-            <Grid item>
-              <FilledField label="ISBN" value={data.isbn} />
-            </Grid>
-            <Grid item>
-              <FilledField label="Tytuł" value={data.title} />
-            </Grid>
-            <Grid item>
-              <FilledField label="Rok wydania" value={data.yearPublished + ''} />
-            </Grid>
-            <Grid item>
-              <FilledField label="Wydawca" value={data.publisher?.name + ''} />
-            </Grid>
-            <Grid item>
-              <CategoryTable categories={data.bookCategories} />
-            </Grid>
-            <Grid item>
-              <AuthorsTable authors={data.authors} />
-            </Grid>
-          </Grid>
+          </div>
         )}
       </Box>
       {AddBookToCart(bookId)}

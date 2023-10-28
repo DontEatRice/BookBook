@@ -5,7 +5,6 @@ import Container from '@mui/material/Container';
 import Footer from './shared/Footer';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
-import { yellow } from '@mui/material/colors';
 import { grey } from '@mui/material/colors';
 import CssBaseline from '@mui/material/CssBaseline';
 import AdminBooks from './pages/admin/AdminBooks';
@@ -28,7 +27,6 @@ import BooksList from './pages/book/BooksList';
 import BookDetails from './pages/book/BookDetails';
 import ReservationList from './pages/Reservations/ReservationList';
 import AdminReservationList from './pages/admin/AdminReservations';
-import { colors } from '@mui/material';
 
 const mainTheme = createTheme({
   palette: {
@@ -36,12 +34,13 @@ const mainTheme = createTheme({
       default: grey[50],
     },
     primary: {
+      light: orange[200],
       main: orange[600],
     },
     secondary: {
       main: grey[200],
       dark: grey[900],
-    }
+    },
   },
   typography: {
     fontFamily: [
@@ -56,7 +55,7 @@ const mainTheme = createTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(','),
-  }
+  },
 });
 
 const adminTheme = createTheme({});
@@ -137,3 +136,4 @@ function AdminLayout() {
 }
 
 export default App;
+
