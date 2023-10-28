@@ -91,12 +91,6 @@ function BookDetails() {
     queryKey: ['books', params.bookId],
     queryFn: () => getBook(params.bookId + ''),
   });
-  const [bookId, setBookId] = useState<string>('');
-  useEffect(() => {
-    if (status === 'success' && data?.id) {
-      setBookId(data.id);
-    }
-  }, [data?.id, status]);
 
   const item = { img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e', title: 'hardcodedImg' };
 
@@ -148,7 +142,7 @@ function BookDetails() {
           </Grid>
         )}
       </Box>
-      {AddBookToCart(bookId)}
+      {AddBookToCart(params.bookId!)}
     </div>
   );
 }
