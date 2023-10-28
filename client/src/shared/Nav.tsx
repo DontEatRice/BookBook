@@ -1,3 +1,5 @@
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -8,27 +10,15 @@ import AuthorizedView from '../components/auth/AuthorizedView';
 function Nav() {
   const theme = useTheme();
   return (
-    <Box component="nav" m={1}>
-      <Grid
-        container
-        p={1}
-        justifyContent="space-evenly"
-        sx={{ backgroundColor: theme.palette.secondary.main, borderRadius: 10 }}>
-        <Grid item>
-          <NavItem label="Strona główna" link="/" />
-        </Grid>
-        <Grid item>
-          <NavItem label="Książki" link="/books" />
-        </Grid>
-        <AuthorizedView>
-          <Grid item>
-            <NavItem label="Rezerwacje" link="/reservations" />
-          </Grid>
-        </AuthorizedView>
-        <Grid item>
-          <NavItem label="Ranking" link="/ranking" />
-        </Grid>
-      </Grid>
+    <Box sx={{ width: '100%', bgcolor: theme.palette.secondary.main }} component="nav" m={0}>
+        <Tabs aria-label="nav tabs example" centered>
+            <NavItem label="Strona główna" link="/"/>
+            <NavItem label="Książki" link="/books" />
+            <AuthorizedView>
+                <NavItem label="Rezerwacje" link="/reservations" />
+            </AuthorizedView>
+            <NavItem label="Ranking" link="/ranking" />
+        </Tabs>
     </Box>
   );
 }
@@ -36,16 +26,14 @@ function Nav() {
 function NavItem({ label, link }: { label: string; link: string }) {
   const theme = useTheme();
   return (
-    <NavLink to={link} style={{ textDecoration: 'none' }}>
+    <NavLink to={link} style={{ textDecoration: 'none', color: theme.palette.secondary.dark}}>
       <Box
-        borderRadius={2}
-        sx={{ backgroundColor: theme.palette.secondary.dark, p: 1, '&:hover': { backgroundColor: 'orange' } }}
-        color={theme.palette.text.primary}>
-        <Typography variant="h6">{label}</Typography>
+        sx={{ p: 1, '&:hover': { backgroundColor: 'darkOrange'}}}
+        >
+      <Typography variant="h6" align="center" fontFamily='Lato'>{label}</Typography>
       </Box>
     </NavLink>
   );
 }
 
 export default Nav;
-

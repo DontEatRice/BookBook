@@ -21,7 +21,7 @@ function Header() {
   return (
     <Box
       component="header"
-      sx={{ position: 'sticky', top: 0, left: 0, backgroundColor: theme.palette.background.default }}>
+      sx={{ position: 'sticky', top: 0, left: 0, backgroundColor: theme.palette.secondary.main }}>
       <Box sx={{ width: '100%' }}>
         <Grid container spacing={0}>
           {matches && (
@@ -34,7 +34,6 @@ function Header() {
           </Grid>
           {matches && (
             <Grid item sm={3} xs={0}>
-              Profile itp
             </Grid>
           )}
           <AuthorizedView>
@@ -88,7 +87,7 @@ function HeaderLogo() {
         p={1}
         textAlign="center"
         borderRadius={6}
-        sx={{ backgroundColor: theme.palette.primary.main, display: 'inline-block', cursor: 'pointer' }}
+        sx={{display: 'inline-block', cursor: 'pointer' }}
         onClick={() => navigate('/')}>
         <Typography variant="h4">
           <AutoStoriesIcon /> BookBook

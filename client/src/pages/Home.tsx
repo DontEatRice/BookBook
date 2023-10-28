@@ -28,7 +28,7 @@ function Home() {
       <Typography variant="h3">
         Witamy w BookBook<AuthorizedView roles={['User']}> {user?.email}</AuthorizedView>!
       </Typography>
-      <Grid container justifyContent="space-between">
+      <Grid container justifyContent="space-between" m={2}>
         <Grid item>
           <BookTile book={book} />
         </Grid>
