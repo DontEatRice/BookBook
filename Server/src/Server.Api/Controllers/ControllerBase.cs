@@ -12,4 +12,4 @@ public class ControllerBase : Microsoft.AspNetCore.Mvc.ControllerBase
     }
 }
 
-public record PaginationRequest(int Offset = 0, int Limit = 10);
+public record PaginationRequest(int Offset = 0, int Limit = 10, string? OrderByField = null);

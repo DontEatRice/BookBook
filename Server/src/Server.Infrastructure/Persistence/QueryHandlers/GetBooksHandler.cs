@@ -1,11 +1,12 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.ViewModels;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
-public record GetBooksQuery(string? Query, int Offset, int Limit) : IRequest<IEnumerable<BookViewModel>>;
+public record GetBooksQuery(string? Query, int Offset, int Limit, string? OrderByField = null) : IRequest<IEnumerable<BookViewModel>>;
 
 internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, IEnumerable<BookViewModel>>
 {
@@ -20,21 +21,21 @@ internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, IEnumerab
 
     public async Task<IEnumerable<BookViewModel>> Handle(GetBooksQuery request, CancellationToken cancellationToken)
     {
-        var queryable = _dbContext.Books
-            .AsNoTracking()
-            .OrderBy(x => x.Id)
-            .Include(x => x.Authors)
-            .Include(x => x.BookCategories)
-            .Include(x => x.Publisher)
-            .AsQueryable();
+        var query = _dbContext.Books
+            .AsNoTracking();
+        
+        query = !string.IsNullOrWhiteSpace(request.OrderByField) ? 
+            query.OrderBy(request.OrderByField) : 
+            query.OrderBy(x => x.Id);
 
         if (!string.IsNullOrWhiteSpace(request.Query))
         {
-            queryable = queryable.Where(x => EF.Functions.FreeText(x.FullText, $"{request.Query}"));
+            query = query.Where(x => EF.Functions.FreeText(x.FullText, $"{request.Query}"));
         }
-        
-        var books = await queryable.ToListWithOffsetAsync(request.Offset, request.Limit, cancellationToken);
 
-        return _mapper.Map<List<BookViewModel>>(books);
+        
+        return await query
+            .ProjectTo<BookViewModel>(_mapper.ConfigurationProvider)
+            .ToListWithOffsetAsync(request.Offset, request.Limit, cancellationToken);
     }
 }

@@ -14,11 +14,11 @@ public class BooksController : ControllerBase
     {
     }
     
-    [HttpGet]
+    [HttpPost("search")]
     public async Task<ActionResult<IEnumerable<BookViewModel>>> List(
         [FromQuery] string? query, 
         [FromBody] PaginationRequest request)
-        => Ok(await Mediator.Send(new GetBooksQuery(query, request.Offset, request.Limit)));
+        => Ok(await Mediator.Send(new GetBooksQuery(query, request.Offset, request.Limit, request.OrderByField)));
 
     [HttpGet("{id:Guid}")]
     public async Task<ActionResult<BookViewModel>> Get(Guid id)
