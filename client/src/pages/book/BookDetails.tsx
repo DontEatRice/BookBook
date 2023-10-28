@@ -118,7 +118,7 @@ function BookDetails() {
                   loading="lazy"
                 />
               </Grid>
-              <AuthorizedView>
+              <AuthorizedView roles={['User']}>
                 <input type="hidden" {...register('bookId')} value={data.id} />
                 {data.doesUserObserve != null && (
                   <Button onClick={handleSubmit(onClick)}>
