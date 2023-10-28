@@ -21,7 +21,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toggleBookInUserList } from '../../api/user';
 import AuthorizedView from '../../components/auth/AuthorizedView';
 import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
-import { useEffect, useState } from 'react';
 
 function AuthorsTable({ authors }: { authors: AuthorViewModelType[] }) {
   return (
