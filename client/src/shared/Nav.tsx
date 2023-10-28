@@ -24,8 +24,6 @@ function Nav() {
           <Grid item>
             <NavItem label="Rezerwacje" link="/reservations" />
           </Grid>
-        </AuthorizedView>
-        <AuthorizedView>
           <Grid item>
             <NavItem label="Obserwowane" link="/user-books" />
           </Grid>

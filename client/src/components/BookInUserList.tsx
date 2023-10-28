@@ -29,10 +29,6 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
     },
     onError: (e: Error, context) => {
       console.log(e);
-      // tu w sumie nie wiem jak to dobrze obsłużyć
-      if (context?.previousUserBooks) {
-        queryClient.setQueryData<BookViewModelType[]>(['getUserBooks'], context.previousUserBooks);
-      }
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['getUserBooks'] });
