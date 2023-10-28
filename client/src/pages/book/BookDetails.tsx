@@ -7,30 +7,19 @@ import { useQuery } from '@tanstack/react-query';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
 import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
 import { useEffect, useState } from 'react';
-import { TextField, Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import FilledField from '../../components/FilledField';
 
 function AuthorsTable({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
 
-  return (
-    <TextField
-      sx={{ marginBottom: 3 }}
-      label={authors.length > 1 ? 'autorzy' : 'autor'}
-      value={authorNames}
-    />
-  );
+  return <FilledField label={authors.length > 1 ? 'autorzy' : 'autor'} value={authorNames} />;
 }
 
 function CategoryTable({ categories }: { categories: BookCategoryViewModelType[] }) {
   const categoriesNames = categories.map((category) => category.name).join(', ');
 
-  return (
-    <TextField
-      sx={{ marginBottom: 3 }}
-      label={categories.length > 1 ? 'kategorie' : 'kategoria'}
-      value={categoriesNames}
-    />
-  );
+  return <FilledField label={categories.length > 1 ? 'kategorie' : 'kategoria'} value={categoriesNames} />;
 }
 
 function BookDetails() {
@@ -73,11 +62,21 @@ function BookDetails() {
               </Grid>
               <Grid item md={6} xs={12}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
-                  <TextField sx={{ marginBottom: 3 }} label="ISBN" value={data.isbn} />
-                  <TextField sx={{ marginBottom: 3 }} label="Rok wydania" value={data.yearPublished + ''} />
-                  <TextField sx={{ marginBottom: 3 }} label="Wydawca" value={data.publisher?.name + ''} />
-                  <AuthorsTable authors={data.authors} />
-                  <CategoryTable categories={data.bookCategories} />
+                  <div style={{ marginBottom: '1rem' }}>
+                    <FilledField label="ISBN" value={data.isbn} />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <FilledField label="Rok wydania" value={data.yearPublished + ''} />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <FilledField label="Wydawca" value={data.publisher?.name + ''} />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <AuthorsTable authors={data.authors} />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <CategoryTable categories={data.bookCategories} />
+                  </div>
                 </Box>
               </Grid>
               <Grid></Grid>
