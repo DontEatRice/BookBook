@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { getAuthor } from '../../api/author';
-import { Box, CircularProgress, Grid, TextField, Typography } from '@mui/material';
+import { Avatar, Box, CircularProgress, Grid, Typography } from '@mui/material';
+import FilledField from '../../components/FilledField';
 
 function AuthorDetails() {
   const params = useParams();
@@ -22,27 +23,25 @@ function AuthorDetails() {
           </Typography>
           <Grid container spacing={1}>
             <Grid item xs={12} md={5}>
-              <img
-                srcSet={`${
-                  authorData.profilePictureUrl == null
-                    ? '../../../public/autor-szablon.jpg'
-                    : authorData.profilePictureUrl
-                }`}
-                src={`${
-                  authorData.profilePictureUrl == null
-                    ? '../../../public/autor-szablon.jpg'
-                    : authorData.profilePictureUrl
-                }`}
+              <Avatar
                 alt={authorData.firstName + ' ' + authorData.lastName}
-                width="300px"
-                height="400px"
-                loading="lazy"
+                src={
+                  authorData.profilePictureUrl == null
+                    ? '../../../public/autor-szablon.jpg'
+                    : authorData.profilePictureUrl
+                }
+                sx={{ width: 300, height: 300 }}
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
-                <TextField sx={{ marginBottom: 3 }} label="Rok urodzenia" value={authorData.birthYear} />
-              </Box>
+              <Grid sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
+                <Grid item xs={12}>
+                  <FilledField label="Rok urodzenia" value={authorData.birthYear.toString()} />
+                </Grid>
+                <Grid>
+                  {authorData.description != null && <Typography>{authorData.description}</Typography>}
+                </Grid>
+              </Grid>
             </Grid>
             <Grid></Grid>
           </Grid>

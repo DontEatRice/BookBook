@@ -20,6 +20,7 @@ const AddAuthor = z.object({
     .preprocess((a) => parseInt(z.string().parse(a)), z.number().positive())
     .refine((year) => year <= new Date().getFullYear(), 'Rok urodzenia nie może być z przyszłości'),
   profilePictureUrl: z.string().url().optional().nullable(),
+  description: z.string().nullable()
 });
 
 export default AddAuthor;

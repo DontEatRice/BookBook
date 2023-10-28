@@ -6,6 +6,7 @@ const AuthorViewModel = z.object({
   lastName: z.string().max(50),
   birthYear: z.number().int().positive(),
   profilePictureUrl: z.string().url().max(256).nullable(),
+  description: z.string().nullable()
 });
 
 export default AuthorViewModel;
