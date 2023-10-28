@@ -122,7 +122,8 @@ export default function Cart() {
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'flex-start',
-                    }}>
+                    }}
+                    key={libraryInCart.library.id}>
                     <ListItemText
                       primary={`${libraryInCart.library.name}`}
                       secondary={`${libraryInCart.library.address.city}, ${libraryInCart.library.address.street} ${libraryInCart.library.address.number}`}
@@ -134,7 +135,8 @@ export default function Cart() {
                             display: 'flex',
                             flexDirection: 'row',
                             alignItems: 'flex-start',
-                          }}>
+                          }}
+                          key={book.id}>
                           <Button onClick={() => removeItem(book.id)}>x</Button>
                           <ListItemText primary={book.title}></ListItemText>
                         </ListItem>
