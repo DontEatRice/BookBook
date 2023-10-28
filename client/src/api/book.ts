@@ -33,7 +33,9 @@ export async function getBook(id: string) {
     let auth = '';
     try{
       auth = await getAuthToken()
-    } catch(err){}
+    } catch(err){
+      // w momencie gdy metoda getAuthToken rzuci błąd po prostu zostawiamy auth puste
+    }
 
     const response = await fetch(base + '/Books/' + id, {
       headers: new Headers({

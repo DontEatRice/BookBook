@@ -27,7 +27,7 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
       }
       return { previousUserBooks };
     },
-    onError: (e: Error, context) => {
+    onError: (e: Error) => {
       console.log(e);
     },
     onSettled: () => {
