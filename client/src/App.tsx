@@ -26,6 +26,7 @@ import BooksList from './pages/book/BooksList';
 import BookDetails from './pages/book/BookDetails';
 import ReservationList from './pages/Reservations/ReservationList';
 import AdminReservationList from './pages/admin/AdminReservations';
+import AuthorDetails from './pages/author/AuthorDetails';
 
 const mainTheme = createTheme({
   palette: {
@@ -55,6 +56,9 @@ function App() {
         <Route path="books">
           <Route index element={<BooksList />} />
           <Route path=":bookId" element={<BookDetails />} />
+        </Route>
+        <Route path="authors">
+          <Route path=":authorId" element={<AuthorDetails />} />
         </Route>
       </Route>
       <Route path="/admin" element={<AdminLayout />}>
@@ -120,4 +124,3 @@ function AdminLayout() {
 }
 
 export default App;
-

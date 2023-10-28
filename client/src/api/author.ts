@@ -21,3 +21,10 @@ export async function getAuthors() {
   //w takim przypadku można by coś zlogować i wyświetlić stosowny komunikat
   return AuthorViewModel.array().parse(data);
 }
+
+export async function getAuthor(authorId: string) {
+  const response = await fetch(base + '/Authors/' + authorId);
+  const data = await response.json();
+
+  return AuthorViewModel.parse(data);
+}

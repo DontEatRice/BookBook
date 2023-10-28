@@ -16,6 +16,7 @@ import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
 import Paper from '@mui/material/Paper';
 import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
 import { useEffect, useState } from 'react';
+import { Link } from '@mui/material';
 
 function AuthorsTable({ authors }: { authors: AuthorViewModelType[] }) {
   return (
@@ -29,9 +30,11 @@ function AuthorsTable({ authors }: { authors: AuthorViewModelType[] }) {
         <TableBody>
           {authors.map((author) => (
             <StyledTableRow key={author.id}>
-              <StyledTableCell component="th" scope="row">
-                {author.firstName + ' ' + author.lastName}
-              </StyledTableCell>
+              <Link href={'/authors/' + author.id}>
+                <StyledTableCell component="th" scope="row">
+                  {author.firstName + ' ' + author.lastName}
+                </StyledTableCell>
+              </Link>
             </StyledTableRow>
           ))}
         </TableBody>
@@ -124,4 +127,3 @@ function BookDetails() {
 }
 
 export default BookDetails;
-
