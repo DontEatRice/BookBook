@@ -1,18 +1,10 @@
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TableContainer from '@mui/material/TableContainer';
-import StyledTableCell from '../../components/tableComponents/StyledTableCell';
-import StyledTableRow from '../../components/tableComponents/StyledTableRow';
 import { useParams } from 'react-router';
 import { AuthorViewModelType } from '../../models/AuthorViewModel';
 import { getBook } from '../../api/book';
 import { useQuery } from '@tanstack/react-query';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
-import Paper from '@mui/material/Paper';
 import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
 import { useEffect, useState } from 'react';
 import { TextField, Typography } from '@mui/material';
