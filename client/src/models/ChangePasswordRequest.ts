@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { passwordSchema } from '../utils/zodSchemas';
 
-const ChangePassword = z
+const ChangePasswordRequest = z
   .object({
     newPassword: passwordSchema,
     oldPassword: z.string().min(1, 'Podaj stare hasło'),
@@ -16,5 +16,5 @@ const ChangePassword = z
     path: ['newPassword'],
   });
 
-export default ChangePassword;
-export type ChangePasswordType = z.infer<typeof ChangePassword>;
+export default ChangePasswordRequest;
+export type ChangePasswordRequestType = z.infer<typeof ChangePasswordRequest>;
