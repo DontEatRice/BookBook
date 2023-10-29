@@ -1,66 +1,25 @@
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import FilledField from '../../components/FilledField';
-import TableContainer from '@mui/material/TableContainer';
-import StyledTableCell from '../../components/tableComponents/StyledTableCell';
-import StyledTableRow from '../../components/tableComponents/StyledTableRow';
 import { useParams } from 'react-router';
 import { AuthorViewModelType } from '../../models/AuthorViewModel';
 import { getBook } from '../../api/book';
 import { useQuery } from '@tanstack/react-query';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
-import Paper from '@mui/material/Paper';
 import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
 import { useEffect, useState } from 'react';
+import Typography from '@mui/material/Typography';
+import FilledField from '../../components/FilledField';
 
 function AuthorsTable({ authors }: { authors: AuthorViewModelType[] }) {
-  return (
-    <TableContainer component={Paper} sx={{ maxWidth: 400 }}>
-      <Table aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Autorzy</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {authors.map((author) => (
-            <StyledTableRow key={author.id}>
-              <StyledTableCell component="th" scope="row">
-                {author.firstName + ' ' + author.lastName}
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
+  const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
+
+  return <FilledField label={authors.length > 1 ? 'autorzy' : 'autor'} value={authorNames} />;
 }
 
 function CategoryTable({ categories }: { categories: BookCategoryViewModelType[] }) {
-  return (
-    <TableContainer component={Paper} sx={{ maxWidth: 400 }}>
-      <Table aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Kategorie</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {categories.map((category) => (
-            <StyledTableRow key={category.id}>
-              <StyledTableCell component="th" scope="row">
-                {category.name}
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
+  const categoriesNames = categories.map((category) => category.name).join(', ');
+
+  return <FilledField label={categories.length > 1 ? 'kategorie' : 'kategoria'} value={categoriesNames} />;
 }
 
 function BookDetails() {
@@ -82,40 +41,47 @@ function BookDetails() {
 
   return (
     <div>
-      <Box mt={2}>
+      <Box m={4}>
         {status == 'loading' && 'Ładowanie...'}
         {status == 'error' && 'Błąd!'}
         {status == 'success' && (
-          <Grid container spacing={2} direction="column">
-            <Grid item>
-              <img
-                srcSet={`${item.img}`}
-                src={`${item.img}`}
-                alt={item.title}
-                width="300"
-                height="400"
-                loading="lazy"
-              />
+          <div>
+            <Typography variant="h4" padding={2} marginTop={8} marginBottom={4}>
+              {data.title}
+            </Typography>
+            <Grid container spacing={1}>
+              <Grid item xs={12} md={5}>
+                <img
+                  srcSet={`${item.img}`}
+                  src={`${item.img}`}
+                  alt={item.title}
+                  width="300px"
+                  height="400px"
+                  loading="lazy"
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <FilledField label="ISBN" value={data.isbn} />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <FilledField label="Rok wydania" value={data.yearPublished + ''} />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <FilledField label="Wydawca" value={data.publisher?.name + ''} />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <AuthorsTable authors={data.authors} />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <CategoryTable categories={data.bookCategories} />
+                  </div>
+                </Box>
+              </Grid>
+              <Grid></Grid>
             </Grid>
-            <Grid item>
-              <FilledField label="ISBN" value={data.isbn} />
-            </Grid>
-            <Grid item>
-              <FilledField label="Tytuł" value={data.title} />
-            </Grid>
-            <Grid item>
-              <FilledField label="Rok wydania" value={data.yearPublished + ''} />
-            </Grid>
-            <Grid item>
-              <FilledField label="Wydawca" value={data.publisher?.name + ''} />
-            </Grid>
-            <Grid item>
-              <CategoryTable categories={data.bookCategories} />
-            </Grid>
-            <Grid item>
-              <AuthorsTable authors={data.authors} />
-            </Grid>
-          </Grid>
+          </div>
         )}
       </Box>
       {AddBookToCart(bookId)}

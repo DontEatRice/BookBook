@@ -30,3 +30,4 @@ function BookTile({ book }: { book: BookViewModelType }) {
 }
 
 export default BookTile;
+

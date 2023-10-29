@@ -1,4 +1,7 @@
 import Button from '@mui/material/Button';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import { CartViewModelType } from '../../models/CartViewModel';
@@ -7,9 +10,11 @@ import { getCart, removeFromCart } from '../../api/cart';
 import { makeReservation } from '../../api/reservation';
 import { useState } from 'react';
 import { getBook } from '../../api/book';
+import { useTheme } from '@mui/material';
 
 export default function Cart() {
   const cartStore = useCartStore();
+  const theme = useTheme();
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -60,7 +65,17 @@ export default function Cart() {
   return (
     <div>
       <h1>Cart</h1>
-      <Button onClick={() => cartStore.toggleCart()}>Close</Button>
+      <Button
+        sx={{
+          backgroundColor: theme.palette.primary.light,
+          color: 'black',
+          '&:hover': {
+            backgroundColor: theme.palette.primary.main,
+          },
+        }}
+        onClick={() => cartStore.toggleCart()}>
+        Zamknij
+      </Button>
 
       {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
       {status == 'error' && (
@@ -97,43 +112,52 @@ export default function Cart() {
                 {success}
               </Typography>
             )}
-            {libraries.map((libraryInCart) => (
-              <div
-                key={libraryInCart.library.id}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  border: '1px solid black',
-                  margin: '10px',
-                  padding: '10px',
-                }}>
-                <div>
-                  <p>Biblioteka: {libraryInCart.library.name}</p>
-                  <p>Ksiąki:</p>
-                  {libraryInCart.books.map((book) => (
-                    <div
-                      key={book.id}
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        margin: '5px',
-                        padding: '5px',
-                      }}>
-                      <Button onClick={() => removeItem(book.id)}>X</Button>
-                      <p>{book.title}</p>
-                    </div>
-                  ))}
-                  {
-                    <Button onClick={() => handleMakeReservation(libraryInCart.library.id)}>
-                      Make reservation
-                    </Button>
-                  }
-                </div>
-              </div>
-            ))}
+            <List>
+              {libraries.map((libraryInCart) => (
+                <>
+                  <ListItem
+                    sx={{
+                      backgroundColor: theme.palette.background.default,
+                      borderRadius: 2,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-start',
+                    }}
+                    key={libraryInCart.library.id}>
+                    <ListItemText
+                      primary={`${libraryInCart.library.name}`}
+                      secondary={`${libraryInCart.library.address.city}, ${libraryInCart.library.address.street} ${libraryInCart.library.address.number}`}
+                    />
+                    <List>
+                      {libraryInCart.books.map((book) => (
+                        <ListItem
+                          sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'flex-start',
+                          }}
+                          key={book.id}>
+                          <Button onClick={() => removeItem(book.id)}>x</Button>
+                          <ListItemText primary={book.title}></ListItemText>
+                        </ListItem>
+                      ))}
+                      <Button
+                        sx={{
+                          backgroundColor: theme.palette.primary.light,
+                          color: 'black',
+                          '&:hover': {
+                            backgroundColor: theme.palette.primary.main,
+                          },
+                        }}
+                        onClick={() => handleMakeReservation(libraryInCart.library.id)}>
+                        Złóż rezerwację
+                      </Button>
+                    </List>
+                  </ListItem>
+                  <List></List>
+                </>
+              ))}
+            </List>
           </div>
         )}
       </div>
