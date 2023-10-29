@@ -64,6 +64,7 @@ function AuthProvider({ children }: { children?: ReactNode }) {
   const logout = useCallback(() => {
     setItem(LocalStorageTokenKey, '');
     setExpires(null);
+    setUser(null);
   }, [setItem]);
 
   const cachedValues = useMemo(

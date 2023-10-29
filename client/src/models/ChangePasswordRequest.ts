@@ -11,7 +11,7 @@ const ChangePasswordRequest = z
     message: 'Hasła nie są takie same',
     path: ['confirm'],
   })
-  .refine((input) => input.oldPassword === input.newPassword, {
+  .refine((input) => input.oldPassword !== input.newPassword, {
     message: 'Nowe hasło nie może być takie samo jak stare',
     path: ['newPassword'],
   });

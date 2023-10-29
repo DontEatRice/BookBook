@@ -1,12 +1,11 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Server.Application.ViewModels;
 using Server.Domain.Repositories;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
-public record GetBooksQuery(string? query) : IRequest<IEnumerable<BookViewModel>>;
+public record GetBooksQuery(string? Query) : IRequest<IEnumerable<BookViewModel>>;
 
 internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, IEnumerable<BookViewModel>>
 {
@@ -21,7 +20,7 @@ internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, IEnumerab
 
     public async Task<IEnumerable<BookViewModel>> Handle(GetBooksQuery request, CancellationToken cancellationToken)
     {
-        var books = await _bookRepository.FindAsync(request.query, cancellationToken);
+        var books = await _bookRepository.FindAsync(request.Query, cancellationToken);
 
         return _mapper.Map<List<BookViewModel>>(books);
     }

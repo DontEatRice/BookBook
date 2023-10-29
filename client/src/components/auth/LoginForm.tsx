@@ -9,9 +9,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 type LoginFormProps = {
   onSubmit: (data: LoginRequestType) => void;
   sx?: SxProps<Theme>;
+  loading?: boolean;
 };
 
-function LoginForm({ onSubmit, sx }: LoginFormProps) {
+function LoginForm({ onSubmit, sx, loading = false }: LoginFormProps) {
   const {
     handleSubmit,
     register,
@@ -37,7 +38,7 @@ function LoginForm({ onSubmit, sx }: LoginFormProps) {
           register={register}
           additionalProps={{ variant: 'filled', type: 'password' }}
         />
-        <Button type="submit" fullWidth={true} variant="contained" color="secondary">
+        <Button type="submit" fullWidth={true} variant="contained" color="secondary" disabled={loading}>
           Zaloguj się
         </Button>
       </form>

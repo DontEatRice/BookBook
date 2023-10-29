@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useMutation } from '@tanstack/react-query';
 import { changePassword } from '../../api/account';
+import { AuthError } from '../../api/auth';
 
 function ChangePassword() {
   const { user, logout } = useAuth();
@@ -24,59 +25,84 @@ function ChangePassword() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<ChangePasswordRequestType>({ resolver: zodResolver(ChangePasswordRequest) });
   const changePasswordMutation = useMutation({
     mutationFn: changePassword,
     onSuccess: () => {
       logout();
       navigate('/');
     },
+    onError: (error) => {
+      // TODO jakiś format wprowadzić
+      if (error instanceof AuthError && error.message === 'INVALID_CREDENTIALS') {
+        setError('oldPassword', { message: 'Błędne hasło' }, { shouldFocus: true });
+      }
+    },
   });
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ChangePasswordRequestType>({ resolver: zodResolver(ChangePasswordRequest) });
 
   return (
-    <Box>
-      <form onSubmit={handleSubmit((data) => console.log({ data }))}>
-        <TextInputField
-          register={register}
-          errors={errors}
-          field="oldPassword"
-          label="Aktualne hasło"
-          additionalProps={{
-            type: 'password',
-            variant: 'filled',
-          }}
-        />
-        <TextInputField
-          register={register}
-          errors={errors}
-          field="newPassword"
-          label="Nowe hasło"
-          additionalProps={{
-            type: 'password',
-            variant: 'filled',
-          }}
-        />
-        <TextInputField
-          register={register}
-          errors={errors}
-          field="confirm"
-          label="Powtórz nowe hasło"
-          additionalProps={{
-            type: 'password',
-            variant: 'filled',
-          }}
-        />
-        <Button>Zmień hasło</Button>
-      </form>
-      <Paper elevation={7} sx={{ padding: 2, backgroundColor: theme.palette.warning.main }}>
-        <Typography>
-          <WarningAmberIcon /> Po zmianie hasła zostaniesz wylogowany.
-        </Typography>
-      </Paper>
+    <Box width={'100%'} display={'flex'} justifyContent={'center'}>
+      <Box sx={{ width: { xs: '90%', sm: '70%', md: '45%' } }}>
+        <form onSubmit={handleSubmit((data) => changePasswordMutation.mutate(data))}>
+          <TextInputField
+            register={register}
+            errors={errors}
+            field="oldPassword"
+            label="Aktualne hasło"
+            additionalProps={{
+              type: 'password',
+              variant: 'filled',
+            }}
+          />
+          <TextInputField
+            register={register}
+            errors={errors}
+            field="newPassword"
+            label="Nowe hasło"
+            additionalProps={{
+              type: 'password',
+              variant: 'filled',
+            }}
+          />
+          <TextInputField
+            register={register}
+            errors={errors}
+            field="confirm"
+            label="Powtórz nowe hasło"
+            additionalProps={{
+              type: 'password',
+              variant: 'filled',
+            }}
+          />
+          <Button
+            fullWidth={true}
+            variant="contained"
+            color="secondary"
+            type="submit"
+            disabled={changePasswordMutation.isLoading}>
+            Zmień hasło
+          </Button>
+        </form>
+        <Paper
+          elevation={7}
+          sx={{
+            width: '100%',
+            padding: 2,
+            backgroundColor: theme.palette.warning.main,
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            mt: 2,
+          }}>
+          <WarningAmberIcon />
+          <Typography>Po zmianie hasła zostaniesz wylogowany.</Typography>
+        </Paper>
+      </Box>
     </Box>
   );
 }
