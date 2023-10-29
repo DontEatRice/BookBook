@@ -1,71 +1,31 @@
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import FilledField from '../../components/FilledField';
-import TableContainer from '@mui/material/TableContainer';
-import StyledTableCell from '../../components/tableComponents/StyledTableCell';
-import StyledTableRow from '../../components/tableComponents/StyledTableRow';
 import { useParams } from 'react-router';
 import { AuthorViewModelType } from '../../models/AuthorViewModel';
 import { getBook } from '../../api/book';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
-import Paper from '@mui/material/Paper';
-import { Button } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import ToggleBookInUserList, { ToggleBookInUserListType } from '../../models/ToggleBookInUserList';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toggleBookInUserList } from '../../api/user';
 import AuthorizedView from '../../components/auth/AuthorizedView';
 import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
+import FilledField from '../../components/FilledField';
+import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
+import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 
 function AuthorsTable({ authors }: { authors: AuthorViewModelType[] }) {
-  return (
-    <TableContainer component={Paper} sx={{ maxWidth: 400 }}>
-      <Table aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Autorzy</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {authors.map((author) => (
-            <StyledTableRow key={author.id}>
-              <StyledTableCell component="th" scope="row">
-                {author.firstName + ' ' + author.lastName}
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
+  const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
+
+  return <FilledField label={authors.length > 1 ? 'autorzy' : 'autor'} value={authorNames} />;
 }
 
 function CategoryTable({ categories }: { categories: BookCategoryViewModelType[] }) {
-  return (
-    <TableContainer component={Paper} sx={{ maxWidth: 400 }}>
-      <Table aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Kategorie</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {categories.map((category) => (
-            <StyledTableRow key={category.id}>
-              <StyledTableCell component="th" scope="row">
-                {category.name}
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
+  const categoriesNames = categories.map((category) => category.name).join(', ');
+
+  return <FilledField label={categories.length > 1 ? 'kategorie' : 'kategoria'} value={categoriesNames} />;
 }
 
 function BookDetails() {
@@ -91,54 +51,66 @@ function BookDetails() {
     queryFn: () => getBook(params.bookId + ''),
   });
 
-  const item = { img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e', title: 'hardcodedImg' };
+  const item = {
+    img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
+    title: 'hardcodedImg',
+  };
 
   return (
     <div>
-      <Box mt={2}>
+      <Box m={4}>
         {status == 'loading' && 'Ładowanie...'}
         {status == 'error' && 'Błąd!'}
         {status == 'success' && (
-          <Grid container spacing={2} direction="column">
-            <div>
-              <Grid item>
+          <div>
+            <Stack direction="row" justifyContent="space-between" padding={2} marginTop={8} marginBottom={4}>
+              <Typography variant="h4">{data.title}</Typography>
+              <AuthorizedView roles={['User']}>
+                <input type="hidden" {...register('bookId')} value={data.id} />
+                {data.doesUserObserve != null && (
+                  <Button
+                    color={data.doesUserObserve ? 'error' : 'primary'}
+                    variant="contained"
+                    onClick={handleSubmit(onClick)}
+                    endIcon={data.doesUserObserve ? <DeleteOutlineRoundedIcon /> : <StarBorderRoundedIcon />}>
+                    {data.doesUserObserve ? 'Przeczytane' : 'Do przeczytania'}
+                  </Button>
+                )}
+              </AuthorizedView>
+            </Stack>
+            <Grid container spacing={1}>
+              <Grid item xs={12} md={6}>
                 <img
                   srcSet={`${item.img}`}
                   src={`${item.img}`}
                   alt={item.title}
-                  width="300"
-                  height="400"
+                  width="280px"
+                  height="400px"
                   loading="lazy"
                 />
               </Grid>
-              <AuthorizedView roles={['User']}>
-                <input type="hidden" {...register('bookId')} value={data.id} />
-                {data.doesUserObserve != null && (
-                  <Button onClick={handleSubmit(onClick)}>
-                    {data.doesUserObserve ? 'Usuń z obserwowanych' : 'Dodaj do obserwowanych'}
-                  </Button>
-                )}
-              </AuthorizedView>
-            </div>
-            <Grid item>
-              <FilledField label="ISBN" value={data.isbn} />
+              <Grid item md={6} xs={12}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <FilledField label="ISBN" value={data.isbn} />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <FilledField label="Rok wydania" value={data.yearPublished + ''} />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <FilledField label="Wydawca" value={data.publisher?.name + ''} />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <AuthorsTable authors={data.authors} />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <CategoryTable categories={data.bookCategories} />
+                  </div>
+                </Box>
+              </Grid>
+              <Grid></Grid>
             </Grid>
-            <Grid item>
-              <FilledField label="Tytuł" value={data.title} />
-            </Grid>
-            <Grid item>
-              <FilledField label="Rok wydania" value={data.yearPublished + ''} />
-            </Grid>
-            <Grid item>
-              <FilledField label="Wydawca" value={data.publisher?.name + ''} />
-            </Grid>
-            <Grid item>
-              <CategoryTable categories={data.bookCategories} />
-            </Grid>
-            <Grid item>
-              <AuthorsTable authors={data.authors} />
-            </Grid>
-          </Grid>
+          </div>
         )}
       </Box>
       {AddBookToCart(params.bookId!)}

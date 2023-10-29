@@ -11,12 +11,13 @@ import { useQuery } from '@tanstack/react-query';
 import { ReservationViewModelType } from '../../models/ReservationViewModel';
 import { cancelReservation, getReservationsForUser } from '../../api/reservation';
 import { translateStatus } from '../../utils/functions/utilFunctions';
-import { Button } from '@mui/material';
+import { Button, useTheme } from '@mui/material';
 import { useCartStore } from '../../store';
 import { useEffect } from 'react';
 
 export default function ReservationList() {
   const cartStore = useCartStore();
+  const theme = useTheme();
   const {
     data: reservation,
     status,
@@ -36,7 +37,7 @@ export default function ReservationList() {
   };
 
   return (
-    <Box>
+    <Box sx={{ padding: '16px' }}>
       {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
       {status == 'error' && (
         <Typography variant="h3" color={'error'}>
@@ -49,20 +50,22 @@ export default function ReservationList() {
 
   function Reservations({ data }: { data: ReservationViewModelType[] }) {
     return (
-      <TableContainer>
+      <TableContainer sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '10px' }}>
         <Table>
-          <TableHead>
+          <TableHead sx={{ backgroundColor: theme.palette.primary.main }}>
             <TableRow>
-              <TableCell>Id</TableCell>
+              <TableCell>ID</TableCell>
               <TableCell>Nazwa Biblioteki</TableCell>
               <TableCell>Status</TableCell>
-              <TableCell>Data Końca rezerwacji</TableCell>
+              <TableCell>Data Końca Rezerwacji</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {data.map((reservation) => (
-              <TableRow key={reservation.id}>
+              <TableRow
+                key={reservation.id}
+                sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}>
                 <TableCell>{reservation.id}</TableCell>
                 <TableCell>{reservation.library.name}</TableCell>
                 <TableCell>{translateStatus(reservation.status)}</TableCell>
@@ -70,7 +73,12 @@ export default function ReservationList() {
                 <TableCell>
                   {reservation.status == 'Pending' && (
                     <TableCell>
-                      <Button onClick={() => cancelThisReservation(reservation.id)}>Anuluj</Button>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => cancelThisReservation(reservation.id)}>
+                        Anuluj
+                      </Button>
                     </TableCell>
                   )}
                 </TableCell>

@@ -7,7 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import { LibraryViewModelType } from '../../models/LibraryViewModel';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { addToCart } from '../../api/cart';
 
 function LibraryDropdown({
@@ -23,9 +23,13 @@ function LibraryDropdown({
   };
 
   return (
-    <FormControl>
-      <InputLabel>Select an Option</InputLabel>
-      <Select labelId="demo-simple-select-label" value={selectedOption} onChange={handleChange}>
+    <FormControl sx={{ minWidth: 120 }}>
+      <InputLabel>Wybierz</InputLabel>
+      <Select
+        label="biblioteka"
+        labelId="demo-simple-select-label"
+        value={selectedOption}
+        onChange={handleChange}>
         {data.data &&
           data.data?.length > 0 &&
           data.data.map((library) => (
@@ -82,21 +86,22 @@ export default function AddBookToCart(bookId: string) {
       )}
 
       {status == 'success' && (
-        <div>
+        <Box sx={{ display: 'flex', flex: 'column', padding: 2, margin: 2 }}>
           <LibraryDropdown data={{ data, setSelectedLibrary }} />
           <Button
             disabled={selectedLibrary == ''}
             variant="contained"
             color="primary"
-            onClick={() => handleAddToCart(bookId, selectedLibrary)}>
-            Dodaj
+            onClick={() => handleAddToCart(bookId, selectedLibrary)}
+            sx={{ marginLeft: 2 }}>
+            Dodaj do koszyka
           </Button>
-          {error && (
-            <Typography variant="body1" color="error">
-              {error}
-            </Typography>
-          )}
-        </div>
+        </Box>
+      )}
+      {error && (
+        <Typography marginLeft={4} variant="body1" color="error">
+          {error}
+        </Typography>
       )}
     </div>
   );

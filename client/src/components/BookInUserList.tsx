@@ -6,6 +6,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toggleBookInUserList } from '../api/user';
+import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 
 function BookInUserList({ book }: { book: BookViewModelType }) {
   const queryClient = useQueryClient();
@@ -44,6 +45,7 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
     display: 'block',
     maxWidth: '100%',
     maxHeight: '100%',
+    aspectRatio: 11 / 16,
   });
 
   return (
@@ -55,38 +57,45 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
         backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#1A2027' : '#fff'),
       }}>
       <Grid container spacing={2}>
-        <Grid item>
-          <Button sx={{ width: 128, height: 128 }} onClick={() => navigate(`/books/${book.id}`)}>
-            <Img alt="complex" src="" />
+        <Grid item xs={2}>
+          <Button
+            // sx={{
+            //   width: 128,
+            //   height: 200,
+            // }}
+            onClick={() => navigate(`/books/${book.id}`)}>
+            <Img alt="complex" src="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e" />
           </Button>
         </Grid>
-        <Grid item xs={12} sm container>
-          <Grid item xs container direction="column" spacing={2}>
+        <Grid item xs={10} sm container>
+          <Grid item xs={10} container direction="column" spacing={3}>
             <Grid item xs>
-              <Typography gutterBottom variant="h5" component="div">
+              <Typography gutterBottom variant="h4" component="div">
                 {book.title}
               </Typography>
-              <Typography variant="body2" gutterBottom>
+              <Typography variant="h6" gutterBottom>
                 {book.authors.map((author) => author.firstName + ' ' + author.lastName).join(', ')}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="h6" color="text.secondary" gutterBottom>
                 {book.bookCategories.map((category) => category.name).join(', ')}
               </Typography>
-            </Grid>
-          </Grid>
-          <Grid item xs container direction="column" spacing={2}>
-            <Grid item xs>
-              <Rating
+              {/* <Rating
                 name="half-rating-read"
                 value={book.averageRating == null ? 2.25 : book.averageRating}
                 precision={0.25}
                 readOnly
-              />
+              /> */}
             </Grid>
-            <Grid item xs>
-              <input type="hidden" {...register('bookId')} value={book.id} />
-              <Button onClick={handleSubmit(onClick)}>Usuń z listy</Button>
-            </Grid>
+          </Grid>
+          <Grid item xs>
+            <input type="hidden" {...register('bookId')} value={book.id} />
+            <Button
+              onClick={handleSubmit(onClick)}
+              variant="contained"
+              color="error"
+              endIcon={<DeleteOutlineRoundedIcon />}>
+              Przeczytane
+            </Button>
           </Grid>
         </Grid>
       </Grid>
