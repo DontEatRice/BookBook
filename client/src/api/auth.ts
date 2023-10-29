@@ -11,13 +11,19 @@ export class AuthError extends Error {
   }
 }
 
-export const login = async (request: LoginRequestType) =>
-  fetch(base + '/login', {
+export const login = async (request: LoginRequestType) => {
+  const result = await fetch(base + '/login', {
     method: 'post',
     body: JSON.stringify(request),
     headers: new Headers({ 'Content-Type': 'application/json' }),
     credentials: 'include',
   });
+  if (!result.ok) {
+    throw result;
+  }
+
+  return (await result.json()) as { accessToken: string };
+};
 
 export const register = async (request: RegisterUserType) => {
   const copy = { ...request };

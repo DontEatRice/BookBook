@@ -26,6 +26,10 @@ export function getJwtBody(token: string): Claims {
   return JSON.parse(atob(body)) as Claims;
 }
 
+// export function handleError(error: unknown) {
+
+// }
+
 export function convertJwtToUser(token: string): User {
   const claims = getJwtBody(token);
   let roles: string[] = [];

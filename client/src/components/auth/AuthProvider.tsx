@@ -17,11 +17,8 @@ function AuthProvider({ children }: { children?: ReactNode }) {
     const claims = getJwtBody(token);
     const expires = new Date(claims.exp * 1000);
     if (expires < new Date()) {
-      // removeItem(LocalStorageTokenKey);
       return null;
     }
-    // setItem(LocalStorageTokenKey, token);
-    // setExpires(new Date(claims.exp * 1000));
     return convertJwtToUser(token);
   };
 

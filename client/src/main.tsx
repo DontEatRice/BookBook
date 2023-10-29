@@ -7,7 +7,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import AuthProvider from './components/auth/AuthProvider.tsx';
+import AuthProvider from './components/auth/AuthProvider';
+import AlertProvider from './components/alert/AlertProvider';
+import AlertBar from './components/alert/AlertBar';
 
 const queryClient = new QueryClient();
 //https://tanstack.com/query/v3/docs/react/quick-start
@@ -18,9 +20,12 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <AuthProvider>
-            <App />
-          </AuthProvider>
+          <AlertProvider>
+            <AlertBar />
+            <AuthProvider>
+              <App />
+            </AuthProvider>
+          </AlertProvider>
         </LocalizationProvider>
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} />

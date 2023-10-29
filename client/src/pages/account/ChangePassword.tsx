@@ -29,6 +29,7 @@ function ChangePassword() {
     register,
     handleSubmit,
     setError,
+    setValue,
     formState: { errors },
   } = useForm<ChangePasswordRequestType>({ resolver: zodResolver(ChangePasswordRequest) });
   const changePasswordMutation = useMutation({
@@ -40,6 +41,7 @@ function ChangePassword() {
     onError: (error) => {
       // TODO jakiś format wprowadzić
       if (error instanceof AuthError && error.message === 'INVALID_CREDENTIALS') {
+        setValue('oldPassword', '');
         setError('oldPassword', { message: 'Błędne hasło' }, { shouldFocus: true });
       }
     },
