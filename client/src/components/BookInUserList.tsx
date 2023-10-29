@@ -1,6 +1,6 @@
 import { BookViewModelType } from '../models/BookViewModel';
 import { useNavigate } from 'react-router-dom';
-import { Button, Grid, Paper, Rating, Typography, styled } from '@mui/material';
+import { Button, Grid, Paper, Typography, styled } from '@mui/material';
 import ToggleBookInUserList, { ToggleBookInUserListType } from '../models/ToggleBookInUserList';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
