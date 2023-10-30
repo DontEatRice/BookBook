@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {useState} from 'react'
 import { Dialog, TextField, Typography, TableHead, TableBody, Table, Rating, Grid, Box, TableRow, TableContainer, Paper, Avatar, Button, Hidden, FilledInput } from '@mui/material';
 import FilledField from '../../components/FilledField';
 import StyledTableCell from '../../components/tableComponents/StyledTableCell';
@@ -21,6 +20,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { deleteReview, postReview } from '../../api/review';
 import AddReview, { AddReviewType } from '../../models/AddReview';
+import NumberInputField from '../../components/NumberInputField';
 import { BookViewModelType } from '../../models/BookViewModel';
 import { fileToBase64 } from '../../utils/utils';
 
@@ -299,9 +299,6 @@ function BookDetails() {
       {AddBookToCart(bookId)}
     </div>
   );
-
-  
 }
 
 export default BookDetails;
-
