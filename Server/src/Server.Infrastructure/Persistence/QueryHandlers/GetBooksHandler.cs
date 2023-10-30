@@ -6,9 +6,10 @@ using Server.Application.ViewModels;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
-public record GetBooksQuery(string? Query, int Offset, int Limit, string? OrderByField = null) : IRequest<IEnumerable<BookViewModel>>;
+public record GetBooksQuery(string? Query, int PageSize = 10, int PageNumber = 0, string? OrderByField = null) 
+    : IRequest<PaginatedResponseViewModel<BookViewModel>>;
 
-internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, IEnumerable<BookViewModel>>
+internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, PaginatedResponseViewModel<BookViewModel>>
 {
     private readonly BookBookDbContext _dbContext;
     private readonly IMapper _mapper;
@@ -19,7 +20,8 @@ internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, IEnumerab
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<BookViewModel>> Handle(GetBooksQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResponseViewModel<BookViewModel>> Handle(
+        GetBooksQuery request, CancellationToken cancellationToken)
     {
         var query = _dbContext.Books
             .AsNoTracking();
@@ -32,10 +34,19 @@ internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, IEnumerab
         {
             query = query.Where(x => EF.Functions.FreeText(x.FullText, $"{request.Query}"));
         }
-
         
-        return await query
+        var (books, totalCount) = await query
             .ProjectTo<BookViewModel>(_mapper.ConfigurationProvider)
-            .ToListWithOffsetAsync(request.Offset, request.Limit, cancellationToken);
+            .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);
+
+        var response = new PaginatedResponseViewModel<BookViewModel>
+        {
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize,
+            Count = totalCount,
+            Data = books
+        };
+
+        return response;
     }
 }

@@ -6,23 +6,27 @@ namespace Server.Infrastructure.Persistence;
 
 public static class QueryableExtensions
 {
-    public static async Task<List<TEntity>> ToListWithOffsetAsync<TEntity>(
+    public static async Task<(List<TEntity> Items, int TotalCount)>ToListWithOffsetAsync<TEntity>(
         this IQueryable<TEntity> queryable,
-        int offset,
-        int limit,
+        int pageNumber,
+        int pageSize,
         CancellationToken cancellationToken)
         where TEntity : class
     {
         if (queryable == null)
             throw new ArgumentNullException(nameof(queryable));
 
-        if (offset < 0)
-            throw new ArgumentOutOfRangeException(nameof(offset), "Offset cannot be negative.");
+        if (pageNumber < 0)
+            throw new ArgumentOutOfRangeException(nameof(pageNumber), "Offset cannot be negative.");
 
-        if (limit <= 0)
-            throw new ArgumentOutOfRangeException(nameof(limit), "Count must be greater than zero.");
+        if (pageSize <= 0)
+            throw new ArgumentOutOfRangeException(nameof(pageSize), "Count must be greater than zero.");
 
-        return await queryable.Skip(offset).Take(limit).ToListAsync(cancellationToken);
+        var totalCount = await queryable.CountAsync(cancellationToken);
+
+        var items = await queryable.Skip(pageNumber * pageSize).Take(pageSize).ToListAsync(cancellationToken);
+
+        return (items, totalCount);
     }
     
     /// <summary>

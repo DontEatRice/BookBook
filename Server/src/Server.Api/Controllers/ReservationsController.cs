@@ -48,14 +48,17 @@ public class ReservationsController : ControllerBase
     
     [HttpGet]
     [Authorize]
-    public async Task<ActionResult> Get()
+    public async Task<ActionResult> Get(ListUserReservationsQuery query)
     {
         var userId = User.FindFirstValue(AuthConstants.IdClaim) ??
                      throw new AuthenticationException(
                          "User is not authenticated",
                          ApplicationErrorCodes.NotAuthenticated);
-        
-        return Ok(await Mediator.Send(new ListUserReservationsQuery(Guid.Parse(userId))));
+
+        return Ok(await Mediator.Send(query with
+        {
+            UserId = Guid.Parse(userId)
+        }));
     }
     
     // Admin
@@ -85,9 +88,6 @@ public class ReservationsController : ControllerBase
     }
 
     [HttpGet("admin")]
-    public async Task<ActionResult> GetAll()
-    {
-        return Ok(await Mediator.Send(new ListReservationsQuery()));
-
-    }
+    public async Task<ActionResult> GetAll(ListReservationsQuery query)
+        => Ok(await Mediator.Send(query));
 }

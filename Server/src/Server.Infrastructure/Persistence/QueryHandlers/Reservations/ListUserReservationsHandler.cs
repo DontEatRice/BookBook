@@ -5,9 +5,11 @@ using Server.Application.ViewModels;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers.Reservations;
 
-public sealed record ListUserReservationsQuery(Guid UserId) : IRequest<List<ReservationViewModel>>;
+public sealed record ListUserReservationsQuery(Guid UserId, int PageSize = 10, int PageNumber = 0, string? OrderByField = null)
+    : IRequest<PaginatedResponseViewModel<ReservationViewModel>>;
 
-internal sealed class ListUserReservationsHandler : IRequestHandler<ListUserReservationsQuery, List<ReservationViewModel>>
+internal sealed class ListUserReservationsHandler
+    : IRequestHandler<ListUserReservationsQuery, PaginatedResponseViewModel<ReservationViewModel>>
 {
     private readonly BookBookDbContext _bookBookDbContext;
     private readonly IMapper _mapper;
@@ -18,25 +20,38 @@ internal sealed class ListUserReservationsHandler : IRequestHandler<ListUserRese
         _mapper = mapper;
     }
 
-    public async Task<List<ReservationViewModel>> Handle(ListUserReservationsQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResponseViewModel<ReservationViewModel>> Handle(
+        ListUserReservationsQuery request, CancellationToken cancellationToken)
     {
-        var reservations = await _bookBookDbContext.Reservations
-            .Where(r => r.UserId == request.UserId)
-            .ToListAsync(cancellationToken);
+        var query = _bookBookDbContext.Reservations
+            .Where(r => r.UserId == request.UserId);
+        
+        query = !string.IsNullOrWhiteSpace(request.OrderByField)
+            ? query.OrderBy(request.OrderByField)
+            : query.OrderBy(x => x.Id);
+        
+        var (reservations, totalCount) = await query
+            .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);
         
         var libraryIds = reservations.Select(x => x.LibraryId).ToList();
 
         var libraries = await _bookBookDbContext.Libraries.Where(l => libraryIds.Contains(l.Id)).ToListAsync(cancellationToken);
         
-        return reservations
-            .OrderByDescending(x => x.CreatedAt)
-            .Select(x => new ReservationViewModel
+        return new PaginatedResponseViewModel<ReservationViewModel>
         {
-            Id = x.Id,
-            UserId = x.UserId,
-            Library = _mapper.Map<LibraryViewModel>(libraries.FirstOrDefault(l => l.Id == x.LibraryId)),
-            Status = x.Status.ToString(),
-            ReservationEndDate = x.ReservationEndDate
-        }).ToList();
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize,
+            Count = totalCount,
+            Data = reservations
+                .OrderByDescending(x => x.CreatedAt)
+                .Select(x => new ReservationViewModel
+                {
+                    Id = x.Id,
+                    UserId = x.UserId,
+                    Library = _mapper.Map<LibraryViewModel>(libraries.FirstOrDefault(l => l.Id == x.LibraryId)),
+                    Status = x.Status.ToString(),
+                    ReservationEndDate = x.ReservationEndDate
+                }).ToList()
+        };
     }
 }
