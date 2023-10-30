@@ -14,7 +14,7 @@ public class BookCategoriesController : ControllerBase
     {
     }
     
-    [HttpGet]
+    [HttpPost]
     public async Task<ActionResult<IEnumerable<BookCategoryViewModel>>> GetAll(GetBookCategoriesQuery query)
         => Ok(await Mediator.Send(query));
 

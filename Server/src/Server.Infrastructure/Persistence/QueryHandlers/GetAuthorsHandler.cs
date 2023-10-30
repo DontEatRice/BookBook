@@ -3,11 +3,11 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.ViewModels;
+using Server.Utils;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
-public record GetAuthorsQuery(int PageSize = 10, int PageNumber = 0, string? OrderByField = null)
-    : IRequest<PaginatedResponseViewModel<AuthorViewModel>>;
+public record GetAuthorsQuery : PaginationOptions, IRequest<PaginatedResponseViewModel<AuthorViewModel>>;
 
 internal sealed class GetAuthorsHandler
     : IRequestHandler<GetAuthorsQuery, PaginatedResponseViewModel<AuthorViewModel>>
@@ -34,14 +34,6 @@ internal sealed class GetAuthorsHandler
             .ProjectTo<AuthorViewModel>(_mapper.ConfigurationProvider)
             .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);
 
-        var response = new PaginatedResponseViewModel<AuthorViewModel>
-        {
-            PageNumber = request.PageNumber,
-            PageSize = request.PageSize,
-            Count = totalCount,
-            Data = authors
-        };
-
-        return response;
+        return PaginatedResponseViewModel.Create(authors, totalCount, request);
     }
 }
