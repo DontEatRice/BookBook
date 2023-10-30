@@ -8,19 +8,26 @@ import Nav from './Nav';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
-import CartTab from '../components/CartTab';
+import CartTab from '../components/reservations/CartTab';
 import { useCartStore } from '../../src/store';
 import { Button } from '@mui/material';
+import AuthorizedView from '../components/auth/AuthorizedView';
 
 function Header() {
   const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.up('sm'));
+  const matches = useMediaQuery(theme.breakpoints.up('xs'));
   const cartStore = useCartStore();
 
   return (
     <Box
       component="header"
-      sx={{ position: 'sticky', top: 0, left: 0, backgroundColor: theme.palette.background.default }}>
+      sx={{
+        position: 'sticky',
+        top: 0,
+        left: 0,
+        backgroundColor: theme.palette.secondary.main,
+        zIndex: 100,
+      }}>
       <Box sx={{ width: '100%' }}>
         <Grid container spacing={0}>
           {matches && (
@@ -32,14 +39,13 @@ function Header() {
             <SearchBar />
           </Grid>
           {matches && (
-            <Grid item sm={3} xs={0}>
-              Profile itp
+            <Grid item sm={3} xs={3} paddingLeft={3} paddingY={2}>
+              <AuthorizedView>
+                {cartStore.isOpen && <CartTab />}
+                <Button onClick={() => cartStore.toggleCart()}>Koszyk</Button>
+              </AuthorizedView>
             </Grid>
           )}
-          <Grid item sm={3} xs={0}>
-            {cartStore.isOpen && <CartTab />}
-            <Button onClick={() => cartStore.toggleCart()}>KOSZYK</Button>
-          </Grid>
         </Grid>
       </Box>
       <Nav />
@@ -96,3 +102,4 @@ function HeaderLogo() {
 }
 
 export default Header;
+

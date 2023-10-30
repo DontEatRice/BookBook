@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Server.Domain.Entities;
+using Server.Domain.Entities.User;
 
 namespace Server.Infrastructure.Persistence.Configurations;
 
@@ -24,5 +25,7 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
         builder.Property(x => x.AverageRating);
 
         builder.Property(x => x.AverageCriticRating);
+
+        builder.HasMany(x => x.UserBooks).WithOne(x => x.Book).HasForeignKey(x => x.BookId);
     }
 }
