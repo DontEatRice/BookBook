@@ -1,4 +1,5 @@
 using Microsoft.OpenApi.Extensions;
+using Server.Domain.Entities.User;
 using Server.Domain.Exceptions;
 using Server.Utils;
 #pragma warning disable CS8618
@@ -15,6 +16,7 @@ public class Identity
     public Library? Library { get; private set; }
     public List<string> Roles { get; private init; }
     public List<Session> Sessions { get; private init; }
+    public ICollection<UserBook> UserBooks { get; private init; }
 
     public static Identity Register(Guid id, string email, string password, string name, string? avatarImageUrl)
     {
@@ -26,7 +28,8 @@ public class Identity
             Name = name,
             AvatarImageUrl = avatarImageUrl,
             Sessions = new List<Session>(),
-            Roles = new List<string> { Role.User.GetDisplayName() }
+            Roles = new List<string> { Role.User.GetDisplayName() },
+            UserBooks = new List<UserBook>()
         };
 
         return identity;

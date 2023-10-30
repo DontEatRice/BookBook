@@ -43,7 +43,8 @@ public class ExceptionFilter : IExceptionFilter
             NotFoundException e => new ObjectResult(new
             {
                 Type = ExceptionFilterType.NotFound.ToString(),
-                Code = e.ErrorCode
+                Code = e.ErrorCode,
+                ResourceId = e.ResourceId
             })
             {
                 StatusCode = 404
@@ -52,7 +53,8 @@ public class ExceptionFilter : IExceptionFilter
             LogicException e => new ObjectResult(new
             {
                 Type = ExceptionFilterType.Logic.ToString(),
-                Code = e.ErrorCode
+                Code = e.ErrorCode,
+                ResourceId = e.ResourceId
             })
             {
                 StatusCode = 400

@@ -1,10 +1,10 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { BookViewModelType } from '../models/BookViewModel';
+import { BookViewModelType } from '../../models/BookViewModel';
 import { useTheme } from '@mui/material/styles';
-import { searchBooks } from '../api/book';
+import { searchBooks } from '../../api/book';
 import { Grid } from '@mui/material';
-import BookInList from '../components/BookInList';
+import BookInList from '../../components/BookInList';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import useDebounce from '../utils/useDebounce';
@@ -36,7 +36,7 @@ function Books({ data }: { data: BookViewModelType[] }) {
   return (
     <Grid container spacing={1}>
       {data.map((book) => (
-        <Grid item xs={6}>
+        <Grid item xs={6} key={book.id}>
           <BookInList book={book} />
         </Grid>
       ))}

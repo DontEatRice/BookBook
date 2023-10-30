@@ -13,13 +13,19 @@ public class CancelReservationHandler : IRequestHandler<CancelReservationCommand
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IReservationRepository _reservationRepository;
+    private readonly ILibraryRepository _libraryRepository;
+    private readonly IBookInLibraryRepository _bookInLibraryRepository;
 
     public CancelReservationHandler(
         IUnitOfWork unitOfWork,
-        IReservationRepository reservationRepository)
+        IReservationRepository reservationRepository, 
+        ILibraryRepository libraryRepository, 
+        IBookInLibraryRepository bookInLibraryRepository)
     {
         _unitOfWork = unitOfWork;
         _reservationRepository = reservationRepository;
+        _libraryRepository = libraryRepository;
+        _bookInLibraryRepository = bookInLibraryRepository;
     }
 
     public async Task Handle(CancelReservationCommand request, CancellationToken cancellationToken)
@@ -34,6 +40,21 @@ public class CancelReservationHandler : IRequestHandler<CancelReservationCommand
         if (reservation.Status is not ReservationStatus.Pending)
         {
             throw new LogicException("Reservation cannot be canceled", ApplicationErrorCodes.ReservationCannotBeCancelled);
+        }
+        
+        var library = await _libraryRepository.FirstOrDefaultByIdAsync(reservation.LibraryId, cancellationToken);
+
+        if (library is null)
+        {
+            throw new NotFoundException("Library not found", ApplicationErrorCodes.LibraryNotFound);
+        }
+        
+        foreach (var reservationItem in reservation.ReservationItems)
+        {
+            var bookInLibrary = await _bookInLibraryRepository.FirstOrDefaultByLibraryAndBookAsync(library.Id,
+                reservationItem.BookId, cancellationToken);
+
+            if (bookInLibrary != null) bookInLibrary.Available++;
         }
 
         reservation.Status = ReservationStatus.Cancelled;
