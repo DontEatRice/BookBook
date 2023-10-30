@@ -1,7 +1,11 @@
 import { z } from 'zod';
 import { BookViewModelType } from './BookViewModel';
+import { ReviewViewModelType } from './ReviewViewModel';
 
-const AddReview = z.object({
+const UpdateReview = z.object({
+    idReview: z.custom<ReviewViewModelType>()
+    .refine((review) => review != null, "Pole wymagane")
+    .transform(review => review.id),
     title: z.string().min(2).nonempty(),
     description: z.string().min(2).nonempty(),
     rating: z.preprocess(
@@ -12,5 +16,5 @@ const AddReview = z.object({
         .transform(book => book.id),
 });
 
-export default AddReview;
-export type AddReviewType = z.infer<typeof AddReview>;
+export default UpdateReview;
+export type UpdateReviewType = z.infer<typeof UpdateReview>;

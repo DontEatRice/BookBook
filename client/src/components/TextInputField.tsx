@@ -6,6 +6,7 @@ export type TextInputFieldProps<T extends FieldValues> = {
   field: Path<T>;
   register: UseFormRegister<T>;
   errors: FieldErrors<T>;
+  defaultValue?: string;
   additionalProps?: { variant?: TextFieldVariants } & Omit<
     TextFieldProps,
     'label' | 'helperText' | 'error' | 'variant'
@@ -18,6 +19,7 @@ function TextInputField<T extends FieldValues>({
   field,
   errors,
   additionalProps,
+  defaultValue
 }: TextInputFieldProps<T>) {
   const helper = errors[field]?.message?.toString();
   return (
@@ -27,6 +29,7 @@ function TextInputField<T extends FieldValues>({
       {...register(field)}
       error={errors[field] != undefined}
       helperText={helper}
+      defaultValue={defaultValue}
       sx={{ width: '100%', mb: 2 }}
     />
   );

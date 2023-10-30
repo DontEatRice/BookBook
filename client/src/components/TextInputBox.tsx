@@ -6,33 +6,37 @@ export type TextInputFieldProps<T extends FieldValues> = {
   field: Path<T>;
   register: UseFormRegister<T>;
   errors: FieldErrors<T>;
-  defaultValue: string;
+  rows: number;
+  defaultValue?: string;
   additionalProps?: { variant?: TextFieldVariants } & Omit<
     TextFieldProps,
     'label' | 'helperText' | 'error' | 'variant'
   >;
 };
 
-function TextEditField<T extends FieldValues>({
+function TextInputBox<T extends FieldValues>({
   label,
   register,
   field,
   errors,
   additionalProps,
+  rows,
   defaultValue
 }: TextInputFieldProps<T>) {
   const helper = errors[field]?.message?.toString();
   return (
     <TextField
+      multiline
       {...additionalProps}
       label={label}
       {...register(field)}
       error={errors[field] != undefined}
       helperText={helper}
+      rows={rows}
       defaultValue={defaultValue}
       sx={{ width: '100%', mb: 2 }}
     />
   );
 }
 
-export default TextEditField;
+export default TextInputBox;

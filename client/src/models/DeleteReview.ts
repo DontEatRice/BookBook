@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { BookViewModelType } from './BookViewModel';
 
 const AddReview = z.object({
     id: z.string().uuid(),
