@@ -53,6 +53,7 @@ internal static class Extensions
         services.AddScoped<ICartRepository, CartRepository>();
         services.AddScoped<IReservationRepository, ReservationRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();
+        services.AddScoped<IUserBookRepository, UserBookRepository>();  
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddMediatR(cfg =>

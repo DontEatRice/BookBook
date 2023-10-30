@@ -11,8 +11,3 @@ body {
 a:visited {
     color: inherit;
 }
-
-.active{
-    text-decoration: underline;
-    background-color: orange;
-}

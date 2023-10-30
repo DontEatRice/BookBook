@@ -15,4 +15,5 @@ public class BookViewModel
     public ICollection<AuthorViewModel> Authors { get; set; }
     public ICollection<ReviewViewModel> Reviews { get; set; }
     public ICollection<BookCategoryViewModel> BookCategories { get; set; }
+    public bool? DoesUserObserve { get; set; }
 }

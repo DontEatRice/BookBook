@@ -20,5 +20,7 @@ public class IdentityConfiguration : IEntityTypeConfiguration<Identity>
         
         
         builder.HasIndex(i => i.Email).IsUnique();
+
+        builder.HasMany(x => x.UserBooks).WithOne(x => x.User).HasForeignKey(x =>  x.UserId);
     }
 }
