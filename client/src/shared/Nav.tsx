@@ -4,6 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import { NavLink } from 'react-router-dom';
 import AuthorizedView from '../components/auth/AuthorizedView';
 import Flex from '@mui/material/Grid';
+import Grid from '@mui/material/Grid';
 
 function Nav() {
   const theme = useTheme();
@@ -13,7 +14,12 @@ function Nav() {
         <NavItem label="Strona główna" link="/" />
         <NavItem label="Książki" link="/books" />
         <AuthorizedView>
-          <NavItem label="Rezerwacje" link="/reservations" />
+          <Grid item>
+            <NavItem label="Rezerwacje" link="/reservations" />
+          </Grid>
+          <Grid item>
+            <NavItem label="Do przeczytania" link="/user-books" />
+          </Grid>
         </AuthorizedView>
         <NavItem label="Ranking" link="/ranking" />
       </Flex>
@@ -35,4 +41,3 @@ function NavItem({ label, link }: { label: string; link: string }) {
 }
 
 export default Nav;
-

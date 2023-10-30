@@ -3,12 +3,18 @@ import Grid from '@mui/material/Grid';
 import { useParams } from 'react-router';
 import { AuthorViewModelType } from '../../models/AuthorViewModel';
 import { getBook } from '../../api/book';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
+import { Button, Stack, Typography } from '@mui/material';
+import ToggleBookInUserList, { ToggleBookInUserListType } from '../../models/ToggleBookInUserList';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toggleBookInUserList } from '../../api/user';
+import AuthorizedView from '../../components/auth/AuthorizedView';
 import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
-import { useEffect, useState } from 'react';
-import Typography from '@mui/material/Typography';
 import FilledField from '../../components/FilledField';
+import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
+import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 
 function AuthorsTable({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
@@ -23,21 +29,32 @@ function CategoryTable({ categories }: { categories: BookCategoryViewModelType[]
 }
 
 function BookDetails() {
-  const params = useParams();
-  const [bookId, setBookId] = useState<string>('');
+  const { register, handleSubmit } = useForm<ToggleBookInUserListType>({
+    resolver: zodResolver(ToggleBookInUserList),
+  });
+  const mutation = useMutation({
+    mutationFn: toggleBookInUserList,
+    onError: (e: Error) => {
+      console.log(e);
+    },
+    onSuccess: () => {
+      data!.doesUserObserve = !data!.doesUserObserve;
+    },
+  });
+  const onClick: SubmitHandler<ToggleBookInUserListType> = (toggleData) => {
+    mutation.mutate(toggleData);
+  };
 
+  const params = useParams();
   const { data, status } = useQuery({
     queryKey: ['books', params.bookId],
     queryFn: () => getBook(params.bookId + ''),
   });
 
-  useEffect(() => {
-    if (status === 'success' && data?.id) {
-      setBookId(data.id);
-    }
-  }, [data?.id, status]);
-
-  const item = { img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e', title: 'hardcodedImg' };
+  const item = {
+    img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
+    title: 'hardcodedImg',
+  };
 
   return (
     <div>
@@ -46,16 +63,28 @@ function BookDetails() {
         {status == 'error' && 'Błąd!'}
         {status == 'success' && (
           <div>
-            <Typography variant="h4" padding={2} marginTop={8} marginBottom={4}>
-              {data.title}
-            </Typography>
+            <Stack direction="row" justifyContent="space-between" padding={2} marginTop={8} marginBottom={4}>
+              <Typography variant="h4">{data.title}</Typography>
+              <AuthorizedView roles={['User']}>
+                <input type="hidden" {...register('bookId')} value={data.id} />
+                {data.doesUserObserve != null && (
+                  <Button
+                    color={data.doesUserObserve ? 'error' : 'primary'}
+                    variant="contained"
+                    onClick={handleSubmit(onClick)}
+                    endIcon={data.doesUserObserve ? <DeleteOutlineRoundedIcon /> : <StarBorderRoundedIcon />}>
+                    {data.doesUserObserve ? 'Przeczytane' : 'Do przeczytania'}
+                  </Button>
+                )}
+              </AuthorizedView>
+            </Stack>
             <Grid container spacing={1}>
-              <Grid item xs={12} md={5}>
+              <Grid item xs={12} md={6}>
                 <img
                   srcSet={`${item.img}`}
                   src={`${item.img}`}
                   alt={item.title}
-                  width="300px"
+                  width="280px"
                   height="400px"
                   loading="lazy"
                 />
@@ -84,10 +113,9 @@ function BookDetails() {
           </div>
         )}
       </Box>
-      {AddBookToCart(bookId)}
+      {AddBookToCart(params.bookId!)}
     </div>
   );
 }
 
 export default BookDetails;
-
