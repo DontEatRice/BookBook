@@ -3,11 +3,11 @@ import Typography from '@mui/material/Typography';
 import { BookViewModelType } from '../../models/BookViewModel';
 import { useTheme } from '@mui/material/styles';
 import { searchBooks } from '../../api/book';
-import { Grid } from '@mui/material';
 import BookInList from '../../components/BookInList';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
-import useDebounce from '../utils/useDebounce';
+import useDebounce from '../../utils/useDebounce';
+import Grid from '@mui/material/Grid';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 

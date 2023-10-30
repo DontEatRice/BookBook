@@ -25,7 +25,6 @@ import Login from './pages/auth/Login';
 import Box from '@mui/material/Box';
 import BooksList from './pages/book/BooksList';
 import BookDetails from './pages/book/BookDetails';
-import Reservations from './components/reservations/Books';
 import Register from './pages/auth/Register';
 import ChangePassword from './pages/account/ChangePassword';
 import ReservationList from './pages/Reservations/ReservationList';
