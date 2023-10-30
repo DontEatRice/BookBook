@@ -1,4 +1,4 @@
-import { Grid, Box } from '@mui/material';;
+import { Grid, Box } from '@mui/material';
 import { useParams } from 'react-router';
 import { AuthorViewModelType } from '../../models/AuthorViewModel';
 import { getBook } from '../../api/book';
