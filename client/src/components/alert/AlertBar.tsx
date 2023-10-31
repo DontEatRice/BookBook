@@ -15,7 +15,6 @@ function AlertBar() {
     if (reason === 'clickaway') {
       return;
     }
-    // setActiveAlert(null);
     setOpen(false);
   };
 
@@ -35,7 +34,7 @@ function AlertBar() {
 
   const handleExit = () => {
     setActiveAlert(null);
-    if (queue.length >= 0) {
+    if (queue.length > 0) {
       setActiveAlert(queue.shift()!);
       setQueue([...queue]);
       setOpen(true);

@@ -7,9 +7,16 @@ import { useMutation } from '@tanstack/react-query';
 import { login } from '../../api/auth';
 import { useAuth } from '../../utils/auth/useAuth';
 import useAlert from '../../utils/alerts/useAlert';
+import { useState } from 'react';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { useTheme } from '@mui/material/styles';
 
 function Login() {
   const { login: setAccessToken } = useAuth();
+  const theme = useTheme();
+  const [loginError, setLoginError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { showWarning } = useAlert();
   const loginMutation = useMutation({
@@ -23,35 +30,34 @@ function Login() {
         const body = await error.json();
         console.log({ body });
         if (body.code && body.code === 'INVALID_CREDENTIALS') {
-          showWarning({ message: 'Niepoprawny email lub hasło!' });
+          setLoginError('Nieprawidłowy login lub hasło!');
         } else {
           showWarning({ title: 'Błąd', message: 'Wystąpił nieoczekiwany błąd' });
         }
       }
     },
   });
-  console.log('login');
 
-  // const onSubmit = useCallback(
-  //   async (data: LoginRequestType) => {
-  //     setLoading(true);
-  //     const result = await loginMutation.mutateAsync(data);
-  //     if (result.ok) {
-  //       const responseBody = (await result.json()) as { accessToken: string };
-  //       setAccessToken(responseBody.accessToken);
-  //       navigate('/');
-  //       return;
-  //     }
-  //     const error = (await result.json()) as ErrorResponse;
-  //     console.error({ error });
-  //     setLoading(false);
-  //   },
-  //   [loginMutation, navigate, setAccessToken]
-  // );
   return (
     <Box width="100%">
       <Stack direction="row" justifyContent="center">
         <Box sx={{ width: { xs: '90%', sm: '70%', md: '45%' } }}>
+          {loginError && (
+            <Paper
+              elevation={7}
+              sx={{
+                width: '100%',
+                padding: 2,
+                backgroundColor: theme.palette.error.main,
+                textAlign: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+                mt: 2,
+              }}>
+              <ErrorOutlineIcon />
+              <Typography>{loginError}</Typography>
+            </Paper>
+          )}
           <LoginForm
             onSubmit={(data) => loginMutation.mutate(data)}
             sx={{ mt: 2, mb: 2 }}

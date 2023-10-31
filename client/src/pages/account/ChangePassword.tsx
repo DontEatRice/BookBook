@@ -48,7 +48,7 @@ function ChangePassword() {
   });
 
   return (
-    <Box width={'100%'} display={'flex'} justifyContent={'center'}>
+    <Box width={'100%'} display={'flex'} justifyContent={'center'} mt={2}>
       <Box sx={{ width: { xs: '90%', sm: '70%', md: '45%' } }}>
         <form onSubmit={handleSubmit((data) => changePasswordMutation.mutate(data))}>
           <TextInputField
