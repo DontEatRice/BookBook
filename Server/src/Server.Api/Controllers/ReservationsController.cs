@@ -39,14 +39,14 @@ public class ReservationsController : ControllerBase
     
     
     [HttpPost("{id:guid}/cancel")]
-    public async Task<ActionResult> Cancel(CancelReservationCommand command)
+    public async Task<ActionResult> Cancel(Guid id)
     {
-        await Mediator.Send(command);
+        await Mediator.Send(new CancelReservationCommand(id));
 
         return Ok();
     }
     
-    [HttpGet]
+    [HttpPost("search")]
     [Authorize]
     public async Task<ActionResult> Get(ListUserReservationsQuery query)
     {

@@ -2,11 +2,12 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.ViewModels;
+using Server.Utils;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers.Reservations;
 
-public sealed record ListUserReservationsQuery(Guid UserId, int PageSize = 10, int PageNumber = 0, string? OrderByField = null)
-    : IRequest<PaginatedResponseViewModel<ReservationViewModel>>;
+public sealed record ListUserReservationsQuery(Guid UserId) 
+    : PaginationOptions, IRequest<PaginatedResponseViewModel<ReservationViewModel>>;
 
 internal sealed class ListUserReservationsHandler
     : IRequestHandler<ListUserReservationsQuery, PaginatedResponseViewModel<ReservationViewModel>>

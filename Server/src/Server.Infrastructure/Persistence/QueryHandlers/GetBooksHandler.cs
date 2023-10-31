@@ -3,11 +3,11 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.ViewModels;
+using Server.Utils;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
-public record GetBooksQuery(string? Query, int PageSize = 10, int PageNumber = 0, string? OrderByField = null) 
-    : IRequest<PaginatedResponseViewModel<BookViewModel>>;
+public record GetBooksQuery(string? Query) : PaginationOptions, IRequest<PaginatedResponseViewModel<BookViewModel>>;
 
 internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, PaginatedResponseViewModel<BookViewModel>>
 {

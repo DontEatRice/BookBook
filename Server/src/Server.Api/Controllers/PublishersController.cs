@@ -14,7 +14,7 @@ public class PublishersController : ControllerBase
     {
     }
 
-    [HttpGet]
+    [HttpPost("search")]
     public async Task<ActionResult<IEnumerable<PublisherViewModel>>> List(GetPublishersQuery request)
         => Ok(await Mediator.Send(request));
 

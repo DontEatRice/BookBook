@@ -14,7 +14,7 @@ public class LibrariesController : ControllerBase
     {
     }
 
-    [HttpGet]
+    [HttpPost("search")]
     public async Task<ActionResult<IEnumerable<LibraryViewModel>>> List(GetLibrariesQuery request)
         => Ok(await Mediator.Send(request));
 
