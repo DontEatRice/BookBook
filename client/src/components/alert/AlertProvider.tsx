@@ -17,7 +17,6 @@ function AlertProvider({ children }: { children?: ReactNode }) {
       alertNotification,
       clearNotification,
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [alertNotification]
   );
 
