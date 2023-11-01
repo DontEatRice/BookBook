@@ -14,7 +14,7 @@ public class AccountController : ControllerBase
     {}
 
     [HttpPatch("change-password")]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command)
+    public async Task<IActionResult> ChangePassword(ChangePasswordCommand command)
     {
         var id = GetUserIdOrThrow();
         await Mediator.Send(command with { IdentityId = id });

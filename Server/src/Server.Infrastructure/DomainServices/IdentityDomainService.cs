@@ -97,7 +97,7 @@ public class IdentityDomainService : IIdentityDomainService
         return new AuthTokens(accessToken, refreshToken);
     }
 
-    public async Task ChangePassword(Guid id, string oldPassword, string newPassword, CancellationToken cancellationToken = default)
+    public async Task ChangePasswordAsync(Guid id, string oldPassword, string newPassword, CancellationToken cancellationToken = default)
     {
         if (oldPassword == newPassword)
         {

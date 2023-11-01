@@ -19,7 +19,7 @@ public class ChangePasswordHandler : IRequestHandler<ChangePasswordCommand>
 
     public async Task Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
-        await _identityDomainService.ChangePassword(request.IdentityId, request.OldPassword, request.NewPassword, cancellationToken);
+        await _identityDomainService.ChangePasswordAsync(request.IdentityId, request.OldPassword, request.NewPassword, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }
