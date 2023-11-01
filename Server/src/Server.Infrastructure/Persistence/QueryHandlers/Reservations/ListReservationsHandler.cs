@@ -6,7 +6,7 @@ using Server.Domain.Entities.Reservations;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers.Reservations;
 
-public sealed record ListReservationsQuery : IRequest<List<ReservationViewModel>>;
+public sealed record ListReservationsQuery(Guid LibraryId) : IRequest<List<ReservationViewModel>>;
 
 internal sealed class ListReservationsHandler: IRequestHandler<ListReservationsQuery, List<ReservationViewModel>>
 {
@@ -24,7 +24,8 @@ internal sealed class ListReservationsHandler: IRequestHandler<ListReservationsQ
         var reservations = await _bookBookDbContext.Reservations
             .Where(r => r.Status != ReservationStatus.Returned && 
                         r.Status != ReservationStatus.Cancelled &&
-                        r.Status != ReservationStatus.CancelledByAdmin)
+                        r.Status != ReservationStatus.CancelledByAdmin &&
+                        r.LibraryId == request.LibraryId)
             .ToListAsync(cancellationToken);
         
         var libraryIds = reservations.Select(x => x.LibraryId).ToList();

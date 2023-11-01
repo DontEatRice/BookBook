@@ -48,13 +48,15 @@ export async function cancelReservation(reservationId: string) {
 
 // admin
 
-export async function getReservations() {
+export async function getReservations(libraryId: string) {
   const auth = await getAuthToken();
-  const response = await fetch(base + '/reservations', {
+  const response = await fetch(base + '/reservations/admin', {
+    method: 'post',
     headers: new Headers({
       'Content-Type': 'application/json',
       Authorization: auth,
     }),
+    body: JSON.stringify({ libraryId }),
   });
   const data = await response.json();
   return ReservationViewModel.array().parse(data);

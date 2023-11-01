@@ -70,18 +70,16 @@ export default function ReservationList() {
                 <TableCell>{reservation.library.name}</TableCell>
                 <TableCell>{translateStatus(reservation.status)}</TableCell>
                 <TableCell>{new Date(reservation.reservationEndDate).toLocaleDateString()}</TableCell>
-                <TableCell>
-                  {reservation.status == 'Pending' && (
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => cancelThisReservation(reservation.id)}>
-                        Anuluj
-                      </Button>
-                    </TableCell>
-                  )}
-                </TableCell>
+                {reservation.status == 'Pending' && (
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => cancelThisReservation(reservation.id)}>
+                      Anuluj
+                    </Button>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

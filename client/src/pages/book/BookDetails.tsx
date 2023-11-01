@@ -113,9 +113,10 @@ function BookDetails() {
           </div>
         )}
       </Box>
-      {AddBookToCart(params.bookId!)}
+      <AddBookToCart bookId={params.bookId as string} />
     </div>
   );
 }
 
 export default BookDetails;
+

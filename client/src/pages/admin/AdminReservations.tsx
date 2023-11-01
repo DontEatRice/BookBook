@@ -7,7 +7,6 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import { Button } from '@mui/material';
-
 import { useQuery } from '@tanstack/react-query';
 import { ReservationViewModelType } from '../../models/ReservationViewModel';
 import {
@@ -17,15 +16,17 @@ import {
   returnReservation,
 } from '../../api/reservation';
 import { translateStatus } from '../../utils/functions/utilFunctions';
+import { useAuth } from '../../utils/auth/useAuth';
 
 export default function AdminReservationList() {
+  const { user } = useAuth();
   const {
     data: reservation,
     status,
     refetch,
   } = useQuery({
-    queryKey: ['reservations'],
-    queryFn: getReservations,
+    queryKey: ['reservations', user!.libraryId!],
+    queryFn: ({ queryKey }) => getReservations(queryKey[1]!),
   });
 
   const giveOutThisReservation = async (reservationId: string) => {
@@ -80,7 +81,7 @@ export default function AdminReservationList() {
                 <TableCell>{new Date(reservation.reservationEndDate).toLocaleDateString()}</TableCell>
                 {reservation.status == 'Pending' && (
                   <TableCell>
-                    <Button onClick={() => giveOutThisReservation(reservation.id)}>Wyporzycz</Button>
+                    <Button onClick={() => giveOutThisReservation(reservation.id)}>Wypożycz</Button>
                   </TableCell>
                 )}
                 {reservation.status == 'Pending' && (

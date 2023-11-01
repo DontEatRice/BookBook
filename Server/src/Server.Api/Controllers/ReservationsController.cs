@@ -17,7 +17,7 @@ public class ReservationsController : ControllerBase
     public ReservationsController(IMediator mediator) : base(mediator)
     {
     }
-    
+
     [HttpPost]
     [Authorize]
     public async Task<ActionResult> Post(MakeReservationCommand command)
@@ -27,7 +27,7 @@ public class ReservationsController : ControllerBase
                      throw new AuthenticationException(
                          "User is not authenticated",
                          ApplicationErrorCodes.NotAuthenticated);
-        
+
         await Mediator.Send(command with
         {
             UserId = Guid.Parse(userId),
@@ -37,7 +37,6 @@ public class ReservationsController : ControllerBase
         return Created($"/reservations/{id}", null);
     }
     
-    
     [HttpPost("{id:guid}/cancel")]
     public async Task<ActionResult> Cancel(CancelReservationCommand command)
     {
@@ -45,7 +44,7 @@ public class ReservationsController : ControllerBase
 
         return Ok();
     }
-    
+
     [HttpGet]
     [Authorize]
     public async Task<ActionResult> Get()
@@ -54,12 +53,12 @@ public class ReservationsController : ControllerBase
                      throw new AuthenticationException(
                          "User is not authenticated",
                          ApplicationErrorCodes.NotAuthenticated);
-        
+
         return Ok(await Mediator.Send(new ListUserReservationsQuery(Guid.Parse(userId))));
     }
-    
+
     // Admin
-    
+
     [HttpPost("admin/{id:guid}/cancel")]
     public async Task<ActionResult> CancelByAdmin(CancelReservationByAdminCommand command)
     {
@@ -84,10 +83,8 @@ public class ReservationsController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("admin")]
-    public async Task<ActionResult> GetAll()
-    {
-        return Ok(await Mediator.Send(new ListReservationsQuery()));
-
-    }
+    [Authorize]
+    [HttpPost("admin")]
+    public async Task<ActionResult> List(ListReservationsQuery query)
+        => Ok(await Mediator.Send(query));
 }
