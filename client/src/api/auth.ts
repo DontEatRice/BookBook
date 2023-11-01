@@ -43,6 +43,8 @@ export async function getAuthToken() {
   if (getJwtBody(token).exp < Date.now() / 1000) {
     const refreshResponse = await refresh();
     if (!refreshResponse.ok) {
+      localStorage.setItem(LocalStorageTokenKey, '');
+      window.dispatchEvent(new Event('storage'));
       throw new AuthError('UNATHORIZED');
     }
     const responseBody = (await refreshResponse.json()) as { accessToken: string };
@@ -53,11 +55,10 @@ export async function getAuthToken() {
   return `Bearer ${token}`;
 }
 
-async function refresh() {
-  const response = await fetch(base + '/refresh', {
+export function refresh() {
+  return fetch(base + '/refresh', {
     method: 'get',
     headers: new Headers({ 'Content-Type': 'application/json' }),
     credentials: 'include',
   });
-  return response;
 }

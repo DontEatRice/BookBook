@@ -47,7 +47,7 @@ public class AuthController : ControllerBase
         {
             throw new AuthenticationException("Bad refresh token", DomainErrorCodes.InvalidRefreshToken);
         }
-
+        
         var tokens = await Mediator.Send(new RefreshTokenCommand(refreshToken));
         Response.Cookies.Append(RefreshTokenCookieName, tokens.RefreshToken, CreateCookieOptionsForRefreshToken());
         return Ok(tokens);

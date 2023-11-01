@@ -58,14 +58,14 @@ public class Identity
             throw new DomainException("Invalid Credentials", DomainErrorCodes.InvalidCredentials);
         }
 
-        Sessions.Add(Session.Create(TokenHasher.Hash(refreshToken)));
+        Sessions.Add(Session.Create(refreshToken));
     }
 
     public void RemoveRefreshToken(string refreshToken)
     {
         var tokenHash = TokenHasher.Hash(refreshToken);
         var session = Sessions
-            .FirstOrDefault(session => session.RefreshTokenHash == tokenHash);
+            .FirstOrDefault(session => session.RefreshTokenHash == refreshToken);
         if (session is not null)
         {
             Sessions.Remove(session);
