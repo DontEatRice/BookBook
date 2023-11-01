@@ -55,10 +55,11 @@ export async function getAuthToken() {
   return `Bearer ${token}`;
 }
 
-export function refresh() {
-  return fetch(base + '/refresh', {
+export async function refresh() {
+  const result = await fetch(base + '/refresh', {
     method: 'get',
     headers: new Headers({ 'Content-Type': 'application/json' }),
     credentials: 'include',
   });
+  return result;
 }
