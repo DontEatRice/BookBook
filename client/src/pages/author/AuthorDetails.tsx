@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { getAuthor, getAuthorBookCards } from '../../api/author';
-import { Avatar, Box, CircularProgress, Grid, Typography } from '@mui/material';
+import { Avatar, Box, CircularProgress, Grid, Typography, useTheme } from '@mui/material';
 import AuthorBookCard from '../../components/author/AuthorBookCard';
 
 function AuthorDetails() {
   const params = useParams();
+  const theme = useTheme();
   const { data: authorData, status: authorDataStatus } = useQuery({
     queryKey: ['authors', params.authorId],
     queryFn: () => getAuthor(params.authorId + ''),
@@ -20,7 +21,7 @@ function AuthorDetails() {
           <Typography variant="h3" padding={2} marginTop={8} marginBottom={4}>
             {authorData.firstName + ' ' + authorData.lastName}
           </Typography>
-          <Grid container spacing={1}>
+          <Grid container spacing={1} marginBottom={7}>
             <Grid item xs={12} md={5}>
               <Avatar
                 alt={authorData.firstName + ' ' + authorData.lastName}
@@ -32,15 +33,15 @@ function AuthorDetails() {
                 sx={{ width: 300, height: 300 }}
               />
             </Grid>
-            <Grid item md={6} xs={12} spacing={2}>
-              <Grid sx={{ display: 'flex', flexDirection: 'column', padding: 1 }} spacing={2}>
+            <Grid item md={6} xs={12} container spacing={2}>
+              <Grid sx={{ display: 'flex', flexDirection: 'column', padding: 1 }} container spacing={2}>
                 <Grid item xs>
                   <Typography variant="subtitle1">Rok urodzenia:</Typography>
                   <Typography variant="h6" width="100%">
                     {authorData.birthYear.toString()}
                   </Typography>
                 </Grid>
-                <Grid item xs spacing={1}>
+                <Grid item xs>
                   {authorData.description != null && <Typography variant="subtitle1">Życiorys</Typography>}
                   {authorData.description != null && (
                     <Typography variant="h6">{authorData.description}</Typography>
@@ -48,10 +49,10 @@ function AuthorDetails() {
                 </Grid>
               </Grid>
             </Grid>
-            {<AuthorBookCards />}
           </Grid>
         </div>
       )}
+      <div>{<AuthorBookCards />}</div>
     </Box>
   );
 }
@@ -64,20 +65,22 @@ function AuthorBookCards() {
   });
 
   return (
-    <Box alignContent={'center'} textAlign={'center'}>
-      <Typography variant="h5" textAlign={'center'} gutterBottom>
+    <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
+      <Typography variant="h5" gutterBottom>
         Poznaj autora bliżej
       </Typography>
       {booksStatus == 'loading' && <CircularProgress />}
       {booksStatus == 'error' && 'Błąd!'}
       {booksStatus == 'success' && booksData.length != 0 && (
-        <Grid container direction={'row'} spacing={2} justifyContent={'center'}>
-          {booksData.map((book) => (
-            <Grid item xs alignItems={'center'}>
-              <AuthorBookCard book={book} />
-            </Grid>
-          ))}
-        </Grid>
+        <Box display={'flex'} flexDirection={'row'}>
+          <Grid container flexDirection={'row'} spacing={3}>
+            {booksData.map((book) => (
+              <Grid item xs key={book.id}>
+                <AuthorBookCard book={book} />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
       )}
     </Box>
   );

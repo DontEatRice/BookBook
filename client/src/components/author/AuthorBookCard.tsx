@@ -19,11 +19,9 @@ function AuthorBookCard({ book }: { book: BookViewModelType }) {
         </Typography>
       </CardContent>
       <CardActions>
-        <div>
-          <Button size="small" variant="contained" onClick={() => navigate(`/books/${book.id}`)}>
-            Dowiedz się więcej
-          </Button>
-        </div>
+        <Button size="small" variant="contained" onClick={() => navigate(`/books/${book.id}`)} fullWidth>
+          Dowiedz się więcej
+        </Button>
       </CardActions>
     </Card>
   );
