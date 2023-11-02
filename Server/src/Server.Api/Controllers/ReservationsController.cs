@@ -37,6 +37,7 @@ public class ReservationsController : ControllerBase
         return Created($"/reservations/{id}", null);
     }
     
+    [Authorize]
     [HttpPost("{id:guid}/cancel")]
     public async Task<ActionResult> Cancel(CancelReservationCommand command)
     {
@@ -59,6 +60,7 @@ public class ReservationsController : ControllerBase
 
     // Admin
 
+    [Authorize]
     [HttpPost("admin/{id:guid}/cancel")]
     public async Task<ActionResult> CancelByAdmin(CancelReservationByAdminCommand command)
     {
@@ -66,7 +68,8 @@ public class ReservationsController : ControllerBase
 
         return Ok();
     }
-
+    
+    [Authorize]
     [HttpPost("admin/{id:guid}/give-out")]
     public async Task<ActionResult> GiveOut(GiveOutReservationCommand command)
     {
@@ -75,6 +78,7 @@ public class ReservationsController : ControllerBase
         return Ok();
     }
 
+    [Authorize]
     [HttpPost("admin/{id:guid}/return")]
     public async Task<ActionResult> Return(ReturnReservationCommand command)
     {
