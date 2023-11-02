@@ -51,7 +51,7 @@ function UpdateReviewForm({ review, book, handleClose }: { review: ReviewViewMod
               <Rating
                 name="rating"
                 value={value}
-                onChange={(event, newValue) => {
+                onChange={(_, newValue) => {
                   setValue(newValue);
                 }}
               />

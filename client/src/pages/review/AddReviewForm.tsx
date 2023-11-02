@@ -45,7 +45,7 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
               <Rating
                 name="simple-controlled"
                 value={value}
-                onChange={(event, newValue) => {
+                onChange={(_, newValue) => {
                   setValue(newValue);
                 }}
               />
