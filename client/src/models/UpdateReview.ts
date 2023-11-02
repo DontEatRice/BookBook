@@ -6,8 +6,8 @@ const UpdateReview = z.object({
     idReview: z.custom<ReviewViewModelType>()
     .refine((review) => review != null, "Pole wymagane")
     .transform(review => review.id),
-    title: z.string().min(2).nonempty(),
-    description: z.string().min(2).nonempty(),
+    title: z.string().optional(),
+    description: z.string().optional(),
     rating: z.preprocess(
         (a) => parseInt(z.string().parse(a)),
         z.number().int().refine(r => r >= 0 && r <= 5, "Number out of range")),

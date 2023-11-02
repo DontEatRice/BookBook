@@ -33,7 +33,7 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType, book: B
     });
   
     return (
-      <StyledTableRow key={review.id}>
+      <StyledTableRow>
               <StyledTableCell >
                 <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>N</Avatar>
                 <div>username</div>

@@ -28,7 +28,7 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
       },
     });
     const onSubmit: SubmitHandler<AddReviewType> = (data) => {
-      value == null ? 0 : value
+      data.rating = value == null ? 0 : value;
       data.idBook = book.id;
       mutation.mutate(data);
     };

@@ -12,8 +12,7 @@ public class ReviewConfiguration
         builder.Property(x => x.Title)
             .HasMaxLength(250);
 
-        builder.Property(x => x.Description)
-            .IsRequired();
+        builder.Property(x => x.Description);
 
         builder.Property(x => x.Rating)
             .IsRequired();
