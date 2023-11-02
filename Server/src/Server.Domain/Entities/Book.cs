@@ -18,6 +18,7 @@ public class Book
     public ICollection<Author> Authors { get; set; }
     public ICollection<BookCategory> BookCategories { get; set; }
     public ICollection<LibraryBook> BookLibraries { get; set; }
+    public ICollection<Review> Reviews { get; set; }
     public ICollection<UserBook> UserBooks { get; set; }
 
     public static Book Create(Guid id, string isbn, string title, int yearPublished,
@@ -34,6 +35,7 @@ public class Book
             Authors = authors,
             BookCategories = categories,
             BookLibraries = new List<LibraryBook>(),
+            Reviews = new List<Review>(),
             FullText = isbn + " " + title + " " + yearPublished + " " + publisher.Name + " " + string.Join(" ", authors.Select(x => x.LastName)),
             UserBooks = new List<UserBook>()
         };
