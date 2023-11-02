@@ -1,12 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { getAuthor } from '../../api/author';
+import { getAuthor, getAuthorBookCards } from '../../api/author';
 import { Avatar, Box, CircularProgress, Grid, Typography } from '@mui/material';
-import FilledField from '../../components/FilledField';
+import AuthorBookCard from '../../components/author/AuthorBookCard';
 
 function AuthorDetails() {
   const params = useParams();
-
   const { data: authorData, status: authorDataStatus } = useQuery({
     queryKey: ['authors', params.authorId],
     queryFn: () => getAuthor(params.authorId + ''),
@@ -18,7 +17,7 @@ function AuthorDetails() {
       {authorDataStatus == 'error' && 'Błąd!'}
       {authorDataStatus == 'success' && (
         <div>
-          <Typography variant="h4" padding={2} marginTop={8} marginBottom={4}>
+          <Typography variant="h3" padding={2} marginTop={8} marginBottom={4}>
             {authorData.firstName + ' ' + authorData.lastName}
           </Typography>
           <Grid container spacing={1}>
@@ -33,19 +32,52 @@ function AuthorDetails() {
                 sx={{ width: 300, height: 300 }}
               />
             </Grid>
-            <Grid item md={6} xs={12}>
-              <Grid sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
-                <Grid item xs={12}>
-                  <FilledField label="Rok urodzenia" value={authorData.birthYear.toString()} />
+            <Grid item md={6} xs={12} spacing={2}>
+              <Grid sx={{ display: 'flex', flexDirection: 'column', padding: 1 }} spacing={2}>
+                <Grid item xs>
+                  <Typography variant="subtitle1">Rok urodzenia:</Typography>
+                  <Typography variant="h6" width="100%">
+                    {authorData.birthYear.toString()}
+                  </Typography>
                 </Grid>
-                <Grid>
-                  {authorData.description != null && <Typography>{authorData.description}</Typography>}
+                <Grid item xs spacing={1}>
+                  {authorData.description != null && <Typography variant="subtitle1">Życiorys</Typography>}
+                  {authorData.description != null && (
+                    <Typography variant="h6">{authorData.description}</Typography>
+                  )}
                 </Grid>
               </Grid>
             </Grid>
-            <Grid></Grid>
+            {<AuthorBookCards />}
           </Grid>
         </div>
+      )}
+    </Box>
+  );
+}
+
+function AuthorBookCards() {
+  const params = useParams();
+  const { data: booksData, status: booksStatus } = useQuery({
+    queryKey: ['author-book-cards', params.authorId],
+    queryFn: () => getAuthorBookCards(params.authorId + ''),
+  });
+
+  return (
+    <Box alignContent={'center'} textAlign={'center'}>
+      <Typography variant="h5" textAlign={'center'} gutterBottom>
+        Poznaj autora bliżej
+      </Typography>
+      {booksStatus == 'loading' && <CircularProgress />}
+      {booksStatus == 'error' && 'Błąd!'}
+      {booksStatus == 'success' && booksData.length != 0 && (
+        <Grid container direction={'row'} spacing={2} justifyContent={'center'}>
+          {booksData.map((book) => (
+            <Grid item xs alignItems={'center'}>
+              <AuthorBookCard book={book} />
+            </Grid>
+          ))}
+        </Grid>
       )}
     </Box>
   );
