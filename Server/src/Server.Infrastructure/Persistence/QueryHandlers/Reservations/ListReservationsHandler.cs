@@ -9,7 +9,8 @@ namespace Server.Infrastructure.Persistence.QueryHandlers.Reservations;
 public sealed record ListReservationsQuery(Guid LibraryId, int PageSize = 10, int PageNumber = 0, string? OrderByField = null)
     : IRequest<PaginatedResponseViewModel<ReservationViewModel>>;
 
-internal sealed class ListReservationsHandler: IRequestHandler<ListReservationsQuery, List<ReservationViewModel>>
+internal sealed class ListReservationsHandler
+    : IRequestHandler<ListReservationsQuery, PaginatedResponseViewModel<ReservationViewModel>>
 {
     private readonly BookBookDbContext _bookBookDbContext;
     private readonly IMapper _mapper;
@@ -20,7 +21,9 @@ internal sealed class ListReservationsHandler: IRequestHandler<ListReservationsQ
         _mapper = mapper;
     }
     
-    public async Task<List<ReservationViewModel>> Handle(ListReservationsQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResponseViewModel<ReservationViewModel>> Handle(
+        ListReservationsQuery request,
+        CancellationToken cancellationToken)
     {
         var query = _bookBookDbContext.Reservations
             .Where(r => r.Status != ReservationStatus.Returned &&
