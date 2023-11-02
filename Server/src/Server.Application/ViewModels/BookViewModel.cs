@@ -13,6 +13,7 @@ public class BookViewModel
     public double? AverageCriticRating { get; set; }
     public PublisherViewModel Publisher { get; set; }
     public ICollection<AuthorViewModel> Authors { get; set; }
+    public ICollection<ReviewViewModel> Reviews { get; set; }
     public ICollection<BookCategoryViewModel> BookCategories { get; set; }
     public bool? DoesUserObserve { get; set; }
 }

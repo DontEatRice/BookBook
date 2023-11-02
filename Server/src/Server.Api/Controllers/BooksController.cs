@@ -9,7 +9,7 @@ using System.Security.Claims;
 namespace Server.Api.Controllers;
 
 [ApiController]
-[Route("[Controller]")]
+[Route("[controller]")]
 public class BooksController : ControllerBase
 {
     public BooksController(IMediator mediator) : base(mediator)

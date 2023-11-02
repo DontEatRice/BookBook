@@ -22,4 +22,5 @@ public static class ApplicationErrorCodes
     public const string CannotMakeAnotherReservation = "CANNOT_MAKE_ANOTHER_RESERVATION";
     public const string NotAuthenticated = "NOT_AUTHENTICATED";
     public const string UserNotFound = "USER_NOT_FOUND";
+    public const string ReviewNotFound = "REVIEW_NOT_FOUND";
 }
