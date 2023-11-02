@@ -3,26 +3,37 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.ViewModels;
-using Server.Domain.Repositories;
+using Server.Utils;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
-public record GetAuthorsQuery : IRequest<IEnumerable<AuthorViewModel>>;
+public record GetAuthorsQuery : PaginationOptions, IRequest<PaginatedResponseViewModel<AuthorViewModel>>;
 
-internal sealed class GetAuthorsHandler : IRequestHandler<GetAuthorsQuery, IEnumerable<AuthorViewModel>>
+internal sealed class GetAuthorsHandler
+    : IRequestHandler<GetAuthorsQuery, PaginatedResponseViewModel<AuthorViewModel>>
 {
-    private readonly IAuthorRepository _authorRepository;
+    private readonly BookBookDbContext _dbContext;
     private readonly IMapper _mapper;
 
-    public GetAuthorsHandler(IAuthorRepository authorRepository, IMapper mapper)
+    public GetAuthorsHandler(IMapper mapper, BookBookDbContext dbContext)
     {
-        _authorRepository = authorRepository;
         _mapper = mapper;
+        _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<AuthorViewModel>> Handle(GetAuthorsQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResponseViewModel<AuthorViewModel>> Handle(
+        GetAuthorsQuery request, CancellationToken cancellationToken)
     {
-        var authors = await _authorRepository.FindAllAsync(cancellationToken);
-        return _mapper.Map<List<AuthorViewModel>>(authors);
+        var query = _dbContext.Authors.AsNoTracking();
+
+        query = !string.IsNullOrWhiteSpace(request.OrderByField)
+            ? query.OrderBy(request.OrderByField)
+            : query.OrderBy(x => x.Id);
+
+        var (authors, totalCount) = await query
+            .ProjectTo<AuthorViewModel>(_mapper.ConfigurationProvider)
+            .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);
+
+        return PaginatedResponseViewModel.Create(authors, totalCount, request);
     }
 }
