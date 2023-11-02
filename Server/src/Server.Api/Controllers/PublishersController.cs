@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Admin;
-using Server.Application.Utils;
 using Server.Application.ViewModels;
 using Server.Infrastructure.Persistence.QueryHandlers;
 
@@ -15,9 +14,9 @@ public class PublishersController : ControllerBase
     {
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<PublisherViewModel>>> List()
-        => Ok(await Mediator.Send(new GetPublishersQuery()));
+    [HttpPost("search")]
+    public async Task<ActionResult<IEnumerable<PublisherViewModel>>> List(GetPublishersQuery request)
+        => Ok(await Mediator.Send(request));
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<PublisherViewModel>> Get(Guid id)
