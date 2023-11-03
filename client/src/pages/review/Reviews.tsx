@@ -1,8 +1,7 @@
-import { TableHead, TableBody, Table, Grid, TableRow, TableContainer } from '@mui/material';
+import { TableHead, TableBody, Table, TableRow, TableContainer } from '@mui/material';
 import StyledTableCell from '../../components/tableComponents/StyledTableCell';
 import { useTheme } from '@mui/material/styles';
 import { BookViewModelType } from '../../models/BookViewModel';
-import AddReviewForm from '../../pages/review/AddReviewForm';
 import ReviewTableRow from '../../pages/review/ReviewTableRow';
 
 function Reviews({ book }: { book: BookViewModelType }) {
@@ -27,7 +26,6 @@ function Reviews({ book }: { book: BookViewModelType }) {
             ))}
         </TableBody>
       </Table>
-      {/* <Grid item><AddReviewForm book={book}/></Grid> */}
     </TableContainer>
   );
 }
