@@ -15,3 +15,4 @@ export type Claims = {
   libraryid?: string;
 };
 
+export type Order = 'asc' | 'desc';
