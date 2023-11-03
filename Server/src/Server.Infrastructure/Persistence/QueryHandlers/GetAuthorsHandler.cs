@@ -32,7 +32,8 @@ internal sealed class GetAuthorsHandler
 
         if (!string.IsNullOrWhiteSpace(request.Query))
         {
-            query = query.Where(x => EF.Functions.FreeText(x.FullText, $"{request.Query}"));
+            var fullTextQuery = "\"" + request.Query + "\"";
+            query = query.Where(x => EF.Functions.Contains(x.FullText, $"{fullTextQuery}"));
         }
 
         var (authors, totalCount) = await query
