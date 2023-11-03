@@ -30,6 +30,11 @@ internal class AuthorRepository : IAuthorRepository
             .ExecuteDeleteAsync(cancellationToken);
     }
 
+    public void Update(Author author)
+    {
+        _dbContext.Update(author);
+    }
+
     public async Task<List<Author>> FindAllAsync(CancellationToken cancellationToken)
     {
         return await _dbContext.Authors.ToListAsync(cancellationToken);

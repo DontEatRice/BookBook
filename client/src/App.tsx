@@ -15,6 +15,7 @@ import AdminCategories from './pages/admin/AdminCategories';
 import AdminCategoryForm from './pages/admin/AdminCategoryForm';
 import AdminAuthors from './pages/admin/AdminAuthors';
 import AdminAuthorForm from './pages/admin/AdminAuthorForm';
+import AdminAuthorUpdateForm from './pages/admin/AdminAuthorUpdateForm';
 import AdminPublishers from './pages/admin/AdminPublishers';
 import AdminPublisherForm from './pages/admin/AdminPublisherForm';
 import AdminLibraries from './pages/admin/AdminLibraries';
@@ -80,6 +81,7 @@ function App() {
         <Route path="authors">
           <Route index element={<AdminAuthors />} />
           <Route path="add" element={<AdminAuthorForm />} />
+          <Route path=":authorId" element={<AdminAuthorUpdateForm />} />
         </Route>
         <Route path="books">
           <Route index element={<AdminBooks />} />

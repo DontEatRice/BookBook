@@ -36,8 +36,6 @@ function UpdateReviewForm({ review, book, handleClose }: { review: ReviewViewMod
       data.idBook = book.id;
       mutation.mutate(data);
     };
-  
-    
     
     return (
       <Box sx={{ mt: 0 }}>

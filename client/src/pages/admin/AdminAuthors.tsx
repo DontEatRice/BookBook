@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import { Link } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { AuthorViewModelType } from '../../models/AuthorViewModel';
 import { useQuery } from '@tanstack/react-query';
 import { getAuthors } from '../../api/author';
@@ -15,6 +15,8 @@ import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 
 function AuthorsTable({ data }: { data: AuthorViewModelType[] }) {
+  const navigate = useNavigate();
+
   return (
     <TableContainer>
       <Table>
@@ -28,7 +30,7 @@ function AuthorsTable({ data }: { data: AuthorViewModelType[] }) {
         </TableHead>
         <TableBody>
           {data.map((author) => (
-            <TableRow key={author.id}>
+            <TableRow key={author.id} onClick={() => navigate(`/admin/authors/${author.id}`)}>
               <TableCell>{author.id}</TableCell>
               <TableCell>{author.firstName}</TableCell>
               <TableCell>{author.lastName}</TableCell>

@@ -21,4 +21,16 @@ public class Author
             ProfilePictureUrl = profilePictureUrl,
             Books = new List<Book>(),
         };
+
+    public static Author Update(Author author, string firstName, string lastName, int birthYear,
+        string? profilePictureUrl)
+    {
+        author.FirstName = firstName;
+        author.LastName = lastName;
+        author.BirthYear = birthYear;
+        author.ProfilePictureUrl = profilePictureUrl;
+
+        return author;
+    }
+        
 }

@@ -6,9 +6,10 @@ export type NumberInputFieldProps<T extends FieldValues> = {
     field: Path<T>;
     register: UseFormRegister<T>;
     errors: FieldErrors<T>;
+    defaultValue?: string;
 };
 
-function NumberInputField<T extends FieldValues>({ label, register, field, errors }: NumberInputFieldProps<T>) {
+function NumberInputField<T extends FieldValues>({ label, register, field, errors, defaultValue }: NumberInputFieldProps<T>) {
     const helper = errors[field]?.message?.toString();
     return (
         <TextField
@@ -17,6 +18,7 @@ function NumberInputField<T extends FieldValues>({ label, register, field, error
             {...register(field)}
             error={errors[field] != undefined}
             helperText={helper}
+            defaultValue={defaultValue}
             sx={{ width: '100%', mb: 2 }}
         />
     );

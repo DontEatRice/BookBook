@@ -33,6 +33,16 @@ public class AuthorsController : ControllerBase
 
         return Created($"/authors/{id}", null);
     }
+    
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult> Update(Guid id, UpdateAuthorCommand command)
+    {
+        await Mediator.Send(command with
+        {
+            IdAuthor = id
+        });
+        return Created($"/authors/{id}", null);
+    }
 
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Post(Guid id)

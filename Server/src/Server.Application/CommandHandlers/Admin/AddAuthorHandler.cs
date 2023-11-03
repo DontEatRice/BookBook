@@ -7,9 +7,9 @@ using Server.Domain.Repositories;
 namespace Server.Application.CommandHandlers.Admin;
 
 //TODO Add validators for other commands and queries 
-public sealed class AddBookHandlerValidator : AbstractValidator<AddAuthorCommand>
+public sealed class AddAuthorCommandValidator : AbstractValidator<AddAuthorCommand>
 {
-    public AddBookHandlerValidator()
+    public AddAuthorCommandValidator()
     {
         RuleFor(x => x.FirstName).NotEmpty().MaximumLength(40);
         RuleFor(x => x.LastName).NotEmpty().MaximumLength(50);

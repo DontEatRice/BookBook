@@ -19,7 +19,7 @@ export const postBook = async (book: AddBookType) => {
   }
 
   return response;
-};
+}
 
 export async function getBooks() {
   const response = await fetch(base + '/Books');

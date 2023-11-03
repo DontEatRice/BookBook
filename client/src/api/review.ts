@@ -24,6 +24,7 @@ export const updateReview = async (review: UpdateReviewType) => {
 export const deleteReview = async (reviewId: string) => {
     const response = await fetch(base + '/Reviews/' + reviewId, {
         method: 'delete',
+        //TODO - przetestowac wywalenie body i headers
         body: JSON.stringify(reviewId),
         headers: new Headers({ 'Content-Type': 'application/json' }),
     });

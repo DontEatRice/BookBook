@@ -27,8 +27,6 @@ function CategoriesList({ categories }: { categories: BookCategoryViewModelType[
   return <FilledField label={categories.length > 1 ? 'kategorie' : 'kategoria'} value={categoriesNames} />;
 }
 
-
-
 function BookDetails() {
   const { register, handleSubmit } = useForm<ToggleBookInUserListType>({
     resolver: zodResolver(ToggleBookInUserList),
