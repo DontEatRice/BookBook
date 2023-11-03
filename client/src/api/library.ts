@@ -3,13 +3,15 @@ import { AddLibraryType } from '../models/AddLibrary';
 import BookInLibraryViewModel from '../models/BookInLibraryViewModel';
 import BookViewModel from '../models/BookViewModel';
 import LibraryViewModel from '../models/LibraryViewModel';
+import { PaginationRequest, paginatedFetch, paginatedResponse } from '../utils/utils';
 
 const base = import.meta.env.VITE_API_BASE_URL;
+const LibrarySearchResponse = paginatedResponse(LibraryViewModel);
 
-export async function getLibraries() {
-  const response = await fetch(base + '/Libraries');
+export async function getLibraries(args: PaginationRequest) {
+  const response = await paginatedFetch(base + '/Libraries/search', args);
   const data = await response.json();
-  return LibraryViewModel.array().parse(data);
+  return LibrarySearchResponse.parse(data);
 }
 
 export const postLibrary = async (library: AddLibraryType) => {

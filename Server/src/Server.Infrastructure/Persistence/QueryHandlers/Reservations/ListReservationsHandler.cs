@@ -3,11 +3,12 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.ViewModels;
 using Server.Domain.Entities.Reservations;
+using Server.Utils;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers.Reservations;
 
-public sealed record ListReservationsQuery(int PageSize = 10, int PageNumber = 0, string? OrderByField = null)
-    : IRequest<PaginatedResponseViewModel<ReservationViewModel>>;
+public sealed record ListReservationsQuery
+    : PaginationOptions, IRequest<PaginatedResponseViewModel<ReservationViewModel>>;
 
 internal sealed class ListReservationsHandler
     : IRequestHandler<ListReservationsQuery, PaginatedResponseViewModel<ReservationViewModel>>

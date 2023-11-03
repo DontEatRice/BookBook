@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { User } from '../models/User';
 import { Claims } from './constants';
 
@@ -7,6 +8,39 @@ export function fileToBase64(file: File): Promise<string> {
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = reject;
+  });
+}
+
+export function paginatedFetch(
+  url: string,
+  body: PaginationRequest,
+  authToken: string | undefined = undefined
+) {
+  const headers = new Headers({
+    'Content-Type': 'application/json',
+  });
+  if (authToken) {
+    headers.append('Authorization', authToken);
+  }
+  return fetch(url, {
+    method: 'post',
+    headers,
+    body: JSON.stringify(body),
+  });
+}
+
+export type PaginationRequest = {
+  pageSize: number;
+  pageNumber: number;
+  orderByField?: string;
+};
+
+export function paginatedResponse<T>(schema: z.ZodType<T>) {
+  return z.object({
+    pageNumber: z.number(),
+    pageSize: z.number(),
+    count: z.number(),
+    data: schema.array(),
   });
 }
 
@@ -30,6 +64,6 @@ export function convertJwtToUser(token: string): User {
     token,
     roles,
     email: claims.email,
-    libraryId: claims.libraryid
+    libraryId: claims.libraryid,
   };
 }
