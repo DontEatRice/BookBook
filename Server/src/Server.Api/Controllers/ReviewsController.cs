@@ -24,6 +24,14 @@ public class ReviewsController : ControllerBase
 
         return Created($"/reviews/{id}", null);
     }
+    
+    [HttpPut]
+    public async Task<ActionResult> Update(UpdateReviewCommand command)
+    {
+        await Mediator.Send(command);
+
+        return NoContent();
+    }
 
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Post(Guid id)

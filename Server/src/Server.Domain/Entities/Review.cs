@@ -1,4 +1,7 @@
 // ReSharper disable CollectionNeverUpdated.Global
+
+using System.Diagnostics.CodeAnalysis;
+
 #pragma warning disable CS8618
 
 namespace Server.Domain.Entities;
@@ -23,4 +26,13 @@ public class Review
             Rating = rating,
             Book = book
         };
+
+    public static Review Update(Review review, string? title, string? description, double rating)
+    {
+        review.Title = title;
+        review.Description = description;
+        review.Rating = rating;
+
+        return review;
+    }
 }

@@ -23,6 +23,11 @@ internal class ReviewRepository : IReviewRepository
         _dbContext.Remove(review);
     }
     
+    public void Update(Review review)
+    {
+        _dbContext.Update(review);
+    }
+    
     public async Task<Review?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _dbContext.Reviews
