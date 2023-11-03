@@ -1,13 +1,12 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-
 import { BookViewModelType } from '../../models/BookViewModel';
 import { useTheme } from '@mui/material/styles';
 import { searchBooks } from '../../api/book';
-import { Grid } from '@mui/material';
 import BookInList from '../../components/BookInList';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
+import Grid from '@mui/material/Grid';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 
@@ -51,7 +50,7 @@ function BooksList() {
   const q = queryParams.get('q');
   const { data: searchData, status: searchStatus } = useQuery({
     queryKey: ['searchBooks', q],
-    queryFn: () => searchBooks(q == null ? '' : q),
+    queryFn: () => searchBooks({ pageSize: 50, pageNumber: 0, query: q == null ? '' : q }),
   });
 
   return (
@@ -62,10 +61,9 @@ function BooksList() {
           Błąd!
         </Typography>
       )}
-      {searchStatus == 'success' && <Books data={searchData} />}
+      {searchStatus == 'success' && <Books data={searchData.data} />}
     </Box>
   );
 }
 
 export default BooksList;
-

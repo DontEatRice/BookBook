@@ -43,7 +43,10 @@ function AuthorsTable({ data }: { data: AuthorViewModelType[] }) {
 
 function AdminAuthors() {
   const theme = useTheme();
-  const { data, status } = useQuery({ queryKey: ['authors'], queryFn: getAuthors });
+  const { data, status } = useQuery({
+    queryKey: ['authors'],
+    queryFn: () => getAuthors({ pageNumber: 0, pageSize: 50 }),
+  });
 
   return (
     <Box mt={1}>
@@ -63,7 +66,7 @@ function AdminAuthors() {
           Błąd!
         </Typography>
       )}
-      {status == 'success' && <AuthorsTable data={data} />}
+      {status == 'success' && <AuthorsTable data={data.data} />}
     </Box>
   );
 }

@@ -87,7 +87,7 @@ public class ReservationsController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("admin")]
+    [HttpPost("admin/search")]
     public async Task<ActionResult> GetAll(ListReservationsQuery query)
         => Ok(await Mediator.Send(query));
 }
