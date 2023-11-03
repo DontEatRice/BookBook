@@ -18,7 +18,7 @@ export const postAuthor = async (author: AddAuthorType) => {
 }
 
 export const updateAuthor = async (author: UpdateAuthorType) => {
-  const response = await fetch(base + '/Authors/' + authorId, {
+  const response = await fetch(base + '/Authors/' + author.idAuthor, {
       method: 'put',  
       body: JSON.stringify(author),
       headers: new Headers({ 'Content-Type': 'application/json' }),

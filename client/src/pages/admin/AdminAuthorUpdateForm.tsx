@@ -15,6 +15,7 @@ import { fileToBase64 } from '../../utils/utils';
 import UploadImage from '../../models/UploadImage';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router';
+import AuthorViewModel from '../../models/AuthorViewModel';
 
 async function fileToUploadImage(file: File) {
   let base64 = await fileToBase64(file);
@@ -56,7 +57,7 @@ function AdminAuthorForm() {
     onError: console.error,
   });
 
-  const postAuthorMutation = useMutation({
+  const updateAuthorMutation = useMutation({
     mutationFn: updateAuthor,
     onSuccess: () => {
       // response.headers.has() TODO dodać redirect na nowy obiekt
@@ -74,6 +75,8 @@ function AdminAuthorForm() {
 
   const onSubmit = useCallback(
     async (data: UpdateAuthorType) => {
+        data.idAuthor = params.authorId+"";
+
         if (data.avatarPicture) {
         const uploadImageType = await fileToUploadImage(data.avatarPicture);
         const response = await uploadImageMutation.mutateAsync(uploadImageType);
@@ -84,9 +87,9 @@ function AdminAuthorForm() {
             data.profilePictureUrl = response.headers.get('location');
         }
         }
-        postAuthorMutation.mutate(data);
+        updateAuthorMutation.mutate(data);
     },
-    [postAuthorMutation, uploadImageMutation]
+    [updateAuthorMutation, uploadImageMutation]
   );
 
   return (
