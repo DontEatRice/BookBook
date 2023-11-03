@@ -13,6 +13,7 @@ function Home() {
     yearPublished: 12,
     id: 'abcde',
     authors: [],
+    reviews: [],
     isbn: 'commit',
     publisher: {
       id: 'guid-guid',
@@ -22,13 +23,14 @@ function Home() {
     bookCategories: [],
     averageRating: 4,
     averageCriticRating: 5,
+    doesUserObserve: false,
   };
   return (
     <Container>
       <Typography variant="h3">
         Witamy w BookBook<AuthorizedView roles={['User']}> {user?.email}</AuthorizedView>!
       </Typography>
-      <Grid container justifyContent="space-between">
+      <Grid container justifyContent="space-between" m={2}>
         <Grid item>
           <BookTile book={book} />
         </Grid>
@@ -44,3 +46,4 @@ function Home() {
 }
 
 export default Home;
+

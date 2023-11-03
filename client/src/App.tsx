@@ -5,6 +5,7 @@ import Container from '@mui/material/Container';
 import Footer from './shared/Footer';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 import CssBaseline from '@mui/material/CssBaseline';
 import AdminBooks from './pages/admin/AdminBooks';
 import AdminBookForm from './pages/admin/AdminBookForm';
@@ -26,20 +27,36 @@ import BooksList from './pages/book/BooksList';
 import BookDetails from './pages/book/BookDetails';
 import ReservationList from './pages/Reservations/ReservationList';
 import AdminReservationList from './pages/admin/AdminReservations';
+import UserBooksList from './pages/user/UserBooks';
 import AuthorDetails from './pages/author/AuthorDetails';
 
 const mainTheme = createTheme({
   palette: {
     background: {
-      default: orange[100],
+      default: grey[50],
     },
     primary: {
-      main: orange[800],
+      light: orange[200],
+      main: orange[600],
     },
     secondary: {
-      main: orange[200],
-      dark: orange[300],
+      main: grey[200],
+      dark: grey[900],
     },
+  },
+  typography: {
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
   },
 });
 
@@ -57,6 +74,8 @@ function App() {
           <Route index element={<BooksList />} />
           <Route path=":bookId" element={<BookDetails />} />
         </Route>
+        <Route path="user-books" element={<UserBooksList />} />
+      </Route>
         <Route path="authors">
           <Route path=":authorId" element={<AuthorDetails />} />
         </Route>

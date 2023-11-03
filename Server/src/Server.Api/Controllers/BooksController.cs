@@ -1,27 +1,32 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Admin;
-using Server.Application.Utils;
 using Server.Application.ViewModels;
 using Server.Infrastructure.Persistence.QueryHandlers;
+using Server.Utils;
+using System.Security.Claims;
 
 namespace Server.Api.Controllers;
 
 [ApiController]
-[Route("[Controller]")]
+[Route("[controller]")]
 public class BooksController : ControllerBase
 {
     public BooksController(IMediator mediator) : base(mediator)
     {
     }
     
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<BookViewModel>>> List([FromQuery] string? query)
-        => Ok(await Mediator.Send(new GetBooksQuery(query)));
+    [HttpPost("search")]
+    public async Task<ActionResult<IEnumerable<BookViewModel>>> List(GetBooksQuery request) 
+        => Ok(await Mediator.Send(request));
 
     [HttpGet("{id:Guid}")]
     public async Task<ActionResult<BookViewModel>> Get(Guid id)
-        => Ok(await Mediator.Send(new GetBookQuery(id)));
+    {
+        var userId = User.FindFirstValue(AuthConstants.IdClaim);
+
+        return Ok(await Mediator.Send(new GetBookQuery(id, userId)));
+    }
     
     [HttpGet("{id:Guid}/libraries")]
     public async Task<ActionResult<List<LibraryViewModel>>> GetLibraries(Guid id)

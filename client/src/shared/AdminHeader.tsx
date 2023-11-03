@@ -15,7 +15,6 @@ function AdminHeader() {
         color: theme.palette.text.primary,
         backgroundColor: theme.palette.grey[100],
         padding: theme.spacing(2),
-        zIndex: 3,
       }}>
       <Link to="/admin" style={{ textDecoration: 'none' }}>
         <Typography

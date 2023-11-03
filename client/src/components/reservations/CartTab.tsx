@@ -14,7 +14,7 @@ export default function CartTab() {
         left: '0px',
         top: '0px',
         backgroundColor: 'rgb(0 0 0 / 0.25)',
-        zIndex: 1000,
+        zIndex: 100,
       }}
       onClick={() => cartStore.toggleCart()}>
       <div
@@ -26,6 +26,7 @@ export default function CartTab() {
           padding: '2rem',
           minWidth: '300px',
           backgroundColor: theme.palette.secondary.main,
+          zIndex: 101,
         }}
         onClick={(e) => e.stopPropagation()}>
         <Cart />

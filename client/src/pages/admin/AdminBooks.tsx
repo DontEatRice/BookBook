@@ -12,7 +12,7 @@ import Grid from '@mui/material/Grid';
 import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
-import { getBooks } from '../../api/book';
+import { searchBooks } from '../../api/book';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 
@@ -72,7 +72,10 @@ function BooksTable({ data }: { data: BookViewModelType[] }) {
 
 function AdminBooks() {
   const theme = useTheme();
-  const { data, status } = useQuery({ queryKey: ['books'], queryFn: getBooks });
+  const { data, status } = useQuery({
+    queryKey: ['books'],
+    queryFn: () => searchBooks({ pageNumber: 0, pageSize: 50 }),
+  });
 
   return (
     <Box mt={1}>
@@ -92,7 +95,7 @@ function AdminBooks() {
           Błąd!
         </Typography>
       )}
-      {status == 'success' && <BooksTable data={data} />}
+      {status == 'success' && <BooksTable data={data.data} />}
     </Box>
   );
 }

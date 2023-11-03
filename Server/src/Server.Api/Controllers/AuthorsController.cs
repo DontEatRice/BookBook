@@ -14,9 +14,9 @@ public class AuthorsController : ControllerBase
     {
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<AuthorViewModel>>> List()
-        => Ok(await Mediator.Send(new GetAuthorsQuery()));
+    [HttpPost("search")]
+    public async Task<ActionResult<IEnumerable<AuthorViewModel>>> List(GetAuthorsQuery query)
+        => Ok(await Mediator.Send(query));
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<AuthorViewModel>> Get(Guid id)

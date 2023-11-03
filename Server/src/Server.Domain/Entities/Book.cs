@@ -1,6 +1,8 @@
 // ReSharper disable CollectionNeverUpdated.Global
 #pragma warning disable CS8618
 
+using Server.Domain.Entities.User;
+
 namespace Server.Domain.Entities;
 
 public class Book
@@ -16,6 +18,8 @@ public class Book
     public ICollection<Author> Authors { get; set; }
     public ICollection<BookCategory> BookCategories { get; set; }
     public ICollection<LibraryBook> BookLibraries { get; set; }
+    public ICollection<Review> Reviews { get; set; }
+    public ICollection<UserBook> UserBooks { get; set; }
 
     public static Book Create(Guid id, string isbn, string title, int yearPublished,
         Publisher publisher, List<Author> authors, List<BookCategory> categories)
@@ -31,6 +35,8 @@ public class Book
             Authors = authors,
             BookCategories = categories,
             BookLibraries = new List<LibraryBook>(),
-            FullText = isbn + " " + title + " " + yearPublished + " " + publisher.Name + " " + string.Join(" ", authors.Select(x => x.LastName))
+            Reviews = new List<Review>(),
+            FullText = isbn + " " + title + " " + yearPublished + " " + publisher.Name + " " + string.Join(" ", authors.Select(x => x.LastName)),
+            UserBooks = new List<UserBook>()
         };
 }

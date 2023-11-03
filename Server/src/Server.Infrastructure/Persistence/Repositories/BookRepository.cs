@@ -43,6 +43,7 @@ internal sealed class BookRepository : IBookRepository
             .Include(x => x.Authors)
             .Include(x => x.BookCategories)
             .Include(x => x.Publisher)
+            .Include(x => x.Reviews)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
