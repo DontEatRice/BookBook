@@ -39,7 +39,10 @@ function PublishersTable({ data }: { data: PublisherViewModelType[] }) {
 
 function AdminPublishers() {
   const theme = useTheme();
-  const { data, status } = useQuery({ queryKey: ['publishers'], queryFn: getPublishers });
+  const { data, status } = useQuery({
+    queryKey: ['publishers'],
+    queryFn: () => getPublishers({ pageNumber: 0, pageSize: 50 }),
+  });
 
   return (
     <Box mt={1}>
@@ -59,7 +62,7 @@ function AdminPublishers() {
           Błąd!
         </Typography>
       )}
-      {status == 'success' && <PublishersTable data={data} />}
+      {status == 'success' && <PublishersTable data={data.data} />}
     </Box>
   );
 }

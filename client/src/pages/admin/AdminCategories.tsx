@@ -39,7 +39,10 @@ function BookCategoriesTable({ data }: { data: BookCategoryViewModelType[] }) {
 
 function AdminBookCategories() {
   const theme = useTheme();
-  const { data, status } = useQuery({ queryKey: ['categories'], queryFn: getCategories });
+  const { data, status } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => getCategories({ pageNumber: 0, pageSize: 50 }),
+  });
 
   return (
     <Box mt={1}>
@@ -59,7 +62,7 @@ function AdminBookCategories() {
           Błąd!
         </Typography>
       )}
-      {status == 'success' && <BookCategoriesTable data={data} />}
+      {status == 'success' && <BookCategoriesTable data={data.data} />}
     </Box>
   );
 }
