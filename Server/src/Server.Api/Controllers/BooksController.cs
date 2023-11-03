@@ -9,16 +9,16 @@ using System.Security.Claims;
 namespace Server.Api.Controllers;
 
 [ApiController]
-[Route("[Controller]")]
+[Route("[controller]")]
 public class BooksController : ControllerBase
 {
     public BooksController(IMediator mediator) : base(mediator)
     {
     }
     
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<BookViewModel>>> List([FromQuery] string? query)
-        => Ok(await Mediator.Send(new GetBooksQuery(query)));
+    [HttpPost("search")]
+    public async Task<ActionResult<IEnumerable<BookViewModel>>> List(GetBooksQuery request) 
+        => Ok(await Mediator.Send(request));
 
     [HttpGet("{id:Guid}")]
     public async Task<ActionResult<BookViewModel>> Get(Guid id)

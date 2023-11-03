@@ -1,29 +1,50 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Server.Application.ViewModels;
-using Server.Domain.Repositories;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
-public sealed record GetBooksInLibraryQuery(Guid id) : IRequest<List<BookInLibraryViewModel>>;
+public sealed record GetBooksInLibraryQuery(Guid Id, int PageSize = 10, int PageNumber = 0, string? OrderByField = null)
+    : IRequest<PaginatedResponseViewModel<BookInLibraryViewModel>>;
 
-internal sealed class GetBooksInLibraryHandler : IRequestHandler<GetBooksInLibraryQuery, List<BookInLibraryViewModel>>
+internal sealed class GetBooksInLibraryHandler
+    : IRequestHandler<GetBooksInLibraryQuery, PaginatedResponseViewModel<BookInLibraryViewModel>>
 {
-    private readonly IBookInLibraryRepository _bookInLibraryRepository;
+    private readonly BookBookDbContext _dbContext;
     private readonly IMapper _mapper;
 
-    public GetBooksInLibraryHandler(IBookInLibraryRepository bookInLibraryRepository, IMapper mapper)
+    public GetBooksInLibraryHandler(IMapper mapper, BookBookDbContext dbContext)
     {
-        _bookInLibraryRepository = bookInLibraryRepository;
         _mapper = mapper;
+        _dbContext = dbContext;
     }
 
-    public async Task<List<BookInLibraryViewModel>> Handle(GetBooksInLibraryQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResponseViewModel<BookInLibraryViewModel>> Handle(
+        GetBooksInLibraryQuery request, CancellationToken cancellationToken)
     {
-        // niestety musi być tak brzydko, ewentualnie jakoś na froncie w Zodzie
-        // w BookViewModel zrobić, że Publisher i BookCategories mogą być null, bo tu ich nie potrzebujemy
-        var booksInLibrary = await _bookInLibraryRepository.GetAllBooksInProvidedLibrary(request.id, cancellationToken);
+        var query = _dbContext.LibraryBooks.AsNoTracking();
 
-        return _mapper.Map<List<BookInLibraryViewModel>>(booksInLibrary);
+        query = !string.IsNullOrWhiteSpace(request.OrderByField)
+            ? query.OrderBy(request.OrderByField)
+            : query.OrderBy(x => x.BookId);
+
+        var (books, totalCount) = await query
+            .Include(x => x.Book)
+            .ThenInclude(x => x.Authors)
+            .Where(x => x.LibraryId == request.Id)
+            .ProjectTo<BookInLibraryViewModel>(_mapper.ConfigurationProvider)
+            .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);
+
+        var response = new PaginatedResponseViewModel<BookInLibraryViewModel>
+        {
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize,
+            Count = totalCount,
+            Data = books
+        };
+
+        return response;
     }
 }

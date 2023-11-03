@@ -17,6 +17,7 @@ public class ViewModelProfile : Profile
         CreateMap<Address, AddressViewModel>();
         CreateMap<OpenHours, OpenHoursViewModel>();
         CreateMap<Image, ImageWithContent>();
+        CreateMap<Review, ReviewViewModel>();
         CreateMap<LibraryBook, BookInLibraryViewModel>();
     }
 }

@@ -1,16 +1,15 @@
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
+import { Grid, Box } from '@mui/material';
 import { useParams } from 'react-router';
 import { AuthorViewModelType } from '../../models/AuthorViewModel';
 import { getBook } from '../../api/book';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
+import Reviews from '../../pages/review/Reviews'
 import ToggleBookInUserList, { ToggleBookInUserListType } from '../../models/ToggleBookInUserList';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toggleBookInUserList } from '../../api/user';
 import AuthorizedView from '../../components/auth/AuthorizedView';
-import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
 import FilledField from '../../components/FilledField';
 import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
@@ -18,17 +17,19 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 
-function AuthorsTable({ authors }: { authors: AuthorViewModelType[] }) {
+function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
 
   return <FilledField label={authors.length > 1 ? 'autorzy' : 'autor'} value={authorNames} />;
 }
 
-function CategoryTable({ categories }: { categories: BookCategoryViewModelType[] }) {
+function CategoriesList({ categories }: { categories: BookCategoryViewModelType[] }) {
   const categoriesNames = categories.map((category) => category.name).join(', ');
 
   return <FilledField label={categories.length > 1 ? 'kategorie' : 'kategoria'} value={categoriesNames} />;
 }
+
+
 
 function BookDetails() {
   const { register, handleSubmit } = useForm<ToggleBookInUserListType>({
@@ -81,7 +82,7 @@ function BookDetails() {
               </AuthorizedView>
             </Stack>
             <Grid container spacing={1}>
-              <Grid item xs={12} md={6}>
+              <Grid item md={5} xs={12}>
                 <img
                   srcSet={`${item.img}`}
                   src={`${item.img}`}
@@ -103,19 +104,22 @@ function BookDetails() {
                     <FilledField label="Wydawca" value={data.publisher?.name + ''} />
                   </div>
                   <div style={{ marginBottom: '1rem' }}>
-                    <AuthorsTable authors={data.authors} />
+                    <AuthorsList authors={data.authors} />
                   </div>
                   <div style={{ marginBottom: '1rem' }}>
-                    <CategoryTable categories={data.bookCategories} />
+                    <CategoriesList categories={data.bookCategories} />
                   </div>
                 </Box>
               </Grid>
-              <Grid></Grid>
+              <Grid item md={12}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
+                  <Reviews book={data} /> 
+                </Box>
+              </Grid>
             </Grid>
           </div>
         )}
       </Box>
-      {AddBookToCart(params.bookId!)}
     </div>
   );
 }
