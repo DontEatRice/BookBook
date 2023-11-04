@@ -1,9 +1,8 @@
-import { Button, Card, CardActions, CardContent, CardMedia, Typography, useTheme } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
 import { BookViewModelType } from '../../models/BookViewModel';
 import { useNavigate } from 'react-router-dom';
 
 function AuthorBookCard({ book }: { book: BookViewModelType }) {
-  const theme = useTheme();
   const navigate = useNavigate();
   return (
     <Card sx={{ width: 200, height: 400 }}>
