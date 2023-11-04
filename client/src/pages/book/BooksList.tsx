@@ -5,11 +5,9 @@ import { useTheme } from '@mui/material/styles';
 import { searchBooks } from '../../api/book';
 import BookInList from '../../components/BookInList';
 import { useQuery } from '@tanstack/react-query';
-import { useLocation } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import { useSearchParams } from 'react-router-dom';
 import useDebounce from '../../utils/useDebounce';
-import Grid from '@mui/material/Grid';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 
