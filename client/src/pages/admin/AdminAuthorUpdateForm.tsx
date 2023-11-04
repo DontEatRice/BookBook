@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import TextInputField from '../../components/TextInputField';
-import { postAuthor, updateAuthor } from '../../api/author';
+import { updateAuthor } from '../../api/author';
 import { useNavigate } from 'react-router-dom';
 import { getAuthor } from '../../api/author';
 import { useCallback, useMemo } from 'react';
@@ -15,7 +15,6 @@ import { fileToBase64 } from '../../utils/utils';
 import UploadImage from '../../models/UploadImage';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router';
-import AuthorViewModel from '../../models/AuthorViewModel';
 
 async function fileToUploadImage(file: File) {
   let base64 = await fileToBase64(file);
@@ -37,7 +36,7 @@ function AdminAuthorForm() {
     control,
     formState: { errors },
   } = useForm<UpdateAuthorType>({
-    resolver: zodResolver(UpdateAuthor)
+    resolver: zodResolver(UpdateAuthor),
   });
 
   const watchAvatarPicture = useWatch({
@@ -75,59 +74,75 @@ function AdminAuthorForm() {
 
   const onSubmit = useCallback(
     async (data: UpdateAuthorType) => {
-        data.idAuthor = params.authorId+"";
-
-        if (data.avatarPicture) {
+      if (data.avatarPicture) {
         const uploadImageType = await fileToUploadImage(data.avatarPicture);
         const response = await uploadImageMutation.mutateAsync(uploadImageType);
         for (const pair of response.headers.entries()) {
-            console.log(`${pair[0]}: ${pair[1]}`);
+          console.log(`${pair[0]}: ${pair[1]}`);
         }
         if (response.ok) {
-            data.profilePictureUrl = response.headers.get('location');
+          data.profilePictureUrl = response.headers.get('location');
         }
-        }
-        updateAuthorMutation.mutate(data);
+      }
+      updateAuthorMutation.mutate({ author: data, id: params.authorId! });
     },
-    [updateAuthorMutation, uploadImageMutation]
+    [params.authorId, updateAuthorMutation, uploadImageMutation]
   );
 
   return (
     <Box sx={{ mt: 2 }}>
-        {status == 'loading' && 'Ładowanie...'}
-        {status == 'error' && 'Błąd!'}
-        {status == 'success' && (
-            <form style={{ display: 'flex', justifyContent: 'center' }} onSubmit={handleSubmit(onSubmit)}>
-                <Box sx={{ width: { xs: '100%', sm: '85%', md: '65%' }, textAlign: 'center' }}>
-                <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
-                    <Box
-                    component="label"
-                    htmlFor="upload-photo"
-                    sx={{ width: '100%', display: 'inline-flex', mb: 2 }}>
-                    <input
-                        style={{ display: 'none' }}
-                        id="upload-photo"
-                        type="file"
-                        accept="image/png,image/jpg,image/jpeg"
-                        {...register('avatarPicture')}
-                    />
+      {status == 'loading' && 'Ładowanie...'}
+      {status == 'error' && 'Błąd!'}
+      {status == 'success' && (
+        <form style={{ display: 'flex', justifyContent: 'center' }} onSubmit={handleSubmit(onSubmit)}>
+          <Box sx={{ width: { xs: '100%', sm: '85%', md: '65%' }, textAlign: 'center' }}>
+            <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
+              <Box
+                component="label"
+                htmlFor="upload-photo"
+                sx={{ width: '100%', display: 'inline-flex', mb: 2 }}>
+                <input
+                  style={{ display: 'none' }}
+                  id="upload-photo"
+                  type="file"
+                  accept="image/png,image/jpg,image/jpeg"
+                  {...register('avatarPicture')}
+                />
 
-                    <Button variant="contained" component="span">
-                        Wstaw zdjęcie (opcjonalnie)
-                    </Button>
-                    {fileName && <span>{fileName}</span>}
-                    </Box>
-                    {errors.avatarPicture != undefined && <span>{errors.avatarPicture.message}</span>}
-                    <TextInputField errors={errors} field="firstName" label="Imię" register={register} defaultValue={data.firstName}/>
-                    <TextInputField errors={errors} field="lastName" label="Nazwisko/Nazwiska" register={register} defaultValue={data.lastName}/>
-                    <NumberInputField errors={errors} field="birthYear" label="Rok urodzenia" register={register} defaultValue={data.birthYear+""}/>
-                    <Button type="submit" variant="contained"> 
-                        Zapisz
-                    </Button>
-                </Paper>
-                </Box>
-            </form>
-       )}
+                <Button variant="contained" component="span">
+                  Wstaw zdjęcie (opcjonalnie)
+                </Button>
+                {fileName && <span>{fileName}</span>}
+              </Box>
+              {errors.avatarPicture != undefined && <span>{errors.avatarPicture.message}</span>}
+              <TextInputField
+                errors={errors}
+                field="firstName"
+                label="Imię"
+                register={register}
+                defaultValue={data.firstName}
+              />
+              <TextInputField
+                errors={errors}
+                field="lastName"
+                label="Nazwisko/Nazwiska"
+                register={register}
+                defaultValue={data.lastName}
+              />
+              <NumberInputField
+                errors={errors}
+                field="birthYear"
+                label="Rok urodzenia"
+                register={register}
+                defaultValue={data.birthYear + ''}
+              />
+              <Button type="submit" variant="contained">
+                Zapisz
+              </Button>
+            </Paper>
+          </Box>
+        </form>
+      )}
     </Box>
   );
 }

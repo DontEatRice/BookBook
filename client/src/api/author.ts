@@ -15,13 +15,13 @@ export const postAuthor = async (author: AddAuthorType) => {
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
   return response;
-}
+};
 
-export const updateAuthor = async (author: UpdateAuthorType) => {
-  const response = await fetch(base + '/Authors/' + author.idAuthor, {
-      method: 'put',  
-      body: JSON.stringify(author),
-      headers: new Headers({ 'Content-Type': 'application/json' }),
+export const updateAuthor = async ({ id, author }: { id: string; author: UpdateAuthorType }) => {
+  const response = await fetch(base + '/Authors/' + id, {
+    method: 'put',
+    body: JSON.stringify(author),
+    headers: new Headers({ 'Content-Type': 'application/json' }),
   });
   return response;
 };
