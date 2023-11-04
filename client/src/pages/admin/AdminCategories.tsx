@@ -16,7 +16,8 @@ import { useState } from 'react';
 import { z } from 'zod';
 import { PaginationRequest } from '../../utils/utils';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
-import { TableSortLabel } from '@mui/material';
+import TableSortLabel from '@mui/material/TableSortLabel';
+import { SxProps, Theme } from '@mui/material/styles';
 
 type ResponseType = z.infer<typeof BookCategorySearchResponse>;
 interface BookCategoriesTableProps {
@@ -24,6 +25,7 @@ interface BookCategoriesTableProps {
   paginationProps: PaginationRequest;
   onPaginationPropsChange: (args: PaginationRequest) => void;
   onRequestSort: (field: keyof BookCategoryViewModelType) => void;
+  sx?: SxProps<Theme>;
 }
 
 interface HeadCell<T> {
@@ -43,6 +45,7 @@ function BookCategoriesTable({
   paginationProps,
   onPaginationPropsChange,
   onRequestSort,
+  sx,
 }: BookCategoriesTableProps) {
   const { pageNumber, pageSize, orderByField, orderDirection } = paginationProps;
   const handleChangePage = (_: React.MouseEvent | null, newPage: number) => {
@@ -52,7 +55,7 @@ function BookCategoriesTable({
     onPaginationPropsChange({ ...paginationProps, pageSize: parseInt(event.target.value, 10) });
   };
   return (
-    <>
+    <Box sx={sx}>
       <TableContainer>
         <Table>
           <TableHead>
@@ -94,7 +97,7 @@ function BookCategoriesTable({
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleRowsChange}
       />
-    </>
+    </Box>
   );
 }
 
