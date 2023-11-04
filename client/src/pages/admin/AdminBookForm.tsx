@@ -15,7 +15,12 @@ import { getPublishers } from '../../api/publisher';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
+
+const paginationDefaultRequest = {
+  pageNumber: 0,
+  pageSize: 100000,
+};
 
 function AdminBookForm() {
   const navigate = useNavigate();
@@ -49,15 +54,15 @@ function AdminBookForm() {
 
   const { data: categoriesData, status: categoriesStatus } = useQuery({
     queryKey: ['categories'],
-    queryFn: getCategories,
+    queryFn: () => getCategories(paginationDefaultRequest),
   });
   const { data: authorsData, status: authorsStatus } = useQuery({
     queryKey: ['authors'],
-    queryFn: getAuthors,
+    queryFn: () => getAuthors(paginationDefaultRequest),
   });
   const { data: publishersData, status: publishersStatus } = useQuery({
     queryKey: ['publishers'],
-    queryFn: getPublishers,
+    queryFn: () => getPublishers(paginationDefaultRequest),
   });
   if (categoriesStatus == 'loading' || authorsStatus == 'loading' || publishersStatus == 'loading') {
     return <h1>Ładowanie...</h1>;
@@ -91,7 +96,7 @@ function AdminBookForm() {
                   <Autocomplete
                     multiple
                     sx={{ width: '100%', mb: 2 }}
-                    options={authorsData || []}
+                    options={authorsData?.data || []}
                     onChange={(_, newValue) => {
                       onChange(newValue);
                     }}
@@ -115,7 +120,7 @@ function AdminBookForm() {
                   <Autocomplete
                     multiple
                     sx={{ width: '100%', mb: 2 }}
-                    options={categoriesData || []}
+                    options={categoriesData?.data || []}
                     onChange={(_, newValue) => {
                       onChange(newValue);
                     }}
@@ -138,7 +143,7 @@ function AdminBookForm() {
                 render={({ field: { onChange }, fieldState: { error } }) => (
                   <Autocomplete
                     sx={{ width: '100%', mb: 2 }}
-                    options={publishersData || []}
+                    options={publishersData?.data || []}
                     onChange={(_, newValue) => {
                       onChange(newValue);
                     }}
@@ -167,4 +172,3 @@ function AdminBookForm() {
 }
 
 export default AdminBookForm;
-
