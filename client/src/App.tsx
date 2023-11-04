@@ -75,7 +75,7 @@ function App() {
           <Route path=":bookId" element={<BookDetails />} />
         </Route>
         <Route path="user-books" element={<UserBooksList />} />
-        <Route path="author">
+        <Route path="authors">
           <Route path=":authorId" element={<AuthorDetails />} />
         </Route>
       </Route>

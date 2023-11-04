@@ -1,12 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { getAuthor, getAuthorBookCards } from '../../api/author';
-import { Avatar, Box, CircularProgress, Grid, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, CircularProgress, Grid, Typography } from '@mui/material';
 import AuthorBookCard from '../../components/author/AuthorBookCard';
 
 function AuthorDetails() {
   const params = useParams();
-  const theme = useTheme();
   const { data: authorData, status: authorDataStatus } = useQuery({
     queryKey: ['authors', params.authorId],
     queryFn: () => getAuthor(params.authorId + ''),
