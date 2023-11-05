@@ -12,8 +12,8 @@ using Server.Infrastructure.Persistence;
 namespace Server.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    [Migration("20231024225226_UserBooks")]
-    partial class UserBooks
+    [Migration("20231104104206_FixReviews")]
+    partial class FixReviews
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -390,6 +390,9 @@ namespace Server.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("LibraryId")
                         .HasColumnType("uniqueidentifier");
 
@@ -405,6 +408,38 @@ namespace Server.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Reservations");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.Review", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCriticRating")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.User.UserBook", b =>
@@ -577,9 +612,6 @@ namespace Server.Infrastructure.Persistence.Migrations
                             b1.Property<Guid>("BookId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<Guid>("LibraryId")
-                                .HasColumnType("uniqueidentifier");
-
                             b1.HasKey("ReservationId", "Id");
 
                             b1.ToTable("ReservationBook");
@@ -589,6 +621,17 @@ namespace Server.Infrastructure.Persistence.Migrations
                         });
 
                     b.Navigation("ReservationItems");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.Review", b =>
+                {
+                    b.HasOne("Server.Domain.Entities.Book", "Book")
+                        .WithMany("Reviews")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.User.UserBook", b =>
@@ -618,6 +661,8 @@ namespace Server.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Server.Domain.Entities.Book", b =>
                 {
                     b.Navigation("BookLibraries");
+
+                    b.Navigation("Reviews");
 
                     b.Navigation("UserBooks");
                 });

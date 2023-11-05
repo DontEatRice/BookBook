@@ -1,8 +1,10 @@
 import { MakeReservationType } from '../models/MakeReservation';
 import ReservationViewModel from '../models/ReservationViewModel';
+import { PaginationRequest, paginatedFetch, paginatedResponse } from '../utils/utils';
 import { getAuthToken } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
+const ReservationSearchResponse = paginatedResponse(ReservationViewModel);
 
 export const makeReservation = async (makeReservation: MakeReservationType) => {
   const auth = await getAuthToken();
@@ -21,17 +23,15 @@ export const makeReservation = async (makeReservation: MakeReservationType) => {
   }
 };
 
-export async function getReservationsForUser() {
+export async function getReservationsForUser(body: PaginationRequest) {
   const auth = await getAuthToken();
-  const response = await fetch(base + '/reservations', {
-    headers: new Headers({
-      'Content-Type': 'application/json',
-      Authorization: auth,
-    }),
-  });
+  const response = await paginatedFetch(base + '/reservations/search', body, auth);
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
   const data = await response.json();
 
-  return ReservationViewModel.array().parse(data);
+  return ReservationSearchResponse.parse(data);
 }
 
 export async function cancelReservation(reservationId: string) {
@@ -48,18 +48,21 @@ export async function cancelReservation(reservationId: string) {
 
 // admin
 
-export async function getReservations(libraryId: string) {
+export async function getReservations(args: PaginationRequest) {
   const auth = await getAuthToken();
-  const response = await fetch(base + '/reservations/admin', {
+  const response = await fetch(base + '/reservations/admin/search', {
     method: 'post',
+    body: JSON.stringify(args),
     headers: new Headers({
       'Content-Type': 'application/json',
       Authorization: auth,
     }),
-    body: JSON.stringify({ libraryId }),
   });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
   const data = await response.json();
-  return ReservationViewModel.array().parse(data);
+  return ReservationSearchResponse.parse(data);
 }
 
 export async function giveOutReservation(reservationId: string) {
@@ -97,4 +100,3 @@ export async function returnReservation(reservationId: string) {
     }),
   });
 }
-

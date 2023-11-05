@@ -1,9 +1,11 @@
 import { AddBookType } from '../models/AddBook';
 import BookViewModel from '../models/BookViewModel';
 import LibraryViewModel from '../models/LibraryViewModel';
-import {getAuthToken } from './auth';
+import { PaginationRequest, paginatedFetch, paginatedResponse } from '../utils/utils';
+import { getAuthToken } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
+const BooksPaginated = paginatedResponse(BookViewModel);
 
 export const postBook = async (book: AddBookType) => {
   const response = await fetch(base + '/Books', {
@@ -30,21 +32,21 @@ export async function getBooks() {
 
 export async function getBook(id: string) {
   //endpoint powinien działać zarówno dla zalogowanego i anonima
-    let auth = '';
-    try{
-      auth = await getAuthToken()
-    } catch(err){
-      // w momencie gdy metoda getAuthToken rzuci błąd po prostu zostawiamy auth puste
-    }
+  let auth = '';
+  try {
+    auth = await getAuthToken();
+  } catch (err) {
+    // w momencie gdy metoda getAuthToken rzuci błąd po prostu zostawiamy auth puste
+  }
 
-    const response = await fetch(base + '/Books/' + id, {
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Authorization: auth
-      })
-    });
-    const data = await response.json();
-    return BookViewModel.parse(data);
+  const response = await fetch(base + '/Books/' + id, {
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      Authorization: auth,
+    }),
+  });
+  const data = await response.json();
+  return BookViewModel.parse(data);
 }
 
 export async function getLibrariesWithBook(bookId: string) {
@@ -54,9 +56,11 @@ export async function getLibrariesWithBook(bookId: string) {
   return LibraryViewModel.array().parse(data) ?? [];
 }
 
-export async function searchBooks(query: string) {
-  const response = await fetch(base + '/Books?query=' + query);
+export async function searchBooks(args: PaginationRequest & { query?: string }) {
+  const response = await paginatedFetch(base + '/Books/search', args);
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
   const data = await response.json();
-  return BookViewModel.array().parse(data);
+  return BooksPaginated.parse(data);
 }
-

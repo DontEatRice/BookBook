@@ -6,14 +6,14 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
-
 import { useQuery } from '@tanstack/react-query';
 import { ReservationViewModelType } from '../../models/ReservationViewModel';
 import { cancelReservation, getReservationsForUser } from '../../api/reservation';
 import { translateStatus } from '../../utils/functions/utilFunctions';
-import { Button, useTheme } from '@mui/material';
 import { useCartStore } from '../../store';
 import { useEffect } from 'react';
+import { useTheme } from '@mui/material/styles';
+import Button from '@mui/material/Button';
 
 export default function ReservationList() {
   const cartStore = useCartStore();
@@ -24,7 +24,7 @@ export default function ReservationList() {
     refetch,
   } = useQuery({
     queryKey: ['reservationsForUser'],
-    queryFn: getReservationsForUser,
+    queryFn: () => getReservationsForUser({ pageNumber: 0, pageSize: 50 }),
   });
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function ReservationList() {
           Błąd!
         </Typography>
       )}
-      {status == 'success' && <Reservations data={reservation} />}
+      {status == 'success' && <Reservations data={reservation.data} />}
     </Box>
   );
 
@@ -88,4 +88,3 @@ export default function ReservationList() {
     );
   }
 }
-

@@ -43,7 +43,10 @@ function LibrariesTable({ data }: { data: LibraryViewModelType[] }) {
 
 function AdminLibraries() {
   const theme = useTheme();
-  const { data, status } = useQuery({ queryKey: ['libraries'], queryFn: getLibraries });
+  const { data, status } = useQuery({
+    queryKey: ['libraries'],
+    queryFn: () => getLibraries({ pageNumber: 0, pageSize: 50 }),
+  });
 
   return (
     <Box mt={1}>
@@ -63,7 +66,7 @@ function AdminLibraries() {
           Błąd!
         </Typography>
       )}
-      {status == 'success' && <LibrariesTable data={data} />}
+      {status == 'success' && <LibrariesTable data={data.data} />}
     </Box>
   );
 }

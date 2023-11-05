@@ -25,8 +25,8 @@ export default function AdminReservationList() {
     status,
     refetch,
   } = useQuery({
-    queryKey: ['reservations', user!.libraryId!],
-    queryFn: ({ queryKey }) => getReservations(queryKey[1]!),
+    queryKey: ['reservations'],
+    queryFn: () => getReservations({ pageNumber: 0, pageSize: 50, user!.libraryId! }),
   });
 
   const giveOutThisReservation = async (reservationId: string) => {
@@ -52,7 +52,7 @@ export default function AdminReservationList() {
           Błąd!
         </Typography>
       )}
-      {status == 'success' && <AdminReservations data={reservation} />}
+      {status == 'success' && <AdminReservations data={reservation.data} />}
     </Box>
   );
 
