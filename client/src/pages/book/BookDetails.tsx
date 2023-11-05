@@ -14,6 +14,7 @@ import AuthorizedView from '../../components/auth/AuthorizedView';
 import FilledField from '../../components/FilledField';
 import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
+import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
@@ -26,8 +27,6 @@ function CategoriesList({ categories }: { categories: BookCategoryViewModelType[
 
   return <FilledField label={categories.length > 1 ? 'kategorie' : 'kategoria'} value={categoriesNames} />;
 }
-
-
 
 function BookDetails() {
   const { register, handleSubmit } = useForm<ToggleBookInUserListType>({
@@ -118,6 +117,7 @@ function BookDetails() {
           </div>
         )}
       </Box>
+      <AddBookToCart bookId={params.bookId as string} />
     </div>
   );
 }

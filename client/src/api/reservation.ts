@@ -48,11 +48,12 @@ export async function cancelReservation(reservationId: string) {
 
 // admin
 
-export async function getReservations(args: PaginationRequest) {
+export async function getReservations(args: PaginationRequest, libraryId: string | undefined) {
+  libraryId = libraryId ?? '69C96AB3-1177-479D-841C-5674AA877909';
   const auth = await getAuthToken();
   const response = await fetch(base + '/reservations/admin/search', {
     method: 'post',
-    body: JSON.stringify(args),
+    body: JSON.stringify({ ...args, libraryId }),
     headers: new Headers({
       'Content-Type': 'application/json',
       Authorization: auth,
@@ -100,3 +101,4 @@ export async function returnReservation(reservationId: string) {
     }),
   });
 }
+
