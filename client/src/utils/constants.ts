@@ -2,7 +2,7 @@ export type Role = 'User' | 'Admin' | 'Employee';
 
 export type ErrorResponse = {
   type: string;
-  code: string;
+  code?: string;
 };
 
 export const LocalStorageTokenKey = 'token';

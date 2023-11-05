@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import UploadImage from '../models/UploadImage';
 import { User } from '../models/User';
 import { Claims, Order } from './constants';
 
@@ -45,10 +46,24 @@ export function paginatedResponse<T>(schema: z.ZodType<T>) {
   });
 }
 
+export async function fileToUploadImage(file: File) {
+  let base64 = await fileToBase64(file);
+  base64 = base64.slice(base64.indexOf(',') + 1);
+  return UploadImage.parse({
+    content: base64,
+    contentType: file.type,
+    fileName: file.name,
+  });
+}
+
 export function getJwtBody(token: string): Claims {
   const body = token.split('.')[1];
   return JSON.parse(atob(body)) as Claims;
 }
+
+// export function handleError(error: unknown) {
+
+// }
 
 export function convertJwtToUser(token: string): User {
   const claims = getJwtBody(token);

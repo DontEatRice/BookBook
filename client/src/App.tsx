@@ -21,10 +21,12 @@ import AdminLibraries from './pages/admin/AdminLibraries';
 import AdminLibraryForm from './pages/admin/AdminLibraryForm';
 import AdminBooksInLibrary from './pages/admin/AdminBooksInLibrary';
 import AdminAddBookToLibraryForm from './pages/admin/AdminAddBookToLibraryForm';
-import Login from './pages/Login';
+import Login from './pages/auth/Login';
 import Box from '@mui/material/Box';
 import BooksList from './pages/book/BooksList';
 import BookDetails from './pages/book/BookDetails';
+import Register from './pages/auth/Register';
+import ChangePassword from './pages/account/ChangePassword';
 import ReservationList from './pages/Reservations/ReservationList';
 import AdminReservationList from './pages/admin/AdminReservations';
 import UserBooksList from './pages/user/UserBooks';
@@ -69,6 +71,11 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+        <Route path="account">
+          <Route path="change-password" element={<ChangePassword />} />
+        </Route>
+        <Route path="*" element={<div>NotFound</div>} />
         <Route path="books" element={<BooksList />} />
         <Route path="reservations" element={<ReservationList />} />
         <Route path="books">

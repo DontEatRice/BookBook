@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Server.Infrastructure.Migrations
+namespace Server.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    partial class BookBookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231025194855_identityAvatar")]
+    partial class identityAvatar
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,14 +96,14 @@ namespace Server.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-                        
+
                     b.Property<string>("AvatarImageUrl")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                b.Property<string>("Email")
-                    .IsRequired()
-                    .HasColumnType("nvarchar(450)");
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid?>("LibraryId")
                         .HasColumnType("uniqueidentifier");
@@ -134,17 +137,10 @@ namespace Server.Infrastructure.Migrations
                     b.Property<int>("BirthYear")
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
-
-                    b.Property<string>("FullText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -398,9 +394,6 @@ namespace Server.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<Guid>("LibraryId")
                         .HasColumnType("uniqueidentifier");
 
@@ -416,53 +409,6 @@ namespace Server.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Reservations");
-                });
-
-            modelBuilder.Entity("Server.Domain.Entities.Review", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsCriticRating")
-                        .HasColumnType("bit");
-
-                    b.Property<double>("Rating")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Title")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("Reviews");
-                });
-
-            modelBuilder.Entity("Server.Domain.Entities.User.UserBook", b =>
-                {
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("BookId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserBooks");
                 });
 
             modelBuilder.Entity("AuthorBook", b =>
@@ -620,6 +566,9 @@ namespace Server.Infrastructure.Migrations
                             b1.Property<Guid>("BookId")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<Guid>("LibraryId")
+                                .HasColumnType("uniqueidentifier");
+
                             b1.HasKey("ReservationId", "Id");
 
                             b1.ToTable("ReservationBook");
@@ -631,48 +580,9 @@ namespace Server.Infrastructure.Migrations
                     b.Navigation("ReservationItems");
                 });
 
-            modelBuilder.Entity("Server.Domain.Entities.Review", b =>
-                {
-                    b.HasOne("Server.Domain.Entities.Book", "Book")
-                        .WithMany("Reviews")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-                });
-
-            modelBuilder.Entity("Server.Domain.Entities.User.UserBook", b =>
-                {
-                    b.HasOne("Server.Domain.Entities.Book", "Book")
-                        .WithMany("UserBooks")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Server.Domain.Entities.Auth.Identity", "User")
-                        .WithMany("UserBooks")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Server.Domain.Entities.Auth.Identity", b =>
-                {
-                    b.Navigation("UserBooks");
-                });
-
             modelBuilder.Entity("Server.Domain.Entities.Book", b =>
                 {
                     b.Navigation("BookLibraries");
-
-                    b.Navigation("Reviews");
-
-                    b.Navigation("UserBooks");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Library", b =>

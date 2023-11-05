@@ -1,6 +1,7 @@
 import { LoginRequestType } from '../models/LoginRequest';
 import { getJwtBody } from '../utils/utils';
 import { LocalStorageTokenKey } from '../utils/constants';
+import { RegisterUserType } from '../models/RegisterUser';
 
 const base = import.meta.env.VITE_API_BASE_URL + '/Auth';
 
@@ -11,13 +12,27 @@ export class AuthError extends Error {
 }
 
 export const login = async (request: LoginRequestType) => {
-  const response = await fetch(base + '/login', {
+  const result = await fetch(base + '/login', {
     method: 'post',
     body: JSON.stringify(request),
     headers: new Headers({ 'Content-Type': 'application/json' }),
     credentials: 'include',
   });
-  return response;
+  if (!result.ok) {
+    throw result;
+  }
+
+  return (await result.json()) as { accessToken: string };
+};
+
+export const register = async (request: RegisterUserType) => {
+  const copy = { ...request };
+  copy.avatarPicture = null!;
+  await fetch(base + '/register', {
+    method: 'post',
+    body: JSON.stringify(copy),
+    headers: new Headers({ 'Content-Type': 'application/json' }),
+  });
 };
 
 export async function getAuthToken() {
@@ -28,6 +43,8 @@ export async function getAuthToken() {
   if (getJwtBody(token).exp < Date.now() / 1000) {
     const refreshResponse = await refresh();
     if (!refreshResponse.ok) {
+      localStorage.setItem(LocalStorageTokenKey, '');
+      window.dispatchEvent(new Event('storage'));
       throw new AuthError('UNATHORIZED');
     }
     const responseBody = (await refreshResponse.json()) as { accessToken: string };
@@ -38,11 +55,11 @@ export async function getAuthToken() {
   return `Bearer ${token}`;
 }
 
-async function refresh() {
-  const response = await fetch(base + '/refresh', {
+export async function refresh() {
+  const result = await fetch(base + '/refresh', {
     method: 'get',
     headers: new Headers({ 'Content-Type': 'application/json' }),
     credentials: 'include',
   });
-  return response;
+  return result;
 }

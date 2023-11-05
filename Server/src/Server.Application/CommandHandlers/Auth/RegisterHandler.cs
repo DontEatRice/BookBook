@@ -19,7 +19,7 @@ public sealed class RegisterHandlerValidator : AbstractValidator<RegisterCommand
     }
 }
 
-public sealed record RegisterCommand(Guid Id, string Email, string Password, string Name) : IRequest;
+public sealed record RegisterCommand(Guid Id, string Email, string Password, string Name, string? AvatarImageUrl) : IRequest;
 
 public sealed class RegisterHandler : IRequestHandler<RegisterCommand>
 {
@@ -47,6 +47,7 @@ public sealed class RegisterHandler : IRequestHandler<RegisterCommand>
                 request.Email,
                 request.Password,
                 request.Name,
+                request.AvatarImageUrl,
                 cancellationToken);
         }
 

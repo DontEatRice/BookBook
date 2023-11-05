@@ -5,13 +5,14 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Nav from './Nav';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import CartTab from '../components/reservations/CartTab';
 import { useCartStore } from '../../src/store';
 import { Button } from '@mui/material';
 import AuthorizedView from '../components/auth/AuthorizedView';
+import PersonIcon from '@mui/icons-material/Person';
 
 function Header() {
   const theme = useTheme();
@@ -39,13 +40,27 @@ function Header() {
             <SearchBar />
           </Grid>
           {matches && (
-            <Grid item sm={3} xs={3} paddingLeft={3} paddingY={2}>
+            <Grid item sm={1} xs={3} paddingLeft={3} paddingY={2}>
               <AuthorizedView>
                 {cartStore.isOpen && <CartTab />}
                 <Button onClick={() => cartStore.toggleCart()}>Koszyk</Button>
               </AuthorizedView>
             </Grid>
           )}
+          <AuthorizedView>
+            <Grid
+              item
+              sm={1}
+              xs={3}
+              paddingY={2}
+              display={'flex'}
+              justifyItems={'center'}
+              alignItems={'center'}>
+              <Link to={'/account/change-password'}>
+                <PersonIcon sx={{ fontSize: '2rem' }} />
+              </Link>
+            </Grid>
+          </AuthorizedView>
         </Grid>
       </Box>
       <Nav />
@@ -102,4 +117,3 @@ function HeaderLogo() {
 }
 
 export default Header;
-
