@@ -15,11 +15,11 @@ export const postAuthor = async (author: AddAuthorType) => {
   return response;
 };
 
-export async function getAuthors(body: PaginationRequest) {
-  const response = await paginatedFetch(base + '/authors/search', body);
+export async function getAuthors(args: PaginationRequest & {query?: string}) {
+  const response = await paginatedFetch(base + '/authors/search', args);
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
   const data = await response.json();
-  //https://zod.dev/?id=basic-usage
-  //można też użyć funkcji .safeParse(data), która nie rzucałaby błędem
-  //w takim przypadku można by coś zlogować i wyświetlić stosowny komunikat
   return AuthorSearchResponse.parse(data);
 }

@@ -16,26 +16,26 @@ function BookInList({ book }: { book: BookViewModelType }) {
     <Paper
       sx={{
         p: 2,
-        margin: 'auto',
+        // marginTop: 2,
         flexGrow: 1,
         backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#1A2027' : '#fff'),
       }}>
       <Grid container spacing={2}>
         <Grid item>
-          <Button sx={{ width: 128, height: 128 }} onClick={() => navigate(`/books/${book.id}`)}>
+          <Button sx={{ width: 180, height: 180 }} onClick={() => navigate(`/books/${book.id}`)}>
             <Img alt="complex" src="" />
           </Button>
         </Grid>
         <Grid item xs={12} sm container>
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
-              <Typography gutterBottom variant="h5" component="div">
+              <Typography gutterBottom variant="h4" component="div">
                 {book.title}
               </Typography>
-              <Typography variant="body2" gutterBottom>
+              <Typography variant="body1" gutterBottom>
                 {book.authors.map((author) => author.firstName + ' ' + author.lastName).join(', ')}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body1" color="text.secondary">
                 {book.bookCategories.map((category) => category.name).join(', ')}
               </Typography>
             </Grid>

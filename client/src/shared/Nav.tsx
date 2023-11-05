@@ -13,6 +13,7 @@ function Nav() {
       <Flex justifyContent="center" display={'flex'}>
         <NavItem label="Strona główna" link="/" />
         <NavItem label="Książki" link="/books" />
+        <NavItem label="Autorzy" link="/authors" />
         <AuthorizedView>
           <Grid item>
             <NavItem label="Rezerwacje" link="/reservations" />
