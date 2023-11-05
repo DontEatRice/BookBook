@@ -12,8 +12,8 @@ using Server.Infrastructure.Persistence;
 namespace Server.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    [Migration("20231102192942_Author-fulltext")]
-    partial class Authorfulltext
+    [Migration("20231105134302_AuthorFullText")]
+    partial class AuthorFullText
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -426,11 +426,18 @@ namespace Server.Infrastructure.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsCriticRating")
+                        .HasColumnType("bit");
+
                     b.Property<double>("Rating")
                         .HasColumnType("float");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
