@@ -77,6 +77,7 @@ function App() {
         </Route>
         <Route path="user-books" element={<UserBooksList />} />
         <Route path="authors">
+          <Route index element={<AuthorsList />} />
           <Route path=":authorId" element={<AuthorDetails />} />
         </Route>
       </Route>
