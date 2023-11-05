@@ -29,6 +29,7 @@ import ReservationList from './pages/Reservations/ReservationList';
 import AdminReservationList from './pages/admin/AdminReservations';
 import UserBooksList from './pages/user/UserBooks';
 import AuthorsList from './pages/author/AuthorsList';
+import AuthorDetails from './pages/author/AuthorDetails';
 
 const mainTheme = createTheme({
   palette: {
@@ -69,13 +70,16 @@ function App() {
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="books" element={<BooksList />} />
-        <Route path="authors" element={<AuthorsList />} />
         <Route path="reservations" element={<ReservationList />} />
         <Route path="books">
           <Route index element={<BooksList />} />
           <Route path=":bookId" element={<BookDetails />} />
         </Route>
         <Route path="user-books" element={<UserBooksList />} />
+        <Route path="authors">
+          <Route index element={<AuthorsList />} />
+          <Route path=":authorId" element={<AuthorDetails />} />
+        </Route>
       </Route>
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminHome />} />
