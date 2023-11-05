@@ -20,13 +20,15 @@ import { useAuth } from '../../utils/auth/useAuth';
 
 export default function AdminReservationList() {
   const { user } = useAuth();
+  user?.libraryId;
+
   const {
     data: reservation,
     status,
     refetch,
   } = useQuery({
     queryKey: ['reservations'],
-    queryFn: () => getReservations({ pageNumber: 0, pageSize: 50, user!.libraryId! }),
+    queryFn: () => getReservations({ pageNumber: 0, pageSize: 50 }, user?.libraryId),
   });
 
   const giveOutThisReservation = async (reservationId: string) => {
