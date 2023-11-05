@@ -12,8 +12,8 @@ using Server.Infrastructure.Persistence;
 namespace Server.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    [Migration("20231028154518_AddAuthorDescription")]
-    partial class AddAuthorDescription
+    [Migration("20231105132731_AuthorDescription")]
+    partial class AuthorDescription
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -413,6 +413,53 @@ namespace Server.Infrastructure.Persistence.Migrations
                     b.ToTable("Reservations");
                 });
 
+            modelBuilder.Entity("Server.Domain.Entities.Review", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCriticRating")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("Reviews");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.User.UserBook", b =>
+                {
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("BookId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserBooks");
+                });
+
             modelBuilder.Entity("AuthorBook", b =>
                 {
                     b.HasOne("Server.Domain.Entities.Author", null)
@@ -579,9 +626,48 @@ namespace Server.Infrastructure.Persistence.Migrations
                     b.Navigation("ReservationItems");
                 });
 
+            modelBuilder.Entity("Server.Domain.Entities.Review", b =>
+                {
+                    b.HasOne("Server.Domain.Entities.Book", "Book")
+                        .WithMany("Reviews")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.User.UserBook", b =>
+                {
+                    b.HasOne("Server.Domain.Entities.Book", "Book")
+                        .WithMany("UserBooks")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Domain.Entities.Auth.Identity", "User")
+                        .WithMany("UserBooks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entities.Auth.Identity", b =>
+                {
+                    b.Navigation("UserBooks");
+                });
+
             modelBuilder.Entity("Server.Domain.Entities.Book", b =>
                 {
                     b.Navigation("BookLibraries");
+
+                    b.Navigation("Reviews");
+
+                    b.Navigation("UserBooks");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Library", b =>

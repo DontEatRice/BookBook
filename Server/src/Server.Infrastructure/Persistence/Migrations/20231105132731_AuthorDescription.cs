@@ -5,7 +5,7 @@
 namespace Server.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AddAuthorDescription : Migration
+    public partial class AuthorDescription : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
