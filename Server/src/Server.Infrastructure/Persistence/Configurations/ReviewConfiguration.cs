@@ -1,9 +1,10 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Server.Domain.Entities;
 
 namespace Server.Infrastructure.Persistence.Configurations;
 
-public class ReviewConfiguration
+public class ReviewConfiguration  : IEntityTypeConfiguration<Review>
 {
     public void Configure(EntityTypeBuilder<Review> builder)
     {

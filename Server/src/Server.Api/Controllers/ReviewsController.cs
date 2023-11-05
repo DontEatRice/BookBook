@@ -1,7 +1,12 @@
+using System.Security.Claims;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Admin;
+using Server.Application.Exceptions;
+using Server.Application.Exceptions.Types;
 using Server.Application.ViewModels;
+using Server.Utils;
 
 namespace Server.Api.Controllers;
 
@@ -14,12 +19,19 @@ public class ReviewsController : ControllerBase
     }
     
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult> Post(AddReviewCommand command)
     {
+        var userId = User.FindFirstValue(AuthConstants.IdClaim) ??
+                     throw new AuthenticationException(
+                         "User is not authenticated",
+                         ApplicationErrorCodes.NotAuthenticated);
+        
         var id = Guid.NewGuid();
         await Mediator.Send(command with
         {
-            Id = id
+            Id = id,
+            UserId = Guid.Parse(userId)
         });
 
         return Created($"/reviews/{id}", null);
