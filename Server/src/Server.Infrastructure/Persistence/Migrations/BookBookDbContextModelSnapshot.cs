@@ -34,7 +34,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("BooksId");
 
-                    b.ToTable("AuthorBook");
+                    b.ToTable("AuthorBook", (string)null);
                 });
 
             modelBuilder.Entity("BookBookCategory", b =>
@@ -49,7 +49,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("BooksId");
 
-                    b.ToTable("BookBookCategory");
+                    b.ToTable("BookBookCategory", (string)null);
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Address", b =>
@@ -85,7 +85,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Auth.Identity", b =>
@@ -118,7 +118,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("LibraryId");
 
-                    b.ToTable("Identities");
+                    b.ToTable("Identities", (string)null);
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Author", b =>
@@ -135,10 +135,6 @@ namespace Server.Infrastructure.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
-                    b.Property<string>("FullText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -150,7 +146,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Authors");
+                    b.ToTable("Authors", (string)null);
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Book", b =>
@@ -191,7 +187,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("PublisherId");
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.BookCategory", b =>
@@ -210,7 +206,7 @@ namespace Server.Infrastructure.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("BookCategories");
+                    b.ToTable("BookCategories", (string)null);
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Image", b =>
@@ -243,7 +239,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Library", b =>
@@ -275,7 +271,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("OpenHoursId");
 
-                    b.ToTable("Libraries");
+                    b.ToTable("Libraries", (string)null);
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.LibraryBook", b =>
@@ -296,7 +292,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("LibraryBooks");
+                    b.ToTable("LibraryBooks", (string)null);
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.OpenHours", b =>
@@ -349,7 +345,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OpenHours");
+                    b.ToTable("OpenHours", (string)null);
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Publisher", b =>
@@ -368,7 +364,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Publishers");
+                    b.ToTable("Publishers", (string)null);
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Reservations.Cart", b =>
@@ -382,7 +378,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Carts");
+                    b.ToTable("Carts", (string)null);
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Reservations.Reservation", b =>
@@ -408,7 +404,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("Reservations", (string)null);
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Review", b =>
@@ -423,17 +419,24 @@ namespace Server.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsCriticRating")
+                        .HasColumnType("bit");
+
                     b.Property<double>("Rating")
                         .HasColumnType("float");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.User.UserBook", b =>
@@ -448,7 +451,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserBooks");
+                    b.ToTable("UserBooks", (string)null);
                 });
 
             modelBuilder.Entity("AuthorBook", b =>
@@ -487,7 +490,7 @@ namespace Server.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("LibraryId");
 
-                    b.OwnsMany("Server.Domain.Entities.Auth.Session", "Sessions", b1 =>
+                    b.OwnsMany("Server.Domain.Entities.Auth.Identity.Sessions#Server.Domain.Entities.Auth.Session", "Sessions", b1 =>
                         {
                             b1.Property<Guid>("IdentityId")
                                 .HasColumnType("uniqueidentifier");
@@ -566,7 +569,7 @@ namespace Server.Infrastructure.Migrations
 
             modelBuilder.Entity("Server.Domain.Entities.Reservations.Cart", b =>
                 {
-                    b.OwnsMany("Server.Domain.Entities.Reservations.CartBook", "CartItems", b1 =>
+                    b.OwnsMany("Server.Domain.Entities.Reservations.Cart.CartItems#Server.Domain.Entities.Reservations.CartBook", "CartItems", b1 =>
                         {
                             b1.Property<Guid>("CartId")
                                 .HasColumnType("uniqueidentifier");
@@ -583,7 +586,7 @@ namespace Server.Infrastructure.Migrations
 
                             b1.HasKey("CartId", "Id");
 
-                            b1.ToTable("CartBook");
+                            b1.ToTable("CartBook", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("CartId");
@@ -594,7 +597,7 @@ namespace Server.Infrastructure.Migrations
 
             modelBuilder.Entity("Server.Domain.Entities.Reservations.Reservation", b =>
                 {
-                    b.OwnsMany("Server.Domain.Entities.Reservations.ReservationBook", "ReservationItems", b1 =>
+                    b.OwnsMany("Server.Domain.Entities.Reservations.Reservation.ReservationItems#Server.Domain.Entities.Reservations.ReservationBook", "ReservationItems", b1 =>
                         {
                             b1.Property<Guid>("ReservationId")
                                 .HasColumnType("uniqueidentifier");
@@ -608,7 +611,7 @@ namespace Server.Infrastructure.Migrations
 
                             b1.HasKey("ReservationId", "Id");
 
-                            b1.ToTable("ReservationBook");
+                            b1.ToTable("ReservationBook", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ReservationId");
