@@ -11,7 +11,15 @@ import AuthProvider from './components/auth/AuthProvider';
 import AlertProvider from './components/alert/AlertProvider';
 import AlertBar from './components/alert/AlertBar';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 //https://tanstack.com/query/v3/docs/react/quick-start
 // TODO paleta kolorów https://mui.com/material-ui/customization/palette/
 

@@ -64,9 +64,10 @@ export default function Cart() {
 
   return (
     <div>
-      <h1>Cart</h1>
+      <h1>Koszyk</h1>
       <Button
         sx={{
+          marginY: 2,
           backgroundColor: theme.palette.primary.light,
           color: 'black',
           '&:hover': {
@@ -114,7 +115,7 @@ export default function Cart() {
             )}
             <List>
               {libraries.map((libraryInCart) => (
-                <>
+                <div key={libraryInCart.library.id}>
                   <ListItem
                     sx={{
                       backgroundColor: theme.palette.background.default,
@@ -122,11 +123,13 @@ export default function Cart() {
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'flex-start',
-                    }}
-                    key={libraryInCart.library.id}>
+                      marginBottom: 4,
+                      padding: 2,
+                    }}>
                     <ListItemText
                       primary={`${libraryInCart.library.name}`}
                       secondary={`${libraryInCart.library.address.city}, ${libraryInCart.library.address.street} ${libraryInCart.library.address.number}`}
+                      key={libraryInCart.library.id}
                     />
                     <List>
                       {libraryInCart.books.map((book) => (
@@ -154,8 +157,7 @@ export default function Cart() {
                       </Button>
                     </List>
                   </ListItem>
-                  <List></List>
-                </>
+                </div>
               ))}
             </List>
           </div>

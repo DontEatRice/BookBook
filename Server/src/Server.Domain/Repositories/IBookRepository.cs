@@ -10,4 +10,5 @@ public interface IBookRepository
     Task<List<Book>> FindAllAsync(CancellationToken cancellationToken);
     Task<Book?> FirstOrDefaultByISBNAsync(string isbn, CancellationToken cancellationToken);
     Task<List<Book>> FindAsync(string? query, CancellationToken cancellationToken);
+    Task<List<Book>> GetBookCardsByAuthor(Author author, CancellationToken cancellationToken);
 }

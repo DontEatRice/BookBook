@@ -36,7 +36,7 @@ function Books({ data }: { data: BookViewModelType[] }) {
   return (
     <Grid container spacing={1}>
       {data.map((book) => (
-        <Grid item xs={6} key={book.id}>
+        <Grid item xs={12} key={book.id}>
           <BookInList book={book} />
         </Grid>
       ))}
@@ -57,7 +57,7 @@ function BooksList() {
   });
 
   return (
-    <Box>
+    <Box marginTop={2}>
       {searchStatus == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
       {searchStatus == 'error' && (
         <Typography variant="h3" color={theme.palette.error.main}>

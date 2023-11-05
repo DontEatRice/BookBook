@@ -1,15 +1,14 @@
-import { TableHead, TableBody, Table, Grid, TableRow, TableContainer } from '@mui/material';
+import { TableHead, TableBody, Table, TableRow, TableContainer } from '@mui/material';
 import StyledTableCell from '../../components/tableComponents/StyledTableCell';
 import { useTheme } from '@mui/material/styles';
 import { BookViewModelType } from '../../models/BookViewModel';
-import AddReviewForm from '../../pages/review/AddReviewForm'
-import ReviewTableRow from '../../pages/review/ReviewTableRow'
+import ReviewTableRow from '../../pages/review/ReviewTableRow';
 
 function Reviews({ book }: { book: BookViewModelType }) {
-    const theme = useTheme();
-  
-    return (
-      <TableContainer sx={{ display: 'flex', backgroundColor: theme.palette.background.default }}>
+  const theme = useTheme();
+
+  return (
+    <TableContainer sx={{ display: 'flex', backgroundColor: theme.palette.background.default }}>
       <Table aria-label="customized table">
         <TableHead>
           <TableRow>
@@ -20,14 +19,15 @@ function Reviews({ book }: { book: BookViewModelType }) {
           </TableRow>
         </TableHead>
         <TableBody>
-        {book.reviews.filter(x => x.description != "" && x.title != "").map((review) => (
-            <ReviewTableRow review={review} book={book} key={review.id}></ReviewTableRow>
-          ))}
+          {book.reviews
+            .filter((x) => x.description != '' && x.title != '')
+            .map((review) => (
+              <ReviewTableRow review={review} book={book} key={review.id}></ReviewTableRow>
+            ))}
         </TableBody>
       </Table>
-      <Grid item><AddReviewForm book={book}/></Grid>
     </TableContainer>
-    );
+  );
 }
 
 export default Reviews;

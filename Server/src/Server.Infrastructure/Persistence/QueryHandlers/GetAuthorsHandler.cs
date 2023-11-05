@@ -7,7 +7,7 @@ using Server.Utils;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
-public record GetAuthorsQuery : PaginationOptions, IRequest<PaginatedResponseViewModel<AuthorViewModel>>;
+public record GetAuthorsQuery(string? Query) : PaginationOptions, IRequest<PaginatedResponseViewModel<AuthorViewModel>>;
 
 internal sealed class GetAuthorsHandler
     : IRequestHandler<GetAuthorsQuery, PaginatedResponseViewModel<AuthorViewModel>>
@@ -29,6 +29,12 @@ internal sealed class GetAuthorsHandler
         query = !string.IsNullOrWhiteSpace(request.OrderByField)
             ? query.OrderBy(request.OrderByField)
             : query.OrderBy(x => x.Id);
+
+        if (!string.IsNullOrWhiteSpace(request.Query))
+        {
+            var fullTextQuery = "\"" + request.Query + "\"";
+            query = query.Where(x => EF.Functions.Contains(x.FullText, $"{fullTextQuery}"));
+        }
 
         var (authors, totalCount) = await query
             .ProjectTo<AuthorViewModel>(_mapper.ConfigurationProvider)

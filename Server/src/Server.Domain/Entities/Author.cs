@@ -9,9 +9,11 @@ public class Author
     public string LastName { get; private set; }
     public int BirthYear { get; private set; }
     public string? ProfilePictureUrl { get; private set; }
+    public string FullText { get; private set; }
+    public string? Description { get; private set; }
     public ICollection<Book> Books { get; private init; }
 
-    public static Author Create(Guid id, string firstName, string lastName, int birthYear, string? profilePictureUrl)
+    public static Author Create(Guid id, string firstName, string lastName, int birthYear, string? profilePictureUrl, string? description)
         => new()
         {
             Id = id,
@@ -19,6 +21,8 @@ public class Author
             LastName = lastName,
             BirthYear = birthYear,
             ProfilePictureUrl = profilePictureUrl,
+            Description = description,
             Books = new List<Book>(),
+            FullText = firstName + " " + lastName
         };
 }

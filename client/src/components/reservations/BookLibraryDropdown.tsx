@@ -42,7 +42,7 @@ function LibraryDropdown({
   );
 }
 
-export default function AddBookToCart(bookId: string) {
+export default function AddBookToCart({ bookId }: { bookId: string }) {
   const [error, setError] = useState<string>('');
   const [selectedLibrary, setSelectedLibrary] = useState<string>('');
   const { data, status } = useQuery(['booksInLibrary', bookId], async (context) => {

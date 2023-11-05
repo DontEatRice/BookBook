@@ -1,7 +1,5 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
 using Server.Application.ViewModels;

@@ -8,10 +8,11 @@ import Flex from '@mui/material/Grid';
 function Nav() {
   const theme = useTheme();
   return (
-    <Box sx={{ width: '100%', bgcolor: theme.palette.secondary.main }} component="nav">
+    <Box sx={{ width: '100%', bgcolor: theme.palette.secondary.main, marginBottom: 3 }} component="nav">
       <Flex justifyContent="center" display={'flex'}>
         <NavItem label="Strona główna" link="/" />
         <NavItem label="Książki" link="/books" />
+        <NavItem label="Autorzy" link="/authors" />
         <AuthorizedView>
           <NavItem label="Rezerwacje" link="/reservations" />
           <NavItem label="Do przeczytania" link="/user-books" />
@@ -42,3 +43,4 @@ function NavItem({ label, link }: { label: string; link: string }) {
 }
 
 export default Nav;
+

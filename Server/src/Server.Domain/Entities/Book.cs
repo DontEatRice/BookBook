@@ -39,4 +39,12 @@ public class Book
             FullText = isbn + " " + title + " " + yearPublished + " " + publisher.Name + " " + string.Join(" ", authors.Select(x => x.LastName)),
             UserBooks = new List<UserBook>()
         };
+
+    public void ComputeRating(double reviewRating)
+    {
+        var reviewCount = Reviews.Count;
+        var averageRating = AverageRating;
+        
+        AverageRating = (averageRating ?? 0 * reviewCount + reviewRating) / (reviewCount + 1);
+    }
 }
