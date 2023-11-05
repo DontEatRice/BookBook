@@ -9,6 +9,7 @@ public class Author
     public string LastName { get; private set; }
     public int BirthYear { get; private set; }
     public string? ProfilePictureUrl { get; private set; }
+    public string FullText { get; private set; }
     public string? Description { get; private set; }
     public ICollection<Book> Books { get; private init; }
 
@@ -22,5 +23,6 @@ public class Author
             ProfilePictureUrl = profilePictureUrl,
             Description = description,
             Books = new List<Book>(),
+            FullText = firstName + " " + lastName
         };
 }

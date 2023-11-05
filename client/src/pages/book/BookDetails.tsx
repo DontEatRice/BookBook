@@ -14,17 +14,19 @@ import AuthorizedView from '../../components/auth/AuthorizedView';
 import FilledField from '../../components/FilledField';
 import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
+import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
+import AddReviewForm from '../review/AddReviewForm';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
 
-  return <FilledField label={authors.length > 1 ? 'autorzy' : 'autor'} value={authorNames} />;
+  return <FilledField label={authors.length > 1 ? 'Autorzy' : 'Autor'} value={authorNames} />;
 }
 
 function CategoriesList({ categories }: { categories: BookCategoryViewModelType[] }) {
   const categoriesNames = categories.map((category) => category.name).join(', ');
 
-  return <FilledField label={categories.length > 1 ? 'kategorie' : 'kategoria'} value={categoriesNames} />;
+  return <FilledField label={categories.length > 1 ? 'Kategorie' : 'Kategoria'} value={categoriesNames} />;
 }
 
 function BookDetails() {
@@ -77,7 +79,7 @@ function BookDetails() {
                 )}
               </AuthorizedView>
             </Stack>
-            <Grid container spacing={1}>
+            <Grid container spacing={1} marginBottom={3}>
               <Grid item md={5} xs={12}>
                 <img
                   srcSet={`${item.img}`}
@@ -107,12 +109,14 @@ function BookDetails() {
                   </div>
                 </Box>
               </Grid>
-              <Grid item md={12}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
-                  <Reviews book={data} />
-                </Box>
-              </Grid>
             </Grid>
+            <Box>
+              <AddBookToCart bookId={params.bookId as string} />
+            </Box>
+            <Box display={'flex'} flexDirection={'column'}>
+              <AddReviewForm book={data} />
+              <Reviews book={data} />
+            </Box>
           </div>
         )}
       </Box>

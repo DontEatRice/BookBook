@@ -6,7 +6,7 @@ import BookInUserList from '../../components/BookInUserList';
 
 function UserBooks({ data }: { data: BookViewModelType[] }) {
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={3}>
       {data.map((book) => (
         <Grid item xs={12} key={book.id}>
           <BookInUserList book={book} />
@@ -37,3 +37,4 @@ function UserBooksList() {
 }
 
 export default UserBooksList;
+

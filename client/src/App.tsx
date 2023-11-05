@@ -28,6 +28,7 @@ import BookDetails from './pages/book/BookDetails';
 import ReservationList from './pages/Reservations/ReservationList';
 import AdminReservationList from './pages/admin/AdminReservations';
 import UserBooksList from './pages/user/UserBooks';
+import AuthorsList from './pages/author/AuthorsList';
 import AuthorDetails from './pages/author/AuthorDetails';
 
 const mainTheme = createTheme({
