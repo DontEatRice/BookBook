@@ -40,14 +40,11 @@ function BookInList({ book }: { book: BookViewModelType }) {
               </Typography>
             </Grid>
           </Grid>
-          <Grid item>
-            <Rating
-              name="half-rating-read"
-              value={book.averageRating == null ? 2.25 : book.averageRating}
-              precision={0.25}
-              readOnly
-            />
-          </Grid>
+          {book.averageRating && (
+            <Grid item>
+              <Rating name="half-rating-read" value={book.averageRating} precision={0.25} readOnly />
+            </Grid>
+          )}
         </Grid>
       </Grid>
     </Paper>
@@ -55,3 +52,4 @@ function BookInList({ book }: { book: BookViewModelType }) {
 }
 
 export default BookInList;
+
