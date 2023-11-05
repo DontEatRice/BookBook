@@ -14,6 +14,7 @@ import AuthorizedView from '../../components/auth/AuthorizedView';
 import FilledField from '../../components/FilledField';
 import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
+import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
 import AddReviewForm from '../review/AddReviewForm';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
@@ -58,10 +59,10 @@ function BookDetails() {
 
   return (
     <div>
-      {status == 'loading' && 'Ładowanie...'}
-      {status == 'error' && 'Błąd!'}
-      {status == 'success' && (
-        <Box m={4}>
+      <Box m={4}>
+        {status == 'loading' && 'Ładowanie...'}
+        {status == 'error' && 'Błąd!'}
+        {status == 'success' && (
           <div>
             <Stack direction="row" justifyContent="space-between" padding={2} marginTop={8} marginBottom={4}>
               <Typography variant="h4">{data.title}</Typography>
@@ -109,15 +110,16 @@ function BookDetails() {
                 </Box>
               </Grid>
             </Grid>
-          </div>
-          <div>
+            <Box>
+              <AddBookToCart bookId={params.bookId as string} />
+            </Box>
             <Box display={'flex'} flexDirection={'column'}>
               <AddReviewForm book={data} />
               <Reviews book={data} />
             </Box>
           </div>
-        </Box>
-      )}
+        )}
+      </Box>
     </div>
   );
 }
