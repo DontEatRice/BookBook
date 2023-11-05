@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { User } from '../models/User';
-import { Claims } from './constants';
+import { Claims, Order } from './constants';
 
 export function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -33,6 +33,7 @@ export type PaginationRequest = {
   pageSize: number;
   pageNumber: number;
   orderByField?: string;
+  orderDirection?: Order;
 };
 
 export function paginatedResponse<T>(schema: z.ZodType<T>) {

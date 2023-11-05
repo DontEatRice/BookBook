@@ -3,7 +3,7 @@ import BookCategoryViewModel from '../models/BookCategoryViewModel';
 import { PaginationRequest, paginatedFetch, paginatedResponse } from '../utils/utils';
 
 const base = import.meta.env.VITE_API_BASE_URL;
-const BookCategorySearchResponse = paginatedResponse(BookCategoryViewModel);
+export const BookCategorySearchResponse = paginatedResponse(BookCategoryViewModel);
 
 export const postCategory = async (category: AddCategoryType) => {
   const response = await fetch(base + '/BookCategories', {
