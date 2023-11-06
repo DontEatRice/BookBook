@@ -18,3 +18,18 @@ export const pictureSchema = z
     (file) => file == undefined || ACCEPTED_FORMATS.includes(file.type),
     'Akceptowane pliki to .png i .jpg'
   );
+
+export function paginatedResponse<T>(schema: z.ZodType<T>) {
+  return z.object({
+    pageNumber: z.number(),
+    pageSize: z.number(),
+    count: z.number(),
+    data: schema.array(),
+  });
+}
+
+export const ValidationError = z.object({
+  type: z.string(),
+  title: z.string(),
+  errors: z.record(z.string().array()),
+});

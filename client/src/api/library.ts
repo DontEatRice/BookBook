@@ -3,7 +3,9 @@ import { AddLibraryType } from '../models/AddLibrary';
 import BookInLibraryViewModel from '../models/BookInLibraryViewModel';
 import BookViewModel from '../models/BookViewModel';
 import LibraryViewModel from '../models/LibraryViewModel';
-import { PaginationRequest, paginatedFetch, paginatedResponse } from '../utils/utils';
+import { PaginationRequest } from '../utils/constants';
+import { paginatedFetch } from '../utils/utils';
+import { paginatedResponse } from '../utils/zodSchemas';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 const LibrarySearchResponse = paginatedResponse(LibraryViewModel);

@@ -1,6 +1,8 @@
 import { AddCategoryType } from '../models/AddCategory';
 import BookCategoryViewModel from '../models/BookCategoryViewModel';
-import { PaginationRequest, paginatedFetch, paginatedResponse } from '../utils/utils';
+import { PaginationRequest } from '../utils/constants';
+import { paginatedFetch } from '../utils/utils';
+import { paginatedResponse } from '../utils/zodSchemas';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 export const BookCategorySearchResponse = paginatedResponse(BookCategoryViewModel);

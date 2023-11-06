@@ -1,7 +1,6 @@
-import { z } from 'zod';
 import UploadImage from '../models/UploadImage';
 import { User } from '../models/User';
-import { Claims, Order } from './constants';
+import { Claims, PaginationRequest } from './constants';
 
 export function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -30,22 +29,6 @@ export function paginatedFetch(
   });
 }
 
-export type PaginationRequest = {
-  pageSize: number;
-  pageNumber: number;
-  orderByField?: string;
-  orderDirection?: Order;
-};
-
-export function paginatedResponse<T>(schema: z.ZodType<T>) {
-  return z.object({
-    pageNumber: z.number(),
-    pageSize: z.number(),
-    count: z.number(),
-    data: schema.array(),
-  });
-}
-
 export async function fileToUploadImage(file: File) {
   let base64 = await fileToBase64(file);
   base64 = base64.slice(base64.indexOf(',') + 1);
@@ -61,7 +44,7 @@ export function getJwtBody(token: string): Claims {
   return JSON.parse(atob(body)) as Claims;
 }
 
-// export function handleError(error: unknown) {
+// export function handleBadResponse(response: Response) {
 
 // }
 

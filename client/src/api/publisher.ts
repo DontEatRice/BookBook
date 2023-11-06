@@ -1,6 +1,8 @@
 import { AddPublisherType } from '../models/AddPublisher';
 import PublisherViewModel from '../models/PublisherViewModel';
-import { PaginationRequest, paginatedFetch, paginatedResponse } from '../utils/utils';
+import { PaginationRequest } from '../utils/constants';
+import { paginatedFetch } from '../utils/utils';
+import { paginatedResponse } from '../utils/zodSchemas';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 const PublisherSearchResponse = paginatedResponse(PublisherViewModel);

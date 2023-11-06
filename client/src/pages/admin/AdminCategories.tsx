@@ -14,10 +14,10 @@ import { BookCategorySearchResponse, getCategories } from '../../api/category';
 import TablePagination from '@mui/material/TablePagination';
 import { useState } from 'react';
 import { z } from 'zod';
-import { PaginationRequest } from '../../utils/utils';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { SxProps, Theme } from '@mui/material/styles';
+import { PaginationRequest } from '../../utils/constants';
 
 type ResponseType = z.infer<typeof BookCategorySearchResponse>;
 interface BookCategoriesTableProps {
