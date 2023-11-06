@@ -1,11 +1,12 @@
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import { useForm, useWatch } from 'react-hook-form';
 import UpdateAuthor, { UpdateAuthorType } from '../../models/UpdateAuthor';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import TextInputField from '../../components/TextInputField';
-import { updateAuthor } from '../../api/author';
+import { updateAuthor, deleteAuthor } from '../../api/author';
 import { useNavigate } from 'react-router-dom';
 import { getAuthor } from '../../api/author';
 import { useCallback, useMemo } from 'react';
@@ -67,6 +68,16 @@ function AdminAuthorForm() {
     },
   });
 
+  const deleteAuthorMutation = useMutation({
+    mutationFn: deleteAuthor,
+    onSuccess: () => {
+      navigate('..');
+    },
+    onError: (e: Error) => {
+      console.error(e);
+    },
+  });
+
   const { data, status } = useQuery({
     queryKey: ['authors', params.authorId],
     queryFn: () => getAuthor(params.authorId + ''),
@@ -108,7 +119,6 @@ function AdminAuthorForm() {
                   accept="image/png,image/jpg,image/jpeg"
                   {...register('avatarPicture')}
                 />
-
                 <Button variant="contained" component="span">
                   Wstaw zdjęcie (opcjonalnie)
                 </Button>
@@ -136,9 +146,14 @@ function AdminAuthorForm() {
                 register={register}
                 defaultValue={data.birthYear + ''}
               />
-              <Button type="submit" variant="contained">
-                Zapisz
-              </Button>
+              <Stack direction="row" spacing={2} justifyContent={'center'}>
+                <Button type="submit" variant="contained">
+                  Zapisz
+                </Button>
+                <Button color="error" sx={{ width: 50, height: 40 }} onClick={() => deleteAuthorMutation.mutate(params.authorId+"")}>
+                    Usuń
+                </Button>
+              </Stack>
             </Paper>
           </Box>
         </form>

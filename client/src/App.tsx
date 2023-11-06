@@ -18,6 +18,7 @@ import AdminAuthorForm from './pages/admin/AdminAuthorForm';
 import AdminAuthorUpdateForm from './pages/admin/AdminAuthorUpdateForm';
 import AdminPublishers from './pages/admin/AdminPublishers';
 import AdminPublisherForm from './pages/admin/AdminPublisherForm';
+import AdminPublisherUpdateForm from './pages/admin/AdminPublisherUpdateForm';
 import AdminLibraries from './pages/admin/AdminLibraries';
 import AdminLibraryForm from './pages/admin/AdminLibraryForm';
 import AdminBooksInLibrary from './pages/admin/AdminBooksInLibrary';
@@ -86,18 +87,22 @@ function App() {
         <Route path="books">
           <Route index element={<AdminBooks />} />
           <Route path="add" element={<AdminBookForm />} />
+          <Route path=":bookId" />
         </Route>
         <Route path="categories">
           <Route index element={<AdminCategories />} />
           <Route path="add" element={<AdminCategoryForm />} />
+          <Route path=":categoryId" />
         </Route>
         <Route path="publishers">
           <Route index element={<AdminPublishers />} />
           <Route path="add" element={<AdminPublisherForm />} />
+          <Route path=":publisherId" element={<AdminPublisherUpdateForm />} />
         </Route>
         <Route path="libraries">
           <Route index element={<AdminLibraries />} />
           <Route path="add" element={<AdminLibraryForm />} />
+          <Route path=":libraryId" />
         </Route>
         <Route path="booksInLibrary">
           <Route index element={<AdminBooksInLibrary />} />

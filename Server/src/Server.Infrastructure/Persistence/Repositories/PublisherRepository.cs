@@ -22,6 +22,11 @@ internal class PublisherRepository : IPublisherRepository
     {
         _dbContext.Remove(publisher);
     }
+    
+    public void Update(Publisher publisher)
+    {
+        _dbContext.Update(publisher);
+    }
 
     public async Task<Publisher?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {

@@ -32,5 +32,4 @@ public class Author
 
         return author;
     }
-        
 }

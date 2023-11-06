@@ -1,6 +1,8 @@
 import { AddPublisherType } from '../models/AddPublisher';
+import { UpdatePublisherType } from '../models/UpdatePublisher';
 import PublisherViewModel from '../models/PublisherViewModel';
 import { PaginationRequest, paginatedFetch, paginatedResponse } from '../utils/utils';
+import { getAuthToken } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 const PublisherSearchResponse = paginatedResponse(PublisherViewModel);
@@ -14,6 +16,25 @@ export const postPublisher = async (publisher: AddPublisherType) => {
   return response;
 };
 
+export const updatePublisher = async ({ id, publisher }: { id: string; publisher: UpdatePublisherType }) => {
+  const response = await fetch(base + '/Publishers/' + id, {
+    method: 'put',
+    body: JSON.stringify(publisher),
+    headers: new Headers({ 'Content-Type': 'application/json' }),
+  });
+  return response;
+};
+
+export const deletePublisher = async (publisherId: string) => {
+  const response = await fetch(base + '/Publishers/' + publisherId, {
+      method: 'delete',
+      //TODO - przetestowac wywalenie body i headers
+      body: JSON.stringify(publisherId),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+  });
+  return response;
+};
+
 export async function getPublishers(body: PaginationRequest) {
   const response = await paginatedFetch(base + '/Publishers/search', body);
   const data = await response.json();
@@ -22,3 +43,22 @@ export async function getPublishers(body: PaginationRequest) {
   //w takim przypadku można by coś zlogować i wyświetlić stosowny komunikat
   return PublisherSearchResponse.parse(data);
 }
+
+export async function getPublisher(id: string) {
+  //endpoint powinien działać zarówno dla zalogowanego i anonima
+  let auth = '';
+  try {
+    auth = await getAuthToken();
+  } catch (err) {
+    // w momencie gdy metoda getAuthToken rzuci błąd po prostu zostawiamy auth puste
+  }
+
+  const response = await fetch(base + '/Publishers/' + id, {
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      Authorization: auth,
+    }),
+  });
+  const data = await response.json();
+  return PublisherViewModel.parse(data);
+};

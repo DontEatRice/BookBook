@@ -1,12 +1,8 @@
 import { z } from 'zod';
-import { AuthorViewModelType } from './AuthorViewModel';
 
 const ACCEPTED_FORMATS = ['image/png', 'image/jpg', 'image/jpeg'];
 
 const UpdateAuthor = z.object({
-    idAuthor: z.custom<AuthorViewModelType>()
-    .refine((review) => review != null, "Pole wymagane")
-    .transform(review => review.id),
     avatarPicture: z
     .custom<FileList>((v) => v == undefined || v instanceof FileList)
     .optional()

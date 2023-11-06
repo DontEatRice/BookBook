@@ -26,6 +26,16 @@ export const updateAuthor = async ({ id, author }: { id: string; author: UpdateA
   return response;
 };
 
+export const deleteAuthor = async (authorId: string) => {
+  const response = await fetch(base + '/Authors/' + authorId, {
+      method: 'delete',
+      //TODO - przetestowac wywalenie body i headers
+      body: JSON.stringify(authorId),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+  });
+  return response;
+};
+
 export async function getAuthors(body: PaginationRequest) {
   const response = await paginatedFetch(base + '/authors/search', body);
   const data = await response.json();
@@ -33,7 +43,7 @@ export async function getAuthors(body: PaginationRequest) {
   //można też użyć funkcji .safeParse(data), która nie rzucałaby błędem
   //w takim przypadku można by coś zlogować i wyświetlić stosowny komunikat
   return AuthorSearchResponse.parse(data);
-}
+};
 
 export async function getAuthor(id: string) {
   //endpoint powinien działać zarówno dla zalogowanego i anonima
@@ -52,4 +62,4 @@ export async function getAuthor(id: string) {
   });
   const data = await response.json();
   return AuthorViewModel.parse(data);
-}
+};
