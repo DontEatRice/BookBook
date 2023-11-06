@@ -3,9 +3,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Admin;
+using Server.Application.CommandHandlers.User;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
-using Server.Application.ViewModels;
 using Server.Utils;
 
 namespace Server.Api.Controllers;
@@ -46,7 +46,7 @@ public class ReviewsController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> Post(Guid id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         await Mediator.Send(new RemoveReviewCommand(id));
         return NoContent();

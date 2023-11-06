@@ -6,7 +6,7 @@ using Server.Application.InfrastructureInterfaces;
 using Server.Domain.Entities;
 using Server.Domain.Repositories;
 
-namespace Server.Application.CommandHandlers.Admin;
+namespace Server.Application.CommandHandlers.User;
 
 public sealed class AddReviewCommandValidator : AbstractValidator<AddReviewCommand>
 {

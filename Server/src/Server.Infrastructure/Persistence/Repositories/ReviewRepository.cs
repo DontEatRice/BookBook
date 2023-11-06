@@ -31,6 +31,7 @@ internal class ReviewRepository : IReviewRepository
     public async Task<Review?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _dbContext.Reviews
+            .Include(x => x.Book)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 }

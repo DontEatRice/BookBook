@@ -9,7 +9,7 @@ import AddReview, { AddReviewType } from '../../models/AddReview';
 import { BookViewModelType } from '../../models/BookViewModel';
 import TextInputBox from '../../components/TextInputBox';
 
-function AddReviewForm({ book }: { book: BookViewModelType }) {
+function AddReviewForm({ book, refetch }: { book: BookViewModelType; refetch: () => Promise<unknown> }) {
   const [value, setValue] = React.useState<number | null>(0);
   const {
     register,
@@ -20,8 +20,8 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
   });
   const mutation = useMutation({
     mutationFn: postReview,
-    onSuccess: () => {
-      window.location.reload();
+    onSuccess: async () => {
+      await refetch();
     },
     onError: (e: Error) => {
       console.error(e);
@@ -66,3 +66,4 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
 }
 
 export default AddReviewForm;
+

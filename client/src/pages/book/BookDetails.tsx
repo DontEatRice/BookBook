@@ -4,7 +4,7 @@ import { AuthorViewModelType } from '../../models/AuthorViewModel';
 import { getBook } from '../../api/book';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
-import Reviews from '../../pages/review/Reviews'
+import Reviews from '../../pages/review/Reviews';
 import ToggleBookInUserList, { ToggleBookInUserListType } from '../../models/ToggleBookInUserList';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -49,7 +49,7 @@ function BookDetails() {
   };
 
   const params = useParams();
-  const { data, status } = useQuery({
+  const { data, status, refetch } = useQuery({
     queryKey: ['books', params.bookId],
     queryFn: () => getBook(params.bookId + ''),
   });
@@ -116,8 +116,8 @@ function BookDetails() {
               <AddBookToCart bookId={params.bookId as string} />
             </Box>
             <Box display={'flex'} flexDirection={'column'}>
-              <AddReviewForm book={data} />
-              <Reviews book={data} />
+              <AddReviewForm book={data} refetch={refetch} />
+              <Reviews book={data} refetch={refetch} />
             </Box>
           </div>
         )}
@@ -127,3 +127,4 @@ function BookDetails() {
 }
 
 export default BookDetails;
+
