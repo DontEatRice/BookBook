@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AuthorViewModelType } from './AuthorViewModel';
+import AuthorViewModel, { AuthorViewModelType } from './AuthorViewModel';
 import { BookCategoryViewModelType } from './BookCategoryViewModel';
 import { PublisherViewModelType } from './PublisherViewModel';
 
@@ -20,7 +20,8 @@ const AddBook = z.object({
     authorsIds: z.custom<AuthorViewModelType>()
         .array()
         .transform(authors => authors.map(author => author.id))
-        .refine(ids => ids.length > 0, "Książka musi mieć co najmniej jednego autora")
+        .refine(ids => ids.length > 0, "Książka musi mieć co najmniej jednego autora"),
+    authors: AuthorViewModel.array(),
     // .refine(ids => ids.every(id => z.string().uuid().safeParse(id).success))
 });
 

@@ -39,4 +39,19 @@ public class Book
             FullText = isbn + " " + title + " " + yearPublished + " " + publisher.Name + " " + string.Join(" ", authors.Select(x => x.LastName)),
             UserBooks = new List<UserBook>()
         };
+    
+    public static Book Update(Book book, string isbn, string title, int yearPublished,
+        Publisher publisher, List<Author> authors, List<BookCategory> categories)
+    {
+        book.ISBN = isbn;
+        book.Title = title;
+        book.YearPublished = yearPublished;
+        book.Publisher = publisher;
+        book.Authors = authors;
+        book.BookCategories = categories;
+        book.FullText = isbn + " " + title + " " + yearPublished + " " + publisher.Name + " " +
+                        string.Join(" ", authors.Select(x => x.LastName));
+
+        return book;
+    }
 }

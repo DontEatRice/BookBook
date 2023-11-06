@@ -22,6 +22,11 @@ internal sealed class BookRepository : IBookRepository
     {
         _dbContext.Remove(book);
     }
+    
+    public void Update(Book book)
+    {
+        _dbContext.Update(book);
+    }
 
     public async Task<List<Book>> FindAllAsync(CancellationToken cancellationToken)
     {

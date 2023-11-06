@@ -21,6 +21,31 @@ export const postBook = async (book: AddBookType) => {
   return response;
 }
 
+export const updateBook = async ({ id, book }: { id: string; book: AddBookType }) => {
+  const response = await fetch(base + '/Books/' + id, {
+    method: 'put',
+    body: JSON.stringify(book),
+    headers: new Headers({ 'Content-Type': 'application/json' }),
+  });
+  if (response.status !== 201) {
+    const data = await response.json();
+    throw new Error(`${data.code}:${data.resourceId}`);
+  }
+
+  return response;
+};
+
+export const deleteBook = async (bookId: string) => {
+  const response = await fetch(base + '/Books/' + bookId, {
+      method: 'delete',
+      //TODO - przetestowac wywalenie body i headers
+      body: JSON.stringify(bookId),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+  });
+  
+  return response;
+};
+
 export async function getBooks() {
   const response = await fetch(base + '/Books');
   const data = await response.json();

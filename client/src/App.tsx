@@ -30,6 +30,7 @@ import BookDetails from './pages/book/BookDetails';
 import ReservationList from './pages/Reservations/ReservationList';
 import AdminReservationList from './pages/admin/AdminReservations';
 import UserBooksList from './pages/user/UserBooks';
+import AdminBookUpdateForm from './pages/admin/AdminBookUpdateForm';
 
 const mainTheme = createTheme({
   palette: {
@@ -87,12 +88,12 @@ function App() {
         <Route path="books">
           <Route index element={<AdminBooks />} />
           <Route path="add" element={<AdminBookForm />} />
-          <Route path=":bookId" />
+          <Route path=":bookId" element={<AdminBookUpdateForm />}/>
         </Route>
         <Route path="categories">
           <Route index element={<AdminCategories />} />
           <Route path="add" element={<AdminCategoryForm />} />
-          <Route path=":categoryId" />
+          <Route path=":bookId" element={<AdminAuthorUpdateForm />} />
         </Route>
         <Route path="publishers">
           <Route index element={<AdminPublishers />} />

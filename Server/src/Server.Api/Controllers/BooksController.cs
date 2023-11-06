@@ -43,6 +43,17 @@ public class BooksController : ControllerBase
 
         return Created($"/books/{id}", null);
     }
+    
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult> Update(Guid id, UpdateBookCommand command)
+    {
+        await Mediator.Send(command with
+        {
+            IdBook = id
+        });
+        
+        return Created($"/books/{id}", null);
+    }
 
     [HttpDelete("{id:Guid}")]
     public async Task<ActionResult> Delete(Guid id)

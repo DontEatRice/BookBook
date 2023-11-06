@@ -150,7 +150,7 @@ function AdminAuthorForm() {
                 <Button type="submit" variant="contained">
                   Zapisz
                 </Button>
-                <Button color="error" sx={{ width: 50, height: 40 }} onClick={() => deleteAuthorMutation.mutate(params.authorId+"")}>
+                <Button color="error" onClick={() => deleteAuthorMutation.mutate(params.authorId+"")}>
                     Usuń
                 </Button>
               </Stack>

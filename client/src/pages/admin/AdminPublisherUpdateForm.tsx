@@ -86,7 +86,7 @@ function AdminPublisherForm() {
                 <Button type="submit" variant="contained">
                   Zapisz
                 </Button>
-                <Button color="error" sx={{ width: 50, height: 40 }} onClick={() => deletePublisherMutation.mutate(params.publisherId+"")}>
+                <Button color="error" onClick={() => deletePublisherMutation.mutate(params.publisherId+"")}>
                     Usuń
                 </Button>
               </Stack>
