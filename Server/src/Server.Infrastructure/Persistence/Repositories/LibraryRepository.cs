@@ -22,6 +22,11 @@ internal class LibraryRepository : ILibraryRepository
     {
         await _dbContext.Libraries.Where(x => x.Id == id).ExecuteDeleteAsync();
     }
+    
+    public void Update(Library library)
+    {
+        _dbContext.Update(library);
+    }
 
     public async Task<Library?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {

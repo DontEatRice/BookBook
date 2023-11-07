@@ -21,4 +21,16 @@ public class Library
             OpenHours = openHours,
             LibraryBooks = new List<LibraryBook>()
         };
+
+    public static Library Update(Library library, string name, int reservationTime,
+        int hireTime, Address address, OpenHours openHours)
+    {
+        library.Name = name;
+        library.ReservationTime = reservationTime;
+        library.HireTime = hireTime;
+        library.Address = address;
+        library.OpenHours = openHours;
+
+        return library;
+    }
 }

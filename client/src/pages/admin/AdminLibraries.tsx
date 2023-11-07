@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -15,6 +15,8 @@ import { LibraryViewModelType } from '../../models/LibraryViewModel';
 import { getLibraries } from '../../api/library';
 
 function LibrariesTable({ data }: { data: LibraryViewModelType[] }) {
+  const navigate = useNavigate();
+
   return (
     <TableContainer>
       <Table>
@@ -28,7 +30,7 @@ function LibrariesTable({ data }: { data: LibraryViewModelType[] }) {
         </TableHead>
         <TableBody>
           {data.map((library) => (
-            <TableRow key={library.id}>
+            <TableRow key={library.id} onClick={() => navigate(`/admin/libraries/${library.id}`)}>
               <TableCell>{library.name}</TableCell>
               <TableCell>{library.address.city}</TableCell>
               <TableCell>{library.address.street}</TableCell>

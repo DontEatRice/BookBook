@@ -33,6 +33,16 @@ public class LibrariesController : ControllerBase
 
         return Created($"/libraries/{id}", null);
     }
+    
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult> Update(Guid id, UpdateLibraryCommand command)
+    {
+        await Mediator.Send(command with
+        {
+            IdLibrary = id
+        });
+        return Created($"/libraries/{id}", null);
+    }
 
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Post(Guid id)
