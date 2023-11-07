@@ -20,6 +20,7 @@ import { uploadImage } from '../../api/image';
 import { fileToUploadImage } from '../../utils/utils';
 import { Avatar } from '@mui/material';
 import { languages } from '../../utils/constants';
+import TextInputBox from '../../components/TextInputBox';
 
 const paginationDefaultRequest = {
   pageNumber: 0,
@@ -221,7 +222,7 @@ function AdminBookForm() {
                   />
                 )}
               />
-              <TextInputField errors={errors} field="description" register={register} label="Opis" />
+              <TextInputBox errors={errors} field="description" register={register} label="Opis" rows={4} />
               <Controller
                 control={control}
                 name="language"
