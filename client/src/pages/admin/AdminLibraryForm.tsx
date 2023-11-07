@@ -19,7 +19,7 @@ import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import React, { useCallback, useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
-import { MuiTelInput, MuiTelInputInfo } from 'mui-tel-input';
+import { MuiTelInput } from 'mui-tel-input';
 
 type LibraryOpenHoursTimePickerParams = {
   fields: [keyof AddLibraryType, keyof AddLibraryType];
