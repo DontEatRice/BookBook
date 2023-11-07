@@ -4,21 +4,14 @@ import StyledTableRow from '../../components/tableComponents/StyledTableRow';
 import { useState } from 'react';
 import { ReviewViewModelType } from '../../models/ReviewViewModel';
 import { useTheme } from '@mui/material/styles';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteReview } from '../../api/review';
 import { BookViewModelType } from '../../models/BookViewModel';
 import UpdateReviewForm from '../../pages/review/UpdateReviewForm';
 
-function ReviewTableRow({
-  review,
-  book,
-  refetch,
-}: {
-  review: ReviewViewModelType;
-  book: BookViewModelType;
-  refetch: () => Promise<unknown>;
-}) {
+function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: BookViewModelType }) {
   const theme = useTheme();
+  const queryClient = useQueryClient();
 
   const [open, setOpen] = useState(false);
 
@@ -28,12 +21,13 @@ function ReviewTableRow({
 
   const handleClose = () => {
     setOpen(false);
+    queryClient.invalidateQueries({ queryKey: ['books', book.id] });
   };
 
   const mutation = useMutation({
     mutationFn: deleteReview,
     onSuccess: async () => {
-      await refetch();
+      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
     },
     onError: (e: Error) => {
       console.error(e);
@@ -80,7 +74,7 @@ function ReviewTableRow({
           Edytuj
         </Button>
         <Dialog open={open} onClose={handleClose}>
-          <UpdateReviewForm review={review} book={book} handleClose={handleClose} refetch={refetch} />
+          <UpdateReviewForm review={review} book={book} handleClose={handleClose} />
         </Dialog>
       </StyledTableCell>
     </StyledTableRow>

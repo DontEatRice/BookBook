@@ -4,7 +4,7 @@ import TextInputField from '../../components/TextInputField';
 import { ReviewViewModelType } from '../../models/ReviewViewModel';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateReview } from '../../api/review';
 import { BookViewModelType } from '../../models/BookViewModel';
 import UpdateReview, { UpdateReviewType } from '../../models/UpdateReview';
@@ -14,34 +14,36 @@ function UpdateReviewForm({
   review,
   book,
   handleClose,
-  refetch,
 }: {
   review: ReviewViewModelType;
   book: BookViewModelType;
   handleClose: () => void;
-  refetch: () => Promise<unknown>;
 }) {
   const [value, setValue] = React.useState<number | null>(review.rating);
-
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<UpdateReviewType>({
     resolver: zodResolver(UpdateReview),
+    defaultValues: {
+      idBook: book.id,
+      idReview: review.id,
+      rating: review.rating,
+    },
   });
   const mutation = useMutation({
     mutationFn: updateReview,
-    onSuccess: async () => {
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
       handleClose();
-      await refetch();
-      window.location.reload();
     },
     onError: (e: Error) => {
       console.error(e);
     },
   });
-  const onSubmit: SubmitHandler<UpdateReviewType> = async (data) => {
+  const onSubmit: SubmitHandler<UpdateReviewType> = (data) => {
     data.rating = value == null ? 0 : value;
     data.idReview = review.id;
     data.idBook = book.id;
@@ -79,14 +81,12 @@ function UpdateReviewForm({
               label="Komentarz"
               defaultValue={review.description + ''}
             />
-            <input type="hidden" {...register('idReview')} value={review.id} />
+
+            {/* <input type="hidden" {...register('idReview')} value={review.id} />
             <input type="hidden" {...register('idBook')} value={book.id} />
-            <input type="hidden" {...register('rating')} value={value + ''} />
-            <Button
-              variant="contained"
-              type="submit"
-              sx={{ margin: 1 }}
-              onClick={async () => await refetch()}>
+            <input type="hidden" {...register('rating')} value={value + ''} /> */}
+
+            <Button variant="contained" type="submit" sx={{ margin: 1 }}>
               Uaktualnij
             </Button>
             <Button variant="contained" onClick={() => handleClose()} sx={{ margin: 1 }}>

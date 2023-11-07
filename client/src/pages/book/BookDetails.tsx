@@ -49,7 +49,7 @@ function BookDetails() {
   };
 
   const params = useParams();
-  const { data, status, refetch } = useQuery({
+  const { data, status } = useQuery({
     queryKey: ['books', params.bookId],
     queryFn: () => getBook(params.bookId + ''),
   });
@@ -116,8 +116,8 @@ function BookDetails() {
               <AddBookToCart bookId={params.bookId as string} />
             </Box>
             <Box display={'flex'} flexDirection={'column'}>
-              <AddReviewForm book={data} refetch={refetch} />
-              <Reviews book={data} refetch={refetch} />
+              <AddReviewForm book={data} />
+              <Reviews book={data} />
             </Box>
           </div>
         )}

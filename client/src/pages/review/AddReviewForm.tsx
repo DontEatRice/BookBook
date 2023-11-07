@@ -3,14 +3,15 @@ import { Rating, Box, Paper, Button } from '@mui/material';
 import TextInputField from '../../components/TextInputField';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postReview } from '../../api/review';
 import AddReview, { AddReviewType } from '../../models/AddReview';
 import { BookViewModelType } from '../../models/BookViewModel';
 import TextInputBox from '../../components/TextInputBox';
 
-function AddReviewForm({ book, refetch }: { book: BookViewModelType; refetch: () => Promise<unknown> }) {
+function AddReviewForm({ book }: { book: BookViewModelType }) {
   const [value, setValue] = React.useState<number | null>(0);
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -21,7 +22,7 @@ function AddReviewForm({ book, refetch }: { book: BookViewModelType; refetch: ()
   const mutation = useMutation({
     mutationFn: postReview,
     onSuccess: async () => {
-      await refetch();
+      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
     },
     onError: (e: Error) => {
       console.error(e);

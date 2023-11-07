@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import { BookViewModelType } from '../../models/BookViewModel';
 import ReviewTableRow from '../../pages/review/ReviewTableRow';
 
-function Reviews({ book, refetch }: { book: BookViewModelType; refetch: () => Promise<unknown> }) {
+function Reviews({ book }: { book: BookViewModelType }) {
   const theme = useTheme();
 
   return (
@@ -22,7 +22,7 @@ function Reviews({ book, refetch }: { book: BookViewModelType; refetch: () => Pr
           {book.reviews
             .filter((x) => x.description != '' && x.title != '')
             .map((review) => (
-              <ReviewTableRow review={review} book={book} key={review.id} refetch={refetch}></ReviewTableRow>
+              <ReviewTableRow review={review} book={book} key={review.id}></ReviewTableRow>
             ))}
         </TableBody>
       </Table>
