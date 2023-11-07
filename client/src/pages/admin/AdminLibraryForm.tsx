@@ -143,7 +143,7 @@ function AdminLibraryForm() {
 
   const [phoneNumberValue, setPhoneNumberValue] = React.useState<string>('');
 
-  const handlePhoneNumberChange = (newValue: string, info: MuiTelInputInfo) => {
+  const handlePhoneNumberChange = (newValue: string) => {
     setPhoneNumberValue(newValue);
   };
 

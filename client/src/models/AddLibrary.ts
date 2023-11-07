@@ -12,7 +12,7 @@ const AddLibrary = z.object({
   reservationTime: z.preprocess((a) => parseInt(z.string().parse(a)), z.number().positive()),
   hireTime: z.preprocess((a) => parseInt(z.string().parse(a)), z.number().positive("Wartość musi być dodatnią liczbą całkowitą")),
   emailAddress: z.string().email("Nieprawidłowy format adresu e-mail"),
-  phoneNumber: z.string().min(1, "To pole jest wymagane").refine((value) => /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]{4,10}$/.test(value.replace(/\s/g, "")), "Nieprawidłowy format numeru telefonu"),
+  phoneNumber: z.string().min(1, "To pole jest wymagane").refine((value) => /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]{4,10}$/.test(value.replace(/\s/g, "")), "Nieprawidłowy format numeru telefonu"),
   postalCode: z
     .string()
     .trim()
