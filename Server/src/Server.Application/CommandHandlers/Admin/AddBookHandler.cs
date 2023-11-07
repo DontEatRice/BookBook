@@ -20,6 +20,7 @@ public sealed class AddBookCommandValidator : AbstractValidator<AddBookCommand>
 }
 
 public sealed record AddBookCommand(Guid Id, string ISBN, string Title, int YearPublished,
+    string? Description, string Language, int? PageCount, string? CoverPictureUrl,
     Guid IdPublisher, List<Guid> AuthorsIDs, List<Guid> CategoriesIds) : IRequest;
 
 public sealed class AddBookHandler : IRequestHandler<AddBookCommand>
@@ -59,8 +60,8 @@ public sealed class AddBookHandler : IRequestHandler<AddBookCommand>
         var authors = await _authorRepository.ListByIdsAsync(request.AuthorsIDs, cancellationToken);
         var categories = await _bookCategoryRepository.ListByIdsAsync(request.CategoriesIds, cancellationToken);
 
-        book = Book.Create(request.Id, request.ISBN, request.Title, request.YearPublished,
-            publisher, authors, categories);
+        book = Book.Create(request.Id, request.ISBN, request.Title, request.YearPublished, request.Description,
+            request.Language, request.PageCount, request.CoverPictureUrl, publisher, authors, categories);
 
         await _bookRepository.AddAsync(book, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
