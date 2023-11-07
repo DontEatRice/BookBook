@@ -17,8 +17,9 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
+import { MuiTelInput, MuiTelInputInfo } from 'mui-tel-input';
 
 type LibraryOpenHoursTimePickerParams = {
   fields: [keyof AddLibraryType, keyof AddLibraryType];
@@ -140,6 +141,12 @@ function AdminLibraryForm() {
     mutation.mutate(data);
   };
 
+  const [phoneNumberValue, setPhoneNumberValue] = React.useState<string>('');
+
+  const handlePhoneNumberChange = (newValue: string, info: MuiTelInputInfo) => {
+    setPhoneNumberValue(newValue);
+  };
+
   return (
     <Box sx={{ mt: 2 }}>
       <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', justifyContent: 'center' }}>
@@ -169,6 +176,22 @@ function AdminLibraryForm() {
                   field="reservationTime"
                   register={register}
                   label="Czas rezerwacji"
+                />
+                <TextInputField
+                  errors={errors}
+                  field="emailAddress"
+                  register={register}
+                  label="Adres e-mail"
+                />
+                <MuiTelInput
+                  defaultCountry="PL"
+                  continents={['EU']}
+                  value={phoneNumberValue}
+                  {...register('phoneNumber')}
+                  onChange={handlePhoneNumberChange}
+                  sx={{ width: '100%' }}
+                  error={errors['phoneNumber'] != undefined}
+                  helperText={errors['phoneNumber']?.message?.toString()}
                 />
               </AccordionDetails>
             </Accordion>

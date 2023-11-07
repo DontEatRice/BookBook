@@ -7,6 +7,8 @@ const LibraryViewModel = z.object({
     name: z.string(),
     reservationTime: z.number().int().positive(),
     hireTime: z.number().int().positive(),
+    emailAddress: z.string(),
+    phoneNumber: z.string(),
     address: AddressViewModel,
     openHours: OpenHoursViewModel,
 })

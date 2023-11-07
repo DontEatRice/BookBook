@@ -6,6 +6,8 @@ public class LibraryViewModel
     public string Name { get; set; }
     public int ReservationTime { get; set; }
     public int HireTime { get; set; }
+    public string EmailAddress { get; set; }
+    public string PhoneNumber { get; set; }
     public OpenHoursViewModel OpenHours { get; set; }
     public AddressViewModel Address { get; set; }
 }
