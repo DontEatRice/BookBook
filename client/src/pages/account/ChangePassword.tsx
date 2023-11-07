@@ -13,10 +13,12 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useMutation } from '@tanstack/react-query';
 import { changePassword } from '../../api/account';
-import { AuthError } from '../../api/auth';
+import { ApiResponseError } from '../../utils/utils';
+import useAlert from '../../utils/alerts/useAlert';
 
 function ChangePassword() {
   const { user, logout } = useAuth();
+  const { handleError } = useAlert();
   const navigate = useNavigate();
   const theme = useTheme();
   useEffect(() => {
@@ -40,9 +42,11 @@ function ChangePassword() {
     },
     onError: (error) => {
       // TODO jakiś format wprowadzić
-      if (error instanceof AuthError && error.message === 'INVALID_CREDENTIALS') {
+      if (error instanceof ApiResponseError && error.error.code === 'INVALID_CREDENTIALS') {
         setValue('oldPassword', '');
         setError('oldPassword', { message: 'Błędne hasło' }, { shouldFocus: true });
+      } else {
+        handleError(error);
       }
     },
   });

@@ -44,7 +44,7 @@ public class ExceptionFilter : IExceptionFilter
             {
                 Type = ExceptionFilterType.NotFound.ToString(),
                 Code = e.ErrorCode,
-                ResourceId = e.ResourceId
+                e.ResourceId
             })
             {
                 StatusCode = 404
@@ -54,7 +54,7 @@ public class ExceptionFilter : IExceptionFilter
             {
                 Type = ExceptionFilterType.Logic.ToString(),
                 Code = e.ErrorCode,
-                ResourceId = e.ResourceId
+                e.ResourceId
             })
             {
                 StatusCode = 400
@@ -83,6 +83,7 @@ public class ExceptionFilter : IExceptionFilter
             _ => new ObjectResult(new
             {
                 Type = ExceptionFilterType.Unexpected.ToString(),
+                Code = "UNEXPECTED",
                 Message = "Something went wrong"
             })
             {

@@ -106,7 +106,7 @@ function AdminBookCategories() {
   const { pageNumber, pageSize, orderByField, orderDirection } = paginationProps;
   const [isInitLoading, setIsInitLoading] = useState(true);
 
-  const { data, status } = useQuery({
+  const { data, status, isLoading } = useQuery({
     queryKey: ['categories', pageNumber, pageSize, orderByField, orderDirection],
     queryFn: () => getCategories(paginationProps),
     keepPreviousData: true,
@@ -135,7 +135,7 @@ function AdminBookCategories() {
           </Link>
         </Grid>
       </Grid>
-      {isInitLoading && <Typography variant="h3">Ładowanie...</Typography>}
+      {isInitLoading && isLoading && <Typography variant="h3">Ładowanie...</Typography>}
       {status == 'success' && (
         <BookCategoriesTable
           data={data}

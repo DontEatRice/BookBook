@@ -33,3 +33,9 @@ export const ValidationError = z.object({
   title: z.string(),
   errors: z.record(z.string().array()),
 });
+
+export const ResponseError = z.object({
+  code: z.string(),
+  type: z.string(),
+  message: z.string().optional().nullable(),
+});
