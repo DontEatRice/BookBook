@@ -21,13 +21,13 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
 
   const handleClose = () => {
     setOpen(false);
-    queryClient.invalidateQueries({ queryKey: ['books', book.id] });
   };
 
   const mutation = useMutation({
     mutationFn: deleteReview,
     onSuccess: async () => {
-      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
+      // queryClient.invalidateQueries({ queryKey: ['books', book.id] });
+      queryClient.refetchQueries(['books', book.id]);
     },
     onError: (e: Error) => {
       console.error(e);
@@ -43,7 +43,7 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
       <StyledTableCell>
         <Rating
           name="half-rating-read"
-          defaultValue={review.rating == null ? 0 : review.rating}
+          value={review.rating == null ? 0 : review.rating}
           precision={1}
           readOnly
         />
@@ -56,15 +56,10 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
             InputProps={{ readOnly: true }}
             sx={{ mb: 2 }}
             variant="standard"
-            defaultValue={review.title}
+            value={review.title}
           />
         </Typography>
-        <TextField
-          multiline
-          InputProps={{ readOnly: true }}
-          sx={{ mb: 2 }}
-          defaultValue={review.description}
-        />
+        <TextField multiline InputProps={{ readOnly: true }} sx={{ mb: 2 }} value={review.description} />
       </StyledTableCell>
       <StyledTableCell>
         <Button sx={{ width: 50, height: 40 }} onClick={() => mutation.mutate(review.id)}>
@@ -82,4 +77,3 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
 }
 
 export default ReviewTableRow;
-

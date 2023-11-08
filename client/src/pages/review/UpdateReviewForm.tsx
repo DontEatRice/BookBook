@@ -1,8 +1,7 @@
-import * as React from 'react';
 import { Rating, Box, Paper, Button } from '@mui/material';
 import TextInputField from '../../components/TextInputField';
 import { ReviewViewModelType } from '../../models/ReviewViewModel';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateReview } from '../../api/review';
@@ -19,11 +18,11 @@ function UpdateReviewForm({
   book: BookViewModelType;
   handleClose: () => void;
 }) {
-  const [value, setValue] = React.useState<number | null>(review.rating);
   const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<UpdateReviewType>({
     resolver: zodResolver(UpdateReview),
@@ -36,7 +35,7 @@ function UpdateReviewForm({
   const mutation = useMutation({
     mutationFn: updateReview,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
+      queryClient.refetchQueries(['books', book.id]);
       handleClose();
     },
     onError: (e: Error) => {
@@ -44,9 +43,6 @@ function UpdateReviewForm({
     },
   });
   const onSubmit: SubmitHandler<UpdateReviewType> = (data) => {
-    data.rating = value == null ? 0 : value;
-    data.idReview = review.id;
-    data.idBook = book.id;
     mutation.mutate(data);
   };
 
@@ -59,12 +55,18 @@ function UpdateReviewForm({
             textAlign: 'left',
           }}>
           <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
-            <Rating
+            <Controller
+              control={control}
               name="rating"
-              value={value}
-              onChange={(_, newValue) => {
-                setValue(newValue);
-              }}
+              render={({ field: { value, onChange, ref } }) => (
+                <Rating
+                  ref={ref}
+                  value={value}
+                  onChange={(_, value) => {
+                    onChange(value);
+                  }}
+                />
+              )}
             />
             <TextInputField
               errors={errors}
@@ -82,9 +84,8 @@ function UpdateReviewForm({
               defaultValue={review.description + ''}
             />
 
-            {/* <input type="hidden" {...register('idReview')} value={review.id} />
-            <input type="hidden" {...register('idBook')} value={book.id} />
-            <input type="hidden" {...register('rating')} value={value + ''} /> */}
+            <input type="hidden" {...register('idReview')} />
+            <input type="hidden" {...register('idBook')} />
 
             <Button variant="contained" type="submit" sx={{ margin: 1 }}>
               Uaktualnij
@@ -100,4 +101,3 @@ function UpdateReviewForm({
 }
 
 export default UpdateReviewForm;
-
