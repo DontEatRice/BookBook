@@ -8,7 +8,7 @@ export type ErrorResponse = {
 export const LocalStorageTokenKey = 'token';
 
 export type Claims = {
-  idenityid: string;
+  identityid: string;
   role: string | Array<string>;
   exp: number;
   email: string;

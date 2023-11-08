@@ -55,7 +55,7 @@ function AdminBooksInLibrary() {
   const { user } = useAuth();
   const { data: booksInLibrary, status: booksInLibraryStatus } = useQuery({
     queryKey: ['booksInLibrary', user!.libraryId!],
-    queryFn: ({ queryKey }) => getBooksInLibrary(queryKey[1]!),
+    queryFn: ({ queryKey }) => getBooksInLibrary({ libraryId: queryKey[1]!, pageNumber: 0, pageSize: 50 }),
   });
 
   return (
@@ -76,7 +76,7 @@ function AdminBooksInLibrary() {
           Błąd!
         </Typography>
       )}
-      {booksInLibraryStatus == 'success' && <BooksInLibraryTable data={booksInLibrary} />}
+      {booksInLibraryStatus == 'success' && <BooksInLibraryTable data={booksInLibrary.data} />}
     </Box>
   );
 }

@@ -38,8 +38,11 @@ export async function getBooksAvailableToAdd(libraryId: string) {
   return BookViewModel.array().parse(data);
 }
 
-export async function getBooksInLibrary(libraryId: string) {
-  const response = await fetch(base + '/Libraries/' + libraryId + '/books');
+const BookInLibrarySearchResponse = paginatedResponse(BookInLibraryViewModel);
+
+export async function getBooksInLibrary(request: PaginationRequest & { libraryId: string }) {
+  const { libraryId } = request;
+  const response = await paginatedFetch(`${base}/Libraries/${libraryId}/books/search`, request);
   const data = await response.json();
-  return BookInLibraryViewModel.array().parse(data);
+  return BookInLibrarySearchResponse.parse(data);
 }
