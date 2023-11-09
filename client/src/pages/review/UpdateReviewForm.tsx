@@ -84,9 +84,6 @@ function UpdateReviewForm({
               defaultValue={review.description + ''}
             />
 
-            <input type="hidden" {...register('idReview')} />
-            <input type="hidden" {...register('idBook')} />
-
             <Button variant="contained" type="submit" sx={{ margin: 1 }}>
               Uaktualnij
             </Button>
