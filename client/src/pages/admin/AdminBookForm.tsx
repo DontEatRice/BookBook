@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import TextInputField from '../../components/TextInputField';
 import AddBook, { AddBookType } from '../../models/AddBook';
@@ -14,8 +14,8 @@ import { getAuthors } from '../../api/author';
 import { getPublishers } from '../../api/publisher';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { useState } from 'react';
-import Typography from '@mui/material/Typography';
+import { ApiResponseError } from '../../utils/utils';
+import useAlert from '../../utils/alerts/useAlert';
 
 const paginationDefaultRequest = {
   pageNumber: 0,
@@ -24,11 +24,13 @@ const paginationDefaultRequest = {
 
 function AdminBookForm() {
   const navigate = useNavigate();
-  const [apiError, setApiError] = useState<string>('');
+  const { handleError } = useAlert();
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
     control,
+    setError,
     formState: { errors },
   } = useForm<AddBookType>({
     resolver: zodResolver(AddBook),
@@ -36,14 +38,14 @@ function AdminBookForm() {
   const mutation = useMutation({
     mutationFn: postBook,
     onSuccess: () => {
+      queryClient.invalidateQueries(['books']);
       navigate('..');
     },
     onError: (err) => {
-      const error = err as Error;
-      console.error(error);
-      const errorCode = error.message.split(':')[0];
-      if (errorCode == 'BOOK_ALREADY_ADDED') {
-        setApiError('Podany ISBN jest już zajęty');
+      if (err instanceof ApiResponseError && err.error.code == 'BOOK_ALREADY_ADDED') {
+        setError('ISBN', { message: 'Podany ISBN jest już zajęty' }, { shouldFocus: true });
+      } else {
+        handleError(err);
       }
     },
   });
@@ -77,11 +79,6 @@ function AdminBookForm() {
             }}>
             <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
               <TextInputField errors={errors} field="ISBN" register={register} label="ISBN" />
-              {apiError && (
-                <Typography variant="body2" color="error">
-                  {apiError}
-                </Typography>
-              )}
               <TextInputField errors={errors} field="title" register={register} label="Tytuł" />
               <NumberInputField
                 errors={errors}

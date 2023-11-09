@@ -12,13 +12,14 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { useTheme } from '@mui/material/styles';
+import { ApiResponseError } from '../../utils/utils';
 
 function Login() {
   const { login: setAccessToken } = useAuth();
   const theme = useTheme();
   const [loginError, setLoginError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { showWarning } = useAlert();
+  const { handleError } = useAlert();
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: ({ accessToken }) => {
@@ -26,14 +27,10 @@ function Login() {
       navigate('/');
     },
     onError: async (error) => {
-      if (error instanceof Response) {
-        const body = await error.json();
-        console.log({ body });
-        if (body.code && body.code === 'INVALID_CREDENTIALS') {
-          setLoginError('Nieprawidłowy login lub hasło!');
-        } else {
-          showWarning({ title: 'Błąd', message: 'Wystąpił nieoczekiwany błąd' });
-        }
+      if (error instanceof ApiResponseError && error.error.code === 'INVALID_CREDENTIALS') {
+        setLoginError('Nieprawidłowy login lub hasło!');
+      } else {
+        handleError(error);
       }
     },
   });

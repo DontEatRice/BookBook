@@ -19,7 +19,7 @@ export const login = async (request: LoginRequestType) => {
     credentials: 'include',
   });
   if (!result.ok) {
-    throw result;
+    await handleBadResponse(result);
   }
 
   return (await result.json()) as { accessToken: string };

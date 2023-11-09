@@ -2,7 +2,7 @@ import { AddBookType } from '../models/AddBook';
 import BookViewModel from '../models/BookViewModel';
 import LibraryViewModel from '../models/LibraryViewModel';
 import { PaginationRequest } from '../utils/constants';
-import { paginatedFetch } from '../utils/utils';
+import { handleBadResponse, paginatedFetch } from '../utils/utils';
 import { paginatedResponse } from '../utils/zodSchemas';
 import { getAuthToken } from './auth';
 
@@ -15,11 +15,9 @@ export const postBook = async (book: AddBookType) => {
     body: JSON.stringify(book),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
-  if (response.status !== 201) {
-    const data = await response.json();
-    throw new Error(`${data.code}:${data.resourceId}`);
+  if (!response.ok) {
+    await handleBadResponse(response);
   }
-
   return response;
 };
 

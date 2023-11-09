@@ -3,13 +3,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postPublisher } from '../../api/publisher';
 import { useNavigate } from 'react-router-dom';
 import AddPublisher, { AddPublisherType } from '../../models/AddPublisher';
 import TextInputField from '../../components/TextInputField';
 function AdminPublisherForm() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -20,10 +21,8 @@ function AdminPublisherForm() {
   const mutation = useMutation({
     mutationFn: postPublisher,
     onSuccess: () => {
+      queryClient.invalidateQueries(['publishers']);
       navigate('..');
-    },
-    onError: (e: Error) => {
-      console.error(e);
     },
   });
   const onSubmit: SubmitHandler<AddPublisherType> = (data) => {
