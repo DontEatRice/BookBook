@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import { LibraryViewModelType } from '../../models/LibraryViewModel';
 import { Box, Button } from '@mui/material';
 import { addToCart } from '../../api/cart';
+import { useCartStore } from '../../store';
 
 function LibraryDropdown({
   data,
@@ -44,6 +45,8 @@ function LibraryDropdown({
 
 export default function AddBookToCart({ bookId }: { bookId: string }) {
   const [error, setError] = useState<string>('');
+  const [success, setSuccess] = useState<string>('');
+  const cartStore = useCartStore();
   const [selectedLibrary, setSelectedLibrary] = useState<string>('');
   const { data, status } = useQuery(['booksInLibrary', bookId], async (context) => {
     if (context.queryKey[1] != '') {
@@ -57,8 +60,11 @@ export default function AddBookToCart({ bookId }: { bookId: string }) {
     try {
       await addToCart({ bookId, libraryId });
       setError('');
+      setSuccess('Dodano do koszyka!');
+      cartStore.toggleIsChanged();
     } catch (error) {
       const err = error as Error;
+      setSuccess('');
       switch (err.message) {
         case 'BOOK_ALREADY_IN_CART':
           setError('Książka została już dodana do koszyka');
@@ -86,20 +92,27 @@ export default function AddBookToCart({ bookId }: { bookId: string }) {
       )}
 
       {status == 'success' && (
-        <Box sx={{ display: 'flex', flex: 'column', padding: 2, margin: 2 }}>
-          <LibraryDropdown data={{ data, setSelectedLibrary }} />
-          <Button
-            disabled={selectedLibrary == ''}
-            variant="contained"
-            color="primary"
-            onClick={() => handleAddToCart(bookId, selectedLibrary)}
-            sx={{ marginLeft: 2 }}>
-            Dodaj do koszyka
-          </Button>
-        </Box>
+        <div>
+          <Box sx={{ display: 'flex', flex: 'column', padding: 2, margin: 2 }}>
+            <LibraryDropdown data={{ data, setSelectedLibrary }} />
+            <Button
+              disabled={selectedLibrary == ''}
+              variant="contained"
+              color="primary"
+              onClick={() => handleAddToCart(bookId, selectedLibrary)}
+              sx={{ marginLeft: 2 }}>
+              Dodaj do koszyka
+            </Button>
+          </Box>
+          {success && (
+            <Typography variant="h5" color="green" marginBottom={4}>
+              {success}
+            </Typography>
+          )}
+        </div>
       )}
       {error && (
-        <Typography marginLeft={4} variant="body1" color="error">
+        <Typography marginLeft={4} marginBottom={4} variant="body1" color="error">
           {error}
         </Typography>
       )}

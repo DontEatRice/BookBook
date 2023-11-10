@@ -20,7 +20,7 @@ function Reviews({ book }: { book: BookViewModelType }) {
         </TableHead>
         <TableBody>
           {book.reviews
-            .filter((x) => x.description != '' && x.title != '')
+            .filter((x) => x.title != '')
             .map((review) => (
               <ReviewTableRow review={review} book={book} key={review.id}></ReviewTableRow>
             ))}

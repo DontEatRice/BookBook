@@ -56,4 +56,18 @@ public class Book
         
         AverageRating = (averageRating ?? 0 * reviewCount + reviewRating) / (reviewCount + 1);
     }
+    
+    public void SubtractReviewFromRating(double reviewRating)
+    {
+        var reviewCount = Reviews.Count;
+        var averageRating = AverageRating;
+
+        if (reviewCount == 1)
+        {
+            AverageRating = null;
+            return;
+        }
+        
+        AverageRating = (averageRating ?? 0 * reviewCount - reviewRating) / (reviewCount - 1);
+    }
 }

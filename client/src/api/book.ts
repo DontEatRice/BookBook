@@ -64,3 +64,4 @@ export async function searchBooks(args: PaginationRequest & { query?: string }) 
   const data = await response.json();
   return BooksPaginated.parse(data);
 }
+
