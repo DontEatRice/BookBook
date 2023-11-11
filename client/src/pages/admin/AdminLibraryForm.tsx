@@ -1,4 +1,4 @@
-import { Control, SubmitHandler, useForm } from 'react-hook-form';
+import { Control, Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -17,7 +17,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import { MuiTelInput } from 'mui-tel-input';
 
@@ -133,18 +133,9 @@ function AdminLibraryForm() {
     onSuccess: () => {
       navigate('..');
     },
-    onError: (e: Error) => {
-      console.error(e);
-    },
   });
   const onSubmit: SubmitHandler<AddLibraryType> = (data) => {
     mutation.mutate(data);
-  };
-
-  const [phoneNumberValue, setPhoneNumberValue] = React.useState<string>('');
-
-  const handlePhoneNumberChange = (newValue: string) => {
-    setPhoneNumberValue(newValue);
   };
 
   return (
@@ -183,15 +174,19 @@ function AdminLibraryForm() {
                   register={register}
                   label="Adres e-mail"
                 />
-                <MuiTelInput
-                  defaultCountry="PL"
-                  continents={['EU']}
-                  value={phoneNumberValue}
-                  {...register('phoneNumber')}
-                  onChange={handlePhoneNumberChange}
-                  sx={{ width: '100%' }}
-                  error={errors['phoneNumber'] != undefined}
-                  helperText={errors['phoneNumber']?.message?.toString()}
+                <Controller
+                  control={control}
+                  name="phoneNumber"
+                  render={({ field, fieldState: { error } }) => (
+                    <MuiTelInput
+                      defaultCountry="PL"
+                      continents={['EU']}
+                      sx={{ width: '100%' }}
+                      error={error != undefined}
+                      helperText={error?.message}
+                      {...field}
+                    />
+                  )}
                 />
               </AccordionDetails>
             </Accordion>
