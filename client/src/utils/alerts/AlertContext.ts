@@ -13,19 +13,21 @@ export type AlertProps = {
 };
 
 interface IAlertContext {
-  // showError: (body: AlertBody) => void;
-  // showSuccess: (body: AlertBody) => void;
-  // showInfo: (body: AlertBody) => void;
+  showError: (body: AlertBody) => void;
+  showSuccess: (body: AlertBody) => void;
+  showInfo: (body: AlertBody) => void;
   showWarning: (body: AlertBody) => void;
+  handleError: (error: unknown) => void;
   alertNotification: AlertProps | null;
   clearNotification: () => void;
 }
 
 export const AlertContext = createContext<IAlertContext>({
-  // showSuccess: () => {},
-  // showInfo: () => {},
+  showSuccess: () => {},
+  showInfo: () => {},
   showWarning: () => {},
-  // showError: () => {},
+  showError: () => {},
   alertNotification: null,
   clearNotification: () => {},
+  handleError: () => {},
 });

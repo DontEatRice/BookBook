@@ -1,6 +1,8 @@
 import { AddCategoryType } from '../models/AddCategory';
 import BookCategoryViewModel from '../models/BookCategoryViewModel';
-import { PaginationRequest, paginatedFetch, paginatedResponse } from '../utils/utils';
+import { PaginationRequest } from '../utils/constants';
+import { handleBadResponse, paginatedFetch } from '../utils/utils';
+import { paginatedResponse } from '../utils/zodSchemas';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 export const BookCategorySearchResponse = paginatedResponse(BookCategoryViewModel);
@@ -11,6 +13,9 @@ export const postCategory = async (category: AddCategoryType) => {
     body: JSON.stringify(category),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
   return response;
 };
 
@@ -18,5 +23,8 @@ export async function getCategories(body: PaginationRequest) {
   const response = await paginatedFetch(base + '/BookCategories/search', body);
   const data = await response.json();
 
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
   return BookCategorySearchResponse.parse(data);
 }

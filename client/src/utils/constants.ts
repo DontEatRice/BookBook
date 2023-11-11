@@ -17,6 +17,13 @@ export type Claims = {
 
 export type Order = 'asc' | 'desc';
 
+export type PaginationRequest = {
+  pageSize: number;
+  pageNumber: number;
+  orderByField?: string;
+  orderDirection?: Order;
+};
+
 export const languages = [
   "Angielski",
   "Chiński",

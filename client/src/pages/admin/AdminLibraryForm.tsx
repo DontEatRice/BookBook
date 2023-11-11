@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import TextInputField from '../../components/TextInputField';
 import NumberInputField from '../../components/NumberInputField';
@@ -118,6 +118,7 @@ const daysOfWeek: DayOfWeek[] = [
 
 function AdminLibraryForm() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -130,10 +131,8 @@ function AdminLibraryForm() {
   const mutation = useMutation({
     mutationFn: postLibrary,
     onSuccess: () => {
+      queryClient.invalidateQueries(['libraries']);
       navigate('..');
-    },
-    onError: (e: Error) => {
-      console.error(e);
     },
   });
   const onSubmit: SubmitHandler<AddLibraryType> = (data) => {

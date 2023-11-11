@@ -11,13 +11,16 @@ import { useCallback, useMemo, useState } from 'react';
 import NumberInputField from '../../components/NumberInputField';
 import { uploadImage } from '../../api/image';
 import { fileToUploadImage } from '../../utils/utils';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
+import useAlert from '../../utils/alerts/useAlert';
 import TextInputBox from '../../components/TextInputBox';
 
 function AdminAuthorForm() {
   const [fileUrl, setFileUrl] = useState<string | undefined>(undefined);
+  const queryClient = useQueryClient();
+  const { showSuccess } = useAlert();
   const navigate = useNavigate();
   const {
     register,
@@ -44,16 +47,13 @@ function AdminAuthorForm() {
   }, [watchAvatarPicture]);
   const uploadImageMutation = useMutation({
     mutationFn: uploadImage,
-    onError: console.error,
   });
   const postAuthorMutation = useMutation({
     mutationFn: postAuthor,
-    onSuccess: () => {
-      // response.headers.has() TODO dodać redirect na nowy obiekt
+    onSuccess: (_, { firstName, lastName }) => {
+      queryClient.invalidateQueries(['authors']);
+      showSuccess({ message: `${firstName} ${lastName} został dodany!` });
       navigate('..');
-    },
-    onError: (e: Error) => {
-      console.error(e);
     },
   });
   const onSubmit = useCallback(

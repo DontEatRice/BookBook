@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import UploadImage from '../models/UploadImage';
 import { User } from '../models/User';
-import { Claims, Order } from './constants';
+import { Claims, PaginationRequest } from './constants';
+import { ResponseError, ValidationError } from './zodSchemas';
 
 export function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -30,22 +31,6 @@ export function paginatedFetch(
   });
 }
 
-export type PaginationRequest = {
-  pageSize: number;
-  pageNumber: number;
-  orderByField?: string;
-  orderDirection?: Order;
-};
-
-export function paginatedResponse<T>(schema: z.ZodType<T>) {
-  return z.object({
-    pageNumber: z.number(),
-    pageSize: z.number(),
-    count: z.number(),
-    data: schema.array(),
-  });
-}
-
 export async function fileToUploadImage(file: File) {
   let base64 = await fileToBase64(file);
   base64 = base64.slice(base64.indexOf(',') + 1);
@@ -61,9 +46,20 @@ export function getJwtBody(token: string): Claims {
   return JSON.parse(atob(body)) as Claims;
 }
 
-// export function handleError(error: unknown) {
-
-// }
+export async function handleBadResponse(response: Response) {
+  const body = await response.json();
+  const validationErrorParse = ValidationError.safeParse(body);
+  if (validationErrorParse.success) {
+    throw new ValidationApiError(response.status, validationErrorParse.data);
+  }
+  const apiResponseError = ResponseError.safeParse(body);
+  if (apiResponseError.success) {
+    throw new ApiResponseError(response.status, apiResponseError.data);
+  }
+  const apiError = new ApiError(response.status, await response.text());
+  apiError.rawResponse = response;
+  throw apiError;
+}
 
 export function convertJwtToUser(token: string): User {
   const claims = getJwtBody(token);
@@ -82,4 +78,45 @@ export function convertJwtToUser(token: string): User {
     email: claims.email,
     libraryId: claims.libraryid,
   };
+}
+
+export class ApiError {
+  private _rawResponse?: Response;
+
+  constructor(private code: number, private responseContent?: string) {}
+
+  getCode() {
+    return this.code;
+  }
+  getResponseContent() {
+    return this.responseContent;
+  }
+
+  get rawResponse() {
+    return this._rawResponse;
+  }
+
+  set rawResponse(value: Response | undefined) {
+    this._rawResponse = value;
+  }
+}
+
+export class ApiResponseError extends ApiError {
+  constructor(code: number, private responseError: z.infer<typeof ResponseError>, responseContent?: string) {
+    super(code, responseContent);
+  }
+
+  get error() {
+    return this.responseError;
+  }
+}
+
+export class ValidationApiError extends ApiError {
+  constructor(code: number, private error: z.infer<typeof ValidationError>, responseContent?: string) {
+    super(code, responseContent);
+  }
+
+  get validationError() {
+    return this.error;
+  }
 }

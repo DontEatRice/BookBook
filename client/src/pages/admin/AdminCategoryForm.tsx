@@ -3,12 +3,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postCategory } from '../../api/category';
 import { useNavigate } from 'react-router-dom';
 import AddCategory, { AddCategoryType } from '../../models/AddCategory';
 import TextInputField from '../../components/TextInputField';
+import useAlert from '../../utils/alerts/useAlert';
 function AdminCategoryForm() {
+  const { showSuccess } = useAlert();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const {
     register,
@@ -19,7 +22,9 @@ function AdminCategoryForm() {
   });
   const mutation = useMutation({
     mutationFn: postCategory,
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      showSuccess({ message: `Dodano kategorię o nazwie ${variables.name}` });
+      queryClient.invalidateQueries(['categories']);
       navigate('..');
     },
     onError: (e: Error) => {

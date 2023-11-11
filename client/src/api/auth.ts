@@ -1,5 +1,5 @@
 import { LoginRequestType } from '../models/LoginRequest';
-import { getJwtBody } from '../utils/utils';
+import { getJwtBody, handleBadResponse } from '../utils/utils';
 import { LocalStorageTokenKey } from '../utils/constants';
 import { RegisterUserType } from '../models/RegisterUser';
 
@@ -19,7 +19,7 @@ export const login = async (request: LoginRequestType) => {
     credentials: 'include',
   });
   if (!result.ok) {
-    throw result;
+    await handleBadResponse(result);
   }
 
   return (await result.json()) as { accessToken: string };
@@ -28,11 +28,14 @@ export const login = async (request: LoginRequestType) => {
 export const register = async (request: RegisterUserType) => {
   const copy = { ...request };
   copy.avatarPicture = null!;
-  await fetch(base + '/register', {
+  const result = await fetch(base + '/register', {
     method: 'post',
     body: JSON.stringify(copy),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
+  if (!result.ok) {
+    await handleBadResponse(result);
+  }
 };
 
 export async function getAuthToken() {
