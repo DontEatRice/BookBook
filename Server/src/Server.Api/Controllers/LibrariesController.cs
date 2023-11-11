@@ -52,10 +52,10 @@ public class LibrariesController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("{id:guid}/books")]
-    public async Task<ActionResult<IEnumerable<BookInLibraryViewModel>>> GetBooks(Guid id)
+    [HttpPost("{id:guid}/books/search")]
+    public async Task<ActionResult<IEnumerable<BookInLibraryViewModel>>> GetBooks(GetBooksInLibraryQuery query)
     {
-        return Ok(await Mediator.Send(new GetBooksInLibraryQuery(id)));
+        return Ok(await Mediator.Send(query));
     }
 
     [HttpGet("{id:guid}/not-added")]

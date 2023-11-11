@@ -15,6 +15,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import useAlert from '../../utils/alerts/useAlert';
+import TextInputBox from '../../components/TextInputBox';
 
 function AdminAuthorForm() {
   const [fileUrl, setFileUrl] = useState<string | undefined>(undefined);
@@ -97,7 +98,13 @@ function AdminAuthorForm() {
             <TextInputField errors={errors} field="firstName" label="Imię" register={register} />
             <TextInputField errors={errors} field="lastName" label="Nazwisko/Nazwiska" register={register} />
             <NumberInputField errors={errors} field="birthYear" label="Rok urodzenia" register={register} />
-            <TextInputField errors={errors} field="description" label="Opis/życiorys" register={register} />
+            <TextInputBox
+              errors={errors}
+              field="description"
+              label="Opis/życiorys"
+              register={register}
+              rows={4}
+            />
             <Button type="submit" variant="contained">
               Zapisz
             </Button>

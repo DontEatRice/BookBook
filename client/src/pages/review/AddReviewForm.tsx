@@ -3,7 +3,7 @@ import { Rating, Box, Paper, Button } from '@mui/material';
 import TextInputField from '../../components/TextInputField';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postReview } from '../../api/review';
 import AddReview, { AddReviewType } from '../../models/AddReview';
 import { BookViewModelType } from '../../models/BookViewModel';
@@ -11,6 +11,7 @@ import TextInputBox from '../../components/TextInputBox';
 
 function AddReviewForm({ book }: { book: BookViewModelType }) {
   const [value, setValue] = React.useState<number | null>(0);
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -20,8 +21,8 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
   });
   const mutation = useMutation({
     mutationFn: postReview,
-    onSuccess: () => {
-      window.location.reload();
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
     },
     onError: (e: Error) => {
       console.error(e);
@@ -66,3 +67,4 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
 }
 
 export default AddReviewForm;
+

@@ -21,6 +21,7 @@ export default function Cart() {
 
   const { data, status, refetch } = useQuery({ queryKey: ['cart'], queryFn: getCart });
 
+  refetch();
   const removeItem = async (bookId: string) => {
     await removeFromCart(bookId);
     await refetch();

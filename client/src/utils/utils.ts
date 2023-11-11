@@ -72,7 +72,7 @@ export function convertJwtToUser(token: string): User {
   }
 
   return {
-    id: claims.idenityid,
+    id: claims.identityid,
     token,
     roles,
     email: claims.email,
