@@ -127,6 +127,9 @@ function AdminLibraryForm() {
     unregister,
   } = useForm<AddLibraryType>({
     resolver: zodResolver(AddLibrary),
+    defaultValues: {
+      phoneNumber: '',
+    },
   });
   const mutation = useMutation({
     mutationFn: postLibrary,
