@@ -32,6 +32,7 @@ import AdminReservationList from './pages/admin/AdminReservations';
 import UserBooksList from './pages/user/UserBooks';
 import AuthorsList from './pages/author/AuthorsList';
 import AuthorDetails from './pages/author/AuthorDetails';
+import AdminRegisterEmployeeForm from './pages/admin/AdminRegisterEmployeeForm';
 
 const mainTheme = createTheme({
   palette: {
@@ -116,6 +117,9 @@ function App() {
         </Route>
         <Route path="reservations">
           <Route index element={<AdminReservationList />} />
+        </Route>
+        <Route path="add-employee">
+          <Route index element={<AdminRegisterEmployeeForm />} />
         </Route>
         <Route path="*" element={<div>NotFound</div>} />
       </Route>

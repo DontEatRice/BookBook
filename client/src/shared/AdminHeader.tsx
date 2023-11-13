@@ -2,6 +2,7 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import AuthorizedView from '../components/auth/AuthorizedView';
 
 function AdminHeader() {
   const theme = useTheme();
@@ -30,6 +31,7 @@ function AdminHeader() {
       <NavItem label="Biblioteki" link="/admin/libraries" />
       <NavItem label="Oferta" link="/admin/booksInLibrary" />
       <NavItem label="Rezerwacje" link="/admin/reservations" />
+      <NavItem label="Dodaj pracownika" link="/admin/add-employee" />
     </header>
   );
 }
@@ -61,4 +63,3 @@ function NavItem({ label, link }: { label: string; link: string }) {
 }
 
 export default AdminHeader;
-
