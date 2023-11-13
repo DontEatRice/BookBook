@@ -69,7 +69,7 @@ export async function refresh() {
 }
 
 export const registerEmployee = async (request: RegisterEmployeeType) => {
-  var auth = await getAuthToken();
+  let auth = await getAuthToken();
   console.log(auth)
   const copy = { ...request };
   copy.avatarPicture = null!;

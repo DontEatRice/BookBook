@@ -22,7 +22,7 @@ function AdminRegisterEmployeeForm() {
     onError: (error) => {
       if (error instanceof ApiResponseError && error.error.code == 'LIBRARY_NOT_FOUND') {
         setApiError('Wybrana biblioteka nie istnieje!');
-      } else if (error instanceof ApiResponseError && error.error.code == 'LIBRARY_NOT_FOUND') {
+      } else if (error instanceof ApiResponseError && error.error.code == 'IDENTITY_EXISTS') {
         setApiError('Już istnieje konto z podanym adresem e-mail');
       } else {
         handleError(error);
