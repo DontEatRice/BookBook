@@ -73,10 +73,14 @@ public sealed class UpdateBookHandler : IRequestHandler<UpdateBookCommand>
         var authors = await _authorRepository.ListByIdsAsync(request.AuthorsIDs, cancellationToken);
         var categories = await _bookCategoryRepository.ListByIdsAsync(request.CategoriesIds, cancellationToken);
         
-        book = Book.Update(book, request.ISBN, request.Title, request.YearPublished, publisher,
-            authors, categories);
-
-        _bookRepository.Update(book);
+        book.ISBN = request.ISBN;
+        book.Title = request.Title;
+        book.YearPublished = request.YearPublished;
+        book.Publisher = publisher;
+        book.Authors = authors;
+        book.BookCategories = categories;
+        book.FullText = request.ISBN + " " + request.Title + " " + request.YearPublished + " " + publisher.Name + " " +
+                        string.Join(" ", authors.Select(x => x.LastName));
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

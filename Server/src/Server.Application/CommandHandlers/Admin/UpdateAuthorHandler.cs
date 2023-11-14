@@ -39,10 +39,11 @@ public sealed class UpdateAuthorHandler : IRequestHandler<UpdateAuthorCommand>
         {
             throw new NotFoundException("Author not found", ApplicationErrorCodes.AuthorNotFound);
         }
-        
-        author = Author.Update(author, request.FirstName, request.LastName, request.BirthYear, request.ProfilePictureUrl);
 
-        _authorRepository.Update(author);
+        author.FirstName = request.FirstName;
+        author.LastName = request.LastName;
+        author.BirthYear = request.BirthYear;
+        author.ProfilePictureUrl = request.ProfilePictureUrl;
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

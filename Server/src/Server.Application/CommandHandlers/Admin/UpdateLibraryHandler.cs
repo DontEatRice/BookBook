@@ -45,38 +45,31 @@ public sealed class UpdateLibraryHandler : IRequestHandler<UpdateLibraryCommand>
         {
             throw new NotFoundException("Library not found", ApplicationErrorCodes.LibraryNotFound);
         }
+
+        library.Name = request.Name;
+        library.ReservationTime = request.ReservationTime;
+        library.HireTime = request.HireTime;
         
-        var address = new Address
-        {
-            PostalCode = request.PostalCode,
-            City = request.City,
-            Street = request.Street,
-            Number = request.Number,
-            Apartment = request.Apartment,
-            AdditionalInfo = request.AdditionalInfo
-        }; 
-        
-        var openHours = new OpenHours
-        {
-            MondayOpenTime = request.MondayOpenTime,
-            MondayCloseTime = request.MondayCloseTime,
-            TuesdayOpenTime = request.TuesdayOpenTime,
-            TuesdayCloseTime = request.TuesdayCloseTime,
-            WednesdayOpenTime = request.WednesdayOpenTime,
-            WednesdayCloseTime = request.WednesdayCloseTime,
-            ThursdayOpenTime = request.ThursdayOpenTime,
-            ThursdayCloseTime = request.ThursdayCloseTime,
-            FridayOpenTime = request.FridayOpenTime,
-            FridayCloseTime = request.FridayCloseTime,
-            SaturdayOpenTime = request.SaturdayOpenTime,
-            SaturdayCloseTime = request.SaturdayCloseTime,
-            SundayOpenTime = request.SundayOpenTime,
-            SundayCloseTime = request.SundayCloseTime
-        };
-        
-        library = Library.Update(library, request.Name, request.ReservationTime, request.HireTime, address, openHours);
-        
-        _libraryRepository.Update(library);
+        library.Address.City = request.City;
+        library.Address.Apartment = request.Apartment;
+        library.Address.Number = request.Number;
+        library.Address.PostalCode = request.PostalCode;
+        library.Address.AdditionalInfo = request.AdditionalInfo;
+
+        library.OpenHours.MondayOpenTime = request.MondayOpenTime;
+        library.OpenHours.MondayCloseTime = request.MondayCloseTime;
+        library.OpenHours.TuesdayOpenTime = request.TuesdayOpenTime;
+        library.OpenHours.TuesdayCloseTime = request.TuesdayCloseTime;
+        library.OpenHours.WednesdayOpenTime = request.WednesdayOpenTime;
+        library.OpenHours.WednesdayCloseTime = request.WednesdayCloseTime;
+        library.OpenHours.ThursdayOpenTime = request.ThursdayOpenTime;
+        library.OpenHours.ThursdayCloseTime = request.ThursdayCloseTime;
+        library.OpenHours.FridayOpenTime = request.FridayOpenTime;
+        library.OpenHours.FridayCloseTime = request.FridayCloseTime;
+        library.OpenHours.SaturdayOpenTime = request.SaturdayOpenTime;
+        library.OpenHours.SaturdayCloseTime = request.SaturdayCloseTime;
+        library.OpenHours.SundayOpenTime = request.SundayOpenTime;
+        library.OpenHours.SundayCloseTime = request.SundayCloseTime;
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

@@ -19,13 +19,6 @@ public sealed class RemoveReviewHandler : IRequestHandler<RemoveReviewCommand>
 
     public async Task Handle(RemoveReviewCommand request, CancellationToken cancellationToken)
     {
-        var review = await _reviewRepository.FirstOrDefaultByIdAsync(request.Id, cancellationToken);
-
-        if (review is not null)
-        {
-            _reviewRepository.Delete(review);
-        }
-
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _reviewRepository.Delete(request.Id, cancellationToken);
     }
 }

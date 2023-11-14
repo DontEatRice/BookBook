@@ -45,7 +45,7 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> Post(Guid id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         await Mediator.Send(new RemoveAuthorCommand(id));
         return NoContent();

@@ -20,7 +20,7 @@ public class BooksController : ControllerBase
     public async Task<ActionResult<IEnumerable<BookViewModel>>> List(GetBooksQuery request) 
         => Ok(await Mediator.Send(request));
 
-    [HttpGet("{id:Guid}")]
+    [HttpGet("{id:guid}")]
     public async Task<ActionResult<BookViewModel>> Get(Guid id)
     {
         var userId = User.FindFirstValue(AuthConstants.IdClaim);
@@ -28,7 +28,7 @@ public class BooksController : ControllerBase
         return Ok(await Mediator.Send(new GetBookQuery(id, userId)));
     }
     
-    [HttpGet("{id:Guid}/libraries")]
+    [HttpGet("{id:guid}/libraries")]
     public async Task<ActionResult<List<LibraryViewModel>>> GetLibraries(Guid id)
         => Ok(await Mediator.Send(new GetLibrariesWithBookQuery(id)));
 
@@ -55,7 +55,7 @@ public class BooksController : ControllerBase
         return Created($"/books/{id}", null);
     }
 
-    [HttpDelete("{id:Guid}")]
+    [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Delete(Guid id)
     {
         await Mediator.Send(new RemoveBookCommand(id));

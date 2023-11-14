@@ -19,13 +19,6 @@ public sealed class RemovePublisherHandler : IRequestHandler<RemovePublisherComm
 
     public async Task Handle(RemovePublisherCommand request, CancellationToken cancellationToken)
     {
-        var publisher = await _publisherRepository.FirstOrDefaultByIdAsync(request.Id, cancellationToken);
-
-        if (publisher != null)
-        {
-            _publisherRepository.Delete(publisher);
-        }
-
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _publisherRepository.Delete(request.Id, cancellationToken);
     }
 }

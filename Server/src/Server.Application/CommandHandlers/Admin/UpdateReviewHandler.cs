@@ -38,11 +38,10 @@ public sealed class UpdateReviewHandler : IRequestHandler<UpdateReviewCommand>
         {
             throw new NotFoundException("Review not found", ApplicationErrorCodes.ReviewNotFound);
         }
-        
-        review = Review.Update(review, request.Title, request.Description,
-            request.Rating);
 
-        _reviewRepository.Update(review);
+        review.Title = request.Title;
+        review.Description = request.Description;
+        review.Rating = request.Rating;
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

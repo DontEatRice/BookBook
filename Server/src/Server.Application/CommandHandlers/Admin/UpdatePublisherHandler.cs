@@ -37,10 +37,9 @@ public sealed class UpdatePublisherHandler : IRequestHandler<UpdatePublisherComm
         {
             throw new NotFoundException("Publisher not found", ApplicationErrorCodes.PublisherNotFound);
         }
-        
-        publisher = Publisher.Update(publisher, request.Name, request.Description);
 
-        _publisherRepository.Update(publisher);
+        publisher.Name = request.Name;
+        publisher.Description = request.Description;
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

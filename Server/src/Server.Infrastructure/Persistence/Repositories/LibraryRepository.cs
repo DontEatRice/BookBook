@@ -18,14 +18,11 @@ internal class LibraryRepository : ILibraryRepository
         _dbContext.Add(library);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public Task<int> Delete(Guid id, CancellationToken cancellationToken = default)
     {
-        await _dbContext.Libraries.Where(x => x.Id == id).ExecuteDeleteAsync();
-    }
-    
-    public void Update(Library library)
-    {
-        _dbContext.Update(library);
+        return _dbContext.Libraries
+            .Where(library => library.Id == id)
+            .ExecuteDeleteAsync(cancellationToken);
     }
 
     public async Task<Library?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)

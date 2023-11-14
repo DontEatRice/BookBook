@@ -34,7 +34,7 @@ public class ReviewsController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> Post(Guid id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         await Mediator.Send(new RemoveReviewCommand(id));
         return NoContent();

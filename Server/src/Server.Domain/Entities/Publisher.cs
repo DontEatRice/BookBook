@@ -19,12 +19,4 @@ public class Publisher
             Description = description,
             Books = new List<Book>()
         };
-    
-    public static Publisher Update(Publisher publisher, string name, string? description)
-    {
-        publisher.Name = name;
-        publisher.Description = description;
-
-        return publisher;
-    }
 }

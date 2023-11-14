@@ -26,13 +26,4 @@ public class Review
             Rating = rating,
             Book = book
         };
-
-    public static Review Update(Review review, string? title, string? description, double rating)
-    {
-        review.Title = title;
-        review.Description = description;
-        review.Rating = rating;
-
-        return review;
-    }
 }
