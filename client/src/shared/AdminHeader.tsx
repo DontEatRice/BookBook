@@ -15,6 +15,7 @@ function AdminHeader() {
         color: theme.palette.text.primary,
         backgroundColor: theme.palette.grey[100],
         padding: theme.spacing(2),
+        zIndex: 10,
       }}>
       <Link to="/admin" style={{ textDecoration: 'none' }}>
         <Typography
@@ -61,4 +62,3 @@ function NavItem({ label, link }: { label: string; link: string }) {
 }
 
 export default AdminHeader;
-

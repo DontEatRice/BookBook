@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Server.Infrastructure.Migrations
+namespace Server.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    partial class BookBookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231105223239_LibraryNewFields")]
+    partial class LibraryNewFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -172,12 +175,6 @@ namespace Server.Infrastructure.Migrations
                     b.Property<double?>("AverageRating")
                         .HasColumnType("float");
 
-                    b.Property<string>("CoverPictureUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FullText")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -186,13 +183,6 @@ namespace Server.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(17)
                         .HasColumnType("nvarchar(17)");
-
-                    b.Property<string>("Language")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PageCount")
-                        .HasColumnType("int");
 
                     b.Property<Guid>("PublisherId")
                         .HasColumnType("uniqueidentifier");
