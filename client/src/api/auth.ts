@@ -2,6 +2,7 @@ import { LoginRequestType } from '../models/LoginRequest';
 import { getJwtBody, handleBadResponse } from '../utils/utils';
 import { LocalStorageTokenKey } from '../utils/constants';
 import { RegisterUserType } from '../models/RegisterUser';
+import { RegisterEmployeeType } from '../models/RegisterEmployee';
 
 const base = import.meta.env.VITE_API_BASE_URL + '/Auth';
 
@@ -66,3 +67,20 @@ export async function refresh() {
   });
   return result;
 }
+
+export const registerEmployee = async (request: RegisterEmployeeType) => {
+  const auth = await getAuthToken();
+  const copy = { ...request };
+  copy.avatarPicture = null!;
+  const result = await fetch(base + '/employee/register', {
+    method: 'post',
+    body: JSON.stringify(copy),
+    headers: new Headers({ 
+      'Content-Type': 'application/json',
+      Authorization: auth
+    }),
+  });
+  if (!result.ok) {
+    await handleBadResponse(result);
+  }
+};

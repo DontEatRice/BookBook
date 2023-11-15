@@ -9,7 +9,7 @@ export const LocalStorageTokenKey = 'token';
 
 export type Claims = {
   identityid: string;
-  role: string | Array<string>;
+  r: string | Array<string>;
   exp: number;
   email: string;
   libraryid?: string;
