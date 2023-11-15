@@ -70,7 +70,6 @@ export async function refresh() {
 
 export const registerEmployee = async (request: RegisterEmployeeType) => {
   const auth = await getAuthToken();
-  console.log(auth)
   const copy = { ...request };
   copy.avatarPicture = null!;
   const result = await fetch(base + '/employee/register', {
