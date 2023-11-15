@@ -7,9 +7,9 @@ interface NotAuthorizedViewProps {
 }
 
 export default function NotAuthorizedView({ children, roles }: NotAuthorizedViewProps) {
-  const { user, expires } = useAuth();
+  const { user } = useAuth();
 
-  if (user === null || (expires !== null && expires > new Date())) {
+  if (user === null) {
     return children;
   }
   if (roles !== undefined && roles.length > 0) {
