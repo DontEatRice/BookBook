@@ -11,12 +11,13 @@ import TextField from '@mui/material/TextField';
 import CartTab from '../components/reservations/CartTab';
 import { useCartStore } from '../../src/store';
 import AuthorizedView from '../components/auth/AuthorizedView';
-import PersonIcon from '@mui/icons-material/Person';
 import NotAuthorizedView from '../components/auth/NotAuthorizedView';
 import LoginIcon from '@mui/icons-material/Login';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useAuth } from '../utils/auth/useAuth';
+import ProfileHeaderIcon from '../components/profile/ProfileHeaderIcon';
+import Tooltip from '@mui/material/Tooltip';
 
 function Header() {
   const theme = useTheme();
@@ -57,13 +58,15 @@ function Header() {
                   alignItems: 'center',
                 }}>
                 {cartStore.isOpen && <CartTab />}
-                <Box
-                  sx={{
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => cartStore.toggleCart()}>
-                  <LocalMallIcon />
-                </Box>
+                <Tooltip title="Koszyk">
+                  <Box
+                    sx={{
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => cartStore.toggleCart()}>
+                    <LocalMallIcon />
+                  </Box>
+                </Tooltip>
               </Grid>
             )}
             <Grid
@@ -74,9 +77,7 @@ function Header() {
               display={'flex'}
               justifyContent={'center'}
               alignItems={'center'}>
-              <Link to={'/account/change-password'}>
-                <PersonIcon sx={{ fontSize: '2rem' }} />
-              </Link>
+              <ProfileHeaderIcon />
             </Grid>
             <Grid
               item
@@ -87,26 +88,30 @@ function Header() {
               display={'flex'}
               justifyContent={'center'}
               alignItems={'center'}>
-              <Box
-                sx={{
-                  cursor: 'pointer',
-                }}>
-                <LogoutIcon sx={{ fontSize: '2rem' }} />
-              </Box>
+              <Tooltip title="Wyloguj się">
+                <Box
+                  sx={{
+                    cursor: 'pointer',
+                  }}>
+                  <LogoutIcon sx={{ fontSize: '2rem' }} />
+                </Box>
+              </Tooltip>
             </Grid>
           </AuthorizedView>
           <NotAuthorizedView>
             <Grid
               item
-              sm={1}
+              sm={3}
               xs={3}
               paddingY={2}
               sx={{
                 textAlign: 'center',
               }}>
-              <Link to={'/login'} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <LoginIcon sx={{ fontSize: '2rem' }} />
-              </Link>
+              <Tooltip title="Logowanie">
+                <Link to={'/login'} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <LoginIcon sx={{ fontSize: '2rem' }} />
+                </Link>
+              </Tooltip>
             </Grid>
           </NotAuthorizedView>
         </Grid>
