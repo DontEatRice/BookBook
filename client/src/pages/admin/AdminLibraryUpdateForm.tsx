@@ -27,7 +27,7 @@ type LibraryOpenHoursTimePickerParams = {
   dayName: string;
   control: Control<AddLibraryType>;
   onChange?: (value: boolean) => void;
-  data: OpenHoursViewModelType
+  data: OpenHoursViewModelType;
 };
 
 function LibraryOpenHoursTimePicker({
@@ -35,7 +35,7 @@ function LibraryOpenHoursTimePicker({
   dayName,
   control,
   onChange,
-  data
+  data,
 }: LibraryOpenHoursTimePickerParams) {
   const [open, setOpen] = useState(true);
 
@@ -125,6 +125,11 @@ function AdminLibraryUpdateForm() {
   const navigate = useNavigate();
   const params = useParams();
 
+  const { data, status } = useQuery({
+    queryKey: ['libraries', params.libraryId],
+    queryFn: () => getLibrary(params.libraryId + ''),
+  });
+
   const {
     register,
     handleSubmit,
@@ -132,7 +137,7 @@ function AdminLibraryUpdateForm() {
     formState: { errors },
     unregister,
   } = useForm<AddLibraryType>({
-    resolver: zodResolver(AddLibrary),
+    resolver: zodResolver(AddLibrary)
   });
 
   const updateLibraryMutation = useMutation({
@@ -153,11 +158,6 @@ function AdminLibraryUpdateForm() {
     onError: (e: Error) => {
       console.error(e);
     },
-  });
-
-  const { data, status } = useQuery({
-    queryKey: ['libraries', params.libraryId],
-    queryFn: () => getLibrary(params.libraryId + ''),
   });
 
   const onSubmit = useCallback(

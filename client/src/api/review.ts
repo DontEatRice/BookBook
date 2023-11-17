@@ -1,7 +1,24 @@
 import { AddReviewType } from '../models/AddReview';
+import ReviewViewModel from '../models/ReviewViewModel';
 import { UpdateReviewType } from '../models/UpdateReview';
+import { PaginationRequest, paginatedFetch, paginatedResponse } from '../utils/utils';
 
 const base = import.meta.env.VITE_API_BASE_URL;
+const ReviewSearchResponse = paginatedResponse(ReviewViewModel);
+
+export async function getReviews(bookId: string, body: PaginationRequest) {
+    const response = await paginatedFetch(base + '/Books/' + bookId + '/Reviews/search', body);
+    const data = await response.json();
+    return ReviewSearchResponse.parse(data);
+}
+
+/*
+export async function getReviews({ bookId, body } : { bookId: string; body: PaginationRequest}) {
+    const response = await paginatedFetch(base + '/Books/' + bookId + '/Reviews/search', body);
+    const data = await response.json();
+    return ReviewSearchResponse.parse(data);
+}
+*/
 
 export const postReview = async (review: AddReviewType) => {
     const response = await fetch(base + '/Reviews', {

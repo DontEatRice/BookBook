@@ -21,7 +21,6 @@ const AddBook = z.object({
         .array()
         .transform(authors => authors.map(author => author.id))
         .refine(ids => ids.length > 0, "Książka musi mieć co najmniej jednego autora"),
-    authors: AuthorViewModel.array(),
     // .refine(ids => ids.every(id => z.string().uuid().safeParse(id).success))
 });
 

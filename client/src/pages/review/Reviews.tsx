@@ -4,8 +4,9 @@ import { useTheme } from '@mui/material/styles';
 import { BookViewModelType } from '../../models/BookViewModel';
 import AddReviewForm from '../../pages/review/AddReviewForm'
 import ReviewTableRow from '../../pages/review/ReviewTableRow'
+import { ReviewViewModelType } from '../../models/ReviewViewModel';
 
-function Reviews({ book }: { book: BookViewModelType }) {
+function Reviews({ book, reviews }: { book: BookViewModelType, reviews: ReviewViewModelType[] }) {
     const theme = useTheme();
   
     return (
@@ -20,7 +21,7 @@ function Reviews({ book }: { book: BookViewModelType }) {
           </TableRow>
         </TableHead>
         <TableBody>
-        {book.reviews.filter(x => x.description != "" && x.title != "").map((review) => (
+        {reviews.filter(x => x.description != "" && x.title != "").map((review) => (
             <ReviewTableRow review={review} book={book} key={review.id}></ReviewTableRow>
           ))}
         </TableBody>

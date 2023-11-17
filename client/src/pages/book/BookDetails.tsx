@@ -14,6 +14,7 @@ import AuthorizedView from '../../components/auth/AuthorizedView';
 import FilledField from '../../components/FilledField';
 import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
+import { getReviews } from '../../api/review';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
@@ -37,7 +38,7 @@ function BookDetails() {
       console.log(e);
     },
     onSuccess: () => {
-      data!.doesUserObserve = !data!.doesUserObserve;
+      book!.doesUserObserve = !book!.doesUserObserve;
     },
   });
   const onClick: SubmitHandler<ToggleBookInUserListType> = (toggleData) => {
@@ -45,9 +46,15 @@ function BookDetails() {
   };
 
   const params = useParams();
-  const { data, status } = useQuery({
+
+  const { data: book, status: statusBook } = useQuery({
     queryKey: ['books', params.bookId],
     queryFn: () => getBook(params.bookId + ''),
+  });
+
+  const { data: reviews, status: statusReviews } = useQuery({
+    queryKey: ['reviews', params.bookId],
+    queryFn: () => getReviews(params.bookId +'', { pageNumber: 0, pageSize: 50}), 
   });
 
   const item = {
@@ -58,21 +65,21 @@ function BookDetails() {
   return (
     <div>
       <Box m={4}>
-        {status == 'loading' && 'Ładowanie...'}
-        {status == 'error' && 'Błąd!'}
-        {status == 'success' && (
+        {statusBook == 'loading' && 'Ładowanie...'}
+        {statusBook == 'error' && 'Błąd!'}
+        {statusBook == 'success' && (
           <div>
             <Stack direction="row" justifyContent="space-between" padding={2} marginTop={8} marginBottom={4}>
-              <Typography variant="h4">{data.title}</Typography>
+              <Typography variant="h4">{book.title}</Typography>
               <AuthorizedView roles={['User']}>
-                <input type="hidden" {...register('bookId')} value={data.id} />
-                {data.doesUserObserve != null && (
+                <input type="hidden" {...register('bookId')} value={book.id} />
+                {book.doesUserObserve != null && (
                   <Button
-                    color={data.doesUserObserve ? 'error' : 'primary'}
+                    color={book.doesUserObserve ? 'error' : 'primary'}
                     variant="contained"
                     onClick={handleSubmit(onClick)}
-                    endIcon={data.doesUserObserve ? <DeleteOutlineRoundedIcon /> : <StarBorderRoundedIcon />}>
-                    {data.doesUserObserve ? 'Przeczytane' : 'Do przeczytania'}
+                    endIcon={book.doesUserObserve ? <DeleteOutlineRoundedIcon /> : <StarBorderRoundedIcon />}>
+                    {book.doesUserObserve ? 'Przeczytane' : 'Do przeczytania'}
                   </Button>
                 )}
               </AuthorizedView>
@@ -91,25 +98,29 @@ function BookDetails() {
               <Grid item md={6} xs={12}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
                   <div style={{ marginBottom: '1rem' }}>
-                    <FilledField label="ISBN" value={data.isbn} />
+                    <FilledField label="ISBN" value={book.isbn} />
                   </div>
                   <div style={{ marginBottom: '1rem' }}>
-                    <FilledField label="Rok wydania" value={data.yearPublished + ''} />
+                    <FilledField label="Rok wydania" value={book.yearPublished + ''} />
                   </div>
                   <div style={{ marginBottom: '1rem' }}>
-                    <FilledField label="Wydawca" value={data.publisher?.name + ''} />
+                    <FilledField label="Wydawca" value={book.publisher?.name + ''} />
                   </div>
                   <div style={{ marginBottom: '1rem' }}>
-                    <AuthorsList authors={data.authors} />
+                    <AuthorsList authors={book.authors} />
                   </div>
                   <div style={{ marginBottom: '1rem' }}>
-                    <CategoriesList categories={data.bookCategories} />
+                    <CategoriesList categories={book.bookCategories} />
                   </div>
                 </Box>
               </Grid>
               <Grid item md={12}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
-                  <Reviews book={data} /> 
+                  {statusReviews == 'loading' && 'Ładowanie opinii...'}
+                  {statusReviews == 'error' && 'Błąd!'}
+                  {statusReviews == 'success' && (
+                    <Reviews book={book} reviews={reviews.data} /> 
+                  )}
                 </Box>
               </Grid>
             </Grid>

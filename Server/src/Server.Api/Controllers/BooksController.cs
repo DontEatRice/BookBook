@@ -32,6 +32,13 @@ public class BooksController : ControllerBase
     public async Task<ActionResult<List<LibraryViewModel>>> GetLibraries(Guid id)
         => Ok(await Mediator.Send(new GetLibrariesWithBookQuery(id)));
 
+    [HttpPost("{id:guid}/reviews/search")]
+    public async Task<ActionResult<IEnumerable<ReviewViewModel>>> List(GetReviewsQuery query, Guid id)
+        => Ok(await Mediator.Send(query with
+        {
+            BookId = id
+        }));
+
     [HttpPost]
     public async Task<ActionResult> Post(AddBookCommand command)
     {
