@@ -24,13 +24,18 @@ import AdminLibraryForm from './pages/admin/AdminLibraryForm';
 import AdminLibraryUpdateForm from './pages/admin/AdminLibraryUpdateForm';
 import AdminBooksInLibrary from './pages/admin/AdminBooksInLibrary';
 import AdminAddBookToLibraryForm from './pages/admin/AdminAddBookToLibraryForm';
-import Login from './pages/Login';
+import Login from './pages/auth/Login';
 import Box from '@mui/material/Box';
 import BooksList from './pages/book/BooksList';
 import BookDetails from './pages/book/BookDetails';
+import Register from './pages/auth/Register';
+import ChangePassword from './pages/account/ChangePassword';
 import ReservationList from './pages/Reservations/ReservationList';
 import AdminReservationList from './pages/admin/AdminReservations';
 import UserBooksList from './pages/user/UserBooks';
+import AuthorsList from './pages/author/AuthorsList';
+import AuthorDetails from './pages/author/AuthorDetails';
+import AdminRegisterEmployeeForm from './pages/admin/AdminRegisterEmployeeForm';
 import AdminBookUpdateForm from './pages/admin/AdminBookUpdateForm';
 
 const mainTheme = createTheme({
@@ -71,6 +76,11 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+        <Route path="account">
+          <Route path="change-password" element={<ChangePassword />} />
+        </Route>
+        <Route path="*" element={<div>NotFound</div>} />
         <Route path="books" element={<BooksList />} />
         <Route path="reservations" element={<ReservationList />} />
         <Route path="books">
@@ -78,6 +88,10 @@ function App() {
           <Route path=":bookId" element={<BookDetails />} />
         </Route>
         <Route path="user-books" element={<UserBooksList />} />
+        <Route path="authors">
+          <Route index element={<AuthorsList />} />
+          <Route path=":authorId" element={<AuthorDetails />} />
+        </Route>
       </Route>
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminHome />} />
@@ -112,6 +126,9 @@ function App() {
         </Route>
         <Route path="reservations">
           <Route index element={<AdminReservationList />} />
+        </Route>
+        <Route path="add-employee">
+          <Route index element={<AdminRegisterEmployeeForm />} />
         </Route>
         <Route path="*" element={<div>NotFound</div>} />
       </Route>

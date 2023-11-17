@@ -1,6 +1,8 @@
 import { MakeReservationType } from '../models/MakeReservation';
 import ReservationViewModel from '../models/ReservationViewModel';
-import { PaginationRequest, paginatedFetch, paginatedResponse } from '../utils/utils';
+import { PaginationRequest } from '../utils/constants';
+import { paginatedFetch } from '../utils/utils';
+import { paginatedResponse } from '../utils/zodSchemas';
 import { getAuthToken } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
@@ -48,11 +50,12 @@ export async function cancelReservation(reservationId: string) {
 
 // admin
 
-export async function getReservations(args: PaginationRequest) {
+export async function getReservations(args: PaginationRequest, libraryId: string | undefined) {
+  libraryId = libraryId ?? '69C96AB3-1177-479D-841C-5674AA877909';
   const auth = await getAuthToken();
   const response = await fetch(base + '/reservations/admin/search', {
     method: 'post',
-    body: JSON.stringify(args),
+    body: JSON.stringify({ ...args, libraryId }),
     headers: new Headers({
       'Content-Type': 'application/json',
       Authorization: auth,

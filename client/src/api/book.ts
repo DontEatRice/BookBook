@@ -1,7 +1,9 @@
 import { AddBookType } from '../models/AddBook';
 import BookViewModel from '../models/BookViewModel';
 import LibraryViewModel from '../models/LibraryViewModel';
-import { PaginationRequest, paginatedFetch, paginatedResponse } from '../utils/utils';
+import { PaginationRequest } from '../utils/constants';
+import { handleBadResponse, paginatedFetch } from '../utils/utils';
+import { paginatedResponse } from '../utils/zodSchemas';
 import { getAuthToken } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
@@ -13,11 +15,9 @@ export const postBook = async (book: AddBookType) => {
     body: JSON.stringify(book),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
-  if (response.status !== 201) {
-    const data = await response.json();
-    throw new Error(`${data.code}:${data.resourceId}`);
+  if (!response.ok) {
+    await handleBadResponse(response);
   }
-
   return response;
 }
 
@@ -49,9 +49,6 @@ export const deleteBook = async (bookId: string) => {
 export async function getBooks() {
   const response = await fetch(base + '/Books');
   const data = await response.json();
-  //https://zod.dev/?id=basic-usage
-  //można też użyć funkcji .safeParse(data), która nie rzucałaby błędem
-  //w takim przypadku można by coś zlogować i wyświetlić stosowny komunikat
   return BookViewModel.array().parse(data);
 }
 
@@ -89,3 +86,4 @@ export async function searchBooks(args: PaginationRequest & { query?: string }) 
   const data = await response.json();
   return BooksPaginated.parse(data);
 }
+

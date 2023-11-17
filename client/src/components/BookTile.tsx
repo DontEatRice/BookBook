@@ -18,10 +18,10 @@ function BookTile({ book }: { book: BookViewModelType }) {
           mr="auto"
           mt={1}
           mb={1}
-          sx={{ width: '250px', height: '400px', backgroundColor: 'gray' }}>
+          sx={{ width: '200px', height: '300px', backgroundColor: 'gray' }}>
           Obrazek tutaj
         </Box>
-        <Button variant="contained" onClick={() => navigate(`/book/${book.id}`)}>
+        <Button variant="contained" onClick={() => navigate(`/books/${book.id}`)}>
           Kliknij aby dowiedziec się wiecej
         </Button>
       </Box>

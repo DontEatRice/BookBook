@@ -7,7 +7,7 @@ using Server.Utils;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers.Reservations;
 
-public sealed record ListReservationsQuery
+public sealed record ListReservationsQuery(Guid LibraryId)
     : PaginationOptions, IRequest<PaginatedResponseViewModel<ReservationViewModel>>;
 
 internal sealed class ListReservationsHandler
@@ -23,12 +23,14 @@ internal sealed class ListReservationsHandler
     }
     
     public async Task<PaginatedResponseViewModel<ReservationViewModel>> Handle(
-        ListReservationsQuery request, CancellationToken cancellationToken)
+        ListReservationsQuery request,
+        CancellationToken cancellationToken)
     {
         var query = _bookBookDbContext.Reservations
             .Where(r => r.Status != ReservationStatus.Returned &&
                         r.Status != ReservationStatus.Cancelled &&
-                        r.Status != ReservationStatus.CancelledByAdmin);
+                        r.Status != ReservationStatus.CancelledByAdmin &&
+                        r.LibraryId == request.LibraryId);
 
         query = !string.IsNullOrWhiteSpace(request.OrderByField)
             ? query.OrderBy(request.OrderByField)

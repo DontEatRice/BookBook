@@ -9,4 +9,5 @@ public class AuthorViewModel
     public string LastName { get; set; }
     public int BirthYear { get; set; }
     public string ProfilePictureUrl { get; set; }
+    public string? Description { get; set; }
 }

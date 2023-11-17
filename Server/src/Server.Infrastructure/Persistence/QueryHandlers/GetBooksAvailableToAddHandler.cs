@@ -6,12 +6,11 @@ using Server.Application.ViewModels;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
-public sealed record GetBooksAvailableToAddQuery(Guid Id, int PageSize = 10, int PageNumber = 0,
-        string? OrderByField = null)
-    : IRequest<PaginatedResponseViewModel<BookViewModel>>;
+public sealed record GetBooksAvailableToAddQuery(Guid Id)
+    : IRequest<ICollection<BookViewModel>>;
 
 internal sealed class GetBooksAvailableToAddHandler
-    : IRequestHandler<GetBooksAvailableToAddQuery, PaginatedResponseViewModel<BookViewModel>>
+    : IRequestHandler<GetBooksAvailableToAddQuery, ICollection<BookViewModel>>
 {
     private readonly IMapper _mapper;
     private readonly BookBookDbContext _dbContext;
@@ -22,7 +21,7 @@ internal sealed class GetBooksAvailableToAddHandler
         _dbContext = dbContext;
     }
 
-    public async Task<PaginatedResponseViewModel<BookViewModel>> Handle(
+    public async Task<ICollection<BookViewModel>> Handle(
         GetBooksAvailableToAddQuery request, CancellationToken cancellationToken)
     {
         var booksInLibrary = _dbContext.LibraryBooks
@@ -32,23 +31,13 @@ internal sealed class GetBooksAvailableToAddHandler
 
         var query = _dbContext.Books.AsNoTracking();
 
-        query = !string.IsNullOrWhiteSpace(request.OrderByField)
-            ? query.OrderBy(request.OrderByField)
-            : query.OrderBy(x => x.Id);
+        // query = !string.IsNullOrWhiteSpace(request.OrderByField)
+        //     ? query.OrderBy(request.OrderByField)
+        //     : query.OrderBy(x => x.Id);
 
-        var (books, totalCount) = await query
+        return await query
             .Where(x => !booksInLibrary.Contains(x.Id))
             .ProjectTo<BookViewModel>(_mapper.ConfigurationProvider)
-            .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);
-
-        var response = new PaginatedResponseViewModel<BookViewModel>
-        {
-            PageNumber = request.PageNumber,
-            PageSize = request.PageSize,
-            Count = totalCount,
-            Data = books
-        };
-
-        return response;
+            .ToListAsync(cancellationToken);
     }
 }

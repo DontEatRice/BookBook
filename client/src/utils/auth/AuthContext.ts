@@ -5,13 +5,15 @@ import { User } from '../../models/User';
 interface IAuthContext {
   user: User | null;
   expires: Date | null;
-  login: (token: string) => void;
+  login: (token: string) => User | null;
   logout: () => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
   user: null,
-  login: () => {},
+  login: () => {
+    return null;
+  },
   logout: () => {},
   expires: null,
 });

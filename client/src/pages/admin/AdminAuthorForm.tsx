@@ -7,24 +7,20 @@ import Button from '@mui/material/Button';
 import TextInputField from '../../components/TextInputField';
 import { postAuthor } from '../../api/author';
 import { useNavigate } from 'react-router-dom';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import NumberInputField from '../../components/NumberInputField';
 import { uploadImage } from '../../api/image';
-import { fileToBase64 } from '../../utils/utils';
-import UploadImage from '../../models/UploadImage';
-import { useMutation } from '@tanstack/react-query';
-
-async function fileToUploadImage(file: File) {
-  let base64 = await fileToBase64(file);
-  base64 = base64.slice(base64.indexOf(',') + 1);
-  return UploadImage.parse({
-    content: base64,
-    contentType: file.type,
-    fileName: file.name,
-  });
-}
+import { fileToUploadImage } from '../../utils/utils';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Typography from '@mui/material/Typography';
+import Avatar from '@mui/material/Avatar';
+import useAlert from '../../utils/alerts/useAlert';
+import TextInputBox from '../../components/TextInputBox';
 
 function AdminAuthorForm() {
+  const [fileUrl, setFileUrl] = useState<string | undefined>(undefined);
+  const queryClient = useQueryClient();
+  const { showSuccess } = useAlert();
   const navigate = useNavigate();
   const {
     register,
@@ -38,24 +34,26 @@ function AdminAuthorForm() {
     control,
     name: 'avatarPicture',
   });
-  const fileName = useMemo(() => {
-    if (watchAvatarPicture instanceof FileList) {
-      return watchAvatarPicture.item(0)?.name;
+  const file = useMemo(() => {
+    if (watchAvatarPicture instanceof FileList && watchAvatarPicture.length > 0) {
+      const picture = watchAvatarPicture.item(0);
+      if (picture !== null) {
+        setFileUrl(URL.createObjectURL(picture));
+        return picture;
+      }
     }
-    return undefined;
+    setFileUrl(undefined);
+    return null;
   }, [watchAvatarPicture]);
   const uploadImageMutation = useMutation({
     mutationFn: uploadImage,
-    onError: console.error,
   });
   const postAuthorMutation = useMutation({
     mutationFn: postAuthor,
-    onSuccess: () => {
-      // response.headers.has() TODO dodać redirect na nowy obiekt
+    onSuccess: (_, { firstName, lastName }) => {
+      queryClient.invalidateQueries(['authors']);
+      showSuccess({ message: `${firstName} ${lastName} został dodany!` });
       navigate('..');
-    },
-    onError: (e: Error) => {
-      console.error(e);
     },
   });
   const onSubmit = useCallback(
@@ -63,12 +61,7 @@ function AdminAuthorForm() {
       if (data.avatarPicture) {
         const uploadImageType = await fileToUploadImage(data.avatarPicture);
         const response = await uploadImageMutation.mutateAsync(uploadImageType);
-        for (const pair of response.headers.entries()) {
-          console.log(`${pair[0]}: ${pair[1]}`);
-        }
-        if (response.ok) {
-          data.profilePictureUrl = response.headers.get('location');
-        }
+        data.profilePictureUrl = response;
       }
       postAuthorMutation.mutate(data);
     },
@@ -94,12 +87,24 @@ function AdminAuthorForm() {
               <Button variant="contained" component="span">
                 Wstaw zdjęcie (opcjonalnie)
               </Button>
-              {fileName && <span>{fileName}</span>}
+              {file !== null && <span>{file.name}</span>}
             </Box>
-            {errors.avatarPicture != undefined && <span>{errors.avatarPicture.message}</span>}
+            {fileUrl !== null && (
+              <Avatar src={fileUrl} alt="Zdjęcie autora" sx={{ width: 250, height: 250, marginBottom: 2 }} />
+            )}
+            {errors.avatarPicture != undefined && (
+              <Typography color={'error'}>{errors.avatarPicture.message}</Typography>
+            )}
             <TextInputField errors={errors} field="firstName" label="Imię" register={register} />
             <TextInputField errors={errors} field="lastName" label="Nazwisko/Nazwiska" register={register} />
             <NumberInputField errors={errors} field="birthYear" label="Rok urodzenia" register={register} />
+            <TextInputBox
+              errors={errors}
+              field="description"
+              label="Opis/życiorys"
+              register={register}
+              rows={4}
+            />
             <Button type="submit" variant="contained">
               Zapisz
             </Button>

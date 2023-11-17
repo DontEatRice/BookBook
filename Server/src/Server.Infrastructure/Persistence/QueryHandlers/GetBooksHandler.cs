@@ -32,7 +32,8 @@ internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, Paginated
 
         if (!string.IsNullOrWhiteSpace(request.Query))
         {
-            query = query.Where(x => EF.Functions.FreeText(x.FullText, $"{request.Query}"));
+            var fullTextQuery = "\"" + request.Query + "\"";
+            query = query.Where(x => EF.Functions.FreeText(x.FullText, $"{fullTextQuery}"));
         }
         
         var (books, totalCount) = await query

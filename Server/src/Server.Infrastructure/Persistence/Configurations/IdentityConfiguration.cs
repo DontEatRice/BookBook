@@ -17,8 +17,8 @@ public class IdentityConfiguration : IEntityTypeConfiguration<Identity>
                 v => JsonSerializer.Serialize(v, new JsonSerializerOptions(JsonSerializerOptions.Default)),
                 v => JsonSerializer.Deserialize<List<string>>(v,
                     new JsonSerializerOptions(JsonSerializerDefaults.General)) ?? new List<string>()));
-        
-        
+
+        builder.Property(e => e.AvatarImageUrl).HasMaxLength(300);
         builder.HasIndex(i => i.Email).IsUnique();
 
         builder.HasMany(x => x.UserBooks).WithOne(x => x.User).HasForeignKey(x =>  x.UserId);

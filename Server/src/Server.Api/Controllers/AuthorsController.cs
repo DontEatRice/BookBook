@@ -50,4 +50,10 @@ public class AuthorsController : ControllerBase
         await Mediator.Send(new RemoveAuthorCommand(id));
         return NoContent();
     }
+
+    [HttpGet("{id:Guid}/book-cards")]
+    public async Task<ActionResult<IEnumerable<BookViewModel>>> GetAuthorsBookCards (Guid id)
+    {
+        return Ok(await Mediator.Send(new GetAuthorBookCardsQuery(id)));
+    }
 }

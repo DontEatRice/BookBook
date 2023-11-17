@@ -1,9 +1,9 @@
-import { Control, SubmitHandler, useForm } from 'react-hook-form';
+import { Control, Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import TextInputField from '../../components/TextInputField';
 import NumberInputField from '../../components/NumberInputField';
@@ -19,6 +19,7 @@ import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import { useCallback, useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
+import { MuiTelInput } from 'mui-tel-input';
 
 type LibraryOpenHoursTimePickerParams = {
   fields: [keyof AddLibraryType, keyof AddLibraryType];
@@ -118,6 +119,7 @@ const daysOfWeek: DayOfWeek[] = [
 
 function AdminLibraryForm() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -126,14 +128,16 @@ function AdminLibraryForm() {
     unregister,
   } = useForm<AddLibraryType>({
     resolver: zodResolver(AddLibrary),
+    defaultValues: {
+      //inaczej wysyła undefined i jest wiadomość walidacji po angielsku
+      phoneNumber: '',
+    },
   });
   const mutation = useMutation({
     mutationFn: postLibrary,
     onSuccess: () => {
+      queryClient.invalidateQueries(['libraries']);
       navigate('..');
-    },
-    onError: (e: Error) => {
-      console.error(e);
     },
   });
   const onSubmit: SubmitHandler<AddLibraryType> = (data) => {
@@ -169,6 +173,26 @@ function AdminLibraryForm() {
                   field="reservationTime"
                   register={register}
                   label="Czas rezerwacji"
+                />
+                <TextInputField
+                  errors={errors}
+                  field="emailAddress"
+                  register={register}
+                  label="Adres e-mail"
+                />
+                <Controller
+                  control={control}
+                  name="phoneNumber"
+                  render={({ field, fieldState: { error } }) => (
+                    <MuiTelInput
+                      defaultCountry="PL"
+                      continents={['EU']}
+                      sx={{ width: '100%' }}
+                      error={error != undefined}
+                      helperText={error?.message}
+                      {...field}
+                    />
+                  )}
                 />
               </AccordionDetails>
             </Accordion>

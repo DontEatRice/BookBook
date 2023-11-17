@@ -13,6 +13,10 @@ public class Book
     public int YearPublished { get; set; }
     public double? AverageRating { get; set; }
     public double? AverageCriticRating { get; set; }
+    public string? Description { get; set; }
+    public string Language { get; set; }
+    public int? PageCount { get; set; }
+    public string? CoverPictureUrl { get; set; }
     public string FullText { get; set; }
     public Publisher Publisher { get; set; }
     public ICollection<Author> Authors { get; set; }
@@ -22,6 +26,7 @@ public class Book
     public ICollection<UserBook> UserBooks { get; set; }
 
     public static Book Create(Guid id, string isbn, string title, int yearPublished,
+        string? description, string language, int? pageCount, string? coverPictureUrl,
         Publisher publisher, List<Author> authors, List<BookCategory> categories)
         => new()
         {
@@ -31,6 +36,10 @@ public class Book
             YearPublished = yearPublished,
             AverageRating = null,
             AverageCriticRating = null,
+            Description = description,
+            Language = language,
+            PageCount = pageCount,
+            CoverPictureUrl = coverPictureUrl,
             Publisher = publisher,
             Authors = authors,
             BookCategories = categories,
@@ -39,4 +48,26 @@ public class Book
             FullText = isbn + " " + title + " " + yearPublished + " " + publisher.Name + " " + string.Join(" ", authors.Select(x => x.LastName)),
             UserBooks = new List<UserBook>()
         };
+
+    public void ComputeRating(double reviewRating)
+    {
+        var reviewCount = Reviews.Count;
+        var averageRating = AverageRating;
+        
+        AverageRating = (averageRating ?? 0 * reviewCount + reviewRating) / (reviewCount + 1);
+    }
+    
+    public void SubtractReviewFromRating(double reviewRating)
+    {
+        var reviewCount = Reviews.Count;
+        var averageRating = AverageRating;
+
+        if (reviewCount == 1)
+        {
+            AverageRating = null;
+            return;
+        }
+        
+        AverageRating = (averageRating ?? 0 * reviewCount - reviewRating) / (reviewCount - 1);
+    }
 }

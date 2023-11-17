@@ -5,8 +5,9 @@ import { useTheme } from '@mui/material/styles';
 import { searchBooks } from '../../api/book';
 import BookInList from '../../components/BookInList';
 import { useQuery } from '@tanstack/react-query';
-import { useLocation } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
+import { useSearchParams } from 'react-router-dom';
+import useDebounce from '../../utils/useDebounce';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 
@@ -35,7 +36,7 @@ function Books({ data }: { data: BookViewModelType[] }) {
   return (
     <Grid container spacing={1}>
       {data.map((book) => (
-        <Grid item xs={6} key={book.id}>
+        <Grid item xs={12} key={book.id}>
           <BookInList book={book} />
         </Grid>
       ))}
@@ -45,16 +46,18 @@ function Books({ data }: { data: BookViewModelType[] }) {
 
 function BooksList() {
   const theme = useTheme();
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const q = queryParams.get('q');
+  // const location = useLocation();
+  // const queryParams = new URLSearchParams(location.search);
+  const [params] = useSearchParams();
+  const q = useDebounce(params.get('q'), 500);
+  //const { data, status } = useQuery({ queryKey: ['books'], queryFn: getBooks });
   const { data: searchData, status: searchStatus } = useQuery({
     queryKey: ['searchBooks', q],
     queryFn: () => searchBooks({ pageSize: 50, pageNumber: 0, query: q == null ? '' : q }),
   });
 
   return (
-    <Box>
+    <Box marginTop={2}>
       {searchStatus == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
       {searchStatus == 'error' && (
         <Typography variant="h3" color={theme.palette.error.main}>

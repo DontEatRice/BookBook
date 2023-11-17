@@ -8,5 +8,5 @@ export const uploadImage = async (image: UploadImageType) => {
     body: JSON.stringify(image),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
-  return response;
+  return response.headers.get('location');
 };

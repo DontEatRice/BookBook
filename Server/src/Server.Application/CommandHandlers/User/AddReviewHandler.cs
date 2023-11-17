@@ -6,7 +6,7 @@ using Server.Application.InfrastructureInterfaces;
 using Server.Domain.Entities;
 using Server.Domain.Repositories;
 
-namespace Server.Application.CommandHandlers.Admin;
+namespace Server.Application.CommandHandlers.User;
 
 public sealed class AddReviewCommandValidator : AbstractValidator<AddReviewCommand>
 {
@@ -16,7 +16,7 @@ public sealed class AddReviewCommandValidator : AbstractValidator<AddReviewComma
     }
 }
 
-public sealed record AddReviewCommand(Guid Id, string? Title, string? Description, 
+public sealed record AddReviewCommand(Guid? UserId, Guid Id, string? Title, string? Description, 
     double Rating, Guid IdBook) : IRequest;
 
 public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
@@ -40,9 +40,17 @@ public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
         {
             throw new NotFoundException("Book not found", ApplicationErrorCodes.PublisherNotFound);
         }
+
+        var review = book.Reviews.FirstOrDefault(r => r.UserId == request.UserId);
+
+        if (review is not null)
+        {
+            throw new LogicException ("Review already exists", ApplicationErrorCodes.UserReviewAlreadyExists);
+        }
+
+        book.ComputeRating(request.Rating);
         
-        var review = Review.Create(request.Id, request.Title, request.Description,
-            request.Rating, book);
+        review = Review.Create(request.Id, request.Title, request.Description, request.Rating, book, request.UserId!.Value, false);
 
         await _reviewRepository.AddAsync(review, cancellationToken);
 

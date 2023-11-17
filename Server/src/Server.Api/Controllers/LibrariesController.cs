@@ -15,7 +15,7 @@ public class LibrariesController : ControllerBase
     }
 
     [HttpPost("search")]
-    public async Task<ActionResult<IEnumerable<LibraryViewModel>>> List(GetLibrariesQuery request)
+    public async Task<ActionResult<PaginatedResponseViewModel<LibraryViewModel>>> List(GetLibrariesQuery request)
         => Ok(await Mediator.Send(request));
 
     [HttpGet("{id:guid}")]
@@ -62,10 +62,10 @@ public class LibrariesController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("{id:guid}/books")]
-    public async Task<ActionResult<IEnumerable<BookInLibraryViewModel>>> GetBooks(Guid id)
+    [HttpPost("{id:guid}/books/search")]
+    public async Task<ActionResult<IEnumerable<BookInLibraryViewModel>>> GetBooks(GetBooksInLibraryQuery query)
     {
-        return Ok(await Mediator.Send(new GetBooksInLibraryQuery(id)));
+        return Ok(await Mediator.Send(query));
     }
 
     [HttpGet("{id:guid}/not-added")]

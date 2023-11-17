@@ -8,6 +8,7 @@ using Server.Domain.Exceptions;
 using Server.Utils;
 using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 using Server.Application.Utils;
+using Server.Application.Exceptions.Types;
 
 namespace Server.Api.Controllers;
 
@@ -47,7 +48,7 @@ public class AuthController : ControllerBase
         {
             throw new AuthenticationException("Bad refresh token", DomainErrorCodes.InvalidRefreshToken);
         }
-
+        
         var tokens = await Mediator.Send(new RefreshTokenCommand(refreshToken));
         Response.Cookies.Append(RefreshTokenCookieName, tokens.RefreshToken, CreateCookieOptionsForRefreshToken());
         return Ok(tokens);
@@ -56,6 +57,10 @@ public class AuthController : ControllerBase
     [HttpPost("employee/register")]
     public async Task<ActionResult> RegisterEmployee(RegisterEmployeeCommand command)
     {
+        var userRole = User.FindFirstValue(AuthConstants.RoleClaim);
+        if(userRole != "Admin")
+            throw new AuthenticationException("User is not authenticated", ApplicationErrorCodes.NotAuthenticated);
+
         var id = Guid.NewGuid();
         await Mediator.Send(command with 
         { 

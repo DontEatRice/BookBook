@@ -66,4 +66,15 @@ internal sealed class BookRepository : IBookRepository
                 .Where(x => EF.Functions.FreeText(x.FullText, $"{query}"))
                 .ToListAsync(cancellationToken);
     }
+
+    public async Task<List<Book>> GetBookCardsByAuthor(Author author, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Books
+            .Include(x => x.Authors)
+            .Include(x => x.BookCategories)
+            .Include(x => x.Publisher)
+            .Where(x => x.Authors.Contains(author))
+            .Take(5)
+            .ToListAsync(cancellationToken);
+    }
 }

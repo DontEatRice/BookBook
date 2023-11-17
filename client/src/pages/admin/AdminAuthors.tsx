@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getAuthors } from '../../api/author';
 import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
+import { Avatar } from '@mui/material';
 
 function AuthorsTable({ data }: { data: AuthorViewModelType[] }) {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ function AuthorsTable({ data }: { data: AuthorViewModelType[] }) {
         <TableHead>
           <TableRow>
             <TableCell>Id</TableCell>
+            <TableCell>Zdjęcie</TableCell>
             <TableCell>Imię</TableCell>
             <TableCell>Nazwisko</TableCell>
             <TableCell>Rok urodzenia</TableCell>
@@ -32,6 +34,9 @@ function AuthorsTable({ data }: { data: AuthorViewModelType[] }) {
           {data.map((author) => (
             <TableRow key={author.id} onClick={() => navigate(`/admin/authors/${author.id}`)}>
               <TableCell>{author.id}</TableCell>
+              <TableCell>
+                <Avatar src={author.profilePictureUrl ?? undefined} />
+              </TableCell>
               <TableCell>{author.firstName}</TableCell>
               <TableCell>{author.lastName}</TableCell>
               <TableCell>{author.birthYear}</TableCell>

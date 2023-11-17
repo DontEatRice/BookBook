@@ -6,11 +6,10 @@ using Server.Application.ViewModels;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
-public record GetLibrariesWithBookQuery(Guid Id, int PageSize = 10, int PageNumber = 0, string? OrderByField = null)
-    : IRequest<PaginatedResponseViewModel<LibraryViewModel>>;
+public record GetLibrariesWithBookQuery(Guid Id)
+    : IRequest<List<LibraryViewModel>>;
 
-internal class GetLibrariesWithBookHandler 
-    : IRequestHandler<GetLibrariesWithBookQuery, PaginatedResponseViewModel<LibraryViewModel>>
+internal class GetLibrariesWithBookHandler : IRequestHandler<GetLibrariesWithBookQuery,List<LibraryViewModel>>
 {
     private readonly BookBookDbContext _dbContext;
     private readonly IMapper _mapper;
@@ -21,16 +20,14 @@ internal class GetLibrariesWithBookHandler
         _mapper = mapper;
     }
 
-    public async Task<PaginatedResponseViewModel<LibraryViewModel>> Handle(
+    public async Task<List<LibraryViewModel>> Handle(
         GetLibrariesWithBookQuery request, CancellationToken cancellationToken)
     {
         var query = _dbContext.LibraryBooks.AsNoTracking();
             
-        query = !string.IsNullOrWhiteSpace(request.OrderByField)
-            ? query.OrderBy(request.OrderByField)
-            : query.OrderBy(x => x.BookId);
-            
-        var (libraries, totalCount) = await query
+        query = query.OrderBy(x => x.BookId);
+
+        return await query
             .Include(x => x.Library)
             .ThenInclude(xd => xd.OpenHours)
             .Include(x => x.Library)
@@ -38,16 +35,6 @@ internal class GetLibrariesWithBookHandler
             .Where(x => x.BookId == request.Id && x.Available > 0)
             .Select(x => x.Library)
             .ProjectTo<LibraryViewModel>(_mapper.ConfigurationProvider)
-            .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);
-        
-        var response = new PaginatedResponseViewModel<LibraryViewModel>
-        {
-            PageNumber = request.PageNumber,
-            PageSize = request.PageSize,
-            Count = totalCount,
-            Data = libraries
-        };
-
-        return response;
+            .ToListAsync(cancellationToken);
     }
 }

@@ -24,6 +24,10 @@ function Home() {
     averageRating: 4,
     averageCriticRating: 5,
     doesUserObserve: false,
+    description: null,
+    pageCount: 100,
+    language: 'Polski',
+    coverPictureUrl: null,
   };
   return (
     <Container>
@@ -46,4 +50,3 @@ function Home() {
 }
 
 export default Home;
-

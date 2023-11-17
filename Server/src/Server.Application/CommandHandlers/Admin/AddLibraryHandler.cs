@@ -12,6 +12,7 @@ public sealed class AddLibraryHandlerValidator : AbstractValidator<AddLibraryCom
 }
 
 public sealed record AddLibraryCommand(Guid Id, string Name, int ReservationTime, int HireTime,
+    string emailAddress, string phoneNumber,
     string PostalCode, string City, string Street, string Number, string? Apartment, string? AdditionalInfo,
     TimeSpan? MondayOpenTime, TimeSpan? MondayCloseTime,
     TimeSpan? TuesdayOpenTime, TimeSpan? TuesdayCloseTime,
@@ -62,7 +63,7 @@ public sealed class AddLibraryHandler : IRequestHandler<AddLibraryCommand>
             SundayCloseTime = request.SundayCloseTime
         };
 
-        var library = Library.Create(request.Id, request.Name, request.ReservationTime, request.HireTime, address, openHours);
+        var library = Library.Create(request.Id, request.Name, request.ReservationTime, request.HireTime, request.emailAddress, request.phoneNumber, address, openHours);
 
         _libraryRepository.Add(library);
 
