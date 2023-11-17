@@ -123,6 +123,7 @@ function BookDetails() {
               <AddBookToCart bookId={params.bookId as string} />
             </Box>
             <Box display={'flex'} flexDirection={'column'}>
+              <AddReviewForm book={book}></AddReviewForm>
               {statusReviews == 'loading' && 'Ładowanie opinii...'}
               {statusReviews == 'error' && 'Błąd!'}
               {statusReviews == 'success' && (

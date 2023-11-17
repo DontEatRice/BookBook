@@ -25,6 +25,13 @@ internal class ReviewRepository : IReviewRepository
             .ExecuteDeleteAsync(cancellationToken);
     }
     
+    public async Task<List<Review>> FindAllByBookIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Reviews
+            .Where(x => x.Book.Id == id)
+            .ToListAsync(cancellationToken);
+    }
+    
     public async Task<Review?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _dbContext.Reviews

@@ -1,5 +1,6 @@
 import { AddAuthorType } from '../models/AddAuthor';
 import AuthorViewModel from '../models/AuthorViewModel';
+import BookViewModel from '../models/BookViewModel';
 import { UpdateAuthorType } from '../models/UpdateAuthor';
 import { PaginationRequest } from '../utils/constants';
 import { handleBadResponse, paginatedFetch } from '../utils/utils';
@@ -69,3 +70,15 @@ export async function getAuthor(id: string) {
   const data = await response.json();
   return AuthorViewModel.parse(data);
 };
+
+export async function getAuthorBookCards(authorId: string) {
+  const response = await fetch(base + `/Authors/${authorId}/book-cards`);
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+  const data = await response.json();
+  //https://zod.dev/?id=basic-usage
+  //można też użyć funkcji .safeParse(data), która nie rzucałaby błędem
+  //w takim przypadku można by coś zlogować i wyświetlić stosowny komunikat
+  return BookViewModel.array().parse(data);
+}
