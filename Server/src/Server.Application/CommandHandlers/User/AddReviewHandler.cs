@@ -39,7 +39,7 @@ public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
         
         if (book is null)
         {
-            throw new NotFoundException("Book not found", ApplicationErrorCodes.PublisherNotFound);
+            throw new NotFoundException("Book not found", ApplicationErrorCodes.BookNotFound);
         }
 
         var reviews = await _reviewRepository.FindAllByBookIdAsync(request.IdBook, cancellationToken);
@@ -48,9 +48,8 @@ public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
         {
             throw new LogicException ("Review already exists", ApplicationErrorCodes.UserReviewAlreadyExists);
         }
-
-        book.Reviews = reviews;
-        book.ComputeRating(request.Rating);
+        
+        book.ComputeRating(reviews, request.Rating);
         
         var review = Review.Create(request.Id, request.Title, request.Description, request.Rating, book, request.UserId!.Value, false);
 
