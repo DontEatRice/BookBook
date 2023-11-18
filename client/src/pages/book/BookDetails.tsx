@@ -1,7 +1,7 @@
 import { Grid, Box } from '@mui/material';
 import { useParams } from 'react-router';
 import { AuthorViewModelType } from '../../models/AuthorViewModel';
-import { getBook } from '../../api/book';
+import { getBook, getLibrariesWithBook } from '../../api/book';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
 import Reviews from '../../pages/review/Reviews';
@@ -18,6 +18,8 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
 import AddReviewForm from '../review/AddReviewForm';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
@@ -54,10 +56,16 @@ function BookDetails() {
     queryFn: () => getBook(params.bookId + ''),
   });
 
-  const item = {
-    img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
-    title: 'hardcodedImg',
-  };
+  const { data: bookLibraries, status: bookLibrariesStatus } = useQuery(
+    ['booksInLibrary', params.bookId],
+    async (context) => {
+      if (context.queryKey[1] != '') {
+        const bookId = context.queryKey[1] as string;
+        return await getLibrariesWithBook(bookId);
+      }
+      return [];
+    }
+  );
 
   return (
     <div>
@@ -81,12 +89,12 @@ function BookDetails() {
                 )}
               </AuthorizedView>
             </Stack>
-            <Grid container spacing={1} marginBottom={3}>
+            <Grid container spacing={1} marginBottom={3} padding={2}>
               <Grid item md={5} xs={12}>
                 <img
-                  srcSet={`${item.img}`}
-                  src={`${item.img}`}
-                  alt={item.title}
+                  srcSet={`${data.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`}
+                  src={`${data.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`}
+                  alt={data.title}
                   width="280px"
                   height="400px"
                   loading="lazy"
@@ -122,9 +130,31 @@ function BookDetails() {
           </div>
         )}
       </Box>
+      {bookLibrariesStatus == 'success' && (
+        <div id="map">
+          <MapContainer
+            style={{ height: 536 }}
+            bounds={[
+              [54, 23],
+              [49, 14],
+            ]}>
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {bookLibraries.map((library) => (
+              <Marker position={[library.latitude, library.longitude]} key={library.id}>
+                <Popup>
+                  {library.name} <br /> {library.address.street + ' ' + library.address.number} <br />{' '}
+                  {library.address.city}
+                </Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        </div>
+      )}
     </div>
   );
 }
 
 export default BookDetails;
-

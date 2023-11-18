@@ -1,5 +1,8 @@
 ﻿using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Configuration;
+using RestSharp;
+using Server.Application.ApiResponseModels;
 using Server.Application.InfrastructureInterfaces;
 using Server.Domain.Entities;
 using Server.Domain.Repositories;
@@ -26,11 +29,13 @@ public sealed class AddLibraryHandler : IRequestHandler<AddLibraryCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILibraryRepository _libraryRepository;
+    private readonly IConfiguration _configuration;
 
-    public AddLibraryHandler(IUnitOfWork unitOfWork, ILibraryRepository libraryRepository)
+    public AddLibraryHandler(IUnitOfWork unitOfWork, ILibraryRepository libraryRepository, IConfiguration configuration)
     {
         _unitOfWork = unitOfWork;
         _libraryRepository = libraryRepository;
+        _configuration = configuration;
     }
 
     public async Task Handle(AddLibraryCommand request, CancellationToken cancellationToken)
@@ -63,7 +68,21 @@ public sealed class AddLibraryHandler : IRequestHandler<AddLibraryCommand>
             SundayCloseTime = request.SundayCloseTime
         };
 
-        var library = Library.Create(request.Id, request.Name, request.ReservationTime, request.HireTime, request.emailAddress, request.phoneNumber, address, openHours);
+        var restClientOptions = new RestClientOptions($"https://api.geoapify.com/v1/geocode/search");
+        var restClient = new RestClient(restClientOptions);
+        var apiRequest = new RestRequest()
+            .AddParameter("street", request.Street)
+            .AddParameter("housenumber", request.Number)
+            .AddParameter("postcode", request.PostalCode)
+            .AddParameter("city", request.City)
+            .AddParameter("format", "json")
+            .AddParameter("apiKey", _configuration.GetSection("ApiKeys").GetValue<string>("GeoapifyApiKey"));
+
+        var apiResponse = await restClient.GetAsync<GeoapifyResponse>(apiRequest);
+        
+        var geoLocalization = apiResponse.Results.First();
+
+        var library = Library.Create(request.Id, request.Name, request.ReservationTime, request.HireTime, request.emailAddress, request.phoneNumber, address, openHours, geoLocalization.Lon, geoLocalization.Lat);
 
         _libraryRepository.Add(library);
 

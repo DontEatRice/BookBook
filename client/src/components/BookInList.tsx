@@ -23,7 +23,7 @@ function BookInList({ book }: { book: BookViewModelType }) {
       <Grid container spacing={2}>
         <Grid item>
           <Button sx={{ width: 180, height: 180 }} onClick={() => navigate(`/books/${book.id}`)}>
-            <Img alt="complex" src="" />
+            <Img alt="complex" src={book.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'} />
           </Button>
         </Grid>
         <Grid item xs={12} sm container>
@@ -52,4 +52,3 @@ function BookInList({ book }: { book: BookViewModelType }) {
 }
 
 export default BookInList;
-
