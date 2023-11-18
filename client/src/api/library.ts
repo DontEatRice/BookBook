@@ -60,3 +60,12 @@ export async function getBooksInLibrary(request: PaginationRequest & { libraryId
   const data = await response.json();
   return BookInLibrarySearchResponse.parse(data);
 }
+
+export async function getLibrary(libraryId: string) {
+  const response = await fetch(base + `/Libraries/${libraryId}`);
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+  const data = await response.json();
+  return LibraryViewModel.parse(data);
+}

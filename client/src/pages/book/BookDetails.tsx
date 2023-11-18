@@ -131,27 +131,29 @@ function BookDetails() {
         )}
       </Box>
       {bookLibrariesStatus == 'success' && (
-        <div id="map">
-          <MapContainer
-            style={{ height: 536 }}
-            bounds={[
-              [54, 23],
-              [49, 14],
-            ]}>
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            {bookLibraries.map((library) => (
-              <Marker position={[library.latitude, library.longitude]} key={library.id}>
-                <Popup>
-                  {library.name} <br /> {library.address.street + ' ' + library.address.number} <br />{' '}
-                  {library.address.city}
-                </Popup>
-              </Marker>
-            ))}
-          </MapContainer>
-        </div>
+        <MapContainer
+          id="map"
+          style={{ height: 400 }}
+          bounds={[
+            [54, 23],
+            [49, 14],
+          ]}>
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          {bookLibraries.map((library) => (
+            <Marker position={[library.latitude, library.longitude]} key={library.id}>
+              <Popup>
+                <a href={`/libraries/${library?.id}`}>{library.name}</a> <br />{' '}
+                {library.address.street + ' ' + library.address.number}
+                {library.address.apartment == null ? '' : '/'}
+                {library.address.apartment ?? ''}
+                <br /> {library.address.city}
+              </Popup>
+            </Marker>
+          ))}
+        </MapContainer>
       )}
     </div>
   );
