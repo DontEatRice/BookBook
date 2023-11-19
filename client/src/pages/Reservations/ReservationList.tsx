@@ -14,6 +14,7 @@ import { useCartStore } from '../../store';
 import { useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 export default function ReservationList() {
   const cartStore = useCartStore();
@@ -38,7 +39,7 @@ export default function ReservationList() {
 
   return (
     <Box sx={{ padding: '16px' }}>
-      {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+      {status == 'loading' && <LoadingTypography />}
       {status == 'error' && (
         <Typography variant="h3" color={'error'}>
           Błąd!

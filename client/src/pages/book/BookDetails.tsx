@@ -20,6 +20,7 @@ import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
 import AddReviewForm from '../review/AddReviewForm';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
@@ -69,8 +70,8 @@ function BookDetails() {
 
   return (
     <div>
-      <Box m={4}>
-        {status == 'loading' && 'Ładowanie...'}
+      <Box mt={4}>
+        {status == 'loading' && <LoadingTypography />}
         {status == 'error' && 'Błąd!'}
         {status == 'success' && (
           <div>
@@ -150,6 +151,7 @@ function BookDetails() {
                 {library.address.apartment == null ? '' : '/'}
                 {library.address.apartment ?? ''}
                 <br /> {library.address.city}
+                <Button onClick={() => console.log('aaaa')}>klik</Button>
               </Popup>
             </Marker>
           ))}

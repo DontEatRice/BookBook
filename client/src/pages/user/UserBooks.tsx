@@ -3,8 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { getUserBooks } from '../../api/user';
 import BookInUserList from '../../components/BookInUserList';
 import Grid from '@mui/material/Grid';
-import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 function UserBooks({ data }: { data: BookViewModelType[] }) {
   return (
@@ -25,7 +25,7 @@ function UserBooksList() {
   });
   return (
     <Box>
-      {status == 'loading' && <CircularProgress />}
+      {status == 'loading' && <LoadingTypography />}
       {status == 'success' && <UserBooks data={data} />}
     </Box>
   );

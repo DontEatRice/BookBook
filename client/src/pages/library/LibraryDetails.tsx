@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { getLibrary } from '../../api/library';
-import { Box, CircularProgress, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 function formatOpenHours(openHours: string | null) {
   if (openHours == null) {
@@ -23,8 +24,8 @@ function LibraryDetails() {
 
   return (
     <Box mt={2}>
-      {status == 'loading' && <CircularProgress />}
-      {status == 'error' && 'Błąd!'}
+      {status == 'loading' && <LoadingTypography />}
+      {/* {status == 'error' && 'Błąd!'} */}
       {status == 'success' && (
         <div>
           <Typography variant="h3" marginTop={8} marginBottom={4}>
@@ -33,7 +34,9 @@ function LibraryDetails() {
           <Grid container spacing={1} marginBottom={7} direction={'row'}>
             <Grid item container xs={7} direction={'column'}>
               <Grid item marginBottom={1}>
-                <Typography variant="h5">Adres</Typography>
+                <Typography variant="h4" sx={{ textDecoration: 'underline' }}>
+                  Adres
+                </Typography>
                 <Typography variant="h6">
                   ul. {data.address.street + ' ' + data.address.number}
                   {data.address.apartment == null ? '' : '/'}
@@ -45,12 +48,16 @@ function LibraryDetails() {
                 )}
               </Grid>
               <Grid item marginBottom={1}>
-                <Typography variant="h5">Kontakt</Typography>
+                <Typography variant="h4" sx={{ textDecoration: 'underline' }}>
+                  Kontakt
+                </Typography>
                 <Typography variant="h6">E-mail: {data.emailAddress}</Typography>
                 <Typography variant="h6">Telefon: {data.phoneNumber}</Typography>
               </Grid>
               <Grid item marginBottom={1}>
-                <Typography variant="h5">Godziny otwarcia</Typography>
+                <Typography variant="h4" sx={{ textDecoration: 'underline' }}>
+                  Godziny otwarcia
+                </Typography>
                 <Typography variant="h6">
                   Poniedziałek:{' '}
                   {data.openHours.mondayOpenTime == null

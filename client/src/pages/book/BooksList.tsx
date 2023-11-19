@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import Grid from '@mui/material/Grid';
 import { useSearchParams } from 'react-router-dom';
 import useDebounce from '../../utils/useDebounce';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 
@@ -58,9 +59,9 @@ function BooksList() {
 
   return (
     <Box marginTop={2}>
-      {searchStatus == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+      {searchStatus == 'loading' && <LoadingTypography />}
       {searchStatus == 'error' && (
-        <Typography variant="h3" color={theme.palette.error.main}>
+        <Typography variant="h3" color={theme.palette.error.main} textAlign={'center'}>
           Błąd!
         </Typography>
       )}

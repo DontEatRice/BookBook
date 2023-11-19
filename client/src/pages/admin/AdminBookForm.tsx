@@ -23,6 +23,7 @@ import { fileToUploadImage } from '../../utils/utils';
 import { Avatar } from '@mui/material';
 import { languages } from '../../utils/constants';
 import TextInputBox from '../../components/TextInputBox';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 const paginationDefaultRequest = {
   pageNumber: 0,
@@ -105,7 +106,7 @@ function AdminBookForm() {
     queryFn: () => getPublishers(paginationDefaultRequest),
   });
   if (categoriesStatus == 'loading' || authorsStatus == 'loading' || publishersStatus == 'loading') {
-    return <h1>Ładowanie...</h1>;
+    return <LoadingTypography />;
   } else {
     return (
       <Box sx={{ mt: 2 }}>

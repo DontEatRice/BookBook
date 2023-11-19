@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getPublishers } from '../../api/publisher';
 import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 function PublishersTable({ data }: { data: PublisherViewModelType[] }) {
   return (
@@ -56,7 +57,7 @@ function AdminPublishers() {
           </Link>
         </Grid>
       </Grid>
-      {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+      {status == 'loading' && <LoadingTypography />}
       {status == 'error' && (
         <Typography variant="h3" color={theme.palette.error.main}>
           Błąd!
