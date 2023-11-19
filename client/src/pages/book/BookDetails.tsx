@@ -10,7 +10,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toggleBookInUserList } from '../../api/user';
 import AuthorizedView from '../../components/auth/AuthorizedView';
-import FilledField from '../../components/FilledField';
+import FilledField from '../../components/common/FilledField';
 import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import Typography from '@mui/material/Typography';
@@ -21,6 +21,9 @@ import AddReviewForm from '../review/AddReviewForm';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import LoadingTypography from '../../components/common/LoadingTypography';
+import LibrariesStack from '../../components/book/LibrariesStack';
+import { addToCart } from '../../api/cart';
+import useAlert from '../../utils/alerts/useAlert';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
@@ -35,6 +38,7 @@ function CategoriesList({ categories }: { categories: BookCategoryViewModelType[
 }
 
 function BookDetails() {
+  const { showSuccess, showError } = useAlert();
   const { register, handleSubmit } = useForm<ToggleBookInUserListType>({
     resolver: zodResolver(ToggleBookInUserList),
   });
@@ -67,6 +71,33 @@ function BookDetails() {
       return [];
     }
   );
+
+  const handleAddToCart = async (bookId: string, libraryId: string) => {
+    try {
+      await addToCart({ bookId, libraryId });
+      //setError('');
+      //setSuccess('Dodano do koszyka!');
+      showSuccess({ message: 'Dodano do koszyka!' });
+      //cartStore.toggleIsChanged();
+    } catch (error) {
+      const err = error as Error;
+      //setSuccess('');
+      switch (err.message) {
+        case 'BOOK_ALREADY_IN_CART':
+          showError({ message: 'Książka została już dodana do koszyka' });
+          break;
+        case 'BOOK_NOT_FOUND':
+          showError({ message: 'Książka nie została znaleziona' });
+          break;
+        case 'LIBRARY_NOT_FOUND':
+          showError({ message: 'Biblioteka nie została znaleziona' });
+          break;
+        default:
+          showError({ message: `Wystąpił nieznany błąd: ${err.message}` });
+          break;
+      }
+    }
+  };
 
   return (
     <div>
@@ -130,33 +161,41 @@ function BookDetails() {
             </Box>
           </div>
         )}
+        {bookLibrariesStatus == 'success' && (
+          <Grid container spacing={2}>
+            <Grid item xs={5}>
+              <LibrariesStack libraries={bookLibraries} bookId={params.bookId!} />
+            </Grid>
+            <Grid item xs={7}>
+              <MapContainer
+                id="map"
+                style={{ height: 500 }}
+                bounds={[
+                  [54, 23],
+                  [49, 14],
+                ]}>
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                {bookLibraries.map((library) => (
+                  <Marker position={[library.latitude, library.longitude]} key={library.id}>
+                    <Popup>
+                      <a href={`/libraries/${library?.id}`}>{library.name}</a> <br />{' '}
+                      {library.address.street + ' ' + library.address.number}
+                      {library.address.apartment == null ? '' : '/'}
+                      {library.address.apartment ?? ''}
+                      <br /> {library.address.city}
+                      <br />
+                      <Button onClick={() => handleAddToCart(params.bookId!, library.id)}>Do koszyka</Button>
+                    </Popup>
+                  </Marker>
+                ))}
+              </MapContainer>
+            </Grid>
+          </Grid>
+        )}
       </Box>
-      {bookLibrariesStatus == 'success' && (
-        <MapContainer
-          id="map"
-          style={{ height: 400 }}
-          bounds={[
-            [54, 23],
-            [49, 14],
-          ]}>
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          {bookLibraries.map((library) => (
-            <Marker position={[library.latitude, library.longitude]} key={library.id}>
-              <Popup>
-                <a href={`/libraries/${library?.id}`}>{library.name}</a> <br />{' '}
-                {library.address.street + ' ' + library.address.number}
-                {library.address.apartment == null ? '' : '/'}
-                {library.address.apartment ?? ''}
-                <br /> {library.address.city}
-                <Button onClick={() => console.log('aaaa')}>klik</Button>
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
-      )}
     </div>
   );
 }

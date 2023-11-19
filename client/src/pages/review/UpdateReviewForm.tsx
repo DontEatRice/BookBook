@@ -1,5 +1,5 @@
 import { Rating, Box, Paper, Button } from '@mui/material';
-import TextInputField from '../../components/TextInputField';
+import TextInputField from '../../components/common/TextInputField';
 import { ReviewViewModelType } from '../../models/ReviewViewModel';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateReview } from '../../api/review';
 import { BookViewModelType } from '../../models/BookViewModel';
 import UpdateReview, { UpdateReviewType } from '../../models/UpdateReview';
-import TextInputBox from '../../components/TextInputBox';
+import TextInputBox from '../../components/common/TextInputBox';
 
 function UpdateReviewForm({
   review,

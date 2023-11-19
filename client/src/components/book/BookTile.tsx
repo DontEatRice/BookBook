@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
-import { BookViewModelType } from '../models/BookViewModel';
+import { BookViewModelType } from '../../models/BookViewModel';
 
 function BookTile({ book }: { book: BookViewModelType }) {
   const theme = useTheme();
@@ -30,4 +30,3 @@ function BookTile({ book }: { book: BookViewModelType }) {
 }
 
 export default BookTile;
-

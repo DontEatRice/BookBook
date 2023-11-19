@@ -1,11 +1,11 @@
-import { BookViewModelType } from '../models/BookViewModel';
+import { BookViewModelType } from '../../models/BookViewModel';
 import { useNavigate } from 'react-router-dom';
 import { Button, Grid, Paper, Typography, styled } from '@mui/material';
-import ToggleBookInUserList, { ToggleBookInUserListType } from '../models/ToggleBookInUserList';
+import ToggleBookInUserList, { ToggleBookInUserListType } from '../../models/ToggleBookInUserList';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toggleBookInUserList } from '../api/user';
+import { toggleBookInUserList } from '../../api/user';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 
 function BookInUserList({ book }: { book: BookViewModelType }) {
@@ -104,4 +104,3 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
 }
 
 export default BookInUserList;
-

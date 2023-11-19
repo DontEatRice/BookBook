@@ -1,7 +1,7 @@
 import { BookViewModelType } from '../../models/BookViewModel';
 import { useQuery } from '@tanstack/react-query';
 import { getUserBooks } from '../../api/user';
-import BookInUserList from '../../components/BookInUserList';
+import BookInUserList from '../../components/book/BookInUserList';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LoadingTypography from '../../components/common/LoadingTypography';

@@ -1,6 +1,6 @@
 import { Box, Button, Grid, InputAdornment, TextField, Typography, useTheme } from '@mui/material';
 import { AuthorViewModelType } from '../../models/AuthorViewModel';
-import AuthorInList from '../../components/AuthorInList';
+import AuthorInList from '../../components/author/AuthorInList';
 import { getAuthors } from '../../api/author';
 import { useQuery } from '@tanstack/react-query';
 import SearchIcon from '@mui/icons-material/Search';

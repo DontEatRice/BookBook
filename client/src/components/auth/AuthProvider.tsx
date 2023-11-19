@@ -5,7 +5,7 @@ import { getJwtBody, convertJwtToUser } from '../../utils/utils';
 import { LocalStorageTokenKey } from '../../utils/constants';
 import { refresh } from '../../api/auth';
 import { useQuery } from '@tanstack/react-query';
-import Loading from '../Loading';
+import Loading from '../common/Loading';
 
 function initUser() {
   const token = localStorage.getItem(LocalStorageTokenKey);

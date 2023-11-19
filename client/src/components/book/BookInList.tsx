@@ -1,4 +1,4 @@
-import { BookViewModelType } from '../models/BookViewModel';
+import { BookViewModelType } from '../../models/BookViewModel';
 import { useNavigate } from 'react-router-dom';
 import { Button, Grid, Paper, Rating, Typography, styled } from '@mui/material';
 

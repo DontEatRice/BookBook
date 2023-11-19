@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import { SxProps, Theme } from '@mui/material/styles';
 import LoginRequest, { LoginRequestType } from '../../models/LoginRequest';
 import { useForm } from 'react-hook-form';
-import TextInputField from '../TextInputField';
+import TextInputField from '../common/TextInputField';
 import Button from '@mui/material/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
 

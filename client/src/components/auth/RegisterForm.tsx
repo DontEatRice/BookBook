@@ -1,6 +1,6 @@
 import { SxProps, Theme, styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import TextInputField from '../TextInputField';
+import TextInputField from '../common/TextInputField';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import RegisterUser, { RegisterUserType } from '../../models/RegisterUser';

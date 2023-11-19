@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import { BookViewModelType } from '../../models/BookViewModel';
 import { useTheme } from '@mui/material/styles';
 import { searchBooks } from '../../api/book';
-import BookInList from '../../components/BookInList';
+import BookInList from '../../components/book/BookInList';
 import { useQuery } from '@tanstack/react-query';
 import Grid from '@mui/material/Grid';
 import { useSearchParams } from 'react-router-dom';
