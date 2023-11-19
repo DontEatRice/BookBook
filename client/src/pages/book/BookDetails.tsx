@@ -44,9 +44,6 @@ function BookDetails() {
   });
   const mutation = useMutation({
     mutationFn: toggleBookInUserList,
-    onError: (e: Error) => {
-      console.log(e);
-    },
     onSuccess: () => {
       data!.doesUserObserve = !data!.doesUserObserve;
     },
