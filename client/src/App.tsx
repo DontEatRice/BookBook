@@ -93,7 +93,6 @@ function App() {
           <Route index element={<BookRanking />} />
         </Route>
       </Route>
-
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminHome />} />
         <Route path="authors">
