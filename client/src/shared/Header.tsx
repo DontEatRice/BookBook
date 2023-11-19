@@ -13,6 +13,7 @@ import { useCartStore } from '../../src/store';
 import { Button } from '@mui/material';
 import AuthorizedView from '../components/auth/AuthorizedView';
 import PersonIcon from '@mui/icons-material/Person';
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 
 function Header() {
   const theme = useTheme();
@@ -40,10 +41,12 @@ function Header() {
             <SearchBar />
           </Grid>
           {matches && (
-            <Grid item sm={1} xs={3} paddingLeft={3} paddingY={2}>
+            <Grid item sm={1} xs={3} paddingLeft={8} paddingY={2.1}>
               <AuthorizedView>
                 {cartStore.isOpen && <CartTab />}
-                <Button onClick={() => cartStore.toggleCart()}>Koszyk</Button>
+                <Grid item onClick={() => cartStore.toggleCart()}>
+                  <ShoppingBasketIcon sx={{ fontSize: '2rem' }} />
+                </Grid>
               </AuthorizedView>
             </Grid>
           )}
@@ -117,3 +120,4 @@ function HeaderLogo() {
 }
 
 export default Header;
+
