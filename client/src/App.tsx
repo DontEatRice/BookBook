@@ -27,13 +27,13 @@ import BooksList from './pages/book/BooksList';
 import BookDetails from './pages/book/BookDetails';
 import Register from './pages/auth/Register';
 import ChangePassword from './pages/account/ChangePassword';
-import ReservationList from './pages/reservations/ReservationList';
 import AdminReservationList from './pages/admin/AdminReservations';
 import UserBooksList from './pages/user/UserBooks';
 import AuthorsList from './pages/author/AuthorsList';
 import AuthorDetails from './pages/author/AuthorDetails';
 import AdminRegisterEmployeeForm from './pages/admin/AdminRegisterEmployeeForm';
 import BookRanking from './pages/book/BookRanking';
+import ReservationList from '../src/pages/reservations/ReservationList';
 
 const mainTheme = createTheme({
   palette: {
