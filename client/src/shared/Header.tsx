@@ -10,7 +10,6 @@ import { useCallback, useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import CartTab from '../components/reservations/CartTab';
 import { useCartStore } from '../../src/store';
-import { Button } from '@mui/material';
 import AuthorizedView from '../components/auth/AuthorizedView';
 import PersonIcon from '@mui/icons-material/Person';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
