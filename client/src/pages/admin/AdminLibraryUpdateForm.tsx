@@ -171,12 +171,10 @@ function AdminLibraryUpdateForm() {
     },
   });
 
-  const onSubmit = useCallback(
-    async (data: AddLibraryType) => {
+  const onSubmit = (data: AddLibraryType) => {
       updateLibraryMutation.mutate({ library: data, id: params.libraryId! });
-    },
-    [params.publisherId, updateLibraryMutation]
-  );
+    }
+;
 
   return (
     <Box sx={{ mt: 2 }}>

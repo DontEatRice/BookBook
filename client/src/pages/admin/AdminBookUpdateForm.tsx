@@ -17,7 +17,7 @@ import TextField from '@mui/material/TextField';
 import { useParams } from 'react-router';
 import Stack from '@mui/material/Stack';
 import AddBook, { AddBookType } from '../../models/AddBook';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { ApiResponseError } from '../../utils/utils';
 import useAlert from '../../utils/alerts/useAlert';
 import Typography from '@mui/material/Typography';
@@ -95,13 +95,9 @@ function AdminBookUpdateForm() {
     queryFn: () => getPublishers(paginationDefaultRequest),
   });
 
-  const onSubmit = useCallback(
-    async (data: AddBookType) => {
-      console.log(data);
-      updateBookMutation.mutate({ book: data, id: params.bookId! });
-    },
-    [params.bookId, updateBookMutation]
-  );
+  const onSubmit = (data: AddBookType) => {
+    updateBookMutation.mutate({ book: data, id: params.bookId! });
+  };
 
   if (categoriesStatus == 'loading' || authorsStatus == 'loading' || publishersStatus == 'loading') {
     return <h1>Ładowanie...</h1>;

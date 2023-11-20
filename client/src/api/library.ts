@@ -37,7 +37,7 @@ export async function getLibrary(id: string) {
   });
   const data = await response.json();
   return LibraryViewModel.parse(data);
-};
+}
 
 export const postLibrary = async (library: AddLibraryType) => {
   const response = await fetch(base + '/Libraries', {

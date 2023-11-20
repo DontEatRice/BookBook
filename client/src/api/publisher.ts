@@ -73,4 +73,4 @@ export async function getPublisher(id: string) {
   });
   const data = await response.json();
   return PublisherViewModel.parse(data);
-};
+}

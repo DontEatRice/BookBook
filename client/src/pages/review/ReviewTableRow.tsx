@@ -1,4 +1,4 @@
-import { Dialog, TextField, Typography, Rating, Avatar, Button, Paper, Box } from '@mui/material';
+import { Dialog, TextField, Typography, Rating, Avatar, Button, Paper } from '@mui/material';
 import StyledTableCell from '../../components/tableComponents/StyledTableCell';
 import StyledTableRow from '../../components/tableComponents/StyledTableRow';
 import { useState } from 'react';

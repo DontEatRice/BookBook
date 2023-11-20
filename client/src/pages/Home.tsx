@@ -13,7 +13,6 @@ function Home() {
     yearPublished: 12,
     id: 'abcde',
     authors: [],
-    reviews: [],
     isbn: 'commit',
     publisher: {
       id: 'guid-guid',

@@ -51,7 +51,7 @@ export async function getAuthors(body: PaginationRequest) {
     await handleBadResponse(response);
   }
   return AuthorSearchResponse.parse(data);
-};
+}
 
 export async function getAuthor(id: string) {
   //endpoint powinien działać zarówno dla zalogowanego i anonima
@@ -70,7 +70,7 @@ export async function getAuthor(id: string) {
   });
   const data = await response.json();
   return AuthorViewModel.parse(data);
-};
+}
 
 export async function getAuthorBookCards(authorId: string) {
   const response = await fetch(base + `/Authors/${authorId}/book-cards`);

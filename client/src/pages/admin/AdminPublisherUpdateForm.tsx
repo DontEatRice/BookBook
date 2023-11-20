@@ -9,7 +9,6 @@ import TextInputField from '../../components/TextInputField';
 import { updatePublisher, deletePublisher } from '../../api/publisher';
 import { useNavigate } from 'react-router-dom';
 import { getPublisher } from '../../api/publisher';
-import { useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router';
 import TextInputBox from '../../components/TextInputBox';
@@ -67,12 +66,9 @@ function AdminPublisherForm() {
     queryFn: () => getPublisher(params.publisherId + ''),
   });
 
-  const onSubmit = useCallback(
-    async (data: UpdatePublisherType) => {
-      updatePublisherMutation.mutate({ publisher: data, id: params.publisherId! });
-    },
-    [params.publisherId, updatePublisherMutation]
-  );
+  const onSubmit = (data: UpdatePublisherType) => {
+    updatePublisherMutation.mutate({ publisher: data, id: params.publisherId! });
+  };
 
   return (
     <Box sx={{ mt: 2 }}>
