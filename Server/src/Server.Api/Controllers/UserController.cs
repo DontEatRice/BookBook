@@ -7,6 +7,8 @@ using Server.Domain.Entities;
 using Server.Infrastructure.Persistence.QueryHandlers.User;
 using Server.Utils;
 using System.Security.Claims;
+using AutoMapper;
+using Server.Application.ViewModels;
 
 namespace Server.Api.Controllers;
 
@@ -14,34 +16,38 @@ namespace Server.Api.Controllers;
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
-    public UserController(IMediator mediator) : base(mediator)
+    private readonly IMapper _mapper;
+    public UserController(IMediator mediator, IMapper mapper) : base(mediator)
     {
+        _mapper = mapper;
+    }
 
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> UserDetail(Guid id)
+    {
+        var userId = GetUserIdOrThrow();
+        var identity = await Mediator.Send(new GetUserByIdQuery(userId)) ??
+            throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
+
+        return Ok(_mapper.Map<UserDetailViewModel>(identity));
     }
 
     [HttpPost("toggle-observe")]
-    public async Task<ActionResult> ToggleBookInUserList (ToggleBookInUsersListCommand command)
+    public async Task<ActionResult> ToggleBookInUserList(ToggleBookInUsersListCommand command)
     {
-        var userId = User.FindFirstValue(AuthConstants.IdClaim) ??
-                     throw new AuthenticationException(
-                         "User is not authenticated",
-                         ApplicationErrorCodes.NotAuthenticated);
-
         await Mediator.Send(command with
         {
-            UserId = Guid.Parse(userId)
+            UserId = GetUserIdOrThrow()
         });
 
         return NoContent();
     }
+    
 
     [HttpGet("user-books")]
     public async Task<ActionResult<IEnumerable<Book>>> GetUserObservedBooks()
     {
-        var userId = User.FindFirstValue(AuthConstants.IdClaim) ??
-                     throw new AuthenticationException(
-                         "User is not authenticated",
-                         ApplicationErrorCodes.NotAuthenticated);
-        return Ok(await Mediator.Send(new GetUserObservedBooksQuery(Guid.Parse(userId))));
+        var userId = GetUserIdOrThrow();
+        return Ok(await Mediator.Send(new GetUserObservedBooksQuery(userId)));
     }
 }

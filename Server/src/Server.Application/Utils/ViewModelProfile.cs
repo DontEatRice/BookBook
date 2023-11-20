@@ -2,6 +2,7 @@ using AutoMapper;
 using Server.Application.InternalModels;
 using Server.Application.ViewModels;
 using Server.Domain.Entities;
+using Server.Domain.Entities.Auth;
 
 namespace Server.Application.Utils;
 
@@ -19,5 +20,6 @@ public class ViewModelProfile : Profile
         CreateMap<Image, ImageWithContent>();
         CreateMap<Review, ReviewViewModel>();
         CreateMap<LibraryBook, BookInLibraryViewModel>();
+        CreateMap<Identity, UserDetailViewModel>();
     }
 }

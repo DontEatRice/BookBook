@@ -13,6 +13,7 @@ public class Identity
     public string? PasswordHash { get; private set; }
     public string? Name { get; private set; }
     public string? AvatarImageUrl { get; private set; }
+    public Guid? LibraryId { get; private set; }
     public Library? Library { get; private set; }
     public List<string> Roles { get; private init; }
     public List<Session> Sessions { get; private init; }
@@ -95,5 +96,12 @@ public class Identity
         }
 
         Sessions[Sessions.IndexOf(session)] = Session.Create(TokenHasher.Hash(newRefreshToken));
+    }
+
+    public void Update(string name, string? avatarImageUrl, Guid? libraryId)
+    {
+        Name = name;
+        AvatarImageUrl = avatarImageUrl;
+        LibraryId = libraryId;
     }
 }
