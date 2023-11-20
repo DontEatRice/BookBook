@@ -33,7 +33,7 @@ import AuthorsList from './pages/author/AuthorsList';
 import AuthorDetails from './pages/author/AuthorDetails';
 import AdminRegisterEmployeeForm from './pages/admin/AdminRegisterEmployeeForm';
 import BookRanking from './pages/book/BookRanking';
-import ReservationList from './pages/Reservations/ReservationList';
+import ReservationList from './pages/reservations/ReservationList';
 
 const mainTheme = createTheme({
   palette: {
