@@ -27,14 +27,15 @@ export const updatePublisher = async ({ id, publisher }: { id: string; publisher
     body: JSON.stringify(publisher),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
   return response;
 };
 
 export const deletePublisher = async (publisherId: string) => {
   const response = await fetch(base + '/Publishers/' + publisherId, {
       method: 'delete',
-      //TODO - przetestowac wywalenie body i headers
-      body: JSON.stringify(publisherId),
       headers: new Headers({ 'Content-Type': 'application/json' }),
   });
   if (!response.ok) {

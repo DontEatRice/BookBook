@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import TextInputField from '../../components/TextInputField';
 import { deleteBook, updateBook } from '../../api/book';
@@ -14,12 +14,15 @@ import { getAuthors } from '../../api/author';
 import { getPublishers } from '../../api/publisher';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { useState } from 'react';
-import Typography from '@mui/material/Typography';
 import { useParams } from 'react-router';
 import Stack from '@mui/material/Stack';
 import AddBook, { AddBookType } from '../../models/AddBook';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { ApiResponseError } from '../../utils/utils';
+import useAlert from '../../utils/alerts/useAlert';
+import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 const paginationDefaultRequest = {
   pageNumber: 0,
@@ -27,13 +30,18 @@ const paginationDefaultRequest = {
 };
 
 function AdminBookUpdateForm() {
-    const params = useParams();
   const navigate = useNavigate();
-  const [apiError, setApiError] = useState<string>('');
+  const queryClient = useQueryClient();
+  const params = useParams();
+  const theme = useTheme();
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const { handleError } = useAlert();
+
   const {
     register,
     handleSubmit,
     control,
+    setError,
     formState: { errors },
   } = useForm<AddBookType>({
     resolver: zodResolver(AddBook),
@@ -42,14 +50,14 @@ function AdminBookUpdateForm() {
   const updateBookMutation = useMutation({
     mutationFn: updateBook,
     onSuccess: () => {
+      queryClient.invalidateQueries(['books']); 
       navigate('..');
     },
     onError: (err) => {
-      const error = err as Error;
-      console.error(error);
-      const errorCode = error.message.split(':')[0];
-      if (errorCode == 'BOOK_ALREADY_ADDED') {
-        setApiError('Podany ISBN jest już zajęty');
+      if (err instanceof ApiResponseError && err.error.code == 'BOOK_ALREADY_ADDED') {
+        setError('ISBN', { message: 'Podany ISBN jest już zajęty' }, { shouldFocus: true });
+      } else {
+        handleError(err);
       }
     },
   });
@@ -57,10 +65,15 @@ function AdminBookUpdateForm() {
   const deleteBookMutation = useMutation({
     mutationFn: deleteBook,
     onSuccess: () => {
+      queryClient.invalidateQueries(['books']); 
       navigate('..');
     },
-    onError: (e: Error) => {
-      console.error(e);
+    onError: (err) => {
+      if (err instanceof ApiResponseError && err.error.code == 'BOOK_NOT_FOUND') {
+        setDeleteError('Ta książka już nie istnieje.')
+      } else {
+        handleError(err);
+      }
     },
   });
 
@@ -95,6 +108,22 @@ function AdminBookUpdateForm() {
   } else {
     return (
       <Box sx={{ mt: 2 }}>
+        {deleteError && (
+          <Paper
+            elevation={7}
+            sx={{
+              width: '100%',
+              padding: 2,
+              backgroundColor: theme.palette.error.main,
+              textAlign: 'center',
+              display: 'flex',
+              justifyContent: 'center',
+              mt: 2,
+            }}>
+            <ErrorOutlineIcon />
+            <Typography>{deleteError}</Typography>
+          </Paper>
+        )}
         {status == 'loading' && 'Ładowanie...'}
         {status == 'error' && 'Błąd!'}
         {status == 'success' && (
@@ -106,11 +135,6 @@ function AdminBookUpdateForm() {
                     }}>
                     <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
                     <TextInputField errors={errors} field="ISBN" register={register} label="ISBN" defaultValue={data.isbn}/>
-                    {apiError && (
-                        <Typography variant="body2" color="error">
-                        {apiError}
-                        </Typography>
-                    )}
                     <TextInputField errors={errors} field="title" register={register} label="Tytuł" defaultValue={data.title}/>
                     <NumberInputField
                         errors={errors}
@@ -122,7 +146,7 @@ function AdminBookUpdateForm() {
                     <Controller
                         control={control}
                         name="authorsIds"
-                        render={({ field: { onChange, value }, fieldState: { error } }) => (
+                        render={({ field: { onChange }, fieldState: { error } }) => (
                         <Autocomplete
                             multiple
                             sx={{ width: '100%', mb: 2 }}
@@ -131,7 +155,6 @@ function AdminBookUpdateForm() {
                                 onChange(newValue);
                                 }}
                             getOptionLabel={(author) => author.firstName + ' ' + author.lastName}
-                            isOptionEqualToValue={(option, value) => option.id === value.id}
                             renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -143,7 +166,6 @@ function AdminBookUpdateForm() {
                             )}
                         />
                         )}
-                        defaultValue={data.authors.map(x => x.firstName + ' ' + x.lastName)}
                     />
                     <Controller
                         control={control}

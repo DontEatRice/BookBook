@@ -8,6 +8,12 @@ import { updateReview } from '../../api/review';
 import { BookViewModelType } from '../../models/BookViewModel';
 import UpdateReview, { UpdateReviewType } from '../../models/UpdateReview';
 import TextInputBox from '../../components/TextInputBox';
+import useAlert from '../../utils/alerts/useAlert';
+import Typography from '@mui/material/Typography';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { ApiResponseError } from '../../utils/utils';
+import { useState } from 'react';
+import { useTheme } from '@mui/material/styles';
 
 function UpdateReviewForm({
   review,
@@ -18,6 +24,9 @@ function UpdateReviewForm({
   book: BookViewModelType;
   handleClose: () => void;
 }) {
+  const [updateError, setUpdateError] = useState<string | null>(null);
+  const { handleError } = useAlert();
+  const theme = useTheme();
   const queryClient = useQueryClient();
   const {
     register,
@@ -36,10 +45,17 @@ function UpdateReviewForm({
     mutationFn: updateReview,
     onSuccess: () => {
       queryClient.refetchQueries(['books', book.id]);
-      handleClose();
+      
+      if(updateError == null) {
+        handleClose();
+      }
     },
-    onError: (e: Error) => {
-      console.error(e);
+    onError: (err) => {
+      if (err instanceof ApiResponseError && err.error.code == 'REVIEW_NOT_FOUND') {
+        setUpdateError('Ta opinia już nie istnieje.');
+      } else {
+        handleError(err);
+      }
     },
   });
   const onSubmit: SubmitHandler<UpdateReviewType> = (data) => {
@@ -48,12 +64,29 @@ function UpdateReviewForm({
 
   return (
     <Box sx={{ mt: 0 }}>
+      {updateError && (
+        <Paper
+          elevation={7}
+          sx={{
+            width: '100%',
+            padding: 2,
+            backgroundColor: theme.palette.error.main,
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            mt: 0,
+          }}>
+          <ErrorOutlineIcon />
+          <Typography>{updateError}</Typography>
+        </Paper>
+      )}
       <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', justifyContent: 'center' }}>
         <Box
           sx={{
             width: 'auto',
             textAlign: 'left',
-          }}>
+          }}
+        >
           <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
             <Controller
               control={control}
@@ -83,7 +116,6 @@ function UpdateReviewForm({
               label="Komentarz"
               defaultValue={review.description + ''}
             />
-
             <Button variant="contained" type="submit" sx={{ margin: 1 }}>
               Uaktualnij
             </Button>

@@ -1,4 +1,4 @@
-import { Control, SubmitHandler, useForm } from 'react-hook-form';
+import { Control, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -21,6 +21,10 @@ import { useCallback, useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import { useParams } from 'react-router';
 import { OpenHoursViewModelType } from '../../models/OpenHoursViewModel';
+import { ApiResponseError } from '../../utils/utils';
+import useAlert from '../../utils/alerts/useAlert';
+import { useTheme } from '@mui/material/styles';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 type LibraryOpenHoursTimePickerParams = {
   fields: [keyof AddLibraryType, keyof AddLibraryType];
@@ -35,7 +39,6 @@ function LibraryOpenHoursTimePicker({
   dayName,
   control,
   onChange,
-  data,
 }: LibraryOpenHoursTimePickerParams) {
   const [open, setOpen] = useState(true);
 
@@ -124,6 +127,10 @@ const daysOfWeek: DayOfWeek[] = [
 function AdminLibraryUpdateForm() {
   const navigate = useNavigate();
   const params = useParams();
+  const theme = useTheme();
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const { handleError } = useAlert();
+
 
   const { data, status } = useQuery({
     queryKey: ['libraries', params.libraryId],
@@ -155,8 +162,12 @@ function AdminLibraryUpdateForm() {
     onSuccess: () => {
       navigate('..');
     },
-    onError: (e: Error) => {
-      console.error(e);
+    onError: (err) => {
+      if (err instanceof ApiResponseError && err.error.code == 'LIBRARY_NOT_FOUND') {
+        setDeleteError('Ta biblioteka już nie istnieje.')
+      } else {
+        handleError(err);
+      }
     },
   });
 
@@ -169,6 +180,22 @@ function AdminLibraryUpdateForm() {
 
   return (
     <Box sx={{ mt: 2 }}>
+      {deleteError && (
+        <Paper
+          elevation={7}
+          sx={{
+            width: '100%',
+            padding: 2,
+            backgroundColor: theme.palette.error.main,
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            mt: 2,
+          }}>
+          <ErrorOutlineIcon />
+          <Typography>{deleteError}</Typography>
+        </Paper>
+      )}
       {status == 'loading' && 'Ładowanie...'}
       {status == 'error' && 'Błąd!'}
       {status == 'success' && (

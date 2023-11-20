@@ -26,14 +26,15 @@ export const updateAuthor = async ({ id, author }: { id: string; author: UpdateA
     body: JSON.stringify(author),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
   return response;
 };
 
 export const deleteAuthor = async (authorId: string) => {
   const response = await fetch(base + '/Authors/' + authorId, {
       method: 'delete',
-      //TODO - przetestowac wywalenie body i headers
-      body: JSON.stringify(authorId),
       headers: new Headers({ 'Content-Type': 'application/json' }),
   });
   if (!response.ok) {

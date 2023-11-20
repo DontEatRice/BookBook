@@ -54,14 +54,15 @@ export const updateLibrary = async ({ id, library }: { id: string; library: AddL
     body: JSON.stringify(library),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
   return response;
 };
 
 export const deleteLibrary = async (libraryId: string) => {
   const response = await fetch(base + '/Libraries/' + libraryId, {
       method: 'delete',
-      //TODO - przetestowac wywalenie body i headers
-      body: JSON.stringify(libraryId),
       headers: new Headers({ 'Content-Type': 'application/json' }),
   });
   if (!response.ok) {

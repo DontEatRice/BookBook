@@ -1,4 +1,4 @@
-import { Dialog, TextField, Typography, Rating, Avatar, Button } from '@mui/material';
+import { Dialog, TextField, Typography, Rating, Avatar, Button, Paper, Box } from '@mui/material';
 import StyledTableCell from '../../components/tableComponents/StyledTableCell';
 import StyledTableRow from '../../components/tableComponents/StyledTableRow';
 import { useState } from 'react';
@@ -8,8 +8,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteReview } from '../../api/review';
 import { BookViewModelType } from '../../models/BookViewModel';
 import UpdateReviewForm from '../../pages/review/UpdateReviewForm';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { ApiResponseError } from '../../utils/utils';
+import useAlert from '../../utils/alerts/useAlert';
 
 function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: BookViewModelType }) {
+  const [ deleteError, setDeleteError] = useState<string | null>(null);
+  const { handleError } = useAlert();
   const theme = useTheme();
   const queryClient = useQueryClient();
 
@@ -29,12 +34,15 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
       // queryClient.invalidateQueries({ queryKey: ['books', book.id] });
       queryClient.refetchQueries(['books', book.id]);
     },
-    onError: (e: Error) => {
-      console.error(e);
+    onError: (err) => {
+      if (err instanceof ApiResponseError && err.error.code == 'REVIEW_NOT_FOUND') {
+        setDeleteError('Ta opinia już nie istnieje.');
+      } else {
+        handleError(err);
+      }
     },
   });
-
-  return (
+  return (  
     <StyledTableRow>
       <StyledTableCell>
         <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>N</Avatar>
@@ -62,6 +70,22 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
         <TextField multiline InputProps={{ readOnly: true }} sx={{ mb: 2 }} value={review.description} />
       </StyledTableCell>
       <StyledTableCell>
+        {deleteError && (
+        <Paper
+          elevation={7}
+          sx={{
+            width: '100%',
+            padding: 2,
+            backgroundColor: theme.palette.error.main,
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            mt: 1,
+          }}>
+          <ErrorOutlineIcon />
+          <Typography>{deleteError}</Typography>
+        </Paper>
+        )}
         <Button sx={{ width: 50, height: 40 }} onClick={() => mutation.mutate(review.id)}>
           Usuń
         </Button>

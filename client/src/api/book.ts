@@ -27,9 +27,8 @@ export const updateBook = async ({ id, book }: { id: string; book: AddBookType }
     body: JSON.stringify(book),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
-  if (response.status !== 201) {
-    const data = await response.json();
-    throw new Error(`${data.code}:${data.resourceId}`);
+  if (!response.ok) {
+    await handleBadResponse(response);
   }
 
   return response;
@@ -38,10 +37,11 @@ export const updateBook = async ({ id, book }: { id: string; book: AddBookType }
 export const deleteBook = async (bookId: string) => {
   const response = await fetch(base + '/Books/' + bookId, {
       method: 'delete',
-      //TODO - przetestowac wywalenie body i headers
-      body: JSON.stringify(bookId),
       headers: new Headers({ 'Content-Type': 'application/json' }),
   });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
   
   return response;
 };

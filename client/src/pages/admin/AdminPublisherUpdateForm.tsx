@@ -10,13 +10,23 @@ import { updatePublisher, deletePublisher } from '../../api/publisher';
 import { useNavigate } from 'react-router-dom';
 import { getPublisher } from '../../api/publisher';
 import { useCallback } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router';
 import TextInputBox from '../../components/TextInputBox';
+import { ApiResponseError } from '../../utils/utils';
+import { useState } from 'react';
+import { useTheme } from '@mui/material/styles';
+import useAlert from '../../utils/alerts/useAlert';
+import Typography from '@mui/material/Typography';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 function AdminPublisherForm() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const params = useParams();
+  const theme = useTheme();
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const { handleError } = useAlert();
 
   const {
     register,
@@ -29,22 +39,27 @@ function AdminPublisherForm() {
   const updatePublisherMutation = useMutation({
     mutationFn: updatePublisher,
     onSuccess: () => {
-      // response.headers.has() TODO dodać redirect na nowy obiekt
+      queryClient.invalidateQueries(['publishers']);
       navigate('..');
     },
-    onError: (e: Error) => {
-      console.error(e);
+    onError: (err) => {
+      handleError(err);
     },
   });
 
   const deletePublisherMutation = useMutation({
     mutationFn: deletePublisher,
     onSuccess: () => {
+      queryClient.invalidateQueries(['publishers']);
       navigate('..');
     },
-    onError: (e: Error) => {
-      console.error(e);
-    },
+    onError: (err) => {
+      if (err instanceof ApiResponseError && err.error.code == 'PUBLISHER_NOT_FOUND') {
+        setDeleteError('Ten wydawca już nie istnieje.')
+      } else {
+        handleError(err);
+      }
+    }
   });
 
   const { data, status } = useQuery({
@@ -61,6 +76,22 @@ function AdminPublisherForm() {
 
   return (
     <Box sx={{ mt: 2 }}>
+      {deleteError && (
+        <Paper
+          elevation={7}
+          sx={{
+            width: '100%',
+            padding: 2,
+            backgroundColor: theme.palette.error.main,
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            mt: 2,
+          }}>
+          <ErrorOutlineIcon />
+          <Typography>{deleteError}</Typography>
+        </Paper>
+      )}
       {status == 'loading' && 'Ładowanie...'}
       {status == 'error' && 'Błąd!'}
       {status == 'success' && (

@@ -35,6 +35,10 @@ export const postReview = async (review: AddReviewType) => {
     body: JSON.stringify(review),
     headers: new Headers({ 'Content-Type': 'application/json', Authorization: auth }),
   });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+
   return response;
 };
 
@@ -44,14 +48,21 @@ export const updateReview = async (review: UpdateReviewType) => {
     body: JSON.stringify(review),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+
   return response;
 };
 
 export const deleteReview = async (reviewId: string) => {
   const response = await fetch(base + '/Reviews/' + reviewId, {
     method: 'delete',
-    body: JSON.stringify(reviewId),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+
   return response;
 };

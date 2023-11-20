@@ -14,8 +14,14 @@ import NumberInputField from '../../components/NumberInputField';
 import { uploadImage } from '../../api/image';
 import { fileToBase64 } from '../../utils/utils';
 import UploadImage from '../../models/UploadImage';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router';
+import { ApiResponseError } from '../../utils/utils';
+import { useState } from 'react';
+import { useTheme } from '@mui/material/styles';
+import useAlert from '../../utils/alerts/useAlert';
+import Typography from '@mui/material/Typography';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 async function fileToUploadImage(file: File) {
   let base64 = await fileToBase64(file);
@@ -29,7 +35,11 @@ async function fileToUploadImage(file: File) {
 
 function AdminAuthorForm() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const params = useParams();
+  const theme = useTheme();
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const { handleError } = useAlert();
 
   const {
     register,
@@ -60,21 +70,26 @@ function AdminAuthorForm() {
   const updateAuthorMutation = useMutation({
     mutationFn: updateAuthor,
     onSuccess: () => {
-      // response.headers.has() TODO dodać redirect na nowy obiekt
+      queryClient.invalidateQueries(['authors']);
       navigate('..');
     },
-    onError: (e: Error) => {
-      console.error(e);
+    onError: (err) => {
+      handleError(err);
     },
   });
 
   const deleteAuthorMutation = useMutation({
     mutationFn: deleteAuthor,
     onSuccess: () => {
+      queryClient.invalidateQueries(['authors']);
       navigate('..');
     },
-    onError: (e: Error) => {
-      console.error(e);
+    onError: (err) => {
+      if (err instanceof ApiResponseError && err.error.code == 'AUTHOR_NOT_FOUND') {
+        setDeleteError('Ten autor już nie istnieje.')
+      } else {
+        handleError(err);
+      }
     },
   });
 
@@ -88,12 +103,7 @@ function AdminAuthorForm() {
       if (data.avatarPicture) {
         const uploadImageType = await fileToUploadImage(data.avatarPicture);
         const response = await uploadImageMutation.mutateAsync(uploadImageType);
-        for (const pair of response.headers.entries()) {
-          console.log(`${pair[0]}: ${pair[1]}`);
-        }
-        if (response.ok) {
-          data.profilePictureUrl = response.headers.get('location');
-        }
+        data.profilePictureUrl = response;
       }
       updateAuthorMutation.mutate({ author: data, id: params.authorId! });
     },
@@ -102,6 +112,22 @@ function AdminAuthorForm() {
 
   return (
     <Box sx={{ mt: 2 }}>
+      {deleteError && (
+        <Paper
+          elevation={7}
+          sx={{
+            width: '100%',
+            padding: 2,
+            backgroundColor: theme.palette.error.main,
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            mt: 2,
+          }}>
+          <ErrorOutlineIcon />
+          <Typography>{deleteError}</Typography>
+        </Paper>
+      )}
       {status == 'loading' && 'Ładowanie...'}
       {status == 'error' && 'Błąd!'}
       {status == 'success' && (
