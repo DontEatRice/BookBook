@@ -1,3 +1,5 @@
+import { Dayjs } from 'dayjs';
+
 export function translateStatus(status: string) {
   switch (status) {
     case 'Pending':
@@ -50,4 +52,16 @@ const errorCodesMapping: Record<string, string | undefined> = {
 
 export function translateErrorCode(code: string) {
   return errorCodesMapping[code] ?? 'Wystąpił niespodziewany błąd';
+}
+
+export function timeToDayjs(time: string | null) {
+  if (!time) {
+    return null;
+  }
+  const dayjs = new Dayjs();
+  const timeSplitted = time.split(':').map((x) => parseInt(x));
+  dayjs.set('hour', timeSplitted[0]);
+  dayjs.set('minutes', timeSplitted[1]);
+  dayjs.set('seconds', timeSplitted[2]);
+  return dayjs;
 }

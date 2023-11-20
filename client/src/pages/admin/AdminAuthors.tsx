@@ -11,9 +11,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthorViewModelType } from '../../models/AuthorViewModel';
 import { useQuery } from '@tanstack/react-query';
 import { getAuthors } from '../../api/author';
-import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
-import { Avatar } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
 
 function AuthorsTable({ data }: { data: AuthorViewModelType[] }) {
   const navigate = useNavigate();
@@ -32,7 +31,10 @@ function AuthorsTable({ data }: { data: AuthorViewModelType[] }) {
         </TableHead>
         <TableBody>
           {data.map((author) => (
-            <TableRow key={author.id} onClick={() => navigate(`/admin/authors/${author.id}`)}>
+            <TableRow
+              key={author.id}
+              sx={{ cursor: 'pointer' }}
+              onClick={() => navigate(`/admin/authors/${author.id}`)}>
               <TableCell>{author.id}</TableCell>
               <TableCell>
                 <Avatar src={author.profilePictureUrl ?? undefined} />
@@ -49,7 +51,6 @@ function AuthorsTable({ data }: { data: AuthorViewModelType[] }) {
 }
 
 function AdminAuthors() {
-  const theme = useTheme();
   const { data, status } = useQuery({
     queryKey: ['authors'],
     queryFn: () => getAuthors({ pageNumber: 0, pageSize: 50 }),
@@ -68,11 +69,6 @@ function AdminAuthors() {
         </Grid>
       </Grid>
       {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
-      {status == 'error' && (
-        <Typography variant="h3" color={theme.palette.error.main}>
-          Błąd!
-        </Typography>
-      )}
       {status == 'success' && <AuthorsTable data={data.data} />}
     </Box>
   );

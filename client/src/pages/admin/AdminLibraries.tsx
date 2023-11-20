@@ -30,7 +30,10 @@ function LibrariesTable({ data }: { data: LibraryViewModelType[] }) {
         </TableHead>
         <TableBody>
           {data.map((library) => (
-            <TableRow key={library.id} onClick={() => navigate(`/admin/libraries/${library.id}`)}>
+            <TableRow
+              key={library.id}
+              sx={{ cursor: 'pointer' }}
+              onClick={() => navigate(`/admin/libraries/${library.id}`)}>
               <TableCell>{library.name}</TableCell>
               <TableCell>{library.address.city}</TableCell>
               <TableCell>{library.address.street}</TableCell>

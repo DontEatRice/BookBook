@@ -1,5 +1,5 @@
 import TextField, { TextFieldProps, TextFieldVariants } from '@mui/material/TextField';
-import { FieldErrors, FieldValues, Path, UseFormRegister } from 'react-hook-form';
+import { Control, Controller, FieldErrors, FieldValues, Path, UseFormRegister } from 'react-hook-form';
 
 export type TextInputFieldProps<T extends FieldValues> = {
   label: string;
@@ -19,7 +19,7 @@ function TextInputField<T extends FieldValues>({
   field,
   errors,
   additionalProps,
-  defaultValue
+  defaultValue,
 }: TextInputFieldProps<T>) {
   const helper = errors[field]?.message?.toString();
   return (
@@ -31,6 +31,42 @@ function TextInputField<T extends FieldValues>({
       helperText={helper}
       defaultValue={defaultValue}
       sx={{ width: '100%', mb: 2 }}
+    />
+  );
+}
+
+export type TextInputFieldProps2<T extends FieldValues> = {
+  label: string;
+  field: Path<T>;
+  control: Control<T>;
+  additionalProps?: { variant?: TextFieldVariants } & Omit<
+    TextFieldProps,
+    'label' | 'helperText' | 'error' | 'variant'
+  >;
+};
+
+export function TextInputField2<T extends FieldValues>({
+  label,
+  field,
+  control,
+  additionalProps,
+}: TextInputFieldProps2<T>) {
+  return (
+    <Controller
+      name={field}
+      control={control}
+      render={({ field, fieldState: { error } }) => (
+        <TextField
+          {...additionalProps}
+          label={label}
+          {...field}
+          // {...register(field)}
+          // error={errors[field] != undefined}
+          helperText={error?.message}
+          // defaultValue={defaultValue}
+          sx={{ width: '100%', mb: 2 }}
+        />
+      )}
     />
   );
 }

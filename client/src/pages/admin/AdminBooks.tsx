@@ -10,32 +10,8 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import { Link, useNavigate } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import { searchBooks } from '../../api/book';
-
-// przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
-
-// function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-//   if (b[orderBy] < a[orderBy]) {
-//     return -1;
-//   }
-//   if (b[orderBy] > a[orderBy]) {
-//     return 1;
-//   }
-//   return 0;
-// }
-
-// type Order = 'asc' | 'desc';
-
-// function getComparator<Key extends keyof BookViewModelType>(
-//   order: Order,
-//   orderBy: Key
-// ): (a: BookViewModelType, b: BookViewModelType) => number {
-//   return order === 'desc'
-//     ? (a, b) => descendingComparator(a, b, orderBy)
-//     : (a, b) => -descendingComparator(a, b, orderBy);
-// }
 
 function BooksTable({ data }: { data: BookViewModelType[] }) {
   const navigate = useNavigate();
@@ -55,7 +31,10 @@ function BooksTable({ data }: { data: BookViewModelType[] }) {
         </TableHead>
         <TableBody>
           {data.map((book) => (
-            <TableRow key={book.id} onClick={() => navigate(`/admin/books/${book.id}`)}>
+            <TableRow
+              key={book.id}
+              sx={{ cursor: 'pointer' }}
+              onClick={() => navigate(`/admin/books/${book.id}`)}>
               <TableCell>{book.isbn}</TableCell>
               <TableCell>{book.title}</TableCell>
               <TableCell>{book.yearPublished}</TableCell>
@@ -73,7 +52,6 @@ function BooksTable({ data }: { data: BookViewModelType[] }) {
 }
 
 function AdminBooks() {
-  const theme = useTheme();
   const { data, status } = useQuery({
     queryKey: ['books'],
     queryFn: () => searchBooks({ pageNumber: 0, pageSize: 50 }),
@@ -92,11 +70,6 @@ function AdminBooks() {
         </Grid>
       </Grid>
       {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
-      {status == 'error' && (
-        <Typography variant="h3" color={theme.palette.error.main}>
-          Błąd!
-        </Typography>
-      )}
       {status == 'success' && <BooksTable data={data.data} />}
     </Box>
   );

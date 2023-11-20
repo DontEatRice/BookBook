@@ -35,6 +35,9 @@ export async function getLibrary(id: string) {
       Authorization: auth,
     }),
   });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
   const data = await response.json();
   return LibraryViewModel.parse(data);
 }
@@ -45,6 +48,9 @@ export const postLibrary = async (library: AddLibraryType) => {
     body: JSON.stringify(library),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
   return response;
 };
 
@@ -62,8 +68,8 @@ export const updateLibrary = async ({ id, library }: { id: string; library: AddL
 
 export const deleteLibrary = async (libraryId: string) => {
   const response = await fetch(base + '/Libraries/' + libraryId, {
-      method: 'delete',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
+    method: 'delete',
+    headers: new Headers({ 'Content-Type': 'application/json' }),
   });
   if (!response.ok) {
     await handleBadResponse(response);
@@ -100,4 +106,3 @@ export async function getBooksInLibrary(request: PaginationRequest & { libraryId
   const data = await response.json();
   return BookInLibrarySearchResponse.parse(data);
 }
-

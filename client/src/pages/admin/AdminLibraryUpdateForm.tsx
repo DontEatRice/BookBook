@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import TextInputField from '../../components/TextInputField';
+import TextInputField, { TextInputField2 } from '../../components/TextInputField';
 import NumberInputField from '../../components/NumberInputField';
 import AddLibrary, { AddLibraryType } from '../../models/AddLibrary';
 import { updateLibrary, deleteLibrary, getLibrary } from '../../api/library';
@@ -17,7 +17,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import { useParams } from 'react-router';
 import { OpenHoursViewModelType } from '../../models/OpenHoursViewModel';
@@ -25,6 +25,7 @@ import { ApiResponseError } from '../../utils/utils';
 import useAlert from '../../utils/alerts/useAlert';
 import { useTheme } from '@mui/material/styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import LibraryViewModel from '../../models/LibraryViewModel';
 
 type LibraryOpenHoursTimePickerParams = {
   fields: [keyof AddLibraryType, keyof AddLibraryType];
@@ -42,15 +43,12 @@ function LibraryOpenHoursTimePicker({
 }: LibraryOpenHoursTimePickerParams) {
   const [open, setOpen] = useState(true);
 
-  const handleOpenChange = useCallback(
-    (value: boolean) => {
-      setOpen(value);
-      if (onChange != undefined) {
-        onChange(value);
-      }
-    },
-    [onChange]
-  );
+  const handleOpenChange = (value: boolean) => {
+    setOpen(value);
+    if (onChange != undefined) {
+      onChange(value);
+    }
+  };
 
   return (
     <Box>
@@ -131,29 +129,35 @@ function AdminLibraryUpdateForm() {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const { handleError } = useAlert();
 
-
-  const { data, status } = useQuery({
-    queryKey: ['libraries', params.libraryId],
-    queryFn: () => getLibrary(params.libraryId + ''),
-  });
-
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
-    unregister,
+    // unregister,
+    reset,
+    getValues,
   } = useForm<AddLibraryType>({
-    resolver: zodResolver(AddLibrary)
+    resolver: zodResolver(LibraryViewModel),
+  });
+
+  const { data, status } = useQuery({
+    queryKey: ['libraries', params.libraryId],
+    queryFn: () => getLibrary(params.libraryId + ''),
+    onSuccess: (data) => {
+      // const hours = data.openHours;
+      reset({
+        ...getValues(),
+        ...data,
+        // fridayCloseTime: timeToDayjs(hours.fridayCloseTime),
+      });
+    },
   });
 
   const updateLibraryMutation = useMutation({
     mutationFn: updateLibrary,
     onSuccess: () => {
       navigate('..');
-    },
-    onError: (e: Error) => {
-      console.error(e);
     },
   });
 
@@ -164,7 +168,7 @@ function AdminLibraryUpdateForm() {
     },
     onError: (err) => {
       if (err instanceof ApiResponseError && err.error.code == 'LIBRARY_NOT_FOUND') {
-        setDeleteError('Ta biblioteka już nie istnieje.')
+        setDeleteError('Ta biblioteka już nie istnieje.');
       } else {
         handleError(err);
       }
@@ -172,10 +176,8 @@ function AdminLibraryUpdateForm() {
   });
 
   const onSubmit = (data: AddLibraryType) => {
-      updateLibraryMutation.mutate({ library: data, id: params.libraryId! });
-    }
-;
-
+    updateLibraryMutation.mutate({ library: data, id: params.libraryId! });
+  };
   return (
     <Box sx={{ mt: 2 }}>
       {deleteError && (
@@ -212,20 +214,18 @@ function AdminLibraryUpdateForm() {
                   <Typography>Informacje ogólne</Typography>
                 </AccordionSummary>
                 <AccordionDetails sx={{ width: '100%', mb: 2 }}>
-                  <TextInputField errors={errors} field="name" register={register} label="Nazwa" defaultValue={data.name}/>
+                  <TextInputField2 control={control} field="name" label="Nazwa" />
                   <NumberInputField
                     errors={errors}
                     field="hireTime"
                     register={register}
                     label="Czas wypożyczenia"
-                    defaultValue={data.hireTime+''}
                   />
                   <NumberInputField
                     errors={errors}
                     field="reservationTime"
                     register={register}
                     label="Czas rezerwacji"
-                    defaultValue={data.reservationTime+''}
                   />
                 </AccordionDetails>
               </Accordion>
@@ -237,17 +237,15 @@ function AdminLibraryUpdateForm() {
                   <Typography>Adres</Typography>
                 </AccordionSummary>
                 <AccordionDetails sx={{ width: '100%', mb: 2 }}>
-                  <TextInputField errors={errors} field="street" register={register} label="Ulica" defaultValue={data.address.street}/>
-                  <TextInputField errors={errors} field="number" register={register} label="Numer" defaultValue={data.address.number}/>
-                  <TextInputField errors={errors} field="apartment" register={register} label="Numer lokalu" defaultValue={data.address.apartment+''}/>
-                  <TextInputField errors={errors} field="city" register={register} label="Miasto" defaultValue={data.address.city}/>
-                  <TextInputField errors={errors} field="postalCode" register={register} label="Kod pocztowy" defaultValue={data.address.postalCode}/>
-                  <TextInputField
-                    errors={errors}
-                    field="additionalInfo"
-                    register={register}
+                  <TextInputField2 control={control} field="address.street" label="Ulica" />
+                  <TextInputField2 control={control} field="address.number" label="Numer" />
+                  <TextInputField2 field="address.apartment" label="Numer lokalu" control={control} />
+                  <TextInputField2 control={control} field="address.city" label="Miasto" />
+                  <TextInputField2 field="address.postalCode" label="Kod pocztowy" control={control} />
+                  <TextInputField2
+                    control={control}
+                    field="address.additionalInfo"
                     label="Informacje dodatkowe"
-                    defaultValue={data.address.additionalInfo+''}
                   />
                 </AccordionDetails>
               </Accordion>
@@ -258,7 +256,7 @@ function AdminLibraryUpdateForm() {
                   id="panel1a-header">
                   <Typography>Godziny otwarcia</Typography>
                 </AccordionSummary>
-                <AccordionDetails sx={{ width: '100%', mb: 2 }}>
+                {/* <AccordionDetails sx={{ width: '100%', mb: 2 }}>
                   {daysOfWeek.map(({ dayName, closeTimeField, openTimeField }) => (
                     <LibraryOpenHoursTimePicker
                       key={dayName}
@@ -274,16 +272,16 @@ function AdminLibraryUpdateForm() {
                       }}
                     />
                   ))}
-                </AccordionDetails>
+                </AccordionDetails> */}
               </Accordion>
               <Stack direction="row" spacing={2} justifyContent={'center'}>
-                  <Button type="submit" variant="contained">
-                    Zapisz
-                  </Button>
-                  <Button color="error" onClick={() => deleteLibraryMutation.mutate(params.libraryId+"")}>
-                      Usuń
-                  </Button>
-                </Stack>
+                <Button type="submit" variant="contained">
+                  Zapisz
+                </Button>
+                <Button color="error" onClick={() => deleteLibraryMutation.mutate(params.libraryId + '')}>
+                  Usuń
+                </Button>
+              </Stack>
             </Paper>
           </Box>
         </form>
