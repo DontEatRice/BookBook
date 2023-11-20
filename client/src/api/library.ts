@@ -48,7 +48,6 @@ export async function getBooksAvailableToAdd(libraryId: string) {
 
   const data = await response.json();
 
-  console.log(data);
   return BookViewModel.array().parse(data);
 }
 
