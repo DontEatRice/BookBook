@@ -1,6 +1,5 @@
 import { Box, Button, Paper, Stack, Typography } from '@mui/material';
 import { LibraryViewModelType } from '../../models/LibraryViewModel';
-import { useTheme } from '@emotion/react';
 import { addToCart } from '../../api/cart';
 import useAlert from '../../utils/alerts/useAlert';
 import { useCartStore } from '../../store';
