@@ -65,10 +65,10 @@ export function convertJwtToUser(token: string): User {
   const claims = getJwtBody(token);
   let roles: string[] = [];
 
-  if (Array.isArray(claims.role)) {
-    roles = claims.role;
-  } else if (typeof claims.role === 'string') {
-    roles = [claims.role];
+  if (Array.isArray(claims.r)) {
+    roles = claims.r;
+  } else if (typeof claims.r === 'string') {
+    roles = [claims.r];
   }
 
   return {
