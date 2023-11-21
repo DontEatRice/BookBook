@@ -15,6 +15,9 @@ export const toggleBookInUserList = async (toggleBook: ToggleBookInUserListType)
       Authorization: auth,
     }),
   });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
   return response;
 };
 

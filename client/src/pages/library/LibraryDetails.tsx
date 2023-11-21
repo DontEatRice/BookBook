@@ -1,32 +1,36 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { getLibrary } from '../../api/library';
-import { Box, Grid, Typography } from '@mui/material';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import LoadingTypography from '../../components/common/LoadingTypography';
+import useAlert from '../../utils/alerts/useAlert';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 
 function formatOpenHours(openHours: string | null) {
   if (openHours == null) {
     return '';
   }
   //format w bazie to np 08:00.0000
-  var splitTime = openHours.split(':');
-  return splitTime[0] + ':' + splitTime[1].split('.')[0];
+  const splitTime = openHours.split(':');
+  return `${splitTime[0]}:${splitTime[1].split('.')[0]}`;
 }
 
 function LibraryDetails() {
+  const { handleError } = useAlert();
   const params = useParams();
-  const { data, status } = useQuery({
+  const { data, isLoading, isSuccess } = useQuery({
     queryKey: ['library', params.libraryId],
     queryFn: () => getLibrary(params.libraryId + ''),
+    onError: (e: unknown) => handleError(e),
   });
 
   return (
     <Box mt={2}>
-      {status == 'loading' && <LoadingTypography />}
-      {/* {status == 'error' && 'Błąd!'} */}
-      {status == 'success' && (
+      {isLoading && <LoadingTypography />}
+      {isSuccess && (
         <div>
           <Typography variant="h3" marginTop={8} marginBottom={4}>
             {data.name}
