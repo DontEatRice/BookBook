@@ -64,7 +64,7 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
             //   height: 200,
             // }}
             onClick={() => navigate(`/books/${book.id}`)}>
-            <Img alt="complex" src="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e" />
+            <Img alt={book.title} src={`${book.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`} />
           </Button>
         </Grid>
         <Grid item xs={10} sm container>

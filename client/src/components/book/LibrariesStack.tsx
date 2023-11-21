@@ -1,22 +1,21 @@
-import { Button, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Paper, Stack, Typography } from '@mui/material';
 import { LibraryViewModelType } from '../../models/LibraryViewModel';
 import { useTheme } from '@emotion/react';
 import { addToCart } from '../../api/cart';
 import useAlert from '../../utils/alerts/useAlert';
+import { useCartStore } from '../../store';
 
 function LibrariesStack({ libraries, bookId }: { libraries: LibraryViewModelType[]; bookId: string }) {
   const theme = useTheme();
   const { showError, showSuccess } = useAlert();
+  const cartStore = useCartStore();
   const handleAddToCart = async (bookId: string, libraryId: string) => {
     try {
       await addToCart({ bookId, libraryId });
-      //setError('');
-      //setSuccess('Dodano do koszyka!');
       showSuccess({ message: 'Dodano do koszyka!' });
-      //cartStore.toggleIsChanged();
+      cartStore.toggleIsChanged();
     } catch (error) {
       const err = error as Error;
-      //setSuccess('');
       switch (err.message) {
         case 'BOOK_ALREADY_IN_CART':
           showError({ message: 'Książka została już dodana do koszyka' });
@@ -33,27 +32,35 @@ function LibrariesStack({ libraries, bookId }: { libraries: LibraryViewModelType
       }
     }
   };
-  return (
-    <Stack direction={'column'} spacing={1} style={{ overflow: 'auto', height: 500 }}>
-      {libraries.map((library) => (
-        <Paper
-          key={library.id}
-          elevation={2}
-          sx={{ padding: 2, display: 'flex', justifyContent: 'space-between' }}>
-          <div>
-            <Typography variant="h6">{library.name}</Typography>
-            <Typography>
-              {library.address.street + ' ' + library.address.number}
-              {library.address.apartment == null ? '' : '/'}
-              {library.address.apartment ?? ''}
-            </Typography>
-            <Typography>{library.address.postalCode + ' ' + library.address.city}</Typography>
-          </div>
-          <Button onClick={() => handleAddToCart(bookId, library.id)}>Do koszyka</Button>
-        </Paper>
-      ))}
-    </Stack>
-  );
+  if (libraries.length > 0) {
+    return (
+      <Stack direction={'column'} spacing={1} style={{ overflow: 'auto', height: 500 }}>
+        {libraries.map((library) => (
+          <Paper
+            key={library.id}
+            elevation={2}
+            sx={{ padding: 2, display: 'flex', justifyContent: 'space-between' }}>
+            <div>
+              <Typography variant="h6">{library.name}</Typography>
+              <Typography>
+                {library.address.street + ' ' + library.address.number}
+                {library.address.apartment == null ? '' : '/'}
+                {library.address.apartment ?? ''}
+              </Typography>
+              <Typography>{library.address.postalCode + ' ' + library.address.city}</Typography>
+            </div>
+            <Button onClick={() => handleAddToCart(bookId, library.id)}>Do koszyka</Button>
+          </Paper>
+        ))}
+      </Stack>
+    );
+  } else {
+    return (
+      <Box display="flex" flexDirection={'column'} alignItems="center" justifyContent="center">
+        <Typography variant="h4">Książka nie jest dostępna</Typography>
+      </Box>
+    );
+  }
 }
 
 export default LibrariesStack;
