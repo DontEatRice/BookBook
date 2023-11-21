@@ -6,7 +6,6 @@ import useAlert from '../../utils/alerts/useAlert';
 import { useCartStore } from '../../store';
 
 function LibrariesStack({ libraries, bookId }: { libraries: LibraryViewModelType[]; bookId: string }) {
-  const theme = useTheme();
   const { showError, showSuccess } = useAlert();
   const cartStore = useCartStore();
   const handleAddToCart = async (bookId: string, libraryId: string) => {
