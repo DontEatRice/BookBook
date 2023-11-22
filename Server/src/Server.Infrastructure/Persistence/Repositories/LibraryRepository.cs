@@ -25,9 +25,17 @@ internal class LibraryRepository : ILibraryRepository
             .ExecuteDeleteAsync(cancellationToken);
     }
 
-    public async Task<Library?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<Library?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await _dbContext.Libraries.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        return _dbContext.Libraries.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
+
+    public Task<Library?> FirstOrDefaultWithDetailsByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return _dbContext.Libraries
+            .Include(x => x.Address)
+            .Include(x => x.OpenHours)
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
     public async Task<List<Library>> ListByIdsAsync(List<Guid> ids, CancellationToken cancellationToken)

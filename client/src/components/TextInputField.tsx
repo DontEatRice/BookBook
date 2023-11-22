@@ -41,7 +41,7 @@ export type TextInputFieldProps2<T extends FieldValues> = {
   control: Control<T>;
   additionalProps?: { variant?: TextFieldVariants } & Omit<
     TextFieldProps,
-    'label' | 'helperText' | 'error' | 'variant'
+    'label' | 'helperText' | 'error' | 'variant' | 'defaulfValue'
   >;
 };
 
@@ -57,13 +57,11 @@ export function TextInputField2<T extends FieldValues>({
       control={control}
       render={({ field, fieldState: { error } }) => (
         <TextField
-          {...additionalProps}
           label={label}
           {...field}
-          // {...register(field)}
-          // error={errors[field] != undefined}
+          error={!!error}
           helperText={error?.message}
-          // defaultValue={defaultValue}
+          {...additionalProps}
           sx={{ width: '100%', mb: 2 }}
         />
       )}

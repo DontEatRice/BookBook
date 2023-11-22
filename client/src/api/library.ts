@@ -3,6 +3,7 @@ import { AddLibraryType } from '../models/AddLibrary';
 import BookInLibraryViewModel from '../models/BookInLibraryViewModel';
 import BookViewModel from '../models/BookViewModel';
 import LibraryViewModel from '../models/LibraryViewModel';
+import { UpdateLibraryType } from '../models/UpdateLibrary';
 import { PaginationRequest } from '../utils/constants';
 import { handleBadResponse, paginatedFetch } from '../utils/utils';
 import { paginatedResponse } from '../utils/zodSchemas';
@@ -54,7 +55,7 @@ export const postLibrary = async (library: AddLibraryType) => {
   return response;
 };
 
-export const updateLibrary = async ({ id, library }: { id: string; library: AddLibraryType }) => {
+export const updateLibrary = async ({ id, library }: { id: string; library: UpdateLibraryType }) => {
   const response = await fetch(base + '/Libraries/' + id, {
     method: 'put',
     body: JSON.stringify(library),

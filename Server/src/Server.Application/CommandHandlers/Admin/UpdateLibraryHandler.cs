@@ -18,6 +18,7 @@ public sealed class UpdateLibraryCommandValidator : AbstractValidator<UpdateLibr
 
 public sealed record UpdateLibraryCommand(Guid IdLibrary, string Name, int ReservationTime, int HireTime,
     string PostalCode, string City, string Street, string Number, string? Apartment, string? AdditionalInfo,
+    string EmailAddress, string PhoneNumber,
     TimeSpan? MondayOpenTime, TimeSpan? MondayCloseTime,
     TimeSpan? TuesdayOpenTime, TimeSpan? TuesdayCloseTime,
     TimeSpan? WednesdayOpenTime, TimeSpan? WednesdayCloseTime,
@@ -39,7 +40,7 @@ public sealed class UpdateLibraryHandler : IRequestHandler<UpdateLibraryCommand>
 
     public async Task Handle(UpdateLibraryCommand request, CancellationToken cancellationToken)
     {
-        var library = await _libraryRepository.FirstOrDefaultByIdAsync(request.IdLibrary, cancellationToken);
+        var library = await _libraryRepository.FirstOrDefaultWithDetailsByIdAsync(request.IdLibrary, cancellationToken);
         
         if (library is null)
         {
@@ -49,9 +50,12 @@ public sealed class UpdateLibraryHandler : IRequestHandler<UpdateLibraryCommand>
         library.Name = request.Name;
         library.ReservationTime = request.ReservationTime;
         library.HireTime = request.HireTime;
+        library.EmailAddress = request.EmailAddress;
+        library.PhoneNumber = request.PhoneNumber;
         
         library.Address.City = request.City;
         library.Address.Apartment = request.Apartment;
+        library.Address.Street = request.Street;
         library.Address.Number = request.Number;
         library.Address.PostalCode = request.PostalCode;
         library.Address.AdditionalInfo = request.AdditionalInfo;
