@@ -27,7 +27,9 @@ internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, Paginated
             .AsNoTracking();
         
         query = !string.IsNullOrWhiteSpace(request.OrderByField) ? 
-            query.OrderBy(request.OrderByField) : 
+            request.OrderDirection == OrderDirection.Desc ?
+            query.OrderByDescending(request.OrderByField) : 
+            query.OrderBy(request.OrderByField) :
             query.OrderBy(x => x.Id);
 
         if (!string.IsNullOrWhiteSpace(request.Query))

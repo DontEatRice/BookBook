@@ -2,7 +2,7 @@ import { TableHead, TableBody, Table, TableRow, TableContainer } from '@mui/mate
 import StyledTableCell from '../../components/tableComponents/StyledTableCell';
 import { useTheme } from '@mui/material/styles';
 import { BookViewModelType } from '../../models/BookViewModel';
-import ReviewTableRow from '../../pages/review/ReviewTableRow';
+import ReviewTableRow from './ReviewTableRow';
 
 function Reviews({ book }: { book: BookViewModelType }) {
   const theme = useTheme();
@@ -31,3 +31,4 @@ function Reviews({ book }: { book: BookViewModelType }) {
 }
 
 export default Reviews;
+
