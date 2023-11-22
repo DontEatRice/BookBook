@@ -2,14 +2,14 @@ import { TableHead, TableBody, Table, TableRow, TableContainer } from '@mui/mate
 import StyledTableCell from '../../components/tableComponents/StyledTableCell';
 import { useTheme } from '@mui/material/styles';
 import { BookViewModelType } from '../../models/BookViewModel';
-import ReviewTableRow from '../../pages/review/ReviewTableRow';
+import ReviewTableRow from './ReviewTableRow';
 import { ReviewViewModelType } from '../../models/ReviewViewModel';
 
-function Reviews({ book, reviews }: { book: BookViewModelType, reviews: ReviewViewModelType[] }) {
-    const theme = useTheme();
-  
-    return (
-      <TableContainer sx={{ display: 'flex', backgroundColor: theme.palette.background.default }}>
+function Reviews({ book, reviews }: { book: BookViewModelType; reviews: ReviewViewModelType[] }) {
+  const theme = useTheme();
+
+  return (
+    <TableContainer sx={{ display: 'flex', backgroundColor: theme.palette.background.default }}>
       <Table aria-label="customized table">
         <TableHead>
           <TableRow>

@@ -7,13 +7,13 @@ import { useTheme } from '@mui/material/styles';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteReview } from '../../api/review';
 import { BookViewModelType } from '../../models/BookViewModel';
-import UpdateReviewForm from '../../pages/review/UpdateReviewForm';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { ApiResponseError } from '../../utils/utils';
 import useAlert from '../../utils/alerts/useAlert';
+import UpdateReviewForm from './UpdateReviewForm';
 
 function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: BookViewModelType }) {
-  const [ deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const { handleError } = useAlert();
   const theme = useTheme();
   const queryClient = useQueryClient();
@@ -42,7 +42,7 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
       }
     },
   });
-  return (  
+  return (
     <StyledTableRow>
       <StyledTableCell>
         <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>N</Avatar>
@@ -71,20 +71,20 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
       </StyledTableCell>
       <StyledTableCell>
         {deleteError && (
-        <Paper
-          elevation={7}
-          sx={{
-            width: '100%',
-            padding: 2,
-            backgroundColor: theme.palette.error.main,
-            textAlign: 'center',
-            display: 'flex',
-            justifyContent: 'center',
-            mt: 1,
-          }}>
-          <ErrorOutlineIcon />
-          <Typography>{deleteError}</Typography>
-        </Paper>
+          <Paper
+            elevation={7}
+            sx={{
+              width: '100%',
+              padding: 2,
+              backgroundColor: theme.palette.error.main,
+              textAlign: 'center',
+              display: 'flex',
+              justifyContent: 'center',
+              mt: 1,
+            }}>
+            <ErrorOutlineIcon />
+            <Typography>{deleteError}</Typography>
+          </Paper>
         )}
         <Button sx={{ width: 50, height: 40 }} onClick={() => mutation.mutate(review.id)}>
           Usuń

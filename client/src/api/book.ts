@@ -78,7 +78,14 @@ export async function getLibrariesWithBook(bookId: string) {
   return LibraryViewModel.array().parse(data) ?? [];
 }
 
-export async function searchBooks(args: PaginationRequest & { query?: string }) {
+export async function searchBooks(
+  args: PaginationRequest & {
+    query?: string;
+    authorId?: string;
+    categoryId?: string;
+    yearPublished?: number;
+  }
+) {
   const response = await paginatedFetch(base + '/Books/search', args);
   if (!response.ok) {
     throw new Error(await response.text());

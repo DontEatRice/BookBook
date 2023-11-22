@@ -30,13 +30,14 @@ import BooksList from './pages/book/BooksList';
 import BookDetails from './pages/book/BookDetails';
 import Register from './pages/auth/Register';
 import ChangePassword from './pages/account/ChangePassword';
-import ReservationList from './pages/Reservations/ReservationList';
 import AdminReservationList from './pages/admin/AdminReservations';
 import UserBooksList from './pages/user/UserBooks';
 import AuthorsList from './pages/author/AuthorsList';
 import AuthorDetails from './pages/author/AuthorDetails';
 import AdminRegisterEmployeeForm from './pages/admin/AdminRegisterEmployeeForm';
 import AdminBookUpdateForm from './pages/admin/AdminBookUpdateForm';
+import BookRanking from './pages/book/BookRanking';
+import ReservationList from './pages/reservations/ReservationList';
 
 const mainTheme = createTheme({
   palette: {
@@ -92,6 +93,9 @@ function App() {
           <Route index element={<AuthorsList />} />
           <Route path=":authorId" element={<AuthorDetails />} />
         </Route>
+        <Route path="ranking">
+          <Route index element={<BookRanking />} />
+        </Route>
       </Route>
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminHome />} />
@@ -103,7 +107,7 @@ function App() {
         <Route path="books">
           <Route index element={<AdminBooks />} />
           <Route path="add" element={<AdminBookForm />} />
-          <Route path=":bookId" element={<AdminBookUpdateForm />}/>
+          <Route path=":bookId" element={<AdminBookUpdateForm />} />
         </Route>
         <Route path="categories">
           <Route index element={<AdminCategories />} />
@@ -118,7 +122,7 @@ function App() {
         <Route path="libraries">
           <Route index element={<AdminLibraries />} />
           <Route path="add" element={<AdminLibraryForm />} />
-          <Route path=":libraryId" element={<AdminLibraryUpdateForm />}/>
+          <Route path=":libraryId" element={<AdminLibraryUpdateForm />} />
         </Route>
         <Route path="booksInLibrary">
           <Route index element={<AdminBooksInLibrary />} />
