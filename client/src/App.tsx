@@ -37,7 +37,7 @@ import AuthorDetails from './pages/author/AuthorDetails';
 import AdminRegisterEmployeeForm from './pages/admin/AdminRegisterEmployeeForm';
 import AdminBookUpdateForm from './pages/admin/AdminBookUpdateForm';
 import BookRanking from './pages/book/BookRanking';
-import ReservationList from './pages/reservations/ReservationList';
+import ReservationList from './pages/Reservations/ReservationList';
 
 const mainTheme = createTheme({
   palette: {

@@ -70,12 +70,9 @@ function LibraryOpenHoursTimePicker({
         </Stack>
         {open && (
           <>
-            {/* <TimeInputField label="Otwarcie" field={fields[0]} control={control} disabled={!open} />
-            <TimeInputField label="Zamknięcie" field={fields[1]} control={control} disabled={!open} /> */}
             <Controller
               control={control}
               name={fields[0]}
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               render={({ field }) => (
                 <TimePicker
                   format="HH:mm"
@@ -91,7 +88,6 @@ function LibraryOpenHoursTimePicker({
             <Controller
               control={control}
               name={fields[1]}
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               render={({ field }) => (
                 <TimePicker
                   format="HH:mm"
