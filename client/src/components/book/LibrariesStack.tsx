@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Paper, Stack, Typography } from '@mui/material';
 import { LibraryViewModelType } from '../../models/LibraryViewModel';
 import { addToCart } from '../../api/cart';
 import useAlert from '../../utils/alerts/useAlert';

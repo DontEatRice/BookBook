@@ -11,8 +11,6 @@ import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { getAuthors } from '../../api/author';
 import { getCategories } from '../../api/category';
-import { useSearchParams } from 'react-router-dom';
-import useDebounce from '../../utils/useDebounce';
 import LoadingTypography from '../../components/common/LoadingTypography';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
