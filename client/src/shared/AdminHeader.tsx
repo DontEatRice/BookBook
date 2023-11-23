@@ -31,6 +31,7 @@ function AdminHeader() {
       <NavItem label="Biblioteki" link="/admin/libraries" />
       <NavItem label="Oferta" link="/admin/booksInLibrary" />
       <NavItem label="Rezerwacje" link="/admin/reservations" />
+      <NavItem label="Dodaj pracownika" link="/admin/add-employee" />
     </header>
   );
 }

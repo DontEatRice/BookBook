@@ -18,6 +18,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useAuth } from '../utils/auth/useAuth';
 import ProfileHeaderIcon from '../components/profile/ProfileHeaderIcon';
 import Tooltip from '@mui/material/Tooltip';
+import PersonIcon from '@mui/icons-material/Person';
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 
 function Header() {
   const theme = useTheme();
@@ -170,3 +172,4 @@ function HeaderLogo() {
 }
 
 export default Header;
+

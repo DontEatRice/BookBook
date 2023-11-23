@@ -13,7 +13,7 @@ function Nav() {
         <NavItem label="Strona główna" link="/" />
         <NavItem label="Książki" link="/books" />
         <NavItem label="Autorzy" link="/authors" />
-        <AuthorizedView>
+        <AuthorizedView roles={['User']}>
           <NavItem label="Rezerwacje" link="/reservations" />
           <NavItem label="Do przeczytania" link="/user-books" />
         </AuthorizedView>
@@ -43,4 +43,3 @@ function NavItem({ label, link }: { label: string; link: string }) {
 }
 
 export default Nav;
-
