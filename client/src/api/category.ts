@@ -28,3 +28,4 @@ export async function getCategories(body: PaginationRequest) {
   }
   return BookCategorySearchResponse.parse(data);
 }
+

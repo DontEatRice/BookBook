@@ -35,6 +35,20 @@ function AlertProvider({ children }: { children?: ReactNode }) {
     }
   };
 
+  useState(() => {
+    const defaultOptions = query.getDefaultOptions();
+    query.setDefaultOptions({
+      queries: {
+        ...defaultOptions.queries,
+        onError: handleError,
+      },
+      mutations: {
+        ...defaultOptions.mutations,
+        onError: handleError,
+      },
+    });
+  })
+
   useEffect(() => {
     const defaultOptions = query.getDefaultOptions();
     query.setDefaultOptions({

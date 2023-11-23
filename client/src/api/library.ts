@@ -45,7 +45,9 @@ export async function getBooksAvailableToAdd(libraryId: string) {
   if (!response.ok) {
     await handleBadResponse(response);
   }
+
   const data = await response.json();
+
   return BookViewModel.array().parse(data);
 }
 

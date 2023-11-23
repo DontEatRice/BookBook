@@ -7,7 +7,7 @@ import { useTheme } from '@mui/material/styles';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteReview } from '../../api/review';
 import { BookViewModelType } from '../../models/BookViewModel';
-import UpdateReviewForm from '../../pages/review/UpdateReviewForm';
+import UpdateReviewForm from './UpdateReviewForm';
 
 function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: BookViewModelType }) {
   const theme = useTheme();
@@ -77,3 +77,4 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
 }
 
 export default ReviewTableRow;
+

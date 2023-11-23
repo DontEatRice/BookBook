@@ -4,7 +4,7 @@ import { AuthorViewModelType } from '../../models/AuthorViewModel';
 import { getBook, getLibrariesWithBook } from '../../api/book';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
-import Reviews from '../../pages/review/Reviews';
+import Reviews from '../reviews/Reviews';
 import ToggleBookInUserList, { ToggleBookInUserListType } from '../../models/ToggleBookInUserList';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -24,6 +24,8 @@ import LibrariesStack from '../../components/book/LibrariesStack';
 import { addToCart } from '../../api/cart';
 import useAlert from '../../utils/alerts/useAlert';
 import { useCartStore } from '../../store';
+import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
+import AddReviewForm from '../reviews/AddReviewForm';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
