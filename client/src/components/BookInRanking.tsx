@@ -34,7 +34,7 @@ export default function BookInRanking({ book, position }: { book: BookViewModelT
         </Grid>
         <Grid item>
           <Button sx={{ width: 180, height: 180 }} onClick={() => navigate(`/books/${book.id}`)}>
-            <Img alt="complex" src="" />
+            <Img alt="complex" src={book.coverPictureUrl ?? '/public/podstawowa-ksiazka-otwarta.jpg'} />
           </Button>
         </Grid>
         <Grid item xs={12} sm container>
@@ -53,7 +53,7 @@ export default function BookInRanking({ book, position }: { book: BookViewModelT
           </Grid>
           {book.averageRating && (
             <Grid item display={'flex'} flexDirection={'column'}>
-              <Rating name="half-rating-read" value={book.averageRating} precision={0.25} />
+              <Rating name="half-rating-read" value={book.averageRating} precision={0.25} readOnly />
               <Typography variant="body1" gutterBottom marginY={2}>
                 {book.reviews.length} {getRatingText(book.reviews.length)}
               </Typography>
@@ -77,4 +77,3 @@ function getRatingText(count: number) {
     return 'ocen';
   }
 }
-
