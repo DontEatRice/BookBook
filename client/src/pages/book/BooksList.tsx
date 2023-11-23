@@ -3,10 +3,8 @@ import Typography from '@mui/material/Typography';
 import { BookViewModelType } from '../../models/BookViewModel';
 import { useTheme } from '@mui/material/styles';
 import { searchBooks } from '../../api/book';
-import BookInList from '../../components/BookInList';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import BookInList from '../../components/book/BookInList';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Grid from '@mui/material/Grid';
 import { Autocomplete, Button, InputAdornment, TextField } from '@mui/material';
 import { useState } from 'react';
@@ -176,7 +174,7 @@ function BooksList() {
         </Box>
       </Box>
       <Box marginTop={2}>
-        {searchStatus == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+        {searchStatus == 'loading' && <LoadingTypography />}
         {searchStatus == 'error' && (
           <Typography variant="h3" color={theme.palette.error.main}>
             Błąd!
@@ -189,4 +187,3 @@ function BooksList() {
 }
 
 export default BooksList;
-

@@ -1,8 +1,10 @@
-import { Box, Button, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { LibraryViewModelType } from '../../models/LibraryViewModel';
 import { addToCart } from '../../api/cart';
 import useAlert from '../../utils/alerts/useAlert';
 import { useCartStore } from '../../store';
+import AuthorizedView from '../auth/AuthorizedView';
+import { Link } from 'react-router-dom';
 
 function LibrariesStack({ libraries, bookId }: { libraries: LibraryViewModelType[]; bookId: string }) {
   const { showError, showSuccess } = useAlert();
@@ -39,7 +41,9 @@ function LibrariesStack({ libraries, bookId }: { libraries: LibraryViewModelType
             elevation={2}
             sx={{ padding: 2, display: 'flex', justifyContent: 'space-between' }}>
             <div>
-              <Typography variant="h6">{library.name}</Typography>
+              <Link to={`/libraries/${library.id}`}>
+                <Typography variant="h6">{library.name}</Typography>
+              </Link>
               <Typography>
                 {library.address.street + ' ' + library.address.number}
                 {library.address.apartment == null ? '' : '/'}
@@ -47,7 +51,9 @@ function LibrariesStack({ libraries, bookId }: { libraries: LibraryViewModelType
               </Typography>
               <Typography>{library.address.postalCode + ' ' + library.address.city}</Typography>
             </div>
-            <Button onClick={() => handleAddToCart(bookId, library.id)}>Do koszyka</Button>
+            <AuthorizedView>
+              <Button onClick={() => handleAddToCart(bookId, library.id)}>Do koszyka</Button>
+            </AuthorizedView>
           </Paper>
         ))}
       </Stack>

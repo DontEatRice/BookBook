@@ -16,7 +16,7 @@ import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import AddReviewForm from '../review/AddReviewForm';
+import AddReviewForm from '../reviews/AddReviewForm';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import LoadingTypography from '../../components/common/LoadingTypography';
@@ -24,8 +24,7 @@ import LibrariesStack from '../../components/book/LibrariesStack';
 import { addToCart } from '../../api/cart';
 import useAlert from '../../utils/alerts/useAlert';
 import { useCartStore } from '../../store';
-import AddBookToCart from '../../components/reservations/BookLibraryDropdown';
-import AddReviewForm from '../reviews/AddReviewForm';
+import { Link } from 'react-router-dom';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
@@ -171,15 +170,18 @@ function BookDetails() {
                     {bookLibraries.map((library) => (
                       <Marker position={[library.latitude, library.longitude]} key={library.id}>
                         <Popup>
-                          <a href={`/libraries/${library?.id}`}>{library.name}</a> <br />{' '}
+                          <Link to={`/libraries/${library.id}`}>{library.name}</Link>
+                          <br />
                           {library.address.street + ' ' + library.address.number}
                           {library.address.apartment == null ? '' : '/'}
                           {library.address.apartment ?? ''}
                           <br /> {library.address.city}
                           <br />
-                          <Button onClick={() => handleAddToCart(params.bookId!, library.id)}>
-                            Do koszyka
-                          </Button>
+                          <AuthorizedView>
+                            <Button onClick={() => handleAddToCart(params.bookId!, library.id)}>
+                              Do koszyka
+                            </Button>
+                          </AuthorizedView>
                         </Popup>
                       </Marker>
                     ))}
