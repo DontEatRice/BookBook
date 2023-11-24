@@ -25,11 +25,10 @@ public class UserController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> UserDetail(Guid id)
     {
-        var userId = GetUserIdOrThrow();
-        var identity = await Mediator.Send(new GetUserByIdQuery(userId)) ??
+        var user = await Mediator.Send(new GetUserByIdQuery(userId)) ??
             throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
 
-        return Ok(_mapper.Map<UserDetailViewModel>(identity));
+        return Ok(user);
     }
 
     [HttpPost("toggle-observe")]

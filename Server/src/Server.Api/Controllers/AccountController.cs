@@ -36,7 +36,7 @@ public class AccountController : ControllerBase
         var id = GetUserIdOrThrow();
         var user = await Mediator.Send(new GetUserByIdQuery(id)) ??
             throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
-        return Ok(_mapper.Map<UserDetailViewModel>(user));
+        return Ok(user);
     }
 
     [HttpPatch("me")]

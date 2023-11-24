@@ -4,19 +4,24 @@ using Server.Domain.Repositories;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers.User;
 
-public sealed record GetUserByIdQuery(Guid Id) : IRequest<Identity?>;
+public sealed record GetUserByIdQuery(Guid Id) : IRequest<UserDetailViewModel?>;
 
-internal sealed class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, Identity?>
+internal sealed class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, UserDetailViewModel?>
 {
-    private readonly IIdentityRepository _identityRepository;
+    private readonly BookBookDbContext _dbContext;
+    private readonly IMapper _mapper;
 
-    public GetUserByIdHandler(IIdentityRepository identityRepository)
+    public GetUserByIdHandler(BookBookDbContext dbContext, IMapper mapper)
     {
-        _identityRepository = identityRepository;
+        _dbContext = dbContext;
+        _mapper = mapper;
     }
 
-    public Task<Identity?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    public Task<UserDetailViewModel?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
-        return _identityRepository.FirstOrDefaultByIdAsync(request.Id, cancellationToken);
+        return _dbContext.Identities
+            .Where(x => x.Id == request.Id)
+            .ProjectTo<UserDetailViewModel>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 }
