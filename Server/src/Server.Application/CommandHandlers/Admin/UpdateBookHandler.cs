@@ -4,14 +4,12 @@ using Microsoft.IdentityModel.Tokens;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
 using Server.Application.InfrastructureInterfaces;
-using Server.Domain.Entities;
 using Server.Domain.Repositories;
 
 namespace Server.Application.CommandHandlers.Admin;
 
 public sealed class UpdateBookCommandValidator : AbstractValidator<UpdateBookCommand>
 {
-    
     public UpdateBookCommandValidator()
     {
         RuleFor(x => x.Title).NotEmpty();
@@ -21,7 +19,8 @@ public sealed class UpdateBookCommandValidator : AbstractValidator<UpdateBookCom
     }
 }
 
-public sealed record UpdateBookCommand(Guid IdBook, string ISBN, string Title, int YearPublished,
+public sealed record UpdateBookCommand(Guid Id, string ISBN, string Title, int YearPublished,
+    string? Description, string Language, int? PageCount, string? CoverPictureUrl,
     Guid IdPublisher, List<Guid> AuthorsIDs, List<Guid> CategoriesIds) : IRequest;
 
 public sealed class UpdateBookHandler : IRequestHandler<UpdateBookCommand>
@@ -51,7 +50,7 @@ public sealed class UpdateBookHandler : IRequestHandler<UpdateBookCommand>
             throw new NotFoundException("Publisher not found", ApplicationErrorCodes.PublisherNotFound);
         }
         
-        var book = await _bookRepository.FirstOrDefaultByIdAsync(request.IdBook, cancellationToken);
+        var book = await _bookRepository.FirstOrDefaultByIdAsync(request.Id, cancellationToken);
         
         if (book is null)
         {
@@ -61,7 +60,7 @@ public sealed class UpdateBookHandler : IRequestHandler<UpdateBookCommand>
         var books = await _bookRepository.FindAllAsync(cancellationToken);
 
         var isUniqueIsbn = books
-            .Where(x => x.Id != request.IdBook)
+            .Where(x => x.Id != request.Id)
             .Where(x => x.ISBN == request.ISBN).
             IsNullOrEmpty();
 
@@ -79,6 +78,9 @@ public sealed class UpdateBookHandler : IRequestHandler<UpdateBookCommand>
         book.Publisher = publisher;
         book.Authors = authors;
         book.BookCategories = categories;
+        book.Language = request.Language;
+        book.PageCount = request.PageCount;
+        book.Description = request.Description;
         book.FullText = request.ISBN + " " + request.Title + " " + request.YearPublished + " " + publisher.Name + " " +
                         string.Join(" ", authors.Select(x => x.LastName));
 

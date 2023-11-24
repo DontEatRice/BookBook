@@ -1,6 +1,7 @@
 import { AddBookType } from '../models/AddBook';
 import BookViewModel from '../models/BookViewModel';
 import LibraryViewModel from '../models/LibraryViewModel';
+import { UpdateBookType } from '../models/UpdateBook';
 import { PaginationRequest } from '../utils/constants';
 import { handleBadResponse, paginatedFetch } from '../utils/utils';
 import { paginatedResponse } from '../utils/zodSchemas';
@@ -19,12 +20,21 @@ export const postBook = async (book: AddBookType) => {
     await handleBadResponse(response);
   }
   return response;
-}
+};
 
-export const updateBook = async ({ id, book }: { id: string; book: AddBookType }) => {
+export const updateBook = async ({ id, book }: { id: string; book: UpdateBookType }) => {
+  const copy = {
+    ...book,
+    publisher: null,
+    authors: null,
+    bookCategories: null,
+    idPublisher: book.publisher?.id,
+    categoriesIds: book.bookCategories.map((x) => x.id),
+    authorsIDs: book.authors.map((x) => x.id),
+  };
   const response = await fetch(base + '/Books/' + id, {
     method: 'put',
-    body: JSON.stringify(book),
+    body: JSON.stringify(copy),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
   if (!response.ok) {
@@ -36,13 +46,13 @@ export const updateBook = async ({ id, book }: { id: string; book: AddBookType }
 
 export const deleteBook = async (bookId: string) => {
   const response = await fetch(base + '/Books/' + bookId, {
-      method: 'delete',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
+    method: 'delete',
+    headers: new Headers({ 'Content-Type': 'application/json' }),
   });
   if (!response.ok) {
     await handleBadResponse(response);
   }
-  
+
   return response;
 };
 
@@ -93,4 +103,3 @@ export async function searchBooks(
   const data = await response.json();
   return BooksPaginated.parse(data);
 }
-

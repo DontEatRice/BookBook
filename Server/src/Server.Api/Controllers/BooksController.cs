@@ -56,7 +56,7 @@ public class BooksController : ControllerBase
     {
         await Mediator.Send(command with
         {
-            IdBook = id
+            Id = id
         });
         
         return Created($"/books/{id}", null);

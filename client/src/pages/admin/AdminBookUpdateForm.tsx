@@ -5,10 +5,10 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import TextInputField from '../../components/TextInputField';
+import { TextInputField2 } from '../../components/TextInputField';
 import { deleteBook, updateBook } from '../../api/book';
 import { getBook } from '../../api/book';
-import NumberInputField from '../../components/NumberInputField';
+import { NumberInputField2 } from '../../components/NumberInputField';
 import { getCategories } from '../../api/category';
 import { getAuthors } from '../../api/author';
 import { getPublishers } from '../../api/publisher';
@@ -16,18 +16,22 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { useParams } from 'react-router';
 import Stack from '@mui/material/Stack';
-import AddBook, { AddBookType } from '../../models/AddBook';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ApiResponseError } from '../../utils/utils';
 import useAlert from '../../utils/alerts/useAlert';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import UpdateBook, { UpdateBookType } from '../../models/UpdateBook';
+import { TextInputBox2 } from '../../components/TextInputBox';
+import { languages } from '../../utils/constants';
 
 const paginationDefaultRequest = {
   pageNumber: 0,
   pageSize: 100000,
 };
+
+const defaultPublisher = { id: '', name: 'Ładowanie...' };
 
 function AdminBookUpdateForm() {
   const navigate = useNavigate();
@@ -38,24 +42,35 @@ function AdminBookUpdateForm() {
   const { handleError } = useAlert();
 
   const {
-    register,
     handleSubmit,
     control,
     setError,
+    reset,
     formState: { errors },
-  } = useForm<AddBookType>({
-    resolver: zodResolver(AddBook),
+  } = useForm<UpdateBookType>({
+    resolver: zodResolver(UpdateBook),
+    defaultValues: {
+      authors: [],
+      bookCategories: [],
+      publisher: defaultPublisher,
+      language: 'Polski',
+      description: '',
+    },
   });
+
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
 
   const updateBookMutation = useMutation({
     mutationFn: updateBook,
     onSuccess: () => {
-      queryClient.invalidateQueries(['books']); 
+      queryClient.invalidateQueries(['books']);
       navigate('..');
     },
     onError: (err) => {
       if (err instanceof ApiResponseError && err.error.code == 'BOOK_ALREADY_ADDED') {
-        setError('ISBN', { message: 'Podany ISBN jest już zajęty' }, { shouldFocus: true });
+        setError('isbn', { message: 'Podany ISBN jest już zajęty' }, { shouldFocus: true });
       } else {
         handleError(err);
       }
@@ -65,12 +80,12 @@ function AdminBookUpdateForm() {
   const deleteBookMutation = useMutation({
     mutationFn: deleteBook,
     onSuccess: () => {
-      queryClient.invalidateQueries(['books']); 
+      queryClient.invalidateQueries(['books']);
       navigate('..');
     },
     onError: (err) => {
       if (err instanceof ApiResponseError && err.error.code == 'BOOK_NOT_FOUND') {
-        setDeleteError('Ta książka już nie istnieje.')
+        setDeleteError('Ta książka już nie istnieje.');
       } else {
         handleError(err);
       }
@@ -81,6 +96,17 @@ function AdminBookUpdateForm() {
     queryKey: ['books', params.bookId],
     queryFn: () => getBook(params.bookId + ''),
   });
+
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+
+    reset({
+      ...data,
+      description: data.description ?? '',
+    });
+  }, [data, reset]);
 
   const { data: categoriesData, status: categoriesStatus } = useQuery({
     queryKey: ['categories'],
@@ -95,7 +121,7 @@ function AdminBookUpdateForm() {
     queryFn: () => getPublishers(paginationDefaultRequest),
   });
 
-  const onSubmit = (data: AddBookType) => {
+  const onSubmit = (data: UpdateBookType) => {
     updateBookMutation.mutate({ book: data, id: params.bookId! });
   };
 
@@ -123,105 +149,131 @@ function AdminBookUpdateForm() {
         {status == 'loading' && 'Ładowanie...'}
         {status == 'error' && 'Błąd!'}
         {status == 'success' && (
-            <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', justifyContent: 'center' }}>
-                <Box
-                    sx={{
-                    width: { xs: '100%', sm: '85%', md: '65%' },
-                    textAlign: 'center',
-                    }}>
-                    <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
-                    <TextInputField errors={errors} field="ISBN" register={register} label="ISBN" defaultValue={data.isbn}/>
-                    <TextInputField errors={errors} field="title" register={register} label="Tytuł" defaultValue={data.title}/>
-                    <NumberInputField
-                        errors={errors}
-                        field="yearPublished"
-                        register={register}
-                        label="Rok wydania"
-                        defaultValue={data.yearPublished+''}
-                    />
-                    <Controller
-                        control={control}
-                        name="authorsIds"
-                        render={({ field: { onChange }, fieldState: { error } }) => (
-                        <Autocomplete
-                            multiple
-                            sx={{ width: '100%', mb: 2 }}
-                            options={authorsData?.data || []}
-                            onChange={(_, newValue) => {
-                                onChange(newValue);
-                                }}
-                            getOptionLabel={(author) => author.firstName + ' ' + author.lastName}
-                            renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Autorzy"
-                                placeholder="Szukaj autora"
-                                helperText={error?.message}
-                                error={error != undefined}
-                            />
-                            )}
+          <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', justifyContent: 'center' }}>
+            <Box
+              sx={{
+                width: { xs: '100%', sm: '85%', md: '65%' },
+                textAlign: 'center',
+              }}>
+              <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
+                <TextInputField2 field="isbn" control={control} label="ISBN" />
+                <TextInputField2 control={control} field="title" label="Tytuł" />
+                <NumberInputField2 field="yearPublished" control={control} label="Rok wydania" />
+                <Controller
+                  control={control}
+                  name="authors"
+                  render={({ field: { onChange, ...rest }, fieldState: { error } }) => (
+                    <Autocomplete
+                      {...rest}
+                      multiple
+                      sx={{ width: '100%', mb: 2 }}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
+                      options={authorsData?.data || []}
+                      onChange={(_, newValue) => {
+                        onChange(newValue);
+                      }}
+                      getOptionLabel={(author) => author.firstName + ' ' + author.lastName}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Autorzy"
+                          placeholder="Szukaj autora"
+                          helperText={error?.message}
+                          error={error != undefined}
                         />
-                        )}
+                      )}
                     />
-                    <Controller
-                        control={control}
-                        name="categoriesIds"
-                        render={({ field: { onChange }, fieldState: { error } }) => (
-                        <Autocomplete
-                            multiple
-                            sx={{ width: '100%', mb: 2 }}
-                            options={categoriesData?.data || []}
-                            onChange={(_, newValue) => {
-                            onChange(newValue);
-                            }}
-                            getOptionLabel={(category) => category.name}
-                            renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Kategorie"
-                                placeholder="Szukaj kategorii"
-                                helperText={error?.message}
-                                error={error != undefined}
-                            />
-                            )}
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="bookCategories"
+                  render={({ field: { onChange, ...rest }, fieldState: { error } }) => (
+                    <Autocomplete
+                      {...rest}
+                      multiple
+                      sx={{ width: '100%', mb: 2 }}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
+                      options={categoriesData?.data || []}
+                      onChange={(_, newValue) => {
+                        onChange(newValue);
+                      }}
+                      getOptionLabel={(category) => category.name}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Kategorie"
+                          placeholder="Szukaj kategorii"
+                          helperText={error?.message}
+                          error={error != undefined}
                         />
-                        )}
+                      )}
                     />
-                    <Controller
-                        control={control}
-                        name="idPublisher"
-                        render={({ field: { onChange }, fieldState: { error } }) => (
-                        <Autocomplete
-                            sx={{ width: '100%', mb: 2 }}
-                            options={publishersData?.data || []}
-                            onChange={(_, newValue) => {
-                            onChange(newValue);
-                            }}
-                            getOptionLabel={(publisher) => publisher.name}
-                            renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Wydawca"
-                                placeholder="Szukaj wydawcy"
-                                helperText={error?.message}
-                                error={error != undefined}
-                            />
-                            )}
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="publisher"
+                  render={({ field, fieldState: { error } }) => (
+                    <Autocomplete
+                      {...field}
+                      sx={{ width: '100%', mb: 2 }}
+                      options={publishersData?.data || [defaultPublisher]}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
+                      onChange={(_, newValue) => {
+                        field.onChange(newValue);
+                      }}
+                      getOptionLabel={(publisher) => publisher.name}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Wydawca"
+                          placeholder="Szukaj wydawcy"
+                          helperText={error?.message}
+                          error={error != undefined}
                         />
-                        )}
+                      )}
                     />
-                        <Stack direction="row" spacing={2} justifyContent={'center'}>
-                            <Button type="submit" variant="contained">
-                            Zapisz
-                            </Button>
-                            <Button color="error" onClick={() => deleteBookMutation.mutate(params.bookId+"")}>
-                                Usuń
-                            </Button>
-                        </Stack>
-                    </Paper>
-                </Box>
-            </form>
-            )}
+                  )}
+                />
+                <TextInputBox2 field="description" control={control} label="Opis" rows={4} />
+                <Controller
+                  control={control}
+                  name="language"
+                  render={({ field: { onChange, ...rest }, fieldState: { error } }) => (
+                    <Autocomplete
+                      {...rest}
+                      sx={{ width: '100%', mb: 2 }}
+                      options={languages}
+                      onChange={(_, newValue) => {
+                        onChange(newValue);
+                      }}
+                      getOptionLabel={(language) => language}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Język"
+                          placeholder="Szukaj języków"
+                          helperText={error?.message}
+                          error={error != undefined}
+                        />
+                      )}
+                    />
+                  )}
+                />
+                <NumberInputField2 field="pageCount" control={control} label="Ilość stron" />
+                <Stack direction="row" spacing={2} justifyContent={'center'}>
+                  <Button type="submit" variant="contained">
+                    Zapisz
+                  </Button>
+                  <Button color="error" onClick={() => deleteBookMutation.mutate(params.bookId + '')}>
+                    Usuń
+                  </Button>
+                </Stack>
+              </Paper>
+            </Box>
+          </form>
+        )}
       </Box>
     );
   }
