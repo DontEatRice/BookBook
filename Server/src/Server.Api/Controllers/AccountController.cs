@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Account;
@@ -16,11 +15,8 @@ namespace Server.Api.Controllers;
 [Authorize]
 public class AccountController : ControllerBase
 {
-    private readonly IMapper _mapper;
-    public AccountController(IMediator mediator, IMapper mapper) : base(mediator)
-    {
-        _mapper = mapper;
-    }
+    public AccountController(IMediator mediator) : base(mediator)
+    { }
 
     [HttpPatch("change-password")]
     public async Task<IActionResult> ChangePassword(ChangePasswordCommand command)

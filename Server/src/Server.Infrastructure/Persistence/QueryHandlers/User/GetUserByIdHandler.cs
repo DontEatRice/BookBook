@@ -1,6 +1,8 @@
-﻿using MediatR;
-using Server.Domain.Entities.Auth;
-using Server.Domain.Repositories;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Server.Application.ViewModels;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers.User;
 
