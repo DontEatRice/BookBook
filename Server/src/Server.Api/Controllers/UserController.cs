@@ -25,7 +25,7 @@ public class UserController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> UserDetail(Guid id)
     {
-        var user = await Mediator.Send(new GetUserByIdQuery(userId)) ??
+        var user = await Mediator.Send(new GetUserByIdQuery(id)) ??
             throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
 
         return Ok(user);
