@@ -10,22 +10,14 @@ const base = import.meta.env.VITE_API_BASE_URL;
 const ReviewSearchResponse = paginatedResponse(ReviewViewModel);
 
 export async function getReviews(bookId: string, body: PaginationRequest) {
-    const response = await paginatedFetch(base + '/Books/' + bookId + '/Reviews/search', body);
-    const data = await response.json();
+  const response = await paginatedFetch(base + '/Books/' + bookId + '/Reviews/search', body);
+  const data = await response.json();
 
-    if (!response.ok) {
-        await handleBadResponse(response);
-      }
-    return ReviewSearchResponse.parse(data);
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+  return ReviewSearchResponse.parse(data);
 }
-
-/*
-export async function getReviews({ bookId, body } : { bookId: string; body: PaginationRequest}) {
-    const response = await paginatedFetch(base + '/Books/' + bookId + '/Reviews/search', body);
-    const data = await response.json();
-    return ReviewSearchResponse.parse(data);
-}
-*/
 
 export const postReview = async (review: AddReviewType) => {
   const auth = await getAuthToken();

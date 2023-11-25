@@ -39,6 +39,14 @@ export const register = async (request: RegisterUserType) => {
   }
 };
 
+export async function getAuthTokenOrNull() {
+  try {
+    return await getAuthToken();
+  } catch {
+    return null;
+  }
+}
+
 export async function getAuthToken() {
   const token = localStorage.getItem(LocalStorageTokenKey);
   if (token === null) {
@@ -75,9 +83,9 @@ export const registerEmployee = async (request: RegisterEmployeeType) => {
   const result = await fetch(base + '/employee/register', {
     method: 'post',
     body: JSON.stringify(copy),
-    headers: new Headers({ 
+    headers: new Headers({
       'Content-Type': 'application/json',
-      Authorization: auth
+      Authorization: auth,
     }),
   });
   if (!result.ok) {

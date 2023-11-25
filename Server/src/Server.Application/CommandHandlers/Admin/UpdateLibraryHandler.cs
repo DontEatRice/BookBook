@@ -1,20 +1,10 @@
-using FluentValidation;
 using MediatR;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
 using Server.Application.InfrastructureInterfaces;
-using Server.Domain.Entities;
 using Server.Domain.Repositories;
 
 namespace Server.Application.CommandHandlers.Admin;
-
-public sealed class UpdateLibraryCommandValidator : AbstractValidator<UpdateLibraryCommand>
-{
-    public UpdateLibraryCommandValidator()
-    {
-
-    }
-}
 
 public sealed record UpdateLibraryCommand(Guid IdLibrary, string Name, int ReservationTime, int HireTime,
     string PostalCode, string City, string Street, string Number, string? Apartment, string? AdditionalInfo,

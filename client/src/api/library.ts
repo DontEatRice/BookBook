@@ -7,7 +7,7 @@ import { UpdateLibraryType } from '../models/UpdateLibrary';
 import { PaginationRequest } from '../utils/constants';
 import { handleBadResponse, paginatedFetch } from '../utils/utils';
 import { paginatedResponse } from '../utils/zodSchemas';
-import { getAuthToken } from './auth';
+import { getAuthTokenOrNull } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 const LibrarySearchResponse = paginatedResponse(LibraryViewModel);
@@ -22,18 +22,10 @@ export async function getLibraries(args: PaginationRequest) {
 }
 
 export async function getLibrary(id: string) {
-  //endpoint powinien działać zarówno dla zalogowanego i anonima
-  let auth = '';
-  try {
-    auth = await getAuthToken();
-  } catch (err) {
-    // w momencie gdy metoda getAuthToken rzuci błąd po prostu zostawiamy auth puste
-  }
-
   const response = await fetch(base + '/Libraries/' + id, {
     headers: new Headers({
       'Content-Type': 'application/json',
-      Authorization: auth,
+      Authorization: (await getAuthTokenOrNull()) ?? '',
     }),
   });
   if (!response.ok) {
@@ -109,4 +101,3 @@ export async function getBooksInLibrary(request: PaginationRequest & { libraryId
   const data = await response.json();
   return BookInLibrarySearchResponse.parse(data);
 }
-

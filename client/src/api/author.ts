@@ -5,7 +5,7 @@ import { UpdateAuthorType } from '../models/UpdateAuthor';
 import { PaginationRequest } from '../utils/constants';
 import { handleBadResponse, paginatedFetch } from '../utils/utils';
 import { paginatedResponse } from '../utils/zodSchemas';
-import { getAuthToken } from './auth';
+import { getAuthTokenOrNull } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 const AuthorSearchResponse = paginatedResponse(AuthorViewModel);
@@ -34,8 +34,8 @@ export const updateAuthor = async ({ id, author }: { id: string; author: UpdateA
 
 export const deleteAuthor = async (authorId: string) => {
   const response = await fetch(base + '/Authors/' + authorId, {
-      method: 'delete',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
+    method: 'delete',
+    headers: new Headers({ 'Content-Type': 'application/json' }),
   });
   if (!response.ok) {
     await handleBadResponse(response);
@@ -54,18 +54,10 @@ export async function getAuthors(body: PaginationRequest) {
 }
 
 export async function getAuthor(id: string) {
-  //endpoint powinien działać zarówno dla zalogowanego i anonima
-  let auth = '';
-  try {
-    auth = await getAuthToken();
-  } catch (err) {
-    // w momencie gdy metoda getAuthToken rzuci błąd po prostu zostawiamy auth puste
-  }
-
   const response = await fetch(base + '/Authors/' + id, {
     headers: new Headers({
       'Content-Type': 'application/json',
-      Authorization: auth,
+      Authorization: (await getAuthTokenOrNull()) ?? '',
     }),
   });
   const data = await response.json();

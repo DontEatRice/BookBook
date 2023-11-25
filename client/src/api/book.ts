@@ -5,7 +5,7 @@ import { UpdateBookType } from '../models/UpdateBook';
 import { PaginationRequest } from '../utils/constants';
 import { handleBadResponse, paginatedFetch } from '../utils/utils';
 import { paginatedResponse } from '../utils/zodSchemas';
-import { getAuthToken } from './auth';
+import { getAuthTokenOrNull } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 const BooksPaginated = paginatedResponse(BookViewModel);
@@ -63,18 +63,10 @@ export async function getBooks() {
 }
 
 export async function getBook(id: string) {
-  //endpoint powinien działać zarówno dla zalogowanego i anonima
-  let auth = '';
-  try {
-    auth = await getAuthToken();
-  } catch (err) {
-    // w momencie gdy metoda getAuthToken rzuci błąd po prostu zostawiamy auth puste
-  }
-
   const response = await fetch(base + '/Books/' + id, {
     headers: new Headers({
       'Content-Type': 'application/json',
-      Authorization: auth,
+      Authorization: (await getAuthTokenOrNull()) ?? '',
     }),
   });
   const data = await response.json();
