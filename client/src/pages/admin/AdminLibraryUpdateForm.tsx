@@ -5,8 +5,6 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { TextInputField2 } from '../../components/TextInputField';
-import { NumberInputField2 } from '../../components/NumberInputField';
 import { AddLibraryType } from '../../models/AddLibrary';
 import { updateLibrary, deleteLibrary, getLibrary } from '../../api/library';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -27,6 +25,8 @@ import UpdateLibrary, { UpdateLibraryType } from '../../models/UpdateLibrary';
 import { MuiTelInput } from 'mui-tel-input';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
+import { NumberInputField2 } from '../../components/common/NumberInputField';
+import { TextInputField2 } from '../../components/common/TextInputField';
 
 type LibraryOpenHoursTimePickerParams = {
   fields: [keyof UpdateLibraryType, keyof UpdateLibraryType];

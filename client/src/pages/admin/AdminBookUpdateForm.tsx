@@ -5,10 +5,8 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { TextInputField2 } from '../../components/TextInputField';
 import { deleteBook, updateBook } from '../../api/book';
 import { getBook } from '../../api/book';
-import { NumberInputField2 } from '../../components/NumberInputField';
 import { getCategories } from '../../api/category';
 import { getAuthors } from '../../api/author';
 import { getPublishers } from '../../api/publisher';
@@ -23,8 +21,10 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import UpdateBook, { UpdateBookType } from '../../models/UpdateBook';
-import { TextInputBox2 } from '../../components/TextInputBox';
 import { languages } from '../../utils/constants';
+import { NumberInputField2 } from '../../components/common/NumberInputField';
+import { TextInputBox2 } from '../../components/common/TextInputBox';
+import { TextInputField2 } from '../../components/common/TextInputField';
 
 const paginationDefaultRequest = {
   pageNumber: 0,

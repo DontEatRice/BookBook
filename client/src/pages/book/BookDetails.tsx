@@ -68,11 +68,6 @@ function BookDetails() {
     queryFn: () => getReviews(params.bookId + '', { pageNumber: 0, pageSize: 50 }),
   });
 
-  const { data: reviews, status: statusReviews } = useQuery({
-    queryKey: ['reviews', params.bookId],
-    queryFn: () => getReviews(params.bookId + '', { pageNumber: 0, pageSize: 50 }),
-  });
-
   const { data: bookLibraries, status: bookLibrariesStatus } = useQuery(
     ['booksInLibrary', params.bookId],
     async (context) => {
@@ -134,9 +129,9 @@ function BookDetails() {
             <Grid container spacing={1} marginBottom={3} padding={2}>
               <Grid item md={5} xs={12}>
                 <img
-                  srcSet={`${data.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`}
-                  src={`${data.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`}
-                  alt={data.title}
+                  srcSet={`${book.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`}
+                  src={`${book.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`}
+                  alt={book.title}
                   width="280px"
                   height="400px"
                   loading="lazy"

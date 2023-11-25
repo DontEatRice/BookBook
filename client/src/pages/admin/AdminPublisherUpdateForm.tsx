@@ -5,19 +5,19 @@ import UpdatePublisher, { UpdatePublisherType } from '../../models/UpdatePublish
 import { zodResolver } from '@hookform/resolvers/zod';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import TextInputField from '../../components/TextInputField';
 import { updatePublisher, deletePublisher } from '../../api/publisher';
 import { useNavigate } from 'react-router-dom';
 import { getPublisher } from '../../api/publisher';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router';
-import TextInputBox from '../../components/TextInputBox';
 import { ApiResponseError } from '../../utils/utils';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import useAlert from '../../utils/alerts/useAlert';
 import Typography from '@mui/material/Typography';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import TextInputBox from '../../components/common/TextInputBox';
+import TextInputField from '../../components/common/TextInputField';
 
 function AdminPublisherForm() {
   const navigate = useNavigate();
@@ -54,11 +54,11 @@ function AdminPublisherForm() {
     },
     onError: (err) => {
       if (err instanceof ApiResponseError && err.error.code == 'PUBLISHER_NOT_FOUND') {
-        setDeleteError('Ten wydawca już nie istnieje.')
+        setDeleteError('Ten wydawca już nie istnieje.');
       } else {
         handleError(err);
       }
-    }
+    },
   });
 
   const { data, status } = useQuery({
@@ -107,14 +107,14 @@ function AdminPublisherForm() {
                 field="description"
                 label="Opis"
                 register={register}
-                defaultValue={data.description+""}
+                defaultValue={data.description + ''}
               />
               <Stack direction="row" spacing={2} justifyContent={'center'}>
                 <Button type="submit" variant="contained">
                   Zapisz
                 </Button>
-                <Button color="error" onClick={() => deletePublisherMutation.mutate(params.publisherId+"")}>
-                    Usuń
+                <Button color="error" onClick={() => deletePublisherMutation.mutate(params.publisherId + '')}>
+                  Usuń
                 </Button>
               </Stack>
             </Paper>

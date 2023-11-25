@@ -5,12 +5,10 @@ import UpdateAuthor, { UpdateAuthorType } from '../../models/UpdateAuthor';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import TextInputField from '../../components/TextInputField';
 import { updateAuthor, deleteAuthor } from '../../api/author';
 import { useNavigate } from 'react-router-dom';
 import { getAuthor } from '../../api/author';
 import { useCallback, useMemo } from 'react';
-import NumberInputField from '../../components/NumberInputField';
 import { uploadImage } from '../../api/image';
 import { fileToBase64 } from '../../utils/utils';
 import UploadImage from '../../models/UploadImage';
@@ -22,6 +20,8 @@ import { useTheme } from '@mui/material/styles';
 import useAlert from '../../utils/alerts/useAlert';
 import Typography from '@mui/material/Typography';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import NumberInputField from '../../components/common/NumberInputField';
+import TextInputField from '../../components/common/TextInputField';
 
 async function fileToUploadImage(file: File) {
   let base64 = await fileToBase64(file);
@@ -86,7 +86,7 @@ function AdminAuthorForm() {
     },
     onError: (err) => {
       if (err instanceof ApiResponseError && err.error.code == 'AUTHOR_NOT_FOUND') {
-        setDeleteError('Ten autor już nie istnieje.')
+        setDeleteError('Ten autor już nie istnieje.');
       } else {
         handleError(err);
       }
@@ -176,8 +176,8 @@ function AdminAuthorForm() {
                 <Button type="submit" variant="contained">
                   Zapisz
                 </Button>
-                <Button color="error" onClick={() => deleteAuthorMutation.mutate(params.authorId+"")}>
-                    Usuń
+                <Button color="error" onClick={() => deleteAuthorMutation.mutate(params.authorId + '')}>
+                  Usuń
                 </Button>
               </Stack>
             </Paper>

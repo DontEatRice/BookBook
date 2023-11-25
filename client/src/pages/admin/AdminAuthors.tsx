@@ -70,11 +70,6 @@ function AdminAuthors() {
         </Grid>
       </Grid>
       {status == 'loading' && <LoadingTypography />}
-      {status == 'error' && (
-        <Typography variant="h3" color={theme.palette.error.main}>
-          Błąd!
-        </Typography>
-      )}
       {status == 'success' && <AuthorsTable data={data.data} />}
     </Box>
   );
