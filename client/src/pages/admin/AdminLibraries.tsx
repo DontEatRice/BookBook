@@ -13,6 +13,7 @@ import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import { LibraryViewModelType } from '../../models/LibraryViewModel';
 import { getLibraries } from '../../api/library';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 function LibrariesTable({ data }: { data: LibraryViewModelType[] }) {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ function AdminLibraries() {
           </Link>
         </Grid>
       </Grid>
-      {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+      {status == 'loading' && <LoadingTypography />}
       {status == 'error' && (
         <Typography variant="h3" color={theme.palette.error.main}>
           Błąd!

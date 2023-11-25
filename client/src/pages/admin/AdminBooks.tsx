@@ -12,6 +12,30 @@ import Grid from '@mui/material/Grid';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { searchBooks } from '../../api/book';
+import LoadingTypography from '../../components/common/LoadingTypography';
+
+// przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
+
+// function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+//   if (b[orderBy] < a[orderBy]) {
+//     return -1;
+//   }
+//   if (b[orderBy] > a[orderBy]) {
+//     return 1;
+//   }
+//   return 0;
+// }
+
+// type Order = 'asc' | 'desc';
+
+// function getComparator<Key extends keyof BookViewModelType>(
+//   order: Order,
+//   orderBy: Key
+// ): (a: BookViewModelType, b: BookViewModelType) => number {
+//   return order === 'desc'
+//     ? (a, b) => descendingComparator(a, b, orderBy)
+//     : (a, b) => -descendingComparator(a, b, orderBy);
+// }
 
 function BooksTable({ data }: { data: BookViewModelType[] }) {
   const navigate = useNavigate();
@@ -69,7 +93,12 @@ function AdminBooks() {
           </Link>
         </Grid>
       </Grid>
-      {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+      {status == 'loading' && <LoadingTypography />}
+      {status == 'error' && (
+        <Typography variant="h3" color={theme.palette.error.main}>
+          Błąd!
+        </Typography>
+      )}
       {status == 'success' && <BooksTable data={data.data} />}
     </Box>
   );

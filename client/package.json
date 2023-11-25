@@ -20,15 +20,18 @@
     "@tanstack/react-query": "^4.36.1",
     "@tanstack/react-query-devtools": "^4.36.1",
     "dayjs": "^1.11.9",
+    "leaflet": "^1.9.4",
     "mui-tel-input": "^4.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.48.2",
+    "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.11.2",
     "zod": "^3.22.3",
     "zustand": "^4.4.3"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.9.8",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.57.1",

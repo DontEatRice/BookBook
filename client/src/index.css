@@ -11,3 +11,8 @@ body {
 a:visited {
     color: inherit;
 }
+#map{
+    position: relative;
+    height: inherit;
+    width: inherit;
+}

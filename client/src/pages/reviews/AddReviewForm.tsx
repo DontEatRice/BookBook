@@ -1,20 +1,19 @@
 import * as React from 'react';
 import { Rating, Box, Paper, Button } from '@mui/material';
-import TextInputField from '../../components/TextInputField';
+import TextInputField from '../../components/common/TextInputField';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postReview } from '../../api/review';
 import AddReview, { AddReviewType } from '../../models/AddReview';
 import { BookViewModelType } from '../../models/BookViewModel';
-import TextInputBox from '../../components/TextInputBox';
+import TextInputBox from '../../components/common/TextInputBox';
 import useAlert from '../../utils/alerts/useAlert';
 import Typography from '@mui/material/Typography';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { ApiResponseError } from '../../utils/utils';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
-
 
 function AddReviewForm({ book }: { book: BookViewModelType }) {
   const [addError, setAddError] = useState<string | null>(null);
@@ -97,4 +96,3 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
 }
 
 export default AddReviewForm;
-

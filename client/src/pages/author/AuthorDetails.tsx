@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { getAuthor, getAuthorBookCards } from '../../api/author';
-import { Avatar, Box, CircularProgress, Grid, Typography } from '@mui/material';
+import { Avatar, Box, Grid, Typography } from '@mui/material';
 import AuthorBookCard from '../../components/author/AuthorBookCard';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 function AuthorDetails() {
   const params = useParams();
@@ -13,7 +14,7 @@ function AuthorDetails() {
 
   return (
     <Box mt={2}>
-      {authorDataStatus == 'loading' && <CircularProgress />}
+      {authorDataStatus == 'loading' && <LoadingTypography />}
       {authorDataStatus == 'error' && 'Błąd!'}
       {authorDataStatus == 'success' && (
         <div>
@@ -68,7 +69,7 @@ function AuthorBookCards() {
       <Typography variant="h5" gutterBottom>
         Poznaj autora bliżej
       </Typography>
-      {booksStatus == 'loading' && <CircularProgress />}
+      {booksStatus == 'loading' && <LoadingTypography />}
       {booksStatus == 'error' && 'Błąd!'}
       {booksStatus == 'success' && booksData.length != 0 && (
         <Box display={'flex'} flexDirection={'row'}>

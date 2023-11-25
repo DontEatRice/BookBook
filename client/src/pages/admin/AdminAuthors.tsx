@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getAuthors } from '../../api/author';
 import Table from '@mui/material/Table';
 import Avatar from '@mui/material/Avatar';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 function AuthorsTable({ data }: { data: AuthorViewModelType[] }) {
   const navigate = useNavigate();
@@ -68,7 +69,12 @@ function AdminAuthors() {
           </Link>
         </Grid>
       </Grid>
-      {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+      {status == 'loading' && <LoadingTypography />}
+      {status == 'error' && (
+        <Typography variant="h3" color={theme.palette.error.main}>
+          Błąd!
+        </Typography>
+      )}
       {status == 'success' && <AuthorsTable data={data.data} />}
     </Box>
   );

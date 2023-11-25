@@ -1,11 +1,11 @@
-import { BookViewModelType } from '../models/BookViewModel';
+import { BookViewModelType } from '../../models/BookViewModel';
 import { useNavigate } from 'react-router-dom';
 import { Button, Grid, Paper, Typography, styled } from '@mui/material';
-import ToggleBookInUserList, { ToggleBookInUserListType } from '../models/ToggleBookInUserList';
+import ToggleBookInUserList, { ToggleBookInUserListType } from '../../models/ToggleBookInUserList';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toggleBookInUserList } from '../api/user';
+import { toggleBookInUserList } from '../../api/user';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 
 function BookInUserList({ book }: { book: BookViewModelType }) {
@@ -64,7 +64,7 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
             //   height: 200,
             // }}
             onClick={() => navigate(`/books/${book.id}`)}>
-            <Img alt="complex" src="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e" />
+            <Img alt={book.title} src={`${book.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`} />
           </Button>
         </Grid>
         <Grid item xs={10} sm container>
@@ -104,4 +104,3 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
 }
 
 export default BookInUserList;
-

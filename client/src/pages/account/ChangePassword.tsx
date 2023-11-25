@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import ChangePasswordRequest, { ChangePasswordRequestType } from '../../models/ChangePasswordRequest';
 import Box from '@mui/material/Box';
-import TextInputField from '../../components/TextInputField';
+import TextInputField from '../../components/common/TextInputField';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';

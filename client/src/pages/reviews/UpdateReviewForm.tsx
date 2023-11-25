@@ -1,5 +1,5 @@
 import { Rating, Box, Paper, Button } from '@mui/material';
-import TextInputField from '../../components/TextInputField';
+import TextInputField from '../../components/common/TextInputField';
 import { ReviewViewModelType } from '../../models/ReviewViewModel';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateReview } from '../../api/review';
 import { BookViewModelType } from '../../models/BookViewModel';
 import UpdateReview, { UpdateReviewType } from '../../models/UpdateReview';
-import TextInputBox from '../../components/TextInputBox';
+import TextInputBox from '../../components/common/TextInputBox';
 import useAlert from '../../utils/alerts/useAlert';
 import Typography from '@mui/material/Typography';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -45,8 +45,8 @@ function UpdateReviewForm({
     mutationFn: updateReview,
     onSuccess: () => {
       queryClient.refetchQueries(['books', book.id]);
-      
-      if(updateError == null) {
+
+      if (updateError == null) {
         handleClose();
       }
     },
@@ -85,8 +85,7 @@ function UpdateReviewForm({
           sx={{
             width: 'auto',
             textAlign: 'left',
-          }}
-        >
+          }}>
           <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
             <Controller
               control={control}

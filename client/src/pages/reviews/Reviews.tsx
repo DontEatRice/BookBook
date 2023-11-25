@@ -9,7 +9,8 @@ function Reviews({ book, reviews }: { book: BookViewModelType; reviews: ReviewVi
   const theme = useTheme();
 
   return (
-    <TableContainer sx={{ display: 'flex', backgroundColor: theme.palette.background.default }}>
+    <TableContainer
+      sx={{ display: 'flex', backgroundColor: theme.palette.background.default, marginBottom: 2 }}>
       <Table aria-label="customized table">
         <TableHead>
           <TableRow>
