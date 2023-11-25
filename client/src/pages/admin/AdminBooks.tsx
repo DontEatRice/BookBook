@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import { searchBooks } from '../../api/book';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 
@@ -89,7 +90,7 @@ function AdminBooks() {
           </Link>
         </Grid>
       </Grid>
-      {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+      {status == 'loading' && <LoadingTypography />}
       {status == 'error' && (
         <Typography variant="h3" color={theme.palette.error.main}>
           Błąd!

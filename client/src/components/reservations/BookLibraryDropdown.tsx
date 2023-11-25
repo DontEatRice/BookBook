@@ -119,4 +119,3 @@ export default function AddBookToCart({ bookId }: { bookId: string }) {
     </div>
   );
 }
-

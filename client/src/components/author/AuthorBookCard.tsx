@@ -10,7 +10,7 @@ function AuthorBookCard({ book }: { book: BookViewModelType }) {
         component="img"
         alt={book.title}
         height="280"
-        image="https://image.ceneostatic.pl/data/products/85952195/i-wiedzmin-chrzest-ognia-tom-5-okladka-z-gry.jpg"
+        image={book.coverPictureUrl ?? '/public/podstawowa-ksiazka-otwarta.jpg'}
       />
       <CardContent>
         <Typography gutterBottom variant="h6" component="div" noWrap>

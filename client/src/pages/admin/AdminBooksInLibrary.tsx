@@ -16,6 +16,7 @@ import { getBooksInLibrary } from '../../api/library';
 import { BookInLibraryViewModelType } from '../../models/BookInLibraryViewModel';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../utils/auth/useAuth';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 function BooksInLibraryTable({ data }: { data: BookInLibraryViewModelType[] }) {
   return (
@@ -70,7 +71,7 @@ function AdminBooksInLibrary() {
           </Link>
         </Grid>
       </Grid>
-      {booksInLibraryStatus == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+      {booksInLibraryStatus == 'loading' && <LoadingTypography />}
       {booksInLibraryStatus == 'error' && (
         <Typography variant="h3" color={theme.palette.error.main}>
           Błąd!

@@ -8,6 +8,8 @@ public class LibraryViewModel
     public int HireTime { get; set; }
     public string EmailAddress { get; set; }
     public string PhoneNumber { get; set; }
+    public double Longitude { get; set; }
+    public double Latitude { get; set; }
     public OpenHoursViewModel OpenHours { get; set; }
     public AddressViewModel Address { get; set; }
 }

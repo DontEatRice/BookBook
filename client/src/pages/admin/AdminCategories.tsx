@@ -18,6 +18,7 @@ import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { SxProps, Theme } from '@mui/material/styles';
 import { PaginationRequest } from '../../utils/constants';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 type ResponseType = z.infer<typeof BookCategorySearchResponse>;
 interface BookCategoriesTableProps {
@@ -135,7 +136,7 @@ function AdminBookCategories() {
           </Link>
         </Grid>
       </Grid>
-      {isInitLoading && isLoading && <Typography variant="h3">Ładowanie...</Typography>}
+      {isInitLoading && isLoading && <LoadingTypography />}
       {status == 'success' && (
         <BookCategoriesTable
           data={data}

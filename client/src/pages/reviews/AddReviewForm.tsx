@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Rating, Box, Paper, Button } from '@mui/material';
-import TextInputField from '../../components/TextInputField';
+import TextInputField from '../../components/common/TextInputField';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postReview } from '../../api/review';
 import AddReview, { AddReviewType } from '../../models/AddReview';
 import { BookViewModelType } from '../../models/BookViewModel';
-import TextInputBox from '../../components/TextInputBox';
+import TextInputBox from '../../components/common/TextInputBox';
 
 function AddReviewForm({ book }: { book: BookViewModelType }) {
   const [value, setValue] = React.useState<number | null>(0);
@@ -67,4 +67,3 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
 }
 
 export default AddReviewForm;
-

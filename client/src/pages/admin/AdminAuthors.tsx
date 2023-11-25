@@ -14,6 +14,7 @@ import { getAuthors } from '../../api/author';
 import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import { Avatar } from '@mui/material';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 function AuthorsTable({ data }: { data: AuthorViewModelType[] }) {
   return (
@@ -65,7 +66,7 @@ function AdminAuthors() {
           </Link>
         </Grid>
       </Grid>
-      {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+      {status == 'loading' && <LoadingTypography />}
       {status == 'error' && (
         <Typography variant="h3" color={theme.palette.error.main}>
           Błąd!

@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postPublisher } from '../../api/publisher';
 import { useNavigate } from 'react-router-dom';
 import AddPublisher, { AddPublisherType } from '../../models/AddPublisher';
-import TextInputField from '../../components/TextInputField';
+import TextInputField from '../../components/common/TextInputField';
 function AdminPublisherForm() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();

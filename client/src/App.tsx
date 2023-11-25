@@ -31,6 +31,7 @@ import AdminReservationList from './pages/admin/AdminReservations';
 import UserBooksList from './pages/user/UserBooks';
 import AuthorsList from './pages/author/AuthorsList';
 import AuthorDetails from './pages/author/AuthorDetails';
+import LibraryDetails from './pages/library/LibraryDetails';
 import AdminRegisterEmployeeForm from './pages/admin/AdminRegisterEmployeeForm';
 import BookRanking from './pages/book/BookRanking';
 import ReservationList from './pages/reservations/ReservationList';
@@ -91,6 +92,10 @@ function App() {
         </Route>
         <Route path="ranking">
           <Route index element={<BookRanking />} />
+        </Route>
+        <Route path="libraries">
+          <Route index element />
+          <Route path=":libraryId" element={<LibraryDetails />} />
         </Route>
       </Route>
       <Route path="/admin" element={<AdminLayout />}>
