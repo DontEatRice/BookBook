@@ -4,23 +4,24 @@ import AddAuthor, { AddAuthorType } from '../../models/AddAuthor';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import TextInputField from '../../components/TextInputField';
+import TextInputField from '../../components/common/TextInputField';
 import { postAuthor } from '../../api/author';
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useMemo, useState } from 'react';
-import NumberInputField from '../../components/NumberInputField';
+import NumberInputField from '../../components/common/NumberInputField';
 import { uploadImage } from '../../api/image';
 import { fileToUploadImage } from '../../utils/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import useAlert from '../../utils/alerts/useAlert';
-import TextInputBox from '../../components/TextInputBox';
+import TextInputBox from '../../components/common/TextInputBox';
 
 function AdminAuthorForm() {
   const [fileUrl, setFileUrl] = useState<string | undefined>(undefined);
   const queryClient = useQueryClient();
   const { showSuccess } = useAlert();
+  const { handleError } = useAlert();
   const navigate = useNavigate();
   const {
     register,
@@ -55,6 +56,9 @@ function AdminAuthorForm() {
       showSuccess({ message: `${firstName} ${lastName} został dodany!` });
       navigate('..');
     },
+    onError: (err) => {
+      handleError(err);
+    },
   });
   const onSubmit = useCallback(
     async (data: AddAuthorType) => {
@@ -67,6 +71,7 @@ function AdminAuthorForm() {
     },
     [postAuthorMutation, uploadImageMutation]
   );
+  
   return (
     <Box sx={{ mt: 2 }}>
       <form style={{ display: 'flex', justifyContent: 'center' }} onSubmit={handleSubmit(onSubmit)}>

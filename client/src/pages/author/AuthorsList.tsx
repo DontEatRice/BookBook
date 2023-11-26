@@ -1,10 +1,11 @@
 import { Box, Button, Grid, InputAdornment, TextField, Typography, useTheme } from '@mui/material';
 import { AuthorViewModelType } from '../../models/AuthorViewModel';
-import AuthorInList from '../../components/AuthorInList';
+import AuthorInList from '../../components/author/AuthorInList';
 import { getAuthors } from '../../api/author';
 import { useQuery } from '@tanstack/react-query';
 import SearchIcon from '@mui/icons-material/Search';
 import { useState } from 'react';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 function Authors({ data }: { data: AuthorViewModelType[] }) {
   return (
@@ -36,7 +37,7 @@ function AuthorsList() {
   };
   const { data: searchData, status: searchStatus } = useQuery({
     queryKey: ['searchAuthors', query],
-    queryFn: () => getAuthors({ pageSize: 50, pageNumber: 0, query: query == null ? '' : query }),
+    queryFn: () => getAuthors({ pageSize: 50, pageNumber: 0 }),
   });
 
   return (
@@ -60,9 +61,9 @@ function AuthorsList() {
         />
       </Box>
       <Box>
-        {searchStatus == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+        {searchStatus == 'loading' && <LoadingTypography />}
         {searchStatus == 'error' && (
-          <Typography variant="h3" color={theme.palette.error.main}>
+          <Typography variant="h3" color={theme.palette.error.main} textAlign={'center'}>
             Błąd!
           </Typography>
         )}

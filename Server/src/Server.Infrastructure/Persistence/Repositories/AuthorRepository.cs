@@ -18,11 +18,6 @@ internal class AuthorRepository : IAuthorRepository
         await _dbContext.AddAsync(author, cancellationToken);
     }
 
-    public void Delete(Author author)
-    {
-        _dbContext.Remove(author);
-    }
-
     public Task<int> Delete(Guid id, CancellationToken cancellationToken = default)
     {
         return _dbContext.Authors

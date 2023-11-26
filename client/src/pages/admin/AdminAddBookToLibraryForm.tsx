@@ -8,9 +8,10 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import AddBookToLibrary, { AddBookToLibraryType } from '../../models/AddBookToLibrary';
 import { addBookToLibrary, getBooksAvailableToAdd } from '../../api/library';
-import NumberInputField from '../../components/NumberInputField';
+import NumberInputField from '../../components/common/NumberInputField';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../utils/auth/useAuth';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 function AdminAddBookToLibraryForm() {
   const { user } = useAuth();
@@ -43,7 +44,7 @@ function AdminAddBookToLibraryForm() {
   });
 
   if (availableBooksStatus == 'loading') {
-    return <h1>Ładowanie...</h1>;
+    return <LoadingTypography />;
   } else {
     return (
       <Box sx={{ mt: 2 }}>

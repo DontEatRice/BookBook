@@ -33,9 +33,19 @@ public class LibrariesController : ControllerBase
 
         return Created($"/libraries/{id}", null);
     }
+    
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult> Update(Guid id, UpdateLibraryCommand command)
+    {
+        await Mediator.Send(command with
+        {
+            IdLibrary = id
+        });
+        return Created($"/libraries/{id}", null);
+    }
 
     [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> Post(Guid id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         await Mediator.Send(new RemoveLibraryCommand(id));
         return NoContent();
@@ -63,4 +73,5 @@ public class LibrariesController : ControllerBase
     {
         return Ok(await Mediator.Send(new GetBooksAvailableToAddQuery(id)));
     }
+    
 }

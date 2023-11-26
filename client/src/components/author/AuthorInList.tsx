@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { AuthorViewModelType } from '../models/AuthorViewModel';
+import { AuthorViewModelType } from '../../models/AuthorViewModel';
 import { Avatar, Button, Grid, Paper, Typography } from '@mui/material';
 
 function AuthorInList({ author }: { author: AuthorViewModelType }) {

@@ -18,16 +18,6 @@ public sealed class RemoveAuthorHandler : IRequestHandler<RemoveAuthorCommand>
 
     public async Task Handle(RemoveAuthorCommand request, CancellationToken cancellationToken)
     {
-        //var author = await _authorRepository.FirstOrDefaultByIdAsync(request.Id, cancellationToken);
-
-        //if (author != null)
-        //{
-        //    _authorRepository.Delete(author);
-        //}
-
-        //await _unitOfWork.SaveChangesAsync(cancellationToken);
-        // Propozycja - przejrzystrzy kod i jedno zapytanie sql mniej
-        // TODO przerobić wszystkie delety na takie
         await _authorRepository.Delete(request.Id, cancellationToken);
     }
 }

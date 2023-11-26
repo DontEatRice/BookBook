@@ -5,10 +5,10 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import TextInputField from '../../components/TextInputField';
+import TextInputField from '../../components/common/TextInputField';
 import AddBook, { AddBookType } from '../../models/AddBook';
 import { postBook } from '../../api/book';
-import NumberInputField from '../../components/NumberInputField';
+import NumberInputField from '../../components/common/NumberInputField';
 import { getCategories } from '../../api/category';
 import { getAuthors } from '../../api/author';
 import { getPublishers } from '../../api/publisher';
@@ -22,7 +22,8 @@ import { uploadImage } from '../../api/image';
 import { fileToUploadImage } from '../../utils/utils';
 import { Avatar } from '@mui/material';
 import { languages } from '../../utils/constants';
-import TextInputBox from '../../components/TextInputBox';
+import TextInputBox from '../../components/common/TextInputBox';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 const paginationDefaultRequest = {
   pageNumber: 0,
@@ -63,7 +64,6 @@ function AdminBookForm() {
 
   const uploadImageMutation = useMutation({
     mutationFn: uploadImage,
-    onError: console.error,
   });
 
   const postBookMutation = useMutation({
@@ -104,8 +104,9 @@ function AdminBookForm() {
     queryKey: ['publishers'],
     queryFn: () => getPublishers(paginationDefaultRequest),
   });
+
   if (categoriesStatus == 'loading' || authorsStatus == 'loading' || publishersStatus == 'loading') {
-    return <h1>Ładowanie...</h1>;
+    return <LoadingTypography />;
   } else {
     return (
       <Box sx={{ mt: 2 }}>

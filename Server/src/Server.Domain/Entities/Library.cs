@@ -10,10 +10,13 @@ public class Library
     public string PhoneNumber { get; set; }
     public Address Address { get; set; }
     public OpenHours OpenHours { get; set; }
+    public double Longitude { get; set; }
+    public double Latitude { get; set; }
     public ICollection<LibraryBook> LibraryBooks { get; set; }
 
     public static Library Create(Guid id, string name, int reservationTime,
-        int hireTime, string emailAddress, string phoneNumber, Address address, OpenHours openHours) => new()
+        int hireTime, string emailAddress, string phoneNumber, Address address, OpenHours openHours,
+        double longitude, double latitude) => new()
         {
             Id = id,
             Name = name,
@@ -23,6 +26,8 @@ public class Library
             PhoneNumber = phoneNumber,
             Address = address,
             OpenHours = openHours,
+            Longitude = longitude,
+            Latitude = latitude,
             LibraryBooks = new List<LibraryBook>()
         };
 }

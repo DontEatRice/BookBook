@@ -29,13 +29,4 @@ public class Review
             UserId = userId,
             IsCriticRating = isCriticRating
         };
-
-    public static Review Update(Review review, string? title, string? description, double rating)
-    {
-        review.Title = title;
-        review.Description = description;
-        review.Rating = rating;
-
-        return review;
-    }
 }

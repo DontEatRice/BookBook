@@ -49,10 +49,10 @@ public class Book
             UserBooks = new List<UserBook>()
         };
 
-    public void ComputeRating(double reviewRating)
+    public void ComputeRating(ICollection<Review> reviews, double reviewRating)
     {
-        var reviewCount = Reviews.Count;
-        var averageRating = AverageRating;
+        var reviewCount = reviews.Count;
+        var averageRating = AverageRating == null ? 0 : AverageRating;
         
         AverageRating = (averageRating ?? 0 * reviewCount + reviewRating) / (reviewCount + 1);
     }

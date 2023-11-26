@@ -1,5 +1,6 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.IdentityModel.Tokens;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
 using Server.Application.InfrastructureInterfaces;
@@ -38,19 +39,19 @@ public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
         
         if (book is null)
         {
-            throw new NotFoundException("Book not found", ApplicationErrorCodes.PublisherNotFound);
+            throw new NotFoundException("Book not found", ApplicationErrorCodes.BookNotFound);
         }
 
-        var review = book.Reviews.FirstOrDefault(r => r.UserId == request.UserId);
+        var reviews = await _reviewRepository.FindAllByBookIdAsync(request.IdBook, cancellationToken);
 
-        if (review is not null)
+        if (reviews.FirstOrDefault(x => x.UserId == request.UserId) is not null)
         {
             throw new LogicException ("Review already exists", ApplicationErrorCodes.UserReviewAlreadyExists);
         }
-
-        book.ComputeRating(request.Rating);
         
-        review = Review.Create(request.Id, request.Title, request.Description, request.Rating, book, request.UserId!.Value, false);
+        book.ComputeRating(reviews, request.Rating);
+        
+        var review = Review.Create(request.Id, request.Title, request.Description, request.Rating, book, request.UserId!.Value, false);
 
         await _reviewRepository.AddAsync(review, cancellationToken);
 

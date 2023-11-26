@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>Server.Application</RootNamespace>
+        <UserSecretsId>e31b4f08-dd3a-481f-b90a-6f7ddb253f74</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,9 +16,11 @@
         <PackageReference Include="MediatR" Version="12.1.1" />
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.11" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
         <PackageReference Include="FluentValidation" Version="11.7.1" />
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+        <PackageReference Include="RestSharp" Version="110.2.0" />
         <PackageReference Include="Scrutor" Version="4.2.2" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.1" />
         <PackageReference Include="System.Text.Json" Version="7.0.3" />

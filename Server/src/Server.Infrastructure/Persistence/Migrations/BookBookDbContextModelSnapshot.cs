@@ -282,6 +282,12 @@ namespace Server.Infrastructure.Migrations
                     b.Property<int>("HireTime")
                         .HasColumnType("int");
 
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)

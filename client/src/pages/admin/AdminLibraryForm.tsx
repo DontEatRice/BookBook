@@ -5,13 +5,13 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import TextInputField from '../../components/TextInputField';
-import NumberInputField from '../../components/NumberInputField';
+import TextInputField from '../../components/common/TextInputField';
+import NumberInputField from '../../components/common/NumberInputField';
 import AddLibrary, { AddLibraryType } from '../../models/AddLibrary';
 import { postLibrary } from '../../api/library';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import TimeInputField from '../../components/TimeInputField';
+import TimeInputField from '../../components/common/TimeInputField';
 import Typography from '@mui/material/Typography';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -20,6 +20,7 @@ import Divider from '@mui/material/Divider';
 import { useCallback, useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import { MuiTelInput } from 'mui-tel-input';
+import useAlert from '../../utils/alerts/useAlert';
 
 type LibraryOpenHoursTimePickerParams = {
   fields: [keyof AddLibraryType, keyof AddLibraryType];
@@ -119,6 +120,7 @@ const daysOfWeek: DayOfWeek[] = [
 
 function AdminLibraryForm() {
   const navigate = useNavigate();
+  const { handleError } = useAlert();
   const queryClient = useQueryClient();
   const {
     register,
@@ -138,6 +140,9 @@ function AdminLibraryForm() {
     onSuccess: () => {
       queryClient.invalidateQueries(['libraries']);
       navigate('..');
+    },
+    onError: (err) => {
+      handleError(err);
     },
   });
   const onSubmit: SubmitHandler<AddLibraryType> = (data) => {

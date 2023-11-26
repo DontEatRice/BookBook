@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postCategory } from '../../api/category';
 import { useNavigate } from 'react-router-dom';
 import AddCategory, { AddCategoryType } from '../../models/AddCategory';
-import TextInputField from '../../components/TextInputField';
+import TextInputField from '../../components/common/TextInputField';
 import useAlert from '../../utils/alerts/useAlert';
 function AdminCategoryForm() {
   const { showSuccess } = useAlert();

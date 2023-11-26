@@ -17,6 +17,7 @@ import {
 } from '../../api/reservation';
 import { translateStatus } from '../../utils/functions/utilFunctions';
 import { useAuth } from '../../utils/auth/useAuth';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 export default function AdminReservationList() {
   const { user } = useAuth();
@@ -48,7 +49,7 @@ export default function AdminReservationList() {
 
   return (
     <Box>
-      {status == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+      {status == 'loading' && <LoadingTypography />}
       {status == 'error' && (
         <Typography variant="h3" color={'error'}>
           Błąd!
@@ -104,4 +105,3 @@ export default function AdminReservationList() {
     );
   }
 }
-

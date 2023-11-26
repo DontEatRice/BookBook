@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import { BookViewModelType } from '../../models/BookViewModel';
 import { useTheme } from '@mui/material/styles';
 import { searchBooks } from '../../api/book';
-import BookInList from '../../components/BookInList';
+import BookInList from '../../components/book/BookInList';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Grid from '@mui/material/Grid';
 import { Autocomplete, Button, InputAdornment, TextField } from '@mui/material';
@@ -11,6 +11,7 @@ import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { getAuthors } from '../../api/author';
 import { getCategories } from '../../api/category';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 
@@ -171,7 +172,7 @@ function BooksList() {
         </Box>
       </Box>
       <Box marginTop={2}>
-        {searchStatus == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+        {searchStatus == 'loading' && <LoadingTypography />}
         {searchStatus == 'error' && (
           <Typography variant="h3" color={theme.palette.error.main}>
             Błąd!
@@ -184,4 +185,3 @@ function BooksList() {
 }
 
 export default BooksList;
-

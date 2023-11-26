@@ -33,9 +33,19 @@ public class PublishersController : ControllerBase
 
         return Created($"/publishers/{id}", null);
     }
+    
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult> Update(Guid id, UpdatePublisherCommand command)
+    {
+        await Mediator.Send(command with
+        {
+            IdPublisher = id
+        });
+        return Created($"/publishers/{id}", null);
+    }
 
     [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> Post(Guid id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         await Mediator.Send(new RemovePublisherCommand(id));
         return NoContent();

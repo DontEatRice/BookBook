@@ -18,14 +18,18 @@ internal class ReviewRepository : IReviewRepository
         await _dbContext.AddAsync(review, cancellationToken);
     }
 
-    public void Delete(Review review)
+    public Task<int> Delete(Guid id, CancellationToken cancellationToken = default)
     {
-        _dbContext.Remove(review);
+        return _dbContext.Reviews
+            .Where(review => review.Id == id)
+            .ExecuteDeleteAsync(cancellationToken);
     }
     
-    public void Update(Review review)
+    public async Task<List<Review>> FindAllByBookIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        _dbContext.Update(review);
+        return await _dbContext.Reviews
+            .Where(x => x.Book.Id == id)
+            .ToListAsync(cancellationToken);
     }
     
     public async Task<Review?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)

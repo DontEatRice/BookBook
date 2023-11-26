@@ -5,6 +5,6 @@ namespace Server.Domain.Repositories;
 public interface IPublisherRepository
 {
     Task AddAsync(Publisher publisher, CancellationToken cancellationToken);
-    void Delete(Publisher publisher);
+    Task<int> Delete(Guid id, CancellationToken cancellationToken = default);
     Task<Publisher?> FirstOrDefaultByIdAsync(Guid guid, CancellationToken cancellationToken);
 }
