@@ -3,7 +3,7 @@ import { z } from 'zod';
 const PublisherViewModel = z.object({
   id: z.string().uuid(),
   name: z.string().max(40),
-  description: z.union([z.string(), z.null()]),
+  description: z.string().nullable(),
 });
 
 export default PublisherViewModel;

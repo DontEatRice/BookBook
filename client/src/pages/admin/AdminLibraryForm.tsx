@@ -20,6 +20,7 @@ import Divider from '@mui/material/Divider';
 import { useCallback, useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import { MuiTelInput } from 'mui-tel-input';
+import useAlert from '../../utils/alerts/useAlert';
 
 type LibraryOpenHoursTimePickerParams = {
   fields: [keyof AddLibraryType, keyof AddLibraryType];
@@ -119,6 +120,7 @@ const daysOfWeek: DayOfWeek[] = [
 
 function AdminLibraryForm() {
   const navigate = useNavigate();
+  const { handleError } = useAlert();
   const queryClient = useQueryClient();
   const {
     register,
@@ -138,6 +140,9 @@ function AdminLibraryForm() {
     onSuccess: () => {
       queryClient.invalidateQueries(['libraries']);
       navigate('..');
+    },
+    onError: (err) => {
+      handleError(err);
     },
   });
   const onSubmit: SubmitHandler<AddLibraryType> = (data) => {

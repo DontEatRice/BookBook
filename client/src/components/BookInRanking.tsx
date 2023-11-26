@@ -5,7 +5,8 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
-import { Rating, styled } from '@mui/material';
+import Rating from '@mui/material/Rating';
+import { styled } from '@mui/material/styles';
 
 export default function BookInRanking({ book, position }: { book: BookViewModelType; position: number }) {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ export default function BookInRanking({ book, position }: { book: BookViewModelT
             <Grid item display={'flex'} flexDirection={'column'}>
               <Rating name="half-rating-read" value={book.averageRating} precision={0.25} readOnly />
               <Typography variant="body1" gutterBottom marginY={2}>
-                {book.reviews.length} {getRatingText(book.reviews.length)}
+                {/* {book.reviews.length} {getRatingText(book.reviews.length)} */}
               </Typography>
               <Typography variant="body1" gutterBottom>
                 średnia: {book.averageRating}
@@ -68,12 +69,12 @@ export default function BookInRanking({ book, position }: { book: BookViewModelT
   );
 }
 
-function getRatingText(count: number) {
-  if (count === 1) {
-    return 'ocena';
-  } else if (count > 1 && count < 5) {
-    return 'oceny';
-  } else {
-    return 'ocen';
-  }
-}
+// function getRatingText(count: number) {
+//   if (count === 1) {
+//     return 'ocena';
+//   } else if (count > 1 && count < 5) {
+//     return 'oceny';
+//   } else {
+//     return 'ocen';
+//   }
+// }

@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { PublisherViewModelType } from '../../models/PublisherViewModel';
 import { useQuery } from '@tanstack/react-query';
 import { getPublishers } from '../../api/publisher';
@@ -16,6 +16,8 @@ import Table from '@mui/material/Table';
 import LoadingTypography from '../../components/common/LoadingTypography';
 
 function PublishersTable({ data }: { data: PublisherViewModelType[] }) {
+  const navigate = useNavigate();
+
   return (
     <TableContainer>
       <Table>
@@ -27,7 +29,7 @@ function PublishersTable({ data }: { data: PublisherViewModelType[] }) {
         </TableHead>
         <TableBody>
           {data.map((publisher) => (
-            <TableRow key={publisher.id}>
+            <TableRow key={publisher.id} onClick={() => navigate(`/admin/publishers/${publisher.id}`)}>
               <TableCell>{publisher.id}</TableCell>
               <TableCell>{publisher.name}</TableCell>
             </TableRow>

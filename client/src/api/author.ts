@@ -1,9 +1,11 @@
 import { AddAuthorType } from '../models/AddAuthor';
 import AuthorViewModel from '../models/AuthorViewModel';
 import BookViewModel from '../models/BookViewModel';
+import { UpdateAuthorType } from '../models/UpdateAuthor';
 import { PaginationRequest } from '../utils/constants';
 import { handleBadResponse, paginatedFetch } from '../utils/utils';
 import { paginatedResponse } from '../utils/zodSchemas';
+import { getAuthTokenOrNull } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 const AuthorSearchResponse = paginatedResponse(AuthorViewModel);
@@ -15,26 +17,49 @@ export const postAuthor = async (author: AddAuthorType) => {
     body: JSON.stringify(author),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
+  return response;
+};
+
+export const updateAuthor = async ({ id, author }: { id: string; author: UpdateAuthorType }) => {
+  const response = await fetch(base + '/Authors/' + id, {
+    method: 'put',
+    body: JSON.stringify(author),
+    headers: new Headers({ 'Content-Type': 'application/json' }),
+  });
   if (!response.ok) {
     await handleBadResponse(response);
   }
   return response;
 };
 
-export async function getAuthors(args: PaginationRequest & { query?: string }) {
-  const response = await paginatedFetch(base + '/authors/search', args);
+export const deleteAuthor = async (authorId: string) => {
+  const response = await fetch(base + '/Authors/' + authorId, {
+    method: 'delete',
+    headers: new Headers({ 'Content-Type': 'application/json' }),
+  });
   if (!response.ok) {
     await handleBadResponse(response);
   }
+  return response;
+};
+
+export async function getAuthors(body: PaginationRequest) {
+  const response = await paginatedFetch(base + '/authors/search', body);
   const data = await response.json();
+
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
   return AuthorSearchResponse.parse(data);
 }
 
-export async function getAuthor(authorId: string) {
-  const response = await fetch(base + '/Authors/' + authorId);
-  if (!response.ok) {
-    await handleBadResponse(response);
-  }
+export async function getAuthor(id: string) {
+  const response = await fetch(base + '/Authors/' + id, {
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      Authorization: (await getAuthTokenOrNull()) ?? '',
+    }),
+  });
   const data = await response.json();
   return AuthorViewModel.parse(data);
 }

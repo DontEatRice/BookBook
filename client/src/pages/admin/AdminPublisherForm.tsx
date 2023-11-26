@@ -8,9 +8,12 @@ import { postPublisher } from '../../api/publisher';
 import { useNavigate } from 'react-router-dom';
 import AddPublisher, { AddPublisherType } from '../../models/AddPublisher';
 import TextInputField from '../../components/common/TextInputField';
+import useAlert from '../../utils/alerts/useAlert';
+
 function AdminPublisherForm() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { handleError } = useAlert();
   const {
     register,
     handleSubmit,
@@ -23,6 +26,9 @@ function AdminPublisherForm() {
     onSuccess: () => {
       queryClient.invalidateQueries(['publishers']);
       navigate('..');
+    },
+    onError: (err) => {
+      handleError(err);
     },
   });
   const onSubmit: SubmitHandler<AddPublisherType> = (data) => {

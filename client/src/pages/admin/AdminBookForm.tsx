@@ -64,7 +64,6 @@ function AdminBookForm() {
 
   const uploadImageMutation = useMutation({
     mutationFn: uploadImage,
-    onError: console.error,
   });
 
   const postBookMutation = useMutation({
@@ -105,6 +104,7 @@ function AdminBookForm() {
     queryKey: ['publishers'],
     queryFn: () => getPublishers(paginationDefaultRequest),
   });
+
   if (categoriesStatus == 'loading' || authorsStatus == 'loading' || publishersStatus == 'loading') {
     return <LoadingTypography />;
   } else {

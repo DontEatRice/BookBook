@@ -19,13 +19,6 @@ public sealed class RemoveBookHandler : IRequestHandler<RemoveBookCommand>
 
     public async Task Handle(RemoveBookCommand request, CancellationToken cancellationToken)
     {
-        var book = await _bookRepository.FirstOrDefaultByIdAsync(request.Id, cancellationToken);
-
-        if (book is not null)
-        {
-            _bookRepository.Delete(book);
-        }
-
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _bookRepository.Delete(request.Id, cancellationToken);
     }
 }

@@ -15,10 +15,13 @@ import AdminCategories from './pages/admin/AdminCategories';
 import AdminCategoryForm from './pages/admin/AdminCategoryForm';
 import AdminAuthors from './pages/admin/AdminAuthors';
 import AdminAuthorForm from './pages/admin/AdminAuthorForm';
+import AdminAuthorUpdateForm from './pages/admin/AdminAuthorUpdateForm';
 import AdminPublishers from './pages/admin/AdminPublishers';
 import AdminPublisherForm from './pages/admin/AdminPublisherForm';
+import AdminPublisherUpdateForm from './pages/admin/AdminPublisherUpdateForm';
 import AdminLibraries from './pages/admin/AdminLibraries';
 import AdminLibraryForm from './pages/admin/AdminLibraryForm';
+import AdminLibraryUpdateForm from './pages/admin/AdminLibraryUpdateForm';
 import AdminBooksInLibrary from './pages/admin/AdminBooksInLibrary';
 import AdminAddBookToLibraryForm from './pages/admin/AdminAddBookToLibraryForm';
 import Login from './pages/auth/Login';
@@ -35,6 +38,7 @@ import LibraryDetails from './pages/library/LibraryDetails';
 import AdminRegisterEmployeeForm from './pages/admin/AdminRegisterEmployeeForm';
 import BookRanking from './pages/book/BookRanking';
 import ReservationList from './pages/reservations/ReservationList';
+import AdminBookUpdateForm from './pages/admin/AdminBookUpdateForm';
 
 const mainTheme = createTheme({
   palette: {
@@ -103,22 +107,27 @@ function App() {
         <Route path="authors">
           <Route index element={<AdminAuthors />} />
           <Route path="add" element={<AdminAuthorForm />} />
+          <Route path=":authorId" element={<AdminAuthorUpdateForm />} />
         </Route>
         <Route path="books">
           <Route index element={<AdminBooks />} />
           <Route path="add" element={<AdminBookForm />} />
+          <Route path=":bookId" element={<AdminBookUpdateForm />} />
         </Route>
         <Route path="categories">
           <Route index element={<AdminCategories />} />
           <Route path="add" element={<AdminCategoryForm />} />
+          <Route path=":bookId" element={<AdminAuthorUpdateForm />} />
         </Route>
         <Route path="publishers">
           <Route index element={<AdminPublishers />} />
           <Route path="add" element={<AdminPublisherForm />} />
+          <Route path=":publisherId" element={<AdminPublisherUpdateForm />} />
         </Route>
         <Route path="libraries">
           <Route index element={<AdminLibraries />} />
           <Route path="add" element={<AdminLibraryForm />} />
+          <Route path=":libraryId" element={<AdminLibraryUpdateForm />} />
         </Route>
         <Route path="booksInLibrary">
           <Route index element={<AdminBooksInLibrary />} />
@@ -164,4 +173,3 @@ function AdminLayout() {
 }
 
 export default App;
-

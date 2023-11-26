@@ -9,8 +9,7 @@ import { BookViewModelType } from '../../models/BookViewModel';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import { Link } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
+import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { searchBooks } from '../../api/book';
 import LoadingTypography from '../../components/common/LoadingTypography';
@@ -39,6 +38,8 @@ import LoadingTypography from '../../components/common/LoadingTypography';
 // }
 
 function BooksTable({ data }: { data: BookViewModelType[] }) {
+  const navigate = useNavigate();
+
   return (
     <TableContainer>
       <Table>
@@ -54,7 +55,10 @@ function BooksTable({ data }: { data: BookViewModelType[] }) {
         </TableHead>
         <TableBody>
           {data.map((book) => (
-            <TableRow key={book.id}>
+            <TableRow
+              key={book.id}
+              sx={{ cursor: 'pointer' }}
+              onClick={() => navigate(`/admin/books/${book.id}`)}>
               <TableCell>{book.isbn}</TableCell>
               <TableCell>{book.title}</TableCell>
               <TableCell>{book.yearPublished}</TableCell>
@@ -72,7 +76,6 @@ function BooksTable({ data }: { data: BookViewModelType[] }) {
 }
 
 function AdminBooks() {
-  const theme = useTheme();
   const { data, status } = useQuery({
     queryKey: ['books'],
     queryFn: () => searchBooks({ pageNumber: 0, pageSize: 50 }),
@@ -91,11 +94,6 @@ function AdminBooks() {
         </Grid>
       </Grid>
       {status == 'loading' && <LoadingTypography />}
-      {status == 'error' && (
-        <Typography variant="h3" color={theme.palette.error.main}>
-          Błąd!
-        </Typography>
-      )}
       {status == 'success' && <BooksTable data={data.data} />}
     </Box>
   );

@@ -1,10 +1,11 @@
 import { AddBookType } from '../models/AddBook';
 import BookViewModel from '../models/BookViewModel';
 import LibraryViewModel from '../models/LibraryViewModel';
+import { UpdateBookType } from '../models/UpdateBook';
 import { PaginationRequest } from '../utils/constants';
 import { handleBadResponse, paginatedFetch } from '../utils/utils';
 import { paginatedResponse } from '../utils/zodSchemas';
-import { getAuthToken } from './auth';
+import { getAuthTokenOrNull } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 const BooksPaginated = paginatedResponse(BookViewModel);
@@ -21,6 +22,40 @@ export const postBook = async (book: AddBookType) => {
   return response;
 };
 
+export const updateBook = async ({ id, book }: { id: string; book: UpdateBookType }) => {
+  const copy = {
+    ...book,
+    publisher: null,
+    authors: null,
+    bookCategories: null,
+    idPublisher: book.publisher?.id,
+    categoriesIds: book.bookCategories.map((x) => x.id),
+    authorsIDs: book.authors.map((x) => x.id),
+  };
+  const response = await fetch(base + '/Books/' + id, {
+    method: 'put',
+    body: JSON.stringify(copy),
+    headers: new Headers({ 'Content-Type': 'application/json' }),
+  });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+
+  return response;
+};
+
+export const deleteBook = async (bookId: string) => {
+  const response = await fetch(base + '/Books/' + bookId, {
+    method: 'delete',
+    headers: new Headers({ 'Content-Type': 'application/json' }),
+  });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+
+  return response;
+};
+
 export async function getBooks() {
   const response = await fetch(base + '/Books');
   const data = await response.json();
@@ -28,18 +63,10 @@ export async function getBooks() {
 }
 
 export async function getBook(id: string) {
-  //endpoint powinien działać zarówno dla zalogowanego i anonima
-  let auth = '';
-  try {
-    auth = await getAuthToken();
-  } catch (err) {
-    // w momencie gdy metoda getAuthToken rzuci błąd po prostu zostawiamy auth puste
-  }
-
   const response = await fetch(base + '/Books/' + id, {
     headers: new Headers({
       'Content-Type': 'application/json',
-      Authorization: auth,
+      Authorization: (await getAuthTokenOrNull()) ?? '',
     }),
   });
   const data = await response.json();
@@ -68,4 +95,3 @@ export async function searchBooks(
   const data = await response.json();
   return BooksPaginated.parse(data);
 }
-

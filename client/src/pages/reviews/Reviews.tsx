@@ -3,8 +3,9 @@ import StyledTableCell from '../../components/tableComponents/StyledTableCell';
 import { useTheme } from '@mui/material/styles';
 import { BookViewModelType } from '../../models/BookViewModel';
 import ReviewTableRow from './ReviewTableRow';
+import { ReviewViewModelType } from '../../models/ReviewViewModel';
 
-function Reviews({ book }: { book: BookViewModelType }) {
+function Reviews({ book, reviews }: { book: BookViewModelType; reviews: ReviewViewModelType[] }) {
   const theme = useTheme();
 
   return (
@@ -20,7 +21,7 @@ function Reviews({ book }: { book: BookViewModelType }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {book.reviews
+          {reviews
             .filter((x) => x.title != '')
             .map((review) => (
               <ReviewTableRow review={review} book={book} key={review.id}></ReviewTableRow>
@@ -32,4 +33,3 @@ function Reviews({ book }: { book: BookViewModelType }) {
 }
 
 export default Reviews;
-
