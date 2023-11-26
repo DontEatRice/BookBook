@@ -107,11 +107,11 @@ function Header() {
               sx={{
                 textAlign: 'center',
               }}>
-              <Tooltip title="Logowanie">
-                <Link to={'/login'} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Link to={'/login'} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <Tooltip title="Logowanie">
                   <LoginIcon sx={{ fontSize: '2rem' }} />
-                </Link>
-              </Tooltip>
+                </Tooltip>
+              </Link>
             </Grid>
           </NotAuthorizedView>
         </Grid>

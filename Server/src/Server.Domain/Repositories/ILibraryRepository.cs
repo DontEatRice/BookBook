@@ -5,7 +5,6 @@ namespace Server.Domain.Repositories;
 public interface ILibraryRepository
 {
     void Add(Library library);
-    Task DeleteAsync(Guid id);
     Task<bool> DoesLibraryExist(Guid id, CancellationToken cancellationToken);
     Task<int> Delete(Guid id, CancellationToken cancellationToken = default);
     Task<Library?> FirstOrDefaultByIdAsync(Guid guid, CancellationToken cancellationToken);

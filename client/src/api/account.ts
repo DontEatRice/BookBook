@@ -1,4 +1,5 @@
 import { ChangePasswordRequestType } from '../models/ChangePasswordRequest';
+import UserDetailViewModel from '../models/user/UserDetailViewModel';
 import { handleBadResponse } from '../utils/utils';
 import { getAuthToken } from './auth';
 
@@ -19,4 +20,19 @@ export async function changePassword({ oldPassword, newPassword }: ChangePasswor
     await handleBadResponse(result);
   }
   return;
+}
+
+export async function myAccount() {
+  const auth = await getAuthToken();
+  const result = await fetch(base + '/me', {
+    credentials: 'include',
+    headers: new Headers({
+      Authorization: auth,
+      'Content-Type': 'application/json',
+    }),
+  });
+  if (!result.ok) {
+    await handleBadResponse(result);
+  }
+  return UserDetailViewModel.parse(await result.json());
 }

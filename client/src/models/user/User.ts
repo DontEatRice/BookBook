@@ -4,4 +4,5 @@ export type User = {
   token: string;
   email: string;
   libraryId?: string;
+  name: string;
 };

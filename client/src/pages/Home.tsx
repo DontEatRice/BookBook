@@ -31,7 +31,7 @@ function Home() {
   return (
     <Container>
       <Typography variant="h3">
-        Witamy w BookBook<AuthorizedView roles={['User']}> {user?.email}</AuthorizedView>!
+        Witamy w BookBook<AuthorizedView roles={['User']}> {user?.name}</AuthorizedView>!
       </Typography>
       <Grid container justifyContent="space-between" m={2}>
         <Grid item>

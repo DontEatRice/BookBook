@@ -19,6 +19,15 @@ export const pictureSchema = z
     'Akceptowane pliki to .png i .jpg'
   );
 
+export const userNameSchema = z
+  .string()
+  .min(3, 'Nazwa powinna być dłuższa niż 3 znaki')
+  .max(64, 'Nazwa może mieć maksymalnie 64 znaki')
+  .refine(
+    (name) => !/[<>!.\\,$%^;:]/.test(name),
+    'Nazwa nie może zawierać następujących znaków: <>,.\\!$%^;:'
+  );
+
 export function paginatedResponse<T>(schema: z.ZodType<T>) {
   return z.object({
     pageNumber: z.number(),

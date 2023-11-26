@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from '../../utils/auth/AuthContext';
-import { User } from '../../models/User';
+import { User } from '../../models/user/User';
 import { getJwtBody, convertJwtToUser } from '../../utils/utils';
 import { LocalStorageTokenKey } from '../../utils/constants';
 import { refresh } from '../../api/auth';

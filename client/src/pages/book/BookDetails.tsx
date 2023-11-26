@@ -1,6 +1,6 @@
 import { Grid, Box } from '@mui/material';
 import { useParams } from 'react-router';
-import { AuthorViewModelType } from '../../models/AuthorViewModel';
+import { AuthorViewModelType } from '../../models/author/AuthorViewModel';
 import { getBook, getLibrariesWithBook } from '../../api/book';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
