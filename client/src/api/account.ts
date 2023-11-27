@@ -1,4 +1,5 @@
 import { ChangePasswordRequestType } from '../models/ChangePasswordRequest';
+import { UpdateMyAccountType } from '../models/user/UpdateMyAccount';
 import UserDetailViewModel from '../models/user/UserDetailViewModel';
 import { handleBadResponse } from '../utils/utils';
 import { getAuthToken } from './auth';
@@ -30,6 +31,23 @@ export async function myAccount() {
       Authorization: auth,
       'Content-Type': 'application/json',
     }),
+  });
+  if (!result.ok) {
+    await handleBadResponse(result);
+  }
+  return UserDetailViewModel.parse(await result.json());
+}
+
+export async function updateMyAccount(data: UpdateMyAccountType) {
+  const auth = await getAuthToken();
+  const result = await fetch(base + '/me', {
+    method: 'patch',
+    credentials: 'include',
+    headers: new Headers({
+      Authorization: auth,
+      'Content-Type': 'application/json',
+    }),
+    body: JSON.stringify(data),
   });
   if (!result.ok) {
     await handleBadResponse(result);

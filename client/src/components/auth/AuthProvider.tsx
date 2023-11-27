@@ -49,7 +49,6 @@ function AuthProvider({ children }: { children?: ReactNode }) {
 
   const handleTokenChange = useCallback(() => {
     const token = localStorage.getItem(LocalStorageTokenKey);
-    console.log('handleTokenChange', { token });
     if (token) {
       login(token);
     }

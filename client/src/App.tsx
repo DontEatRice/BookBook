@@ -39,7 +39,7 @@ import AdminRegisterEmployeeForm from './pages/admin/AdminRegisterEmployeeForm';
 import BookRanking from './pages/book/BookRanking';
 import ReservationList from './pages/reservations/ReservationList';
 import AdminBookUpdateForm from './pages/admin/AdminBookUpdateForm';
-import Settings from './pages/account/Settings';
+import Settings from './pages/account/AccountSettings';
 
 const mainTheme = createTheme({
   palette: {
