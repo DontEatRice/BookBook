@@ -6,19 +6,25 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ReservationViewModelType } from '../../models/ReservationViewModel';
 import { cancelReservation, getReservationsForUser } from '../../api/reservation';
 import { translateStatus } from '../../utils/functions/utilFunctions';
 import { useCartStore } from '../../store';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import LoadingTypography from '../../components/common/LoadingTypography';
+import { Checkbox, Dialog, DialogContent, DialogTitle, FormControlLabel } from '@mui/material';
+import Reservation from './Reservation';
 
 export default function ReservationList() {
+  const queryClient = useQueryClient();
   const cartStore = useCartStore();
   const theme = useTheme();
+  const [onlyPending, setOnlyPending] = useState(false);
+  const [selectedReservation, setSelectedReservation] = useState<ReservationViewModelType | null>(null);
+
   const {
     data: reservation,
     status,
@@ -30,7 +36,7 @@ export default function ReservationList() {
 
   useEffect(() => {
     refetch();
-  }, [cartStore.isChanged, refetch]);
+  }, [cartStore.isChanged, refetch, onlyPending]);
 
   const cancelThisReservation = async (reservationId: string) => {
     await cancelReservation(reservationId);
@@ -51,41 +57,72 @@ export default function ReservationList() {
 
   function Reservations({ data }: { data: ReservationViewModelType[] }) {
     return (
-      <TableContainer sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '10px' }}>
-        <Table>
-          <TableHead sx={{ backgroundColor: theme.palette.primary.main }}>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Nazwa Biblioteki</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Data Końca Rezerwacji</TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((reservation) => (
-              <TableRow
-                key={reservation.id}
-                sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}>
-                <TableCell>{reservation.id}</TableCell>
-                <TableCell>{reservation.library.name}</TableCell>
-                <TableCell>{translateStatus(reservation.status)}</TableCell>
-                <TableCell>{new Date(reservation.reservationEndDate).toLocaleDateString()}</TableCell>
-                {reservation.status == 'Pending' && (
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => cancelThisReservation(reservation.id)}>
-                      Anuluj
-                    </Button>
-                  </TableCell>
-                )}
+      <div>
+        <Box sx={{ padding: '16px' }}>
+          <FormControlLabel
+            control={<Checkbox checked={onlyPending} onChange={(e) => setOnlyPending(e.target.checked)} />}
+            label="Trwające"
+          />
+        </Box>
+        <TableContainer sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '10px' }}>
+          <Table>
+            <TableHead sx={{ backgroundColor: theme.palette.primary.main }}>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Nazwa Biblioteki</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Data Końca Rezerwacji</TableCell>
+                <TableCell></TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {data.map((reservation) =>
+                onlyPending && reservation.status != 'Pending' ? null : (
+                  <TableRow
+                    key={reservation.id}
+                    onClick={() => setSelectedReservation(reservation)}
+                    sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}>
+                    <TableCell>{reservation.id}</TableCell>
+                    <TableCell>{reservation.library.name}</TableCell>
+                    <TableCell>{translateStatus(reservation.status)}</TableCell>
+                    <TableCell>{new Date(reservation.reservationEndDate).toLocaleDateString()}</TableCell>
+                    {reservation.status == 'Pending' && (
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            cancelThisReservation(reservation.id);
+                          }}>
+                          Anuluj
+                        </Button>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                )
+              )}
+            </TableBody>
+            {selectedReservation && (
+              <Dialog
+                key={selectedReservation.id}
+                open
+                onClose={() => {
+                  setSelectedReservation(null);
+                  queryClient.invalidateQueries({ queryKey: ['reservation'] });
+                }}>
+                <DialogTitle>Szczegóły Rezerwacji</DialogTitle>
+                <DialogContent>
+                  <Reservation
+                    reservationId={selectedReservation.id}
+                    cancelThisReservation={cancelThisReservation}
+                  />
+                </DialogContent>
+              </Dialog>
+            )}
+          </Table>
+        </TableContainer>
+      </div>
     );
   }
 }

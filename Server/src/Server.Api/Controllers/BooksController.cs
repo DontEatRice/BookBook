@@ -19,6 +19,10 @@ public class BooksController : ControllerBase
     [HttpPost("search")]
     public async Task<ActionResult<IEnumerable<BookViewModel>>> List(GetBooksQuery request) 
         => Ok(await Mediator.Send(request));
+    
+    [HttpPost("ranking")]
+    public async Task<ActionResult<IEnumerable<BookInRankingViewModel>>> List(GetBookRankingQuery request) 
+        => Ok(await Mediator.Send(request));
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<BookViewModel>> Get(Guid id)

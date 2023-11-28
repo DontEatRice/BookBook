@@ -1,5 +1,6 @@
 import { AddBookType } from '../models/AddBook';
 import BookViewModel from '../models/BookViewModel';
+import BookInRankingViewModel from '../models/BookInRankingViewModel';
 import LibraryViewModel from '../models/LibraryViewModel';
 import { UpdateBookType } from '../models/UpdateBook';
 import { PaginationRequest } from '../utils/constants';
@@ -9,6 +10,7 @@ import { getAuthTokenOrNull } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 const BooksPaginated = paginatedResponse(BookViewModel);
+const RankingPaginated = paginatedResponse(BookInRankingViewModel);
 
 export const postBook = async (book: AddBookType) => {
   const response = await fetch(base + '/Books', {
@@ -95,3 +97,13 @@ export async function searchBooks(
   const data = await response.json();
   return BooksPaginated.parse(data);
 }
+
+export async function bookRanking(args: PaginationRequest) {
+  const response = await paginatedFetch(base + '/Books/ranking', args);
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  const data = await response.json();
+  return RankingPaginated.parse(data);
+}
+

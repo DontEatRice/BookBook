@@ -48,6 +48,23 @@ export async function cancelReservation(reservationId: string) {
   });
 }
 
+export async function getReservation(reservationId: string) {
+  const auth = await getAuthToken();
+  const response = await fetch(base + `/reservations/${reservationId}`, {
+    method: 'get',
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      Authorization: auth,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  const data = await response.json();
+  return ReservationViewModel.parse(data);
+}
+
 // admin
 
 export async function getReservations(args: PaginationRequest, libraryId: string | undefined) {
@@ -103,3 +120,4 @@ export async function returnReservation(reservationId: string) {
     }),
   });
 }
+

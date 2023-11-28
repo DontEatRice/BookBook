@@ -1,4 +1,3 @@
-import { BookViewModelType } from '../models/BookViewModel';
 import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -7,8 +6,15 @@ import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import Rating from '@mui/material/Rating';
 import { styled } from '@mui/material/styles';
+import { BookInRankingViewModelType } from '../../models/BookInRankingViewModel';
 
-export default function BookInRanking({ book, position }: { book: BookViewModelType; position: number }) {
+export default function BookInRanking({
+  book,
+  position,
+}: {
+  book: BookInRankingViewModelType;
+  position: number;
+}) {
   const navigate = useNavigate();
 
   const Img = styled('img')({
@@ -53,14 +59,19 @@ export default function BookInRanking({ book, position }: { book: BookViewModelT
             </Grid>
           </Grid>
           {book.averageRating && (
-            <Grid item display={'flex'} flexDirection={'column'}>
+            <Grid item display={'flex'} flexDirection={'column'} minWidth={150} marginY={2}>
               <Rating name="half-rating-read" value={book.averageRating} precision={0.25} readOnly />
-              <Typography variant="body1" gutterBottom marginY={2}>
-                {/* {book.reviews.length} {getRatingText(book.reviews.length)} */}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
+              <Typography variant="body1" gutterBottom marginTop={1}>
                 średnia: {book.averageRating}
               </Typography>
+              <Typography variant="body1" gutterBottom>
+                {book.reviewsCount} {getRatingText(book.reviewsCount)}
+              </Typography>
+              {book.averageCriticRating && (
+                <Typography marginTop={1} variant="body1" gutterBottom>
+                  średnia krytyków: {book.averageCriticRating}
+                </Typography>
+              )}
             </Grid>
           )}
         </Grid>
@@ -69,12 +80,13 @@ export default function BookInRanking({ book, position }: { book: BookViewModelT
   );
 }
 
-// function getRatingText(count: number) {
-//   if (count === 1) {
-//     return 'ocena';
-//   } else if (count > 1 && count < 5) {
-//     return 'oceny';
-//   } else {
-//     return 'ocen';
-//   }
-// }
+function getRatingText(count: number) {
+  if (count === 1) {
+    return 'ocena';
+  } else if (count > 1 && count < 5) {
+    return 'oceny';
+  } else {
+    return 'ocen';
+  }
+}
+

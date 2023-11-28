@@ -1,15 +1,15 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { BookViewModelType } from '../../models/BookViewModel';
 import { useTheme } from '@mui/material/styles';
-import { searchBooks } from '../../api/book';
+import { bookRanking } from '../../api/book';
 
 import { useQuery } from '@tanstack/react-query';
 import Grid from '@mui/material/Grid';
-import BookInRanking from '../../components/BookInRanking';
+import BookInRanking from '../../components/ranking/BookInRanking';
 import { Button } from '@mui/material';
 import { useState } from 'react';
 import { Order } from '../../utils/constants';
+import { BookInRankingViewModelType } from '../../models/BookInRankingViewModel';
 
 export default function BookRanking() {
   const theme = useTheme();
@@ -18,7 +18,7 @@ export default function BookRanking() {
   const { data: searchData, status: searchStatus } = useQuery({
     queryKey: ['searchBooks', sortDirection],
     queryFn: () =>
-      searchBooks({
+      bookRanking({
         pageSize: 20,
         pageNumber: 0,
         orderByField: 'AverageRating',
@@ -38,13 +38,15 @@ export default function BookRanking() {
           Błąd!
         </Typography>
       )}
-      {searchStatus == 'success' && <Books data={searchData.data} />}
+      {searchStatus == 'success' && (
+        <Books data={searchData.data.filter((book) => book.averageRating !== null)} />
+      )}
     </Box>
   );
 
-  function Books({ data }: { data: BookViewModelType[] }) {
+  function Books({ data }: { data: BookInRankingViewModelType[] }) {
     return (
-      <Box marginTop={2}>
+      <Box key={sortDirection} marginTop={2}>
         <Box margin={3}>
           <Typography variant="h3">Ranking książek</Typography>
           <Typography variant="h4">
