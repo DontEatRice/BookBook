@@ -10,7 +10,7 @@ import { getCart, removeFromCart } from '../../api/cart';
 import { makeReservation } from '../../api/reservation';
 import { useState } from 'react';
 import { getBook } from '../../api/book';
-import { useTheme } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 export default function Cart() {
   const cartStore = useCartStore();
@@ -167,4 +167,3 @@ export default function Cart() {
     );
   }
 }
-

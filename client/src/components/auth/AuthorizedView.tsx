@@ -8,12 +8,12 @@ interface AuthorizedViewProps {
 }
 
 export default function AuthorizedView({ children, roles, notAuthorized }: AuthorizedViewProps) {
-  const { user, expires } = useAuth();
+  const { user } = useAuth();
   const alternative = useMemo(() => {
     return notAuthorized === undefined ? null : <>{children}</>;
   }, [children, notAuthorized]);
 
-  if (user === null || (expires !== null && expires < new Date())) {
+  if (user === null) {
     return alternative;
   }
   if (roles !== undefined && roles.length > 0) {

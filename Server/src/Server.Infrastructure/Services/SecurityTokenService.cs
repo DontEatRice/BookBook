@@ -44,6 +44,7 @@ internal class SecurityTokenService : ISecurityTokenService
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(JwtRegisteredClaimNames.Sub, identity.Id.ToString()),
             new(JwtRegisteredClaimNames.Email, identity.Email),
+            new(AuthConstants.NameClaim, identity.Name ?? ""),
             new(AuthConstants.IdClaim, identity.Id.ToString())
         };
         claims.AddRange(identity.Roles.Select(role => new Claim(AuthConstants.RoleClaim, role)));

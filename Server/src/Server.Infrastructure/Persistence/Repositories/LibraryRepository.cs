@@ -4,7 +4,7 @@ using Server.Domain.Repositories;
 
 namespace Server.Infrastructure.Persistence.Repositories;
 
-internal class LibraryRepository : ILibraryRepository
+internal sealed class LibraryRepository : ILibraryRepository
 {
     private readonly BookBookDbContext _dbContext;
 
@@ -36,6 +36,11 @@ internal class LibraryRepository : ILibraryRepository
             .Include(x => x.Address)
             .Include(x => x.OpenHours)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
+
+    public Task<bool> DoesLibraryExist(Guid id, CancellationToken cancellationToken)
+    {
+        return _dbContext.Libraries.AnyAsync(x => x.Id == id, cancellationToken);
     }
 
     public async Task<List<Library>> ListByIdsAsync(List<Guid> ids, CancellationToken cancellationToken)

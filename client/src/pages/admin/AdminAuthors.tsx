@@ -8,7 +8,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthorViewModelType } from '../../models/AuthorViewModel';
+import { AuthorViewModelType } from '../../models/author/AuthorViewModel';
 import { useQuery } from '@tanstack/react-query';
 import { getAuthors } from '../../api/author';
 import Table from '@mui/material/Table';

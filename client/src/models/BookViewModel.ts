@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import PublisherViewModel from './PublisherViewModel';
-import AuthorViewModel from './AuthorViewModel';
+import AuthorViewModel from './author/AuthorViewModel';
 import BookCategoryViewModel from './BookCategoryViewModel';
 
 const BookViewModel = z.object({
@@ -17,7 +17,7 @@ const BookViewModel = z.object({
   publisher: PublisherViewModel.nullable(),
   authors: z.array(AuthorViewModel),
   bookCategories: z.array(BookCategoryViewModel),
-  doesUserObserve: z.nullable(z.boolean())
+  doesUserObserve: z.nullable(z.boolean()),
 });
 
 export default BookViewModel;

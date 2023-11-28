@@ -39,6 +39,7 @@ import AdminRegisterEmployeeForm from './pages/admin/AdminRegisterEmployeeForm';
 import BookRanking from './pages/book/BookRanking';
 import ReservationList from './pages/reservations/ReservationList';
 import AdminBookUpdateForm from './pages/admin/AdminBookUpdateForm';
+import Settings from './pages/account/AccountSettings';
 
 const mainTheme = createTheme({
   palette: {
@@ -81,6 +82,7 @@ function App() {
         <Route path="register" element={<Register />} />
         <Route path="account">
           <Route path="change-password" element={<ChangePassword />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
         <Route path="*" element={<div>NotFound</div>} />
         <Route path="books" element={<BooksList />} />

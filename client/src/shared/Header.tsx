@@ -11,13 +11,19 @@ import TextField from '@mui/material/TextField';
 import CartTab from '../components/reservations/CartTab';
 import { useCartStore } from '../../src/store';
 import AuthorizedView from '../components/auth/AuthorizedView';
-import PersonIcon from '@mui/icons-material/Person';
-import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
+import NotAuthorizedView from '../components/auth/NotAuthorizedView';
+import LoginIcon from '@mui/icons-material/Login';
+import LocalMallIcon from '@mui/icons-material/LocalMall';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useAuth } from '../utils/auth/useAuth';
+import ProfileHeaderIcon from '../components/profile/ProfileHeaderIcon';
+import Tooltip from '@mui/material/Tooltip';
 
 function Header() {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up('xs'));
   const cartStore = useCartStore();
+  const { logout } = useAuth();
 
   return (
     <Box
@@ -39,30 +45,75 @@ function Header() {
           <Grid item sm={6} xs={12}>
             <SearchBar />
           </Grid>
-          {matches && (
-            <Grid item sm={1} xs={3} paddingLeft={8} paddingY={2.1}>
-              <AuthorizedView>
-                {cartStore.isOpen && <CartTab />}
-                <Grid item onClick={() => cartStore.toggleCart()}>
-                  <ShoppingBasketIcon sx={{ fontSize: '2rem' }} />
-                </Grid>
-              </AuthorizedView>
-            </Grid>
-          )}
           <AuthorizedView>
+            {matches && (
+              <Grid
+                item
+                sm={1}
+                sx={{
+                  paddingLeft: 3,
+                  paddingY: 2,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                {cartStore.isOpen && <CartTab />}
+                <Tooltip title="Koszyk">
+                  <Box
+                    sx={{
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => cartStore.toggleCart()}>
+                    <LocalMallIcon />
+                  </Box>
+                </Tooltip>
+              </Grid>
+            )}
             <Grid
               item
               sm={1}
               xs={3}
               paddingY={2}
               display={'flex'}
-              justifyItems={'center'}
+              justifyContent={'center'}
               alignItems={'center'}>
-              <Link to={'/account/change-password'}>
-                <PersonIcon sx={{ fontSize: '2rem' }} />
-              </Link>
+              <ProfileHeaderIcon />
+            </Grid>
+            <Grid
+              item
+              sm={1}
+              xs={3}
+              onClick={() => logout()}
+              paddingY={2}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}>
+              <Tooltip title="Wyloguj się">
+                <Box
+                  sx={{
+                    cursor: 'pointer',
+                  }}>
+                  <LogoutIcon sx={{ fontSize: '2rem' }} />
+                </Box>
+              </Tooltip>
             </Grid>
           </AuthorizedView>
+          <NotAuthorizedView>
+            <Grid
+              item
+              sm={3}
+              xs={3}
+              paddingY={2}
+              sx={{
+                textAlign: 'center',
+              }}>
+              <Link to={'/login'} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <Tooltip title="Logowanie">
+                  <LoginIcon sx={{ fontSize: '2rem' }} />
+                </Tooltip>
+              </Link>
+            </Grid>
+          </NotAuthorizedView>
         </Grid>
       </Box>
       <Nav />

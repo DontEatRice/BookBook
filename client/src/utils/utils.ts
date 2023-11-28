@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import UploadImage from '../models/UploadImage';
-import { User } from '../models/User';
+import { User } from '../models/user/User';
 import { Claims, PaginationRequest } from './constants';
 import { ResponseError, ValidationError } from './zodSchemas';
 
@@ -77,6 +77,7 @@ export function convertJwtToUser(token: string): User {
     roles,
     email: claims.email,
     libraryId: claims.libraryid,
+    name: claims._name,
   };
 }
 

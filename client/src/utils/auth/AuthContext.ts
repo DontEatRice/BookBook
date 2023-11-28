@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { createContext } from 'react';
-import { User } from '../../models/User';
+import { User } from '../../models/user/User';
 
 interface IAuthContext {
   user: User | null;

@@ -73,5 +73,4 @@ public class LibrariesController : ControllerBase
     {
         return Ok(await Mediator.Send(new GetBooksAvailableToAddQuery(id)));
     }
-    
 }

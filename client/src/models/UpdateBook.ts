@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import PublisherViewModel from './PublisherViewModel';
 import BookCategoryViewModel from './BookCategoryViewModel';
-import AuthorViewModel from './AuthorViewModel';
+import AuthorViewModel from './author/AuthorViewModel';
 
 const UpdateBook = z.object({
   isbn: z
