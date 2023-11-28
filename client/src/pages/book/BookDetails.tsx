@@ -1,7 +1,7 @@
 import { Grid, Box } from '@mui/material';
 import { useParams } from 'react-router';
 import { AuthorViewModelType } from '../../models/author/AuthorViewModel';
-import { getBook, getLibrariesWithBook } from '../../api/book';
+import { getBook } from '../../api/book';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
 import Reviews from '../reviews/Reviews';
@@ -18,14 +18,9 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import AddReviewForm from '../reviews/AddReviewForm';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import LoadingTypography from '../../components/common/LoadingTypography';
 import LibrariesStack from '../../components/book/LibrariesStack';
-import { addToCart } from '../../api/cart';
-import useAlert from '../../utils/alerts/useAlert';
-import { useCartStore } from '../../store';
-import { Link } from 'react-router-dom';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
@@ -41,7 +36,6 @@ function CategoriesList({ categories }: { categories: BookCategoryViewModelType[
 
 function BookDetails() {
   const queryClient = useQueryClient();
-  const { showSuccess, showError } = useAlert();
   const { register, handleSubmit } = useForm<ToggleBookInUserListType>({
     resolver: zodResolver(ToggleBookInUserList),
   });
@@ -68,42 +62,6 @@ function BookDetails() {
     queryFn: () => getReviews(params.bookId + '', { pageNumber: 0, pageSize: 50 }),
   });
 
-  const { data: bookLibraries, status: bookLibrariesStatus } = useQuery(
-    ['booksInLibrary', params.bookId],
-    async (context) => {
-      if (context.queryKey[1] != '') {
-        const bookId = context.queryKey[1] as string;
-        return await getLibrariesWithBook(bookId);
-      }
-      return [];
-    }
-  );
-
-  const cartStore = useCartStore();
-  const handleAddToCart = async (bookId: string, libraryId: string) => {
-    try {
-      await addToCart({ bookId, libraryId });
-      showSuccess({ message: 'Dodano do koszyka!' });
-      cartStore.toggleIsChanged();
-    } catch (error) {
-      const err = error as Error;
-      switch (err.message) {
-        case 'BOOK_ALREADY_IN_CART':
-          showError({ message: 'Książka została już dodana do koszyka' });
-          break;
-        case 'BOOK_NOT_FOUND':
-          showError({ message: 'Książka nie została znaleziona' });
-          break;
-        case 'LIBRARY_NOT_FOUND':
-          showError({ message: 'Biblioteka nie została znaleziona' });
-          break;
-        default:
-          showError({ message: `Wystąpił nieznany błąd: ${err.message}` });
-          break;
-      }
-    }
-  };
-
   return (
     <div>
       <Box mt={4}>
@@ -112,7 +70,7 @@ function BookDetails() {
         {statusBook == 'success' && (
           <div>
             <Stack direction="row" justifyContent="space-between" padding={2} marginTop={8} marginBottom={4}>
-              <Typography variant="h4">{book.title}</Typography>
+              <Typography variant="h3">{book.title}</Typography>
               <AuthorizedView roles={['User']}>
                 <input type="hidden" {...register('bookId')} value={book.id} />
                 {book.doesUserObserve != null && (
@@ -157,51 +115,10 @@ function BookDetails() {
                 </Box>
               </Grid>
             </Grid>
-            {bookLibrariesStatus == 'success' && (
-              <Grid container spacing={2} marginBottom={3}>
-                <Grid item xs={5}>
-                  <LibrariesStack libraries={bookLibraries} bookId={params.bookId!} />
-                </Grid>
-                <Grid item xs={7}>
-                  <MapContainer
-                    id="map"
-                    style={{ height: 500, zIndex: 0 }}
-                    bounds={[
-                      [54, 23],
-                      [49, 14],
-                    ]}>
-                    <TileLayer
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    {bookLibraries.map((library) => (
-                      <Marker position={[library.latitude, library.longitude]} key={library.id}>
-                        <Popup>
-                          <Link to={`/libraries/${library.id}`}>{library.name}</Link>
-                          <br />
-                          {library.address.street + ' ' + library.address.number}
-                          {library.address.apartment == null ? '' : '/'}
-                          {library.address.apartment ?? ''}
-                          <br /> {library.address.city}
-                          <br />
-                          <AuthorizedView>
-                            <Button onClick={() => handleAddToCart(params.bookId!, library.id)}>
-                              Do koszyka
-                            </Button>
-                          </AuthorizedView>
-                        </Popup>
-                      </Marker>
-                    ))}
-                  </MapContainer>
-                </Grid>
-              </Grid>
-            )}
-            {/* <Box>
-              <AddBookToCart bookId={params.bookId as string} />
-            </Box> */}
+            <LibrariesStack bookId={params.bookId!} />
             <Box display={'flex'} flexDirection={'column'}>
               <AddReviewForm book={book}></AddReviewForm>
-              {statusReviews == 'loading' && 'Ładowanie opinii...'}
+              {statusReviews == 'loading' && <LoadingTypography />}
               {statusReviews == 'error' && 'Błąd!'}
               {statusReviews == 'success' && <Reviews book={book} reviews={reviews.data} />}
             </Box>
