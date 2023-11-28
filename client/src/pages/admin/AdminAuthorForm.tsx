@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import { useForm, useWatch } from 'react-hook-form';
-import AddAuthor, { AddAuthorType } from '../../models/AddAuthor';
+import AddAuthor, { AddAuthorType } from '../../models/author/AddAuthor';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
@@ -71,7 +71,7 @@ function AdminAuthorForm() {
     },
     [postAuthorMutation, uploadImageMutation]
   );
-  
+
   return (
     <Box sx={{ mt: 2 }}>
       <form style={{ display: 'flex', justifyContent: 'center' }} onSubmit={handleSubmit(onSubmit)}>

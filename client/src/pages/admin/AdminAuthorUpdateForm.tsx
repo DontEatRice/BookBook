@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { useForm, useWatch } from 'react-hook-form';
-import UpdateAuthor, { UpdateAuthorType } from '../../models/UpdateAuthor';
+import UpdateAuthor, { UpdateAuthorType } from '../../models/author/UpdateAuthor';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';

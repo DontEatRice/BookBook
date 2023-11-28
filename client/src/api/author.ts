@@ -1,7 +1,7 @@
-import { AddAuthorType } from '../models/AddAuthor';
-import AuthorViewModel from '../models/AuthorViewModel';
+import { AddAuthorType } from '../models/author/AddAuthor';
+import AuthorViewModel from '../models/author/AuthorViewModel';
 import BookViewModel from '../models/BookViewModel';
-import { UpdateAuthorType } from '../models/UpdateAuthor';
+import { UpdateAuthorType } from '../models/author/UpdateAuthor';
 import { PaginationRequest } from '../utils/constants';
 import { handleBadResponse, paginatedFetch } from '../utils/utils';
 import { paginatedResponse } from '../utils/zodSchemas';

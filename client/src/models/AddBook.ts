@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AuthorViewModelType } from './AuthorViewModel';
+import { AuthorViewModelType } from './author/AuthorViewModel';
 import { BookCategoryViewModelType } from './BookCategoryViewModel';
 import { PublisherViewModelType } from './PublisherViewModel';
 
