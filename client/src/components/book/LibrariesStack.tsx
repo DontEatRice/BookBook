@@ -46,7 +46,7 @@ function LibrariesStack({ libraries, bookId }: { libraries: LibraryViewModelType
               </Link>
               <Typography>
                 {library.address.street + ' ' + library.address.number}
-                {library.address.apartment == null ? '' : '/'}
+                {library.address.apartment == '' ? '' : '/'}
                 {library.address.apartment ?? ''}
               </Typography>
               <Typography>{library.address.postalCode + ' ' + library.address.city}</Typography>

@@ -4,7 +4,7 @@ const UserDetailViewModel = z.object({
   id: z.string(),
   name: z.string(),
   avatarImageUrl: z.string().nullable(),
-  libraryId: z.string(),
+  libraryId: z.string().nullable(),
   roles: z.string().array(),
 });
 
