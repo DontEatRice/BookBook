@@ -41,5 +41,6 @@ public sealed class RemoveReviewHandler : IRequestHandler<RemoveReviewCommand>
         book.SubtractReviewFromRating(review.Rating);
 
         await _reviewRepository.Delete(request.Id, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

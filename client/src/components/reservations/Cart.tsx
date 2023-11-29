@@ -11,6 +11,7 @@ import { makeReservation } from '../../api/reservation';
 import { useState } from 'react';
 import { getBook } from '../../api/book';
 import { useTheme } from '@mui/material/styles';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
 export default function Cart() {
   const cartStore = useCartStore();
@@ -18,6 +19,23 @@ export default function Cart() {
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [open, setOpen] = useState(false);
+  const [libraryId, setLibraryId] = useState('');
+
+  const handleClickOpen = (id: string) => {
+    setLibraryId(id);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setLibraryId('');
+    setOpen(false);
+  };
+
+  const handleConfirm = () => {
+    setOpen(false);
+    handleMakeReservation();
+  };
 
   const { data, status, refetch } = useQuery({ queryKey: ['cart'], queryFn: getCart });
 
@@ -28,7 +46,7 @@ export default function Cart() {
     cartStore.toggleIsChanged();
   };
 
-  const handleMakeReservation = async (libraryId: string) => {
+  const handleMakeReservation = async () => {
     try {
       setLoading(true);
       await makeReservation({ libraryId });
@@ -153,9 +171,30 @@ export default function Cart() {
                             backgroundColor: theme.palette.primary.main,
                           },
                         }}
-                        onClick={() => handleMakeReservation(libraryInCart.library.id)}>
+                        onClick={() => handleClickOpen(libraryInCart.library.id)}>
                         Złóż rezerwację
                       </Button>
+
+                      <Dialog
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description">
+                        <DialogTitle id="alert-dialog-title">{'Potwierdzenie rezerwacji'}</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-description">
+                            Czy na pewno chcesz złożyć rezerwację?
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={handleClose} color="primary">
+                            Anuluj
+                          </Button>
+                          <Button onClick={handleConfirm} color="primary" autoFocus>
+                            Potwierdź
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
                     </List>
                   </ListItem>
                 </div>
@@ -167,3 +206,4 @@ export default function Cart() {
     );
   }
 }
+

@@ -52,9 +52,9 @@ public class Book
     public void ComputeRating(ICollection<Review> reviews, double reviewRating)
     {
         var reviewCount = reviews.Count;
-        var averageRating = AverageRating == null ? 0 : AverageRating;
+        var averageRating = AverageRating ?? 0;
         
-        AverageRating = (averageRating ?? 0 * reviewCount + reviewRating) / (reviewCount + 1);
+        AverageRating = (averageRating * reviewCount + reviewRating) / (reviewCount + 1);
     }
     
     public void SubtractReviewFromRating(double reviewRating)
@@ -62,7 +62,7 @@ public class Book
         var reviewCount = Reviews.Count;
         var averageRating = AverageRating;
 
-        if (reviewCount == 1)
+        if (reviewCount <= 1)
         {
             AverageRating = null;
             return;

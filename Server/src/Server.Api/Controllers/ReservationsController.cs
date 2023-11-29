@@ -61,6 +61,13 @@ public class ReservationsController : ControllerBase
         }));
     }
     
+    [HttpGet("{id:guid}")]
+    [Authorize]
+    public async Task<ActionResult> Get(Guid id)
+    {
+        return Ok(await Mediator.Send(new GetReservationQuery(id)));
+    }
+    
     // Admin
     
     [Authorize]
