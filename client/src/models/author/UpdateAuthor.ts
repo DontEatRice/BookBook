@@ -14,8 +14,8 @@ const UpdateAuthor = z.object({
         (file) => file == undefined || ACCEPTED_FORMATS.includes(file.type),
         'Akceptowane pliki to .png i .jpg'
     ),
-    firstName: z.string().max(40).nonempty(),
-    lastName: z.string().max(50).nonempty(),
+    firstName: z.string().max(40, "Maksymalnie 40 znaków").min(1, "Pole wymagane"),
+    lastName: z.string().max(50, "Maksymalnie 50 znaków").min(1, "Pole wymagane"),
     birthYear: z
     .preprocess((a) => parseInt(z.string().parse(a)), z.number().positive())
     .refine((year) => year <= new Date().getFullYear(), 'Rok urodzenia nie może być z przyszłości'),
