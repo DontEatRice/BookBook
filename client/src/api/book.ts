@@ -79,6 +79,10 @@ export async function getLibrariesWithBook(bookId: string) {
   const response = await fetch(base + '/Books/' + bookId + '/Libraries');
   const data = await response.json();
 
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+
   return LibraryViewModel.array().parse(data) ?? [];
 }
 
@@ -92,7 +96,7 @@ export async function searchBooks(
 ) {
   const response = await paginatedFetch(base + '/Books/search', args);
   if (!response.ok) {
-    throw new Error(await response.text());
+    await handleBadResponse(response);
   }
   const data = await response.json();
   return BooksPaginated.parse(data);
@@ -101,7 +105,7 @@ export async function searchBooks(
 export async function bookRanking(args: PaginationRequest) {
   const response = await paginatedFetch(base + '/Books/ranking', args);
   if (!response.ok) {
-    throw new Error(await response.text());
+    await handleBadResponse(response);
   }
   const data = await response.json();
   return RankingPaginated.parse(data);

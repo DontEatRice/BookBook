@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.Exceptions;
@@ -39,12 +40,14 @@ internal sealed class GetReservationHandler
         
         var books = await _bookBookDbContext.Books
             .Where(b => bookIds.Contains(b.Id))
+            .ProjectTo<BookViewModel>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
-
+        
         var library = await _bookBookDbContext.Libraries
             .Where(l => l.Id == reservation.LibraryId)
+            .ProjectTo<LibraryViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
-
+        
         if (library is null)
         {
             throw new NotFoundException("Library not found", ApplicationErrorCodes.LibraryNotFound);
@@ -54,8 +57,8 @@ internal sealed class GetReservationHandler
         {
             Id = reservation.Id,
             UserId = reservation.UserId,
-            Library = _mapper.Map<LibraryViewModel>(library),
-            Books = _mapper.Map<List<BookViewModel>>(books),
+            Library = library,
+            Books = books,
             Status = reservation.Status.ToString(),
             ReservationEndDate = reservation.ReservationEndDate
         };

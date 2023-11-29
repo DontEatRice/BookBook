@@ -1,7 +1,7 @@
 import { MakeReservationType } from '../models/MakeReservation';
 import ReservationViewModel from '../models/ReservationViewModel';
 import { PaginationRequest } from '../utils/constants';
-import { paginatedFetch } from '../utils/utils';
+import { handleBadResponse, paginatedFetch } from '../utils/utils';
 import { paginatedResponse } from '../utils/zodSchemas';
 import { getAuthToken } from './auth';
 
@@ -29,7 +29,7 @@ export async function getReservationsForUser(body: PaginationRequest) {
   const auth = await getAuthToken();
   const response = await paginatedFetch(base + '/reservations/search', body, auth);
   if (!response.ok) {
-    throw new Error(await response.text());
+    await handleBadResponse(response);
   }
   const data = await response.json();
 
@@ -59,7 +59,7 @@ export async function getReservation(reservationId: string) {
   });
 
   if (!response.ok) {
-    throw new Error(await response.text());
+    await handleBadResponse(response);
   }
   const data = await response.json();
   return ReservationViewModel.parse(data);
