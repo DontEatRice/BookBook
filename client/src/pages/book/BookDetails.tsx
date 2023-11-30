@@ -1,4 +1,4 @@
-import { Grid, Box } from '@mui/material';
+import { Grid, Box, Paper } from '@mui/material';
 import { useParams } from 'react-router';
 import { AuthorViewModelType } from '../../models/author/AuthorViewModel';
 import { getBook, getLibrariesWithBook } from '../../api/book';
@@ -10,7 +10,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toggleBookInUserList } from '../../api/user';
 import AuthorizedView from '../../components/auth/AuthorizedView';
-import FilledField from '../../components/common/FilledField';
 import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import { getReviews } from '../../api/review';
@@ -26,17 +25,32 @@ import { addToCart } from '../../api/cart';
 import useAlert from '../../utils/alerts/useAlert';
 import { useCartStore } from '../../store';
 import { Link } from 'react-router-dom';
+import { MAX_CALENDAR_HEIGHT } from '@mui/x-date-pickers/internals/constants/dimensions';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
 
-  return <FilledField label={authors.length > 1 ? 'Autorzy' : 'Autor'} value={authorNames} />;
+  return (
+    <Grid item xs>
+      <Typography variant="subtitle1">{authors.length > 1 ? 'Autorzy' : 'Autor'}</Typography>
+      <Typography variant="h6">
+        {authorNames}
+      </Typography>
+    </Grid>
+  );
 }
 
 function CategoriesList({ categories }: { categories: BookCategoryViewModelType[] }) {
   const categoriesNames = categories.map((category) => category.name).join(', ');
 
-  return <FilledField label={categories.length > 1 ? 'Kategorie' : 'Kategoria'} value={categoriesNames} />;
+  return (
+    <Grid item xs>
+      <Typography variant="subtitle1">{categories.length > 1 ? 'Kategorie' : 'Kategoria'}</Typography>
+      <Typography variant="h6">
+        {categoriesNames}
+      </Typography>
+    </Grid>
+  );
 }
 
 function BookDetails() {
@@ -127,38 +141,67 @@ function BookDetails() {
               </AuthorizedView>
             </Stack>
             <Grid container spacing={1} marginBottom={3} padding={2}>
-              <Grid item md={5} xs={12}>
+              <Grid item xs={5}>
                 <img
                   srcSet={`${book.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`}
                   src={`${book.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`}
                   alt={book.title}
-                  width="280px"
-                  height="400px"
+                  width='100%'
+                  height="560px"
                   loading="lazy"
                 />
               </Grid>
-              <Grid item md={6} xs={12}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <FilledField label="ISBN" value={book.isbn} />
-                  </div>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <FilledField label="Rok wydania" value={book.yearPublished + ''} />
-                  </div>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <FilledField label="Wydawca" value={book.publisher?.name + ''} />
-                  </div>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <AuthorsList authors={book.authors} />
-                  </div>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <CategoriesList categories={book.bookCategories} />
-                  </div>
-                </Box>
+              <Grid item xs={7}>
+                <Paper sx={{ p: 2, width: 'auto'}} elevation={2}>
+                  <Grid sx={{ display: 'flex', flexDirection: 'column', padding: 1 }} container spacing={2}>
+                    <Grid item>
+                      <Typography variant="subtitle1">ISBN</Typography>
+                      <Typography variant="h6" width="100%">
+                        {book.isbn}
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="subtitle1">Rok wydania</Typography>
+                      <Typography variant="h6">
+                        {book.yearPublished}
+                      </Typography>
+                    </Grid>
+                    <AuthorsList authors = {book.authors} />
+                    <CategoriesList categories = {book.bookCategories} />
+                    <Grid item>
+                      <Typography variant="subtitle1">Wydawca</Typography>
+                      <Typography variant="h6">
+                        {book.publisher?.name}
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="subtitle1">Język</Typography>
+                      <Typography variant="h6">
+                        {book.language}
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="subtitle1">Ilość stron</Typography>
+                      <Typography variant="h6">
+                        {book.pageCount}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} hidden={book.description == null ? true : false}>
+                <Paper sx={{ p: 2, width: 'auto'}} elevation={2}>
+                  <Grid item>
+                    <Typography variant="subtitle1">Opis</Typography>
+                    <Typography variant="h6">
+                      {book.description}
+                    </Typography>
+                  </Grid>
+                </Paper>
               </Grid>
             </Grid>
             {bookLibrariesStatus == 'success' && (
-              <Grid container spacing={2} marginBottom={3}>
+              <Grid container spacing={1} marginBottom={3} padding={2}>
                 <Grid item xs={5}>
                   <LibrariesStack libraries={bookLibraries} bookId={params.bookId!} />
                 </Grid>
@@ -199,12 +242,14 @@ function BookDetails() {
             {/* <Box>
               <AddBookToCart bookId={params.bookId as string} />
             </Box> */}
-            <Box display={'flex'} flexDirection={'column'}>
-              <AddReviewForm book={book}></AddReviewForm>
-              {statusReviews == 'loading' && 'Ładowanie opinii...'}
-              {statusReviews == 'error' && 'Błąd!'}
-              {statusReviews == 'success' && <Reviews book={book} reviews={reviews.data} />}
-            </Box>
+            <Grid container spacing={1} marginBottom={3} padding={2} display={'flex'} flexDirection={'column'}>
+              <Grid item>
+                <AddReviewForm book={book}></AddReviewForm>
+                {statusReviews == 'loading' && 'Ładowanie opinii...'}
+                {statusReviews == 'error' && 'Błąd!'}
+                {statusReviews == 'success' && <Reviews book={book} reviews={reviews.data} />}
+              </Grid>
+            </Grid>
           </div>
         )}
       </Box>
