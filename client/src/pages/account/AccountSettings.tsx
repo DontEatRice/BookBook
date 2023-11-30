@@ -7,24 +7,30 @@ import { UserDetailViewModelType } from '../../models/user/UserDetailViewModel';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { myAccount, updateMyAccount } from '../../api/account';
 import LoadingTypography from '../../components/common/LoadingTypography';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import UpdateMyAccount, { UpdateMyAccountType } from '../../models/user/UpdateMyAccount';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TextInputField2 } from '../../components/common/TextInputField';
 import Avatar from '@mui/material/Avatar';
 import useAlert from '../../utils/alerts/useAlert';
+import { getLibraries } from '../../api/library';
+import { Autocomplete, TextField } from '@mui/material';
+import { LibraryViewModelType } from '../../models/LibraryViewModel';
 
 function AccountSettingsForm({
   data,
   onSubmit,
+  libraries,
 }: {
   data: UserDetailViewModelType;
   onSubmit: (newUser: UpdateMyAccountType, picture?: File) => void;
+  libraries: LibraryViewModelType[];
 }) {
   const { control, handleSubmit } = useForm<UpdateMyAccountType>({
     resolver: zodResolver(UpdateMyAccount),
     defaultValues: {
       ...data,
+      library: data.libraryId ? libraries.find((x) => x.id == data.libraryId) : null,
     },
   });
 
@@ -37,6 +43,31 @@ function AccountSettingsForm({
       <Stack direction="column" alignItems="center" spacing={2} mb={2} mt={2}>
         <Avatar src={data.avatarImageUrl ?? undefined} sx={{ width: 250, height: 250 }} />
         <TextInputField2 control={control} field="name" label="Nazwa użytkownika" />
+        <Controller
+          control={control}
+          name="library"
+          render={({ field, fieldState: { error } }) => (
+            <Autocomplete
+              {...field}
+              sx={{ width: '100%', mb: 2 }}
+              options={libraries}
+              isOptionEqualToValue={(option, value) => option.id == value.id}
+              onChange={(_, newValue) => {
+                field.onChange(newValue);
+              }}
+              getOptionLabel={(library) => library.name}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Moja biblioteka"
+                  placeholder="Szukaj bibliotek"
+                  helperText={error?.message}
+                  error={error != undefined}
+                />
+              )}
+            />
+          )}
+        />
         <Stack direction={'row'} spacing={1}>
           <Button onClick={() => history.back()}>Powrót</Button>
           <Button type="submit" variant="contained">
@@ -56,6 +87,10 @@ function AccountSettings() {
   const { data, isLoading } = useQuery({
     queryKey: ['me'],
     queryFn: myAccount,
+  });
+  const { data: librariesData, isLoading: loadingLibraries } = useQuery({
+    queryKey: ['libraries'],
+    queryFn: () => getLibraries({ pageNumber: 0, pageSize: 1000 }),
   });
   const { mutate } = useMutation({
     mutationFn: updateMyAccount,
@@ -80,14 +115,14 @@ function AccountSettings() {
       </Box>
     );
   }
-  if (isLoading || !data) {
+  if (isLoading || loadingLibraries || !data || !librariesData) {
     return <LoadingTypography />;
   }
 
   return (
     <Stack direction="row" justifyContent="center">
       <Box sx={{ width: { xs: '90%', sm: '70%', md: '45%' } }}>
-        <AccountSettingsForm data={data} onSubmit={(user) => mutate(user)} />
+        <AccountSettingsForm data={data} onSubmit={(user) => mutate(user)} libraries={librariesData.data} />
       </Box>
     </Stack>
   );

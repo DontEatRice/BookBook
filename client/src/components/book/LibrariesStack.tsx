@@ -9,6 +9,7 @@ import 'leaflet/dist/leaflet.css';
 import { useQuery } from '@tanstack/react-query';
 import { getLibrariesWithBook } from '../../api/book';
 import LoadingTypography from '../common/LoadingTypography';
+import MoodBadIcon from '@mui/icons-material/MoodBad';
 
 function LibrariesStack({ bookId }: { bookId: string }) {
   const { showError, showSuccess } = useAlert();
@@ -118,7 +119,10 @@ function LibrariesStack({ bookId }: { bookId: string }) {
           alignItems="center"
           justifyContent="center"
           sx={{ marginBottom: 3 }}>
-          <Typography variant="h4">Książka nie jest dostępna w żadnej bibliotece</Typography>
+          <Typography variant="h5">
+            Książka nie jest dostępna w żadnej bibliotece...<MoodBadIcon></MoodBadIcon>
+          </Typography>
+          <Typography variant="h5">Zajrzyj tu później</Typography>
         </Box>
       )}
     </div>
