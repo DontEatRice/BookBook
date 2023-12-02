@@ -10,11 +10,11 @@ import LoadingTypography from '../../components/common/LoadingTypography';
 import { Controller, useForm } from 'react-hook-form';
 import UpdateMyAccount, { UpdateMyAccountType } from '../../models/user/UpdateMyAccount';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TextInputField2 } from '../../components/common/TextInputField';
+import TextInputField, { TextInputField2 } from '../../components/common/TextInputField';
 import Avatar from '@mui/material/Avatar';
 import useAlert from '../../utils/alerts/useAlert';
 import { getLibraries } from '../../api/library';
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, TextField, Typography } from '@mui/material';
 import { LibraryViewModelType } from '../../models/LibraryViewModel';
 
 function AccountSettingsForm({
@@ -26,11 +26,21 @@ function AccountSettingsForm({
   onSubmit: (newUser: UpdateMyAccountType, picture?: File) => void;
   libraries: LibraryViewModelType[];
 }) {
-  const { control, handleSubmit } = useForm<UpdateMyAccountType>({
+  const {
+    control,
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<UpdateMyAccountType>({
     resolver: zodResolver(UpdateMyAccount),
     defaultValues: {
       ...data,
       library: data.libraryId ? libraries.find((x) => x.id == data.libraryId) : null,
+      street: data.address ? data.address.street : undefined,
+      number: data.address ? data.address.number : undefined,
+      apartment: data.address ? data.address.apartment : undefined,
+      postalCode: data.address ? data.address.postalCode : undefined,
+      city: data.address ? data.address.city : undefined,
     },
   });
 
@@ -68,6 +78,12 @@ function AccountSettingsForm({
             />
           )}
         />
+        <Typography variant="h6">Adres:</Typography>
+        <TextInputField errors={errors} field="street" register={register} label="Ulica" />
+        <TextInputField errors={errors} field="number" register={register} label="Numer" />
+        <TextInputField errors={errors} field="apartment" register={register} label="Numer lokalu" />
+        <TextInputField errors={errors} field="city" register={register} label="Miasto" />
+        <TextInputField errors={errors} field="postalCode" register={register} label="Kod pocztowy" />
         <Stack direction={'row'} spacing={1}>
           <Button onClick={() => history.back()}>Powrót</Button>
           <Button type="submit" variant="contained">

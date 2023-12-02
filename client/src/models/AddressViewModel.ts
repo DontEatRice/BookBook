@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 const AddressViewModel = z.object({
-    postalCode: z.string().nonempty(),
-    city: z.string().nonempty(),
-    street: z.string().nonempty(),
+    postalCode: z.string(),
+    city: z.string(),
+    street: z.string(),
     number: z.string(),
     apartment: z.string().nullable(),
     additionalInfo: z.string().nullable(),

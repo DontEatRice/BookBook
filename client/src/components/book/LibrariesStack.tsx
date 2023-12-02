@@ -56,7 +56,11 @@ function LibrariesStack({ bookId }: { bookId: string }) {
       {librariesStatus == 'success' && libraries.length > 0 && (
         <Grid container spacing={2} marginBottom={3}>
           <Grid item xs={5}>
-            <Stack direction={'column'} spacing={1} style={{ overflow: 'auto', height: 500 }}>
+            <Stack
+              direction={'column'}
+              spacing={1}
+              style={{ overflow: 'auto', height: 500 }}
+              sx={{ backgroundColor: '#eeeeee' }}>
               {libraries.map((library) => (
                 <Paper
                   key={library.id}

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import AddressViewModel from '../AddressViewModel';
 
 const UserDetailViewModel = z.object({
   id: z.string(),
@@ -6,6 +7,7 @@ const UserDetailViewModel = z.object({
   avatarImageUrl: z.string().nullable(),
   libraryId: z.string().nullable(),
   roles: z.string().array(),
+  address: AddressViewModel.nullable()
 });
 
 export default UserDetailViewModel;

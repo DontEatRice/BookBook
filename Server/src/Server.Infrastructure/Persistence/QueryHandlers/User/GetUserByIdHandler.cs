@@ -22,6 +22,7 @@ internal sealed class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, Use
     public Task<UserDetailViewModel?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
         return _dbContext.Identities
+            .Include(x => x.Address)
             .Where(x => x.Id == request.Id)
             .ProjectTo<UserDetailViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
