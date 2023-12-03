@@ -22,7 +22,19 @@ function LibrariesStack({ bookId }: { bookId: string }) {
     async (context) => {
       if (context.queryKey[1] != '') {
         const bookId = context.queryKey[1] as string;
-        return await getLibrariesWithBook(bookId);
+        const res = await getLibrariesWithBook(bookId);
+        if (user?.lat != undefined) {
+          return res.sort((a, b) => {
+            if (
+              getDistanceFromLatLonInKm(a.latitude, a.longitude, user?.lat!, user?.lon!) >
+              getDistanceFromLatLonInKm(b.latitude, b.longitude, user?.lat!, user?.lon!)
+            )
+              return 1;
+            else return -1;
+          });
+        } else {
+          return res;
+        }
       }
       return [];
     }
@@ -91,20 +103,27 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                     </Link>
                     <Typography>
                       {library.address.street + ' ' + library.address.number}
-                      {library.address.apartment == '' ?? '/'}
+                      {library.address.apartment == '' ? '' : '/'}
                       {library.address.apartment ?? ''}
                     </Typography>
                     <Typography>{library.address.postalCode + ' ' + library.address.city}</Typography>
                   </div>
                   <AuthorizedView>
-                    <Button onClick={() => handleAddToCart(bookId, library.id)}>Do koszyka</Button>
-                    {user?.lat != undefined && (
-                      <Typography>
-                        {getDistanceFromLatLonInKm(library.latitude, library.longitude, user.lat!, user.lon!)
-                          .toFixed(1)
-                          .toString() + ' km od Ciebie!'}
-                      </Typography>
-                    )}
+                    <Stack direction={'column'}>
+                      <Button onClick={() => handleAddToCart(bookId, library.id)}>Do koszyka</Button>
+                      {user?.lat != undefined && (
+                        <Typography>
+                          {getDistanceFromLatLonInKm(
+                            library.latitude,
+                            library.longitude,
+                            user.lat!,
+                            user.lon!
+                          )
+                            .toFixed(1)
+                            .toString() + ' km od Ciebie!'}
+                        </Typography>
+                      )}
+                    </Stack>
                   </AuthorizedView>
                 </Paper>
               ))}
@@ -128,7 +147,7 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                     <Link to={`/libraries/${library.id}`}>{library.name}</Link>
                     <br />
                     {library.address.street + ' ' + library.address.number}
-                    {library.address.apartment == '' ?? '/'}
+                    {library.address.apartment == '' ? '' : '/'}
                     {library.address.apartment ?? ''}
                     <br /> {library.address.city}
                     <br />
