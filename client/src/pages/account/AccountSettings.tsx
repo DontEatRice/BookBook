@@ -14,8 +14,9 @@ import TextInputField, { TextInputField2 } from '../../components/common/TextInp
 import Avatar from '@mui/material/Avatar';
 import useAlert from '../../utils/alerts/useAlert';
 import { getLibraries } from '../../api/library';
-import { Autocomplete, TextField, Typography } from '@mui/material';
+import { Autocomplete, Checkbox, TextField, Typography } from '@mui/material';
 import { LibraryViewModelType } from '../../models/LibraryViewModel';
+import { useState } from 'react';
 
 function AccountSettingsForm({
   data,
@@ -26,11 +27,16 @@ function AccountSettingsForm({
   onSubmit: (newUser: UpdateMyAccountType, picture?: File) => void;
   libraries: LibraryViewModelType[];
 }) {
+  const [displayAddressForm, setDisplayAddressForm] = useState(data.address !== null);
+  const handleDisplayAddressFormChange = (value: boolean) => {
+    setDisplayAddressForm(value);
+  };
   const {
     control,
     handleSubmit,
     register,
     formState: { errors },
+    unregister,
   } = useForm<UpdateMyAccountType>({
     resolver: zodResolver(UpdateMyAccount),
     defaultValues: {
@@ -45,6 +51,14 @@ function AccountSettingsForm({
   });
 
   const handleFormSubmit = (updated: UpdateMyAccountType) => {
+    console.log(displayAddressForm);
+    if (!displayAddressForm) {
+      updated.street = undefined;
+      updated.number = undefined;
+      updated.apartment = undefined;
+      updated.postalCode = undefined;
+      updated.city = undefined;
+    }
     onSubmit(updated);
   };
 
@@ -52,7 +66,12 @@ function AccountSettingsForm({
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Stack direction="column" alignItems="center" spacing={2} mb={2} mt={2}>
         <Avatar src={data.avatarImageUrl ?? undefined} sx={{ width: 250, height: 250 }} />
-        <TextInputField2 control={control} field="name" label="Nazwa użytkownika" />
+        <TextInputField2
+          control={control}
+          field="name"
+          label="Nazwa użytkownika"
+          additionalProps={{ variant: 'filled' }}
+        />
         <Controller
           control={control}
           name="library"
@@ -73,17 +92,58 @@ function AccountSettingsForm({
                   placeholder="Szukaj bibliotek"
                   helperText={error?.message}
                   error={error != undefined}
+                  variant="filled"
                 />
               )}
             />
           )}
         />
-        <Typography variant="h6">Adres:</Typography>
-        <TextInputField errors={errors} field="street" register={register} label="Ulica" />
-        <TextInputField errors={errors} field="number" register={register} label="Numer" />
-        <TextInputField errors={errors} field="apartment" register={register} label="Numer lokalu" />
-        <TextInputField errors={errors} field="city" register={register} label="Miasto" />
-        <TextInputField errors={errors} field="postalCode" register={register} label="Kod pocztowy" />
+        <Box alignItems={'center'} textAlign={'center'}>
+          <Typography>Chcesz podać swój adres?</Typography>
+          <Checkbox
+            checked={displayAddressForm}
+            onChange={() => setDisplayAddressForm(!displayAddressForm)}
+          />
+        </Box>
+        {displayAddressForm && (
+          <>
+            <TextInputField
+              errors={errors}
+              field="street"
+              register={register}
+              label="Ulica"
+              additionalProps={{ variant: 'filled' }}
+            />
+            <TextInputField
+              errors={errors}
+              field="number"
+              register={register}
+              label="Numer"
+              additionalProps={{ variant: 'filled' }}
+            />
+            <TextInputField
+              errors={errors}
+              field="apartment"
+              register={register}
+              label="Numer lokalu"
+              additionalProps={{ variant: 'filled' }}
+            />
+            <TextInputField
+              errors={errors}
+              field="city"
+              register={register}
+              label="Miasto"
+              additionalProps={{ variant: 'filled' }}
+            />
+            <TextInputField
+              errors={errors}
+              field="postalCode"
+              register={register}
+              label="Kod pocztowy"
+              additionalProps={{ variant: 'filled' }}
+            />
+          </>
+        )}
         <Stack direction={'row'} spacing={1}>
           <Button onClick={() => history.back()}>Powrót</Button>
           <Button type="submit" variant="contained">

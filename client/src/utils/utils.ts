@@ -78,6 +78,8 @@ export function convertJwtToUser(token: string): User {
     email: claims.email,
     libraryId: claims.libraryid,
     name: claims._name,
+    lat: claims.lat ? Number(claims.lat.toString().replace(',', '.')) : undefined,
+    lon: claims.lon ? Number(claims.lon.toString().replace(',', '.')) : undefined
   };
 }
 

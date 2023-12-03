@@ -54,6 +54,12 @@ internal class SecurityTokenService : ISecurityTokenService
             claims.Add(new Claim(AuthConstants.LibraryIdClaim, identity.Library.Id.ToString()));
         }
 
+        if (identity.Roles.Contains(Role.User.GetDisplayName()) && identity.Latitude != null)
+        {
+            claims.Add(new Claim(AuthConstants.Lat, identity.Latitude.ToString()));
+            claims.Add(new Claim(AuthConstants.Lon, identity.Longitude.ToString()));
+        }
+
         return GenerateToken(AuthConstants.AccessTokenDuration, claims);
     }
 

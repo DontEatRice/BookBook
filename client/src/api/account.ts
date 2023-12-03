@@ -35,6 +35,7 @@ export async function myAccount() {
   if (!result.ok) {
     await handleBadResponse(result);
   }
+  console.log('pobralem dane swoje')
   return UserDetailViewModel.parse(await result.json());
 }
 

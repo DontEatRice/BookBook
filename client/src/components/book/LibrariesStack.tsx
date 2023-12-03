@@ -10,8 +10,10 @@ import { useQuery } from '@tanstack/react-query';
 import { getLibrariesWithBook } from '../../api/book';
 import LoadingTypography from '../common/LoadingTypography';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
+import { useAuth } from '../../utils/auth/useAuth';
 
 function LibrariesStack({ bookId }: { bookId: string }) {
+  const { user } = useAuth();
   const { showError, showSuccess } = useAlert();
   const cartStore = useCartStore();
 
@@ -49,6 +51,23 @@ function LibrariesStack({ bookId }: { bookId: string }) {
       }
     }
   };
+
+  function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon2: number) {
+    console.log(user);
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2 - lat1); // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c; // Distance in km
+    return d;
+  }
+
+  function deg2rad(deg: number) {
+    return deg * (Math.PI / 180);
+  }
   return (
     <div>
       {librariesStatus == 'loading' && <LoadingTypography />}
@@ -79,6 +98,13 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                   </div>
                   <AuthorizedView>
                     <Button onClick={() => handleAddToCart(bookId, library.id)}>Do koszyka</Button>
+                    {user?.lat != undefined && (
+                      <Typography>
+                        {getDistanceFromLatLonInKm(library.latitude, library.longitude, user.lat!, user.lon!)
+                          .toFixed(1)
+                          .toString() + ' km od Ciebie!'}
+                      </Typography>
+                    )}
                   </AuthorizedView>
                 </Paper>
               ))}
