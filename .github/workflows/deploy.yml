@@ -22,14 +22,15 @@ jobs:
         run: |
           npm install
           VITE_API_BASE_URL=/api npm run build
+          ls -l ./dist
       - name: SCP Files
-        uses: appleboy/scp-action@v0.1.4
+        uses: appleboy/scp-action@v0.1.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
-          source: dist/*
+          source: "dist/*"
           target: "/var/www/bookbook"
   back-end-deploy:
     runs-on: ubuntu-latest
@@ -47,7 +48,9 @@ jobs:
       # - name: Build
       #   run: dotnet build --no-restore
       - name: Publish
-        run: dotnet publish ./src/Server.Api --nologo --output ./dist --configuration Release
+        run: |
+          dotnet publish ./src/Server.Api --nologo --output ./dist --configuration Release
+          ls -l ./dist
       - name: SCP Files
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -55,5 +58,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
-          source: dist/*
+          source: "dist/*"
           target: "/var/www/bookbook-api"
