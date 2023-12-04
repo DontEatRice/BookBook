@@ -31,6 +31,7 @@ jobs:
           key: ${{ secrets.KEY }}
           source: "client/dist/*"
           target: "/var/www/bookbook"
+          strip_components: 2
   back-end-deploy:
     runs-on: ubuntu-latest
     defaults:
@@ -55,3 +56,4 @@ jobs:
           key: ${{ secrets.KEY }}
           source: "Server/dist/*"
           target: "/var/www/bookbook-api"
+          strip_components: 2
