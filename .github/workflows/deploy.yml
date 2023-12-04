@@ -18,10 +18,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      - name: npm install, build and test
+      - name: npm install and build
         run: |
           npm install
-          npm run build --if-present
+          VITE_API_BASE_URL=/api npm run build
       - name: SCP Files
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -44,10 +44,12 @@ jobs:
           dotnet-version: 7.0.x
       - name: Restore dependencies
         run: dotnet restore
-      - name: Build
-        run: dotnet build --no-restore
+      # - name: Build
+      #   run: dotnet build --no-restore
       - name: Publish
-        run: dotnet publish ./src/Server.Api --nologo --no-build --output ./dist --configuration Release
+        run: dotnet publish ./src/Server.Api --nologo --output ../dist --configuration Release
+      - name: Tar published files
+        run: tar -cvf deploy.tar ../dist/
       - name: SCP Files
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -55,5 +57,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
-          source: "./dist/"
+          source: "deploy.tar"
           target: "/var/www/bookbook-api"
