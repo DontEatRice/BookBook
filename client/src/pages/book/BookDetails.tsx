@@ -26,15 +26,21 @@ import useAlert from '../../utils/alerts/useAlert';
 import { useCartStore } from '../../store';
 import { Link } from 'react-router-dom';
 import { MAX_CALENDAR_HEIGHT } from '@mui/x-date-pickers/internals/constants/dimensions';
+import { useNavigate } from 'react-router-dom';
+import AuthProvider from '../../components/auth/AuthProvider';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
-  const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
-
   return (
     <Grid item xs>
       <Typography variant="subtitle1">{authors.length > 1 ? 'Autorzy' : 'Autor'}</Typography>
       <Typography variant="h6">
-        {authorNames}
+      {authors
+        .map((author, i, arr) => {
+          return arr.length - 1 === i ?
+            <Link to={`/authors/${author.id}`}>{author.firstName + " " + author.lastName}</Link>
+          :
+            <text><Link to={`/authors/${author.id}`}>{author.firstName + " " + author.lastName}</Link>, </text>
+        })}
       </Typography>
     </Grid>
   );
@@ -125,8 +131,8 @@ function BookDetails() {
         {statusBook == 'error' && 'Błąd!'}
         {statusBook == 'success' && (
           <div>
-            <Stack direction="row" justifyContent="space-between" padding={2} marginTop={8} marginBottom={4}>
-              <Typography variant="h4">{book.title}</Typography>
+            <Stack direction="row" justifyContent="space-between" padding={2} marginTop={5} marginBottom={2}>
+              <Typography variant="h3">{book.title}</Typography>
               <AuthorizedView roles={['User']}>
                 <input type="hidden" {...register('bookId')} value={book.id} />
                 {book.doesUserObserve != null && (
@@ -152,8 +158,7 @@ function BookDetails() {
                 />
               </Grid>
               <Grid item xs={7}>
-                <Paper sx={{ p: 2, width: 'auto'}} elevation={2}>
-                  <Grid sx={{ display: 'flex', flexDirection: 'column', padding: 1 }} container spacing={2}>
+                  <Grid sx={{ display: 'flex', flexDirection: 'column', padding: 2, marginBottom: 5 }} container spacing={2}>
                     <Grid item>
                       <Typography variant="subtitle1">ISBN</Typography>
                       <Typography variant="h6" width="100%">
@@ -187,17 +192,14 @@ function BookDetails() {
                       </Typography>
                     </Grid>
                   </Grid>
-                </Paper>
               </Grid>
               <Grid item xs={12} hidden={book.description == null ? true : false}>
-                <Paper sx={{ p: 2, width: 'auto'}} elevation={2}>
                   <Grid item>
                     <Typography variant="subtitle1">Opis</Typography>
                     <Typography variant="h6">
                       {book.description}
                     </Typography>
                   </Grid>
-                </Paper>
               </Grid>
             </Grid>
             {bookLibrariesStatus == 'success' && (
