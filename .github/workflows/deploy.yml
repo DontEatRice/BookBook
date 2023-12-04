@@ -51,8 +51,7 @@ jobs:
         run: dotnet publish ./src/Server.Api --nologo --output ./dist --configuration Release
       - name: Create migration bundle
         run: |
-          dotnet tool install --global dotnet-ef
-          dotnet tool update --global dotnet-ef
+          dotnet tool install --global dotnet-ef --version 7.0.14
           dotnet ef migrations bundle -r linux-x64 -s src/Server.Api/
           cp efbundle ./dist
         # TODO - egzekucja efbundla (chmod +x) i restart service'u
