@@ -22,7 +22,6 @@ jobs:
         run: |
           npm install
           VITE_API_BASE_URL=/api npm run build
-          ls -l ./dist
       - name: SCP Files
         uses: appleboy/scp-action@v0.1.3
         with:
@@ -45,12 +44,8 @@ jobs:
           dotnet-version: 7.0.x
       - name: Restore dependencies
         run: dotnet restore
-      # - name: Build
-      #   run: dotnet build --no-restore
       - name: Publish
-        run: |
-          dotnet publish ./src/Server.Api --nologo --output ./dist --configuration Release
-          ls -l ./dist
+        run: dotnet publish ./src/Server.Api --nologo --output ./dist --configuration Release
       - name: SCP Files
         uses: appleboy/scp-action@v0.1.4
         with:
