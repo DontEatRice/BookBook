@@ -52,8 +52,8 @@ jobs:
       - name: Create migration bundle
         run: |
           dotnet tool install --global dotnet-ef --version 7.0.14
-          dotnet ef migrations bundle -r linux-x64 -s src/Server.Api/
-          cp efbundle ./dist
+          dotnet ef migrations bundle -r linux-x64 -s src/Server.Api/ --verobse
+          mv efbundle ./dist
         # TODO - egzekucja efbundla (chmod +x) i restart service'u
       - name: SCP Files
         uses: appleboy/scp-action@v0.1.4
