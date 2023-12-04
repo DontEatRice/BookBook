@@ -30,7 +30,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
-          source: "dist/*"
+          source: "client/dist/*"
           target: "/var/www/bookbook"
   back-end-deploy:
     runs-on: ubuntu-latest
@@ -58,5 +58,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
-          source: "dist/*"
+          source: "Server/dist/*"
           target: "/var/www/bookbook-api"
