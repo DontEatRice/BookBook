@@ -29,7 +29,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
-          source: "./dist/"
+          source: dist/*
           target: "/var/www/bookbook"
   back-end-deploy:
     runs-on: ubuntu-latest
@@ -47,9 +47,7 @@ jobs:
       # - name: Build
       #   run: dotnet build --no-restore
       - name: Publish
-        run: dotnet publish ./src/Server.Api --nologo --output ../dist --configuration Release
-      - name: Tar published files
-        run: tar -cvf deploy.tar ../dist/
+        run: dotnet publish ./src/Server.Api --nologo --output ./dist --configuration Release
       - name: SCP Files
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -57,5 +55,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
-          source: "deploy.tar"
+          source: dist/*
           target: "/var/www/bookbook-api"
