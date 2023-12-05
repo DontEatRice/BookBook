@@ -15,7 +15,7 @@ const UpdateMyAccount = z.object({
   includeAddress: z.boolean()
 })
 .refine((input) => 
-  !input.includeAddress || input.city?.length! > 0, {
+  !input.includeAddress || input.city!.length > 0, {
     message: 'To pole jest wymagane',
     path: ['city']
   }
