@@ -11,6 +11,7 @@ import { getLibrariesWithBook } from '../../api/book';
 import LoadingTypography from '../common/LoadingTypography';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
 import { useAuth } from '../../utils/auth/useAuth';
+import LibraryInBookDetails from '../../models/LibraryInBookDetails';
 
 function LibrariesStack({ bookId }: { bookId: string }) {
   const { user } = useAuth();
@@ -39,6 +40,36 @@ function LibrariesStack({ bookId }: { bookId: string }) {
       return [];
     }
   );
+
+  function getLibrariesWithDistanceFromUser(): LibraryInBookDetails[] {
+    var result: LibraryInBookDetails[] = [];
+    if (user?.lat! != undefined) {
+      libraries?.map((library) => {
+        let tmp: LibraryInBookDetails = {
+          library: library,
+          distanceFromUser: getDistanceFromLatLonInKm(
+            user?.lat!,
+            user?.lon!,
+            library.latitude,
+            library.longitude
+          ),
+        };
+        result.push(tmp);
+      });
+      result = result.sort((a, b) => {
+        if (a.distanceFromUser! > b.distanceFromUser!) return 1;
+        else return -1;
+      });
+    } else {
+      libraries?.map((library) => {
+        let tmp: LibraryInBookDetails = {
+          library: library,
+        };
+        result.push(tmp);
+      });
+    }
+    return result;
+  }
 
   const handleAddToCart = async (bookId: string, libraryId: string) => {
     try {
@@ -79,6 +110,7 @@ function LibrariesStack({ bookId }: { bookId: string }) {
   function deg2rad(deg: number) {
     return deg * (Math.PI / 180);
   }
+
   return (
     <div>
       {librariesStatus == 'loading' && <LoadingTypography />}
@@ -91,35 +123,30 @@ function LibrariesStack({ bookId }: { bookId: string }) {
               spacing={1}
               style={{ overflow: 'auto', height: 500 }}
               sx={{ backgroundColor: '#eeeeee' }}>
-              {libraries.map((library) => (
+              {getLibrariesWithDistanceFromUser().map((library) => (
                 <Paper
-                  key={library.id}
+                  key={library.library.id}
                   elevation={2}
                   sx={{ padding: 2, display: 'flex', justifyContent: 'space-between' }}>
                   <div>
-                    <Link to={`/libraries/${library.id}`}>
-                      <Typography variant="h6">{library.name}</Typography>
+                    <Link to={`/libraries/${library.library.id}`}>
+                      <Typography variant="h6">{library.library.name}</Typography>
                     </Link>
                     <Typography>
-                      {library.address.street + ' ' + library.address.number}
-                      {library.address.apartment == '' ? '' : '/'}
-                      {library.address.apartment ?? ''}
+                      {library.library.address.street + ' ' + library.library.address.number}
+                      {library.library.address.apartment == '' ? '' : '/'}
+                      {library.library.address.apartment ?? ''}
                     </Typography>
-                    <Typography>{library.address.postalCode + ' ' + library.address.city}</Typography>
+                    <Typography>
+                      {library.library.address.postalCode + ' ' + library.library.address.city}
+                    </Typography>
                   </div>
                   <AuthorizedView>
                     <Stack direction={'column'}>
-                      <Button onClick={() => handleAddToCart(bookId, library.id)}>Do koszyka</Button>
+                      <Button onClick={() => handleAddToCart(bookId, library.library.id)}>Do koszyka</Button>
                       {user?.lat != undefined && (
                         <Typography>
-                          {getDistanceFromLatLonInKm(
-                            library.latitude,
-                            library.longitude,
-                            user.lat!,
-                            user.lon!
-                          )
-                            .toFixed(1)
-                            .toString() + ' km od Ciebie!'}
+                          {library.distanceFromUser!.toFixed(1).toString() + ' km od Ciebie!'}
                         </Typography>
                       )}
                     </Stack>

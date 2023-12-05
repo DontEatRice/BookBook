@@ -36,7 +36,6 @@ function AccountSettingsForm({
     handleSubmit,
     register,
     formState: { errors },
-    unregister,
   } = useForm<UpdateMyAccountType>({
     resolver: zodResolver(UpdateMyAccount),
     defaultValues: {
@@ -51,14 +50,6 @@ function AccountSettingsForm({
   });
 
   const handleFormSubmit = (updated: UpdateMyAccountType) => {
-    console.log(displayAddressForm);
-    if (!displayAddressForm) {
-      updated.street = undefined;
-      updated.number = undefined;
-      updated.apartment = undefined;
-      updated.postalCode = undefined;
-      updated.city = undefined;
-    }
     onSubmit(updated);
   };
 
@@ -102,7 +93,8 @@ function AccountSettingsForm({
           <Typography>Chcesz podać swój adres?</Typography>
           <Checkbox
             checked={displayAddressForm}
-            onChange={() => setDisplayAddressForm(!displayAddressForm)}
+            onClick={() => handleDisplayAddressFormChange(!displayAddressForm)}
+            {...register('includeAddress')}
           />
         </Box>
         {displayAddressForm && (
