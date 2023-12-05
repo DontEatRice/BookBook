@@ -55,7 +55,7 @@ jobs:
           dotnet ef migrations bundle --runtime linux-x64 -s src/Server.Api/ --verbose
           mv efbundle ./dist
         # TODO - egzekucja efbundla (chmod +x) i restart service'u
-      - name: SCP Files
+      - name: Upload files to server
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.HOST }}
@@ -65,3 +65,11 @@ jobs:
           source: "Server/dist/*"
           target: "/var/www/bookbook-api"
           strip_components: 2
+      - name: Execute deployment script on server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.KEY }}
+          script: sudo /var/scripts/deploy-api.sh
