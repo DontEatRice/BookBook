@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import BookViewModel from './BookViewModel';
 
 const LibraryViewModel = z.object({
   id: z.string(),
@@ -11,6 +12,7 @@ const ReservationViewModel = z.object({
   library: LibraryViewModel,
   status: z.string(),
   reservationEndDate: z.string(),
+  books: z.array(BookViewModel).optional(),
 });
 
 export default ReservationViewModel;

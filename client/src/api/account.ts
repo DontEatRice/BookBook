@@ -55,3 +55,4 @@ export async function updateMyAccount(data: UpdateMyAccountType) {
   }
   return UserDetailViewModel.parse(await result.json());
 }
+
