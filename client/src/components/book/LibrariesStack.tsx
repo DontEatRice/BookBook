@@ -32,13 +32,13 @@ function LibrariesStack({ bookId }: { bookId: string }) {
 
   function getLibrariesWithDistanceFromUser(): LibraryInBookDetails[] {
     let result: LibraryInBookDetails[] = [];
-    if (user?.lat! != undefined) {
+    if (user != undefined && user!.lat != undefined) {
       libraries?.map((library) => {
-        let tmp: LibraryInBookDetails = {
+        const tmp: LibraryInBookDetails = {
           library: library,
           distanceFromUser: getDistanceFromLatLonInKm(
-            user?.lat!,
-            user?.lon!,
+            user!.lat!,
+            user!.lon!,
             library.latitude,
             library.longitude
           ),
