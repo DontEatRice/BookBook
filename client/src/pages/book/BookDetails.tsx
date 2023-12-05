@@ -1,4 +1,4 @@
-import { Grid, Box, Paper } from '@mui/material';
+import { Grid, Box } from '@mui/material';
 import { useParams } from 'react-router';
 import { AuthorViewModelType } from '../../models/author/AuthorViewModel';
 import { getBook, getLibrariesWithBook } from '../../api/book';
@@ -25,9 +25,6 @@ import { addToCart } from '../../api/cart';
 import useAlert from '../../utils/alerts/useAlert';
 import { useCartStore } from '../../store';
 import { Link } from 'react-router-dom';
-import { MAX_CALENDAR_HEIGHT } from '@mui/x-date-pickers/internals/constants/dimensions';
-import { useNavigate } from 'react-router-dom';
-import AuthProvider from '../../components/auth/AuthProvider';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   return (
@@ -36,7 +33,7 @@ function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
       <Typography variant="h6">
       {authors
         .map((author, i, arr) => {
-          var value = author.firstName + " " + author.lastName + (arr.length - 1 === i ? "" : ", ")
+          const value = author.firstName + " " + author.lastName + (arr.length - 1 === i ? "" : ", ")
 
           return <Link to={`/authors/${author.id}`} key={author.id} style={{ textDecoration: 'none' }}>{value}</Link>
       })}
