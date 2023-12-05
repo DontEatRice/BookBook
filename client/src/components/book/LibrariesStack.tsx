@@ -12,6 +12,7 @@ import LoadingTypography from '../common/LoadingTypography';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
 import { useAuth } from '../../utils/auth/useAuth';
 import LibraryInBookDetails from '../../models/LibraryInBookDetails';
+import RoomIcon from '@mui/icons-material/Room';
 
 function LibrariesStack({ bookId }: { bookId: string }) {
   const { user } = useAuth();
@@ -135,7 +136,8 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                       <Button onClick={() => handleAddToCart(bookId, library.library.id)}>Do koszyka</Button>
                       {user?.lat != undefined && (
                         <Typography>
-                          {library.distanceFromUser!.toFixed(1).toString() + ' km od Ciebie!'}
+                          <RoomIcon></RoomIcon>
+                          {library.distanceFromUser!.toFixed(1).toString() + ' km'}
                         </Typography>
                       )}
                     </Stack>
