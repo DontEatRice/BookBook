@@ -36,11 +36,10 @@ function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
       <Typography variant="h6">
       {authors
         .map((author, i, arr) => {
-          return arr.length - 1 === i ?
-            <Link to={`/authors/${author.id}`}>{author.firstName + " " + author.lastName}</Link>
-          :
-            <text><Link to={`/authors/${author.id}`}>{author.firstName + " " + author.lastName}</Link>, </text>
-        })}
+          var value = author.firstName + " " + author.lastName + (arr.length - 1 === i ? "" : ", ")
+
+          return <Link to={`/authors/${author.id}`} key={author.id} style={{ textDecoration: 'none' }}>{value}</Link>
+      })}
       </Typography>
     </Grid>
   );
