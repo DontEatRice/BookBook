@@ -38,7 +38,7 @@ public class ImagesController : ControllerBase
     public async Task<IActionResult> Get(Guid id)
     {
         var etag = Request.Headers.IfNoneMatch.ToString();
-        if (_memoryCache.TryGetValue(CacheImagePrefix + id.ToString(), out var data) &&
+        if (_memoryCache.TryGetValue(CacheImagePrefix + id, out var data) &&
             data is ImageInfo imageInfo &&
             imageInfo.Etag == etag
         )

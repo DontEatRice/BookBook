@@ -26,6 +26,7 @@ import { addToCart } from '../../api/cart';
 import useAlert from '../../utils/alerts/useAlert';
 import { useCartStore } from '../../store';
 import { Link } from 'react-router-dom';
+import { imgUrl } from '../../utils/utils';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
@@ -129,8 +130,7 @@ function BookDetails() {
             <Grid container spacing={1} marginBottom={3} padding={2}>
               <Grid item md={5} xs={12}>
                 <img
-                  srcSet={`${book.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`}
-                  src={`${book.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`}
+                  src={imgUrl(book.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg')}
                   alt={book.title}
                   width="280px"
                   height="400px"

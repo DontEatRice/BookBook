@@ -4,6 +4,7 @@ import { getAuthor, getAuthorBookCards } from '../../api/author';
 import { Avatar, Box, Grid, Typography } from '@mui/material';
 import AuthorBookCard from '../../components/author/AuthorBookCard';
 import LoadingTypography from '../../components/common/LoadingTypography';
+import { imgUrl } from '../../utils/utils';
 
 function AuthorDetails() {
   const params = useParams();
@@ -25,11 +26,7 @@ function AuthorDetails() {
             <Grid item xs={12} md={5}>
               <Avatar
                 alt={authorData.firstName + ' ' + authorData.lastName}
-                src={
-                  authorData.profilePictureUrl == null
-                    ? '../../../public/autor-szablon.jpg'
-                    : authorData.profilePictureUrl
-                }
+                src={imgUrl(authorData.profilePictureUrl, '/public/autor-szablon.jpg')}
                 sx={{ width: 300, height: 300 }}
               />
             </Grid>

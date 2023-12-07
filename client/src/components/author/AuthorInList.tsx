@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { AuthorViewModelType } from '../../models/author/AuthorViewModel';
 import { Avatar, Button, Grid, Paper, Typography } from '@mui/material';
+import { imgUrl } from '../../utils/utils';
 
 function AuthorInList({ author }: { author: AuthorViewModelType }) {
   const navigate = useNavigate();
@@ -18,11 +19,7 @@ function AuthorInList({ author }: { author: AuthorViewModelType }) {
           <Button sx={{ width: 200, height: 200 }} onClick={() => navigate(`/authors/${author.id}`)}>
             <Avatar
               alt={author.firstName + ' ' + author.lastName}
-              src={
-                author.profilePictureUrl == null
-                  ? '../../../public/autor-szablon.jpg'
-                  : author.profilePictureUrl
-              }
+              src={imgUrl(author.profilePictureUrl, '/public/autor-szablon.jpg')}
               sx={{ width: 200, height: 200 }}
             />
           </Button>

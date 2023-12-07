@@ -1,6 +1,7 @@
 import { BookViewModelType } from '../../models/BookViewModel';
 import { useNavigate } from 'react-router-dom';
 import { Button, Grid, Paper, Rating, Typography, styled } from '@mui/material';
+import { imgUrl } from '../../utils/utils';
 
 function BookInList({ book }: { book: BookViewModelType }) {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ function BookInList({ book }: { book: BookViewModelType }) {
       <Grid container spacing={2}>
         <Grid item>
           <Button sx={{ width: 180, height: 180 }} onClick={() => navigate(`/books/${book.id}`)}>
-            <Img alt="complex" src={book.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'} />
+            <Img alt="complex" src={imgUrl(book.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg')} />
           </Button>
         </Grid>
         <Grid item xs={12} sm container>

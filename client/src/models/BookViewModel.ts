@@ -11,7 +11,7 @@ const BookViewModel = z.object({
   description: z.string().nullable(),
   language: z.string(),
   pageCount: z.number().nullable(),
-  coverPictureUrl: z.string().url().max(256).nullable(),
+  coverPictureUrl: z.string().max(256).nullable(),
   averageRating: z.nullable(z.number()),
   averageCriticRating: z.nullable(z.number()),
   publisher: PublisherViewModel.nullable(),
