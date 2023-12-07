@@ -31,8 +31,7 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
   const mutation = useMutation({
     mutationFn: deleteReview,
     onSuccess: async () => {
-      // queryClient.invalidateQueries({ queryKey: ['books', book.id] });
-      queryClient.refetchQueries(['books', book.id]);
+      queryClient.invalidateQueries({ queryKey: ['reviews', book.id] });
     },
     onError: (err) => {
       if (err instanceof ApiResponseError && err.error.code == 'REVIEW_NOT_FOUND') {
@@ -43,60 +42,84 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
     },
   });
   return (
-    <StyledTableRow>
-      <StyledTableCell>
-        <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>N</Avatar>
-        <div>username</div>
-      </StyledTableCell>
-      <StyledTableCell>
+    <Paper
+      key={review.id}
+      elevation={2}
+      sx={{ padding: 2, display: 'flex', justifyContent: 'space-between', width: '75%' }}>
+      <div>
+        <Avatar sx={{ bgcolor: theme.palette.secondary.main, marginRight: 2 }}>N</Avatar>
+      </div>
+      <div>
+        <Typography variant="h4" marginBottom={2}>
+          {review.title + 'Tytul'}
+        </Typography>
+        <Typography>
+          {review.description + 'Opis'}
+        </Typography>
+      </div>
+      <div>
         <Rating
           name="half-rating-read"
           value={review.rating == null ? 0 : review.rating}
-          precision={1}
-          readOnly
+            precision={1}
+            readOnly
         />
-      </StyledTableCell>
-      <StyledTableCell>
-        <Typography variant="h5">
-          <TextField
-            multiline
-            maxRows={2}
-            InputProps={{ readOnly: true }}
-            sx={{ mb: 2 }}
-            variant="standard"
-            value={review.title}
-          />
-        </Typography>
-        <TextField multiline InputProps={{ readOnly: true }} sx={{ mb: 2 }} value={review.description} />
-      </StyledTableCell>
-      <StyledTableCell>
-        {deleteError && (
-          <Paper
-            elevation={7}
-            sx={{
-              width: '100%',
-              padding: 2,
-              backgroundColor: theme.palette.error.main,
-              textAlign: 'center',
-              display: 'flex',
-              justifyContent: 'center',
-              mt: 1,
-            }}>
-            <ErrorOutlineIcon />
-            <Typography>{deleteError}</Typography>
-          </Paper>
-        )}
-        <Button sx={{ width: 50, height: 40 }} onClick={() => mutation.mutate(review.id)}>
-          Usuń
-        </Button>
-        <Button sx={{ width: 50, height: 40 }} onClick={handleOpen}>
-          Edytuj
-        </Button>
-        <Dialog open={open} onClose={handleClose}>
-          <UpdateReviewForm review={review} book={book} handleClose={handleClose} />
-        </Dialog>
-      </StyledTableCell>
-    </StyledTableRow>
+      </div>
+    </Paper>
+    // <StyledTableRow>
+    //   <StyledTableCell>
+    //     <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>N</Avatar>
+    //     <div>username</div>
+    //   </StyledTableCell>
+    //   <StyledTableCell>
+    //     <Rating
+    //       name="half-rating-read"
+    //       value={review.rating == null ? 0 : review.rating}
+    //       precision={1}
+    //       readOnly
+    //     />
+    //   </StyledTableCell>
+    //   <StyledTableCell>
+    //     <Typography variant="h5">
+    //       <TextField
+    //         multiline
+    //         maxRows={2}
+    //         InputProps={{ readOnly: true }}
+    //         sx={{ mb: 2 }}
+    //         variant="standard"
+    //         value={review.title}
+    //       />
+    //     </Typography>
+    //     <TextField multiline InputProps={{ readOnly: true }} sx={{ mb: 2 }} value={review.description} />
+    //   </StyledTableCell>
+    //   <StyledTableCell>
+    //     {deleteError && (
+    //       <Paper
+    //         elevation={7}
+    //         sx={{
+    //           width: '100%',
+    //           padding: 2,
+    //           backgroundColor: theme.palette.error.main,
+    //           textAlign: 'center',
+    //           display: 'flex',
+    //           justifyContent: 'center',
+    //           mt: 1,
+    //         }}>
+    //         <ErrorOutlineIcon />
+    //         <Typography>{deleteError}</Typography>
+    //       </Paper>
+    //     )}
+    //     <Button sx={{ width: 50, height: 40 }} onClick={() => mutation.mutate(review.id)}>
+    //       Usuń
+    //     </Button>
+    //     <Button sx={{ width: 50, height: 40 }} onClick={handleOpen}>
+    //       Edytuj
+    //     </Button>
+    //     <Dialog open={open} onClose={handleClose}>
+    //       <UpdateReviewForm review={review} book={book} handleClose={handleClose} />
+    //     </Dialog>
+    //   </StyledTableCell>
+    // </StyledTableRow>
   );
 }
 

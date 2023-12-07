@@ -48,12 +48,12 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
   };
 
   return (
-    <Box marginBottom={2}>
+    <Box marginBottom={2} alignItems='center'>
       {addError && (
         <Paper
           elevation={7}
           sx={{
-            width: '100%',
+            width: '75%',
             padding: 2,
             backgroundColor: theme.palette.error.main,
             textAlign: 'center',
@@ -66,8 +66,7 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
         </Paper>
       )}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box>
-          <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
+          <Paper sx={{ p: 2, width: '75%' }} elevation={3}>
             <Rating
               name="simple-controlled"
               value={value}
@@ -89,7 +88,6 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
               Dodaj
             </Button>
           </Paper>
-        </Box>
       </form>
     </Box>
   );

@@ -44,8 +44,7 @@ function UpdateReviewForm({
   const mutation = useMutation({
     mutationFn: updateReview,
     onSuccess: () => {
-      queryClient.refetchQueries(['books', book.id]);
-
+      queryClient.invalidateQueries({ queryKey: ['reviews', book.id] });
       if (updateError == null) {
         handleClose();
       }

@@ -240,7 +240,7 @@ function BookDetails() {
             {/* <Box>
               <AddBookToCart bookId={params.bookId as string} />
             </Box> */}
-            <Grid container spacing={1} marginBottom={3} padding={2} display={'flex'} flexDirection={'column'}>
+            <Grid container spacing={1} marginBottom={3} padding={2}>
               <Grid item>
                 <AddReviewForm book={book}></AddReviewForm>
                 {statusReviews == 'loading' && 'Ładowanie opinii...'}

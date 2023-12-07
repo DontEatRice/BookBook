@@ -1,4 +1,4 @@
-import { TableHead, TableBody, Table, TableRow, TableContainer } from '@mui/material';
+import { TableHead, TableBody, Table, TableRow, TableContainer, Stack } from '@mui/material';
 import StyledTableCell from '../../components/tableComponents/StyledTableCell';
 import { useTheme } from '@mui/material/styles';
 import { BookViewModelType } from '../../models/BookViewModel';
@@ -9,26 +9,13 @@ function Reviews({ book, reviews }: { book: BookViewModelType; reviews: ReviewVi
   const theme = useTheme();
 
   return (
-    <TableContainer
-      sx={{ display: 'flex', backgroundColor: theme.palette.background.default, marginBottom: 2 }}>
-      <Table aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Użytkownik</StyledTableCell>
-            <StyledTableCell>Ocena</StyledTableCell>
-            <StyledTableCell>Komentarz</StyledTableCell>
-            <StyledTableCell>Akcje</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
+    <Stack
+      sx={{ display: 'flex', alignItems: 'center', backgroundColor: theme.palette.background.default, marginBottom: 2 }}>
           {reviews
-            .filter((x) => x.title != '')
             .map((review) => (
               <ReviewTableRow review={review} book={book} key={review.id}></ReviewTableRow>
             ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    </Stack>
   );
 }
 
