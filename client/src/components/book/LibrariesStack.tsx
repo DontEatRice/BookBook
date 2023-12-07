@@ -63,9 +63,9 @@ function LibrariesStack({ bookId }: { bookId: string }) {
     }
     // dodanie ulubionej biblioteki na początek
     if (user != undefined && user!.libraryId != undefined) {
-      var userLibrary = result?.find((library) => library.library.id == user!.libraryId);
+      const userLibrary = result?.find((library) => library.library.id == user!.libraryId);
       if (userLibrary != undefined) {
-        var index = result.indexOf(userLibrary);
+        const index = result.indexOf(userLibrary);
         result.splice(index, 1);
         userLibrary.userLibrary = true;
         result.unshift(userLibrary);
