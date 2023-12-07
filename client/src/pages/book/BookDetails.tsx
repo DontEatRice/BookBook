@@ -10,7 +10,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toggleBookInUserList } from '../../api/user';
 import AuthorizedView from '../../components/auth/AuthorizedView';
-import FilledField from '../../components/common/FilledField';
 import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import { getReviews } from '../../api/review';
@@ -21,17 +20,36 @@ import AddReviewForm from '../reviews/AddReviewForm';
 import 'leaflet/dist/leaflet.css';
 import LoadingTypography from '../../components/common/LoadingTypography';
 import LibrariesStack from '../../components/book/LibrariesStack';
+import { Link } from 'react-router-dom';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
-  const authorNames = authors.map((author) => `${author.firstName} ${author.lastName}`).join(', ');
+  return (
+    <Grid item xs>
+      <Typography variant="subtitle1">{authors.length > 1 ? 'Autorzy' : 'Autor'}</Typography>
+      <Typography variant="h6">
+        {authors.map((author, i, arr) => {
+          const value = author.firstName + ' ' + author.lastName + (arr.length - 1 === i ? '' : ', ');
 
-  return <FilledField label={authors.length > 1 ? 'Autorzy' : 'Autor'} value={authorNames} />;
+          return (
+            <Link to={`/authors/${author.id}`} key={author.id} style={{ textDecoration: 'none' }}>
+              {value}
+            </Link>
+          );
+        })}
+      </Typography>
+    </Grid>
+  );
 }
 
 function CategoriesList({ categories }: { categories: BookCategoryViewModelType[] }) {
   const categoriesNames = categories.map((category) => category.name).join(', ');
 
-  return <FilledField label={categories.length > 1 ? 'Kategorie' : 'Kategoria'} value={categoriesNames} />;
+  return (
+    <Grid item xs>
+      <Typography variant="subtitle1">{categories.length > 1 ? 'Kategorie' : 'Kategoria'}</Typography>
+      <Typography variant="h6">{categoriesNames}</Typography>
+    </Grid>
+  );
 }
 
 function BookDetails() {
@@ -69,7 +87,7 @@ function BookDetails() {
         {statusBook == 'error' && 'Błąd!'}
         {statusBook == 'success' && (
           <div>
-            <Stack direction="row" justifyContent="space-between" padding={2} marginTop={8} marginBottom={4}>
+            <Stack direction="row" justifyContent="space-between" padding={2} marginTop={5} marginBottom={2}>
               <Typography variant="h3">{book.title}</Typography>
               <AuthorizedView roles={['User']}>
                 <input type="hidden" {...register('bookId')} value={book.id} />
@@ -85,34 +103,52 @@ function BookDetails() {
               </AuthorizedView>
             </Stack>
             <Grid container spacing={1} marginBottom={3} padding={2}>
-              <Grid item md={5} xs={12}>
+              <Grid item xs={5}>
                 <img
                   srcSet={`${book.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`}
                   src={`${book.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`}
                   alt={book.title}
-                  width="280px"
-                  height="400px"
+                  width="100%"
+                  height="560px"
                   loading="lazy"
                 />
               </Grid>
-              <Grid item md={6} xs={12}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <FilledField label="ISBN" value={book.isbn} />
-                  </div>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <FilledField label="Rok wydania" value={book.yearPublished + ''} />
-                  </div>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <FilledField label="Wydawca" value={book.publisher?.name + ''} />
-                  </div>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <AuthorsList authors={book.authors} />
-                  </div>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <CategoriesList categories={book.bookCategories} />
-                  </div>
-                </Box>
+              <Grid item xs={7}>
+                <Grid
+                  sx={{ display: 'flex', flexDirection: 'column', padding: 2, marginBottom: 5 }}
+                  container
+                  spacing={2}>
+                  <Grid item>
+                    <Typography variant="subtitle1">ISBN</Typography>
+                    <Typography variant="h6" width="100%">
+                      {book.isbn}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="subtitle1">Rok wydania</Typography>
+                    <Typography variant="h6">{book.yearPublished}</Typography>
+                  </Grid>
+                  <AuthorsList authors={book.authors} />
+                  <CategoriesList categories={book.bookCategories} />
+                  <Grid item>
+                    <Typography variant="subtitle1">Wydawca</Typography>
+                    <Typography variant="h6">{book.publisher?.name}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="subtitle1">Język</Typography>
+                    <Typography variant="h6">{book.language}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="subtitle1">Ilość stron</Typography>
+                    <Typography variant="h6">{book.pageCount}</Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} hidden={book.description == null ? true : false}>
+                <Grid item>
+                  <Typography variant="subtitle1">Opis</Typography>
+                  <Typography variant="h6">{book.description}</Typography>
+                </Grid>
               </Grid>
             </Grid>
             <LibrariesStack bookId={params.bookId!} />
