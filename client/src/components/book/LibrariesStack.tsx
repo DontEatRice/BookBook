@@ -13,6 +13,7 @@ import MoodBadIcon from '@mui/icons-material/MoodBad';
 import { useAuth } from '../../utils/auth/useAuth';
 import LibraryInBookDetails from '../../models/LibraryInBookDetails';
 import RoomIcon from '@mui/icons-material/Room';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 function LibrariesStack({ bookId }: { bookId: string }) {
   const { user } = useAuth();
@@ -43,6 +44,7 @@ function LibrariesStack({ bookId }: { bookId: string }) {
             library.latitude,
             library.longitude
           ),
+          userLibrary: false,
         };
         result.push(tmp);
       });
@@ -54,9 +56,20 @@ function LibrariesStack({ bookId }: { bookId: string }) {
       libraries?.map((library) => {
         const tmp: LibraryInBookDetails = {
           library: library,
+          userLibrary: false,
         };
         result.push(tmp);
       });
+    }
+    // dodanie ulubionej biblioteki na początek
+    if (user != undefined && user!.libraryId != undefined) {
+      var userLibrary = result?.find((library) => library.library.id == user!.libraryId);
+      if (userLibrary != undefined) {
+        var index = result.indexOf(userLibrary);
+        result.splice(index, 1);
+        userLibrary.userLibrary = true;
+        result.unshift(userLibrary);
+      }
     }
     return result;
   }
@@ -120,7 +133,10 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                   sx={{ padding: 2, display: 'flex', justifyContent: 'space-between' }}>
                   <div>
                     <Link to={`/libraries/${library.library.id}`}>
-                      <Typography variant="h6">{library.library.name}</Typography>
+                      <Typography variant="h6">
+                        {library.library.name}
+                        {library.userLibrary && <FavoriteBorderIcon></FavoriteBorderIcon>}
+                      </Typography>
                     </Link>
                     <Typography>
                       {library.library.address.street + ' ' + library.library.address.number}

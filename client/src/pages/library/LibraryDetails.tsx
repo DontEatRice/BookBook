@@ -43,8 +43,8 @@ function LibraryDetails() {
                 </Typography>
                 <Typography variant="h6">
                   ul. {data.address.street + ' ' + data.address.number}
-                  {data.address.apartment == null ? '' : '/'}
-                  {data.address.apartment == null ? '' : data.address.apartment}
+                  {data.address.apartment == '' ? '' : '/'}
+                  {data.address.apartment ?? ''}
                 </Typography>
                 <Typography variant="h6">{data.address.postalCode + ' ' + data.address.city}</Typography>
                 {data.address.additionalInfo != null && data.address.additionalInfo != '' && (

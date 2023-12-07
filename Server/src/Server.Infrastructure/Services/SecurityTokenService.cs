@@ -49,7 +49,7 @@ internal class SecurityTokenService : ISecurityTokenService
         };
         claims.AddRange(identity.Roles.Select(role => new Claim(AuthConstants.RoleClaim, role)));
 
-        if (identity.Roles.Contains(Role.Employee.GetDisplayName()) && identity.Library is not null)
+        if ((identity.Roles.Contains(Role.Employee.GetDisplayName()) || identity.Roles.Contains(Role.User.GetDisplayName())) && identity.Library is not null)
         {
             claims.Add(new Claim(AuthConstants.LibraryIdClaim, identity.Library.Id.ToString()));
         }
