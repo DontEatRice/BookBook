@@ -41,6 +41,14 @@ public class AuthController : ControllerBase
         return Ok(tokens);
     }
 
+    [HttpPost("adminLogin")]
+    public async Task<ActionResult> LoginAsAdminOrEmployee(LoginAsAdminOrEmployeeCommand command)
+    {
+        var tokens = await Mediator.Send(command);
+        Response.Cookies.Append(RefreshTokenCookieName, tokens.RefreshToken.ToString(), CreateCookieOptionsForRefreshToken());
+        return Ok(tokens);
+    }
+
     [HttpGet("refresh")]
     public async Task<ActionResult> Refresh()
     {
