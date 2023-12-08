@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { BookViewModelType } from './BookViewModel';
+import { UserDetailViewModelType } from './user/UserDetailViewModel';
 
 const AddReview = z.object({
     title: z.string().optional(),
@@ -10,6 +11,9 @@ const AddReview = z.object({
     idBook: z.custom<BookViewModelType>()
         .refine((book) => book != null, "Pole wymagane")
         .transform(book => book.id),
+    idUser: z.custom<UserDetailViewModelType>()
+    .refine((user) => user != null, "Pole wymagane")
+    .transform(user => user.id),
 });
 
 export default AddReview;
