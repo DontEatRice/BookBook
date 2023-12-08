@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toggleBookInUserList } from '../../api/user';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
+import { imgUrl } from '../../utils/utils';
 
 function BookInUserList({ book }: { book: BookViewModelType }) {
   const queryClient = useQueryClient();
@@ -64,7 +65,7 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
             //   height: 200,
             // }}
             onClick={() => navigate(`/books/${book.id}`)}>
-            <Img alt={book.title} src={`${book.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`} />
+            <Img alt={book.title} src={imgUrl(book.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg')} />
           </Button>
         </Grid>
         <Grid item xs={10} sm container>

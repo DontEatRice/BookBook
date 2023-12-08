@@ -1,0 +1,48 @@
+name: Back-end deployment
+
+on:
+  push:
+    branches: [ "master" ]
+    paths: 
+        - 'Server/**'
+
+jobs:
+    back-end-deploy:
+        runs-on: ubuntu-latest
+        defaults:
+          run:
+            working-directory: Server
+        steps:
+          - uses: actions/checkout@v3
+          - name: Setup .NET
+            uses: actions/setup-dotnet@v3
+            with:
+              dotnet-version: 7.0.x
+          - name: Restore dependencies
+            run: dotnet restore
+          - name: Publish
+            run: dotnet publish ./src/Server.Api --nologo --output ./dist --configuration Release
+          - name: Create migration bundle
+            run: |
+              dotnet tool install --global dotnet-ef --version 7.0.14
+              dotnet ef migrations bundle --runtime linux-x64 -s src/Server.Api/ --verbose
+              mv efbundle ./dist
+          - name: Upload files to server
+            uses: appleboy/scp-action@v0.1.4
+            with:
+              host: ${{ secrets.HOST }}
+              username: ${{ secrets.USERNAME }}
+              port: ${{ secrets.PORT }}
+              key: ${{ secrets.KEY }}
+              source: "Server/dist/*"
+              target: "/var/www/bookbook-api"
+              strip_components: 2
+          - name: Execute deployment script on server
+            uses: appleboy/ssh-action@v1.0.0
+            with:
+              host: ${{ secrets.HOST }}
+              username: ${{ secrets.USERNAME }}
+              port: ${{ secrets.PORT }}
+              key: ${{ secrets.KEY }}
+              script: sudo /var/scripts/deploy-api.sh
+    

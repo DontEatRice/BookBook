@@ -27,9 +27,6 @@ function AdminCategoryForm() {
       queryClient.invalidateQueries(['categories']);
       navigate('..');
     },
-    onError: (e: Error) => {
-      console.error(e);
-    },
   });
   const onSubmit: SubmitHandler<AddCategoryType> = (data) => {
     mutation.mutate(data);

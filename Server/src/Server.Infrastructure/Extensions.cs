@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -43,18 +44,27 @@ public static class Extensions
 
     public static WebApplication UseInfrastructure(this WebApplication app)
     {
+        if (app.Environment.IsProduction())
+        {
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+        }
+        
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseCors("_myPolicy");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
+        }
+        
         app.UseSwagger();
         app.UseSwaggerUI();
-        app.UseCors("_myPolicy");
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseMiddleware<ValidationExceptionMiddleware>();
         app.MapControllers();
-        if (app.Environment.IsDevelopment())
-        {
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            app.UseHsts();
-        }
 
         return app;
     }
