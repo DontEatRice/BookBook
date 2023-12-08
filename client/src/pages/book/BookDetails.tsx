@@ -1,4 +1,4 @@
-import { Grid, Box } from '@mui/material';
+import { Grid, Box, Rating } from '@mui/material';
 import { useParams } from 'react-router';
 import { AuthorViewModelType } from '../../models/author/AuthorViewModel';
 import { getBook, getLibrariesWithBook } from '../../api/book';
@@ -126,8 +126,8 @@ function BookDetails() {
         {statusBook == 'loading' && <LoadingTypography />}
         {statusBook == 'error' && 'Błąd!'}
         {statusBook == 'success' && (
-          <div>
-            <Stack direction="row" justifyContent="space-between" padding={2} marginTop={5} marginBottom={2}>
+          <Grid container spacing={1} padding={2}>
+            <Grid container direction="row" justifyContent="space-between" marginTop={5} marginBottom={2}>
               <Typography variant="h3">{book.title}</Typography>
               <AuthorizedView roles={['User']}>
                 <input type="hidden" {...register('bookId')} value={book.id} />
@@ -141,8 +141,18 @@ function BookDetails() {
                   </Button>
                 )}
               </AuthorizedView>
-            </Stack>
-            <Grid container spacing={1} marginBottom={3} padding={2}>
+            </Grid>
+            <Grid item xs={12} direction='row' marginBottom={2} padding={1}>
+              <Typography variant="h4">{book.averageRating + " "}
+              <Rating
+                name="half-rating-read"
+                value={book.averageRating == null ? 0 : book.averageRating}
+                precision={0.25}
+                readOnly
+              />
+              </Typography>
+            </Grid>
+            <Grid container spacing={1}>
               <Grid item xs={5}>
                 <img
                   srcSet={`${book.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`}
@@ -240,15 +250,12 @@ function BookDetails() {
             {/* <Box>
               <AddBookToCart bookId={params.bookId as string} />
             </Box> */}
-            <Grid container spacing={1} marginBottom={3} padding={2}>
-              <Grid item>
-                <AddReviewForm book={book}></AddReviewForm>
+            <Box marginBottom={3} padding={2}>
                 {statusReviews == 'loading' && 'Ładowanie opinii...'}
                 {statusReviews == 'error' && 'Błąd!'}
                 {statusReviews == 'success' && <Reviews book={book} reviews={reviews.data} />}
-              </Grid>
-            </Grid>
-          </div>
+            </Box>
+          </Grid>
         )}
       </Box>
     </div>

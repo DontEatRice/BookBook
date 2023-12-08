@@ -1,4 +1,4 @@
-import { Dialog, TextField, Typography, Rating, Avatar, Button, Paper } from '@mui/material';
+import { Dialog, TextField, Typography, Rating, Avatar, Button, Paper, Grid, Box } from '@mui/material';
 import StyledTableCell from '../../components/tableComponents/StyledTableCell';
 import StyledTableRow from '../../components/tableComponents/StyledTableRow';
 import { useState } from 'react';
@@ -45,26 +45,32 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
     <Paper
       key={review.id}
       elevation={2}
-      sx={{ padding: 2, display: 'flex', justifyContent: 'space-between', width: '75%' }}>
-      <div>
-        <Avatar sx={{ bgcolor: theme.palette.secondary.main, marginRight: 2 }}>N</Avatar>
-      </div>
-      <div>
-        <Typography variant="h4" marginBottom={2}>
-          {review.title + 'Tytul'}
-        </Typography>
-        <Typography>
-          {review.description + 'Opis'}
-        </Typography>
-      </div>
-      <div>
-        <Rating
-          name="half-rating-read"
-          value={review.rating == null ? 0 : review.rating}
-            precision={1}
-            readOnly
-        />
-      </div>
+      sx={{ padding: 2, display: 'flex', width: '75%', mb: 2 }}>
+      <Grid container direction={'row'}>
+        <Grid item xs={1}>
+          <Avatar sx={{ bgcolor: theme.palette.secondary.main, marginRight: 2 }}>N</Avatar>
+        </Grid>
+        <Grid item xs={7}>
+          <Typography variant="h4" marginBottom={2}>
+            {review.title + 'Tytul'}
+          </Typography>
+        </Grid>
+        <Grid item xs={4}>
+          <Box display="flex" justifyContent="flex-end">
+            <Rating
+              name="half-rating-read"
+              value={review.rating == null ? 0 : review.rating}
+                precision={1}
+                readOnly
+            />
+          </Box>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography>
+            {review.description + 'Opis'}
+          </Typography>
+        </Grid>
+      </Grid>
     </Paper>
     // <StyledTableRow>
     //   <StyledTableCell>

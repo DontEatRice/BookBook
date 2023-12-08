@@ -4,13 +4,15 @@ import { useTheme } from '@mui/material/styles';
 import { BookViewModelType } from '../../models/BookViewModel';
 import ReviewTableRow from './ReviewTableRow';
 import { ReviewViewModelType } from '../../models/ReviewViewModel';
+import AddReviewForm from './AddReviewForm';
 
 function Reviews({ book, reviews }: { book: BookViewModelType; reviews: ReviewViewModelType[] }) {
   const theme = useTheme();
 
   return (
     <Stack
-      sx={{ display: 'flex', alignItems: 'center', backgroundColor: theme.palette.background.default, marginBottom: 2 }}>
+      sx={{ display: 'flex', alignItems: 'center', backgroundColor: theme.palette.background.default }}>
+          <AddReviewForm book={book}></AddReviewForm>
           {reviews
             .map((review) => (
               <ReviewTableRow review={review} book={book} key={review.id}></ReviewTableRow>
