@@ -44,13 +44,6 @@ public class AuthorsController : ControllerBase
         return Created($"/authors/{id}", null);
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> Delete(Guid id)
-    {
-        await Mediator.Send(new RemoveAuthorCommand(id));
-        return NoContent();
-    }
-
     [HttpGet("{id:Guid}/book-cards")]
     public async Task<ActionResult<IEnumerable<BookViewModel>>> GetAuthorsBookCards (Guid id)
     {
