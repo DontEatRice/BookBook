@@ -5,4 +5,6 @@ export type User = {
   email: string;
   libraryId?: string;
   name: string;
+  lat?: number;
+  lon?: number;
 };

@@ -34,6 +34,7 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['getUserBooks'] });
+      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
     },
   });
   const onClick: SubmitHandler<ToggleBookInUserListType> = (toggleData) => {

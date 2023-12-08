@@ -14,6 +14,8 @@ export type Claims = {
   email: string;
   libraryid?: string;
   _name: string;
+  lat: number;
+  lon: number;
 };
 
 export type Order = 'asc' | 'desc';

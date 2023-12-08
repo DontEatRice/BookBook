@@ -63,9 +63,12 @@ public class LibrariesController : ControllerBase
     }
 
     [HttpPost("{id:guid}/books/search")]
-    public async Task<ActionResult<IEnumerable<BookInLibraryViewModel>>> GetBooks(GetBooksInLibraryQuery query)
+    public async Task<ActionResult<IEnumerable<BookInLibraryViewModel>>> GetBooks(Guid id, GetBooksInLibraryQuery query)
     {
-        return Ok(await Mediator.Send(query));
+        return Ok(await Mediator.Send(query with
+        {
+            Id = id
+        }));
     }
 
     [HttpGet("{id:guid}/not-added")]

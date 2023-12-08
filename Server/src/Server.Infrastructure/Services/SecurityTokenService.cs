@@ -49,9 +49,15 @@ internal class SecurityTokenService : ISecurityTokenService
         };
         claims.AddRange(identity.Roles.Select(role => new Claim(AuthConstants.RoleClaim, role)));
 
-        if (identity.Roles.Contains(Role.Employee.GetDisplayName()) && identity.Library is not null)
+        if ((identity.Roles.Contains(Role.Employee.GetDisplayName()) || identity.Roles.Contains(Role.User.GetDisplayName())) && identity.Library is not null)
         {
             claims.Add(new Claim(AuthConstants.LibraryIdClaim, identity.Library.Id.ToString()));
+        }
+
+        if (identity.Roles.Contains(Role.User.GetDisplayName()) && identity.Latitude != null)
+        {
+            claims.Add(new Claim(AuthConstants.Lat, identity.Latitude.ToString()));
+            claims.Add(new Claim(AuthConstants.Lon, identity.Longitude.ToString()));
         }
 
         return GenerateToken(AuthConstants.AccessTokenDuration, claims);

@@ -28,6 +28,7 @@ internal class IdentityRepository : IIdentityRepository
     public async Task<Identity?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _dbContext.Identities
+            .Include(x => x.Address)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
