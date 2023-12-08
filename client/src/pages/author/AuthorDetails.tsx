@@ -5,12 +5,17 @@ import { Avatar, Box, Grid, Typography } from '@mui/material';
 import AuthorBookCard from '../../components/author/AuthorBookCard';
 import LoadingTypography from '../../components/common/LoadingTypography';
 import { imgUrl } from '../../utils/utils';
+import { BookViewModelType } from '../../models/BookViewModel';
 
 function AuthorDetails() {
   const params = useParams();
   const { data: authorData, status: authorDataStatus } = useQuery({
     queryKey: ['authors', params.authorId],
     queryFn: () => getAuthor(params.authorId + ''),
+  });
+  const { data: booksData, isLoading: isBooksLoading } = useQuery({
+    queryKey: ['author-book-cards', params.authorId],
+    queryFn: () => getAuthorBookCards(params.authorId + ''),
   });
 
   return (
@@ -31,7 +36,7 @@ function AuthorDetails() {
               />
             </Grid>
             <Grid item md={6} xs={12} container spacing={2}>
-              <Grid sx={{ display: 'flex', flexDirection: 'column', padding: 1 }} container spacing={2}>
+              <Grid sx={{ display: 'flex', flexDirection: 'column', padding: 1 }} container>
                 <Grid item xs>
                   <Typography variant="subtitle1">Rok urodzenia:</Typography>
                   <Typography variant="h6" width="100%">
@@ -39,9 +44,13 @@ function AuthorDetails() {
                   </Typography>
                 </Grid>
                 <Grid item xs>
-                  {authorData.description != null && <Typography variant="subtitle1">Życiorys</Typography>}
-                  {authorData.description != null && (
-                    <Typography variant="h6">{authorData.description}</Typography>
+                  {authorData.description ? (
+                    <>
+                      <Typography variant="subtitle1">Życiorys</Typography>
+                      <Typography variant="h6">{authorData.description}</Typography>
+                    </>
+                  ) : (
+                    <Typography>Brak informacji o życiorysie tego autora.</Typography>
                   )}
                 </Grid>
               </Grid>
@@ -49,26 +58,32 @@ function AuthorDetails() {
           </Grid>
         </div>
       )}
-      <div>{<AuthorBookCards />}</div>
+      <div>{<AuthorBookCards isBooksLoading={isBooksLoading} booksData={booksData} />}</div>
     </Box>
   );
 }
 
-function AuthorBookCards() {
-  const params = useParams();
-  const { data: booksData, status: booksStatus } = useQuery({
-    queryKey: ['author-book-cards', params.authorId],
-    queryFn: () => getAuthorBookCards(params.authorId + ''),
-  });
-
+function AuthorBookCards({
+  booksData,
+  isBooksLoading,
+}: {
+  booksData?: BookViewModelType[];
+  isBooksLoading: boolean;
+}) {
   return (
     <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-      <Typography variant="h5" gutterBottom>
-        Poznaj autora bliżej
-      </Typography>
-      {booksStatus == 'loading' && <LoadingTypography />}
-      {booksStatus == 'error' && 'Błąd!'}
-      {booksStatus == 'success' && booksData.length != 0 && (
+      {(isBooksLoading || !booksData || (booksData && booksData.length > 0)) && (
+        <Typography variant="h5" gutterBottom>
+          Poznaj autora bliżej
+        </Typography>
+      )}
+      {isBooksLoading && <LoadingTypography />}
+      {booksData && booksData.length === 0 && (
+        <Typography variant="h5" gutterBottom>
+          Obecnie w naszej ofercie nie znajdują się jeszcze książki tego autora.
+        </Typography>
+      )}
+      {booksData && booksData.length > 0 && (
         <Box display={'flex'} flexDirection={'row'}>
           <Grid container flexDirection={'row'} spacing={3}>
             {booksData.map((book) => (

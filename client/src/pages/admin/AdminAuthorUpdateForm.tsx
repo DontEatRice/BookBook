@@ -5,8 +5,8 @@ import UpdateAuthor, { UpdateAuthorType } from '../../models/author/UpdateAuthor
 import { zodResolver } from '@hookform/resolvers/zod';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import { updateAuthor, deleteAuthor } from '../../api/author';
-import { useNavigate } from 'react-router-dom';
+import { updateAuthor } from '../../api/author';
+import { Link, useNavigate } from 'react-router-dom';
 import { getAuthor } from '../../api/author';
 import { useCallback, useMemo } from 'react';
 import { uploadImage } from '../../api/image';
@@ -14,14 +14,10 @@ import { fileToBase64 } from '../../utils/utils';
 import UploadImage from '../../models/UploadImage';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router';
-import { ApiResponseError } from '../../utils/utils';
-import { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
+import { NumberInputField2 } from '../../components/common/NumberInputField';
+import { TextInputField2 } from '../../components/common/TextInputField';
+import { TextInputBox2 } from '../../components/common/TextInputBox';
 import useAlert from '../../utils/alerts/useAlert';
-import Typography from '@mui/material/Typography';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import NumberInputField from '../../components/common/NumberInputField';
-import TextInputField from '../../components/common/TextInputField';
 
 async function fileToUploadImage(file: File) {
   let base64 = await fileToBase64(file);
@@ -33,14 +29,13 @@ async function fileToUploadImage(file: File) {
   });
 }
 
-function AdminAuthorForm() {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const params = useParams();
-  const theme = useTheme();
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-  const { handleError } = useAlert();
-
+function AuthorUpdateForm({
+  data,
+  onSubmit,
+}: {
+  data: UpdateAuthorType;
+  onSubmit: (updated: UpdateAuthorType) => void;
+}) {
   const {
     register,
     handleSubmit,
@@ -48,6 +43,9 @@ function AdminAuthorForm() {
     formState: { errors },
   } = useForm<UpdateAuthorType>({
     resolver: zodResolver(UpdateAuthor),
+    defaultValues: {
+      ...data,
+    },
   });
 
   const watchAvatarPicture = useWatch({
@@ -62,34 +60,58 @@ function AdminAuthorForm() {
     return undefined;
   }, [watchAvatarPicture]);
 
+  return (
+    <form style={{ display: 'flex', justifyContent: 'center' }} onSubmit={handleSubmit(onSubmit)}>
+      <Box sx={{ width: { xs: '100%', sm: '85%', md: '65%' }, textAlign: 'center' }}>
+        <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
+          <Box component="label" htmlFor="upload-photo" sx={{ width: '100%', display: 'inline-flex', mb: 2 }}>
+            <input
+              style={{ display: 'none' }}
+              id="upload-photo"
+              type="file"
+              accept="image/png,image/jpg,image/jpeg"
+              {...register('avatarPicture')}
+            />
+            <Button variant="contained" component="span">
+              Wstaw zdjęcie (opcjonalnie)
+            </Button>
+            {fileName && <span>{fileName}</span>}
+          </Box>
+          {errors.avatarPicture != undefined && <span>{errors.avatarPicture.message}</span>}
+          <TextInputField2 field="firstName" label="Imię" control={control} />
+          <TextInputField2 control={control} field="lastName" label="Nazwisko/Nazwiska" />
+          <NumberInputField2 field="birthYear" label="Rok urodzenia" control={control} />
+          <TextInputBox2 field="description" label="Opis/życiorys" control={control} rows={4} />
+          <Stack direction="row" spacing={2} justifyContent={'center'}>
+            <Button component={Link} to={'..'}>
+              Anuluj
+            </Button>
+            <Button type="submit" variant="contained">
+              Zapisz
+            </Button>
+          </Stack>
+        </Paper>
+      </Box>
+    </form>
+  );
+}
+
+function AdminAuthorUpdateForm() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const params = useParams();
+  const { showSuccess } = useAlert();
+
   const uploadImageMutation = useMutation({
     mutationFn: uploadImage,
-    onError: console.error,
   });
 
   const updateAuthorMutation = useMutation({
     mutationFn: updateAuthor,
-    onSuccess: () => {
+    onSuccess: (_, { author: { firstName, lastName } }) => {
       queryClient.invalidateQueries(['authors']);
+      showSuccess({ title: 'Sukces', message: `${firstName} ${lastName} został zaktualizowany!` });
       navigate('..');
-    },
-    onError: (err) => {
-      handleError(err);
-    },
-  });
-
-  const deleteAuthorMutation = useMutation({
-    mutationFn: deleteAuthor,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['authors']);
-      navigate('..');
-    },
-    onError: (err) => {
-      if (err instanceof ApiResponseError && err.error.code == 'AUTHOR_NOT_FOUND') {
-        setDeleteError('Ten autor już nie istnieje.');
-      } else {
-        handleError(err);
-      }
     },
   });
 
@@ -112,80 +134,11 @@ function AdminAuthorForm() {
 
   return (
     <Box sx={{ mt: 2 }}>
-      {deleteError && (
-        <Paper
-          elevation={7}
-          sx={{
-            width: '100%',
-            padding: 2,
-            backgroundColor: theme.palette.error.main,
-            textAlign: 'center',
-            display: 'flex',
-            justifyContent: 'center',
-            mt: 2,
-          }}>
-          <ErrorOutlineIcon />
-          <Typography>{deleteError}</Typography>
-        </Paper>
-      )}
       {status == 'loading' && 'Ładowanie...'}
       {status == 'error' && 'Błąd!'}
-      {status == 'success' && (
-        <form style={{ display: 'flex', justifyContent: 'center' }} onSubmit={handleSubmit(onSubmit)}>
-          <Box sx={{ width: { xs: '100%', sm: '85%', md: '65%' }, textAlign: 'center' }}>
-            <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
-              <Box
-                component="label"
-                htmlFor="upload-photo"
-                sx={{ width: '100%', display: 'inline-flex', mb: 2 }}>
-                <input
-                  style={{ display: 'none' }}
-                  id="upload-photo"
-                  type="file"
-                  accept="image/png,image/jpg,image/jpeg"
-                  {...register('avatarPicture')}
-                />
-                <Button variant="contained" component="span">
-                  Wstaw zdjęcie (opcjonalnie)
-                </Button>
-                {fileName && <span>{fileName}</span>}
-              </Box>
-              {errors.avatarPicture != undefined && <span>{errors.avatarPicture.message}</span>}
-              <TextInputField
-                errors={errors}
-                field="firstName"
-                label="Imię"
-                register={register}
-                defaultValue={data.firstName}
-              />
-              <TextInputField
-                errors={errors}
-                field="lastName"
-                label="Nazwisko/Nazwiska"
-                register={register}
-                defaultValue={data.lastName}
-              />
-              <NumberInputField
-                errors={errors}
-                field="birthYear"
-                label="Rok urodzenia"
-                register={register}
-                defaultValue={data.birthYear + ''}
-              />
-              <Stack direction="row" spacing={2} justifyContent={'center'}>
-                <Button type="submit" variant="contained">
-                  Zapisz
-                </Button>
-                <Button color="error" onClick={() => deleteAuthorMutation.mutate(params.authorId + '')}>
-                  Usuń
-                </Button>
-              </Stack>
-            </Paper>
-          </Box>
-        </form>
-      )}
+      {status == 'success' && <AuthorUpdateForm data={data} onSubmit={onSubmit} />}
     </Box>
   );
 }
 
-export default AdminAuthorForm;
+export default AdminAuthorUpdateForm;
