@@ -14,6 +14,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { ApiResponseError } from '../../utils/utils';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
+import { useAuth } from '../../utils/auth/useAuth';
 
 function AddReviewForm({ book }: { book: BookViewModelType }) {
   const [addError, setAddError] = useState<string | null>(null);
@@ -21,6 +22,7 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
   const theme = useTheme();
   const [value, setValue] = React.useState<number | null>(0);
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   const {
     register,
     handleSubmit,
@@ -31,7 +33,7 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
   const mutation = useMutation({
     mutationFn: postReview,
     onSuccess: async () => {
-      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
+      queryClient.invalidateQueries({ queryKey: ['reviews', book.id] });
     },
     onError: (err) => {
       if (err instanceof ApiResponseError && err.error.code == 'USER_REVIEW_ALREADY_EXISTS') {
@@ -44,6 +46,7 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
   const onSubmit: SubmitHandler<AddReviewType> = (data) => {
     data.rating = value == null ? 0 : value;
     data.idBook = book.id;
+    data.idUser = user?.id + "";
     mutation.mutate(data);
   };
 
@@ -83,6 +86,7 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
           />
           <input type="hidden" {...register('idBook')} value={book.id} />
           <input type="hidden" {...register('rating')} value={value + ''} />
+          <input type="hidden" {...register('idUser')} value={user?.id + ''} />
           <Button type="submit" variant="contained">
             Dodaj
           </Button>

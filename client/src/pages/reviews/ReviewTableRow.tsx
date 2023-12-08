@@ -48,7 +48,7 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
     <Paper
       key={review.id}
       elevation={2}
-      sx={{ padding: 2, display: 'flex', width: '75%', mb: 2 }}>
+      sx={{ padding: 2, width: '75%', mb: 2 }}>
       <Grid container direction={'row'}>
         <Grid item xs={1}>
           <Avatar sx={{ bgcolor: theme.palette.secondary.main, marginRight: 2 }}>N</Avatar>

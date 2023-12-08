@@ -250,7 +250,7 @@ function BookDetails() {
             {/* <Box>
               <AddBookToCart bookId={params.bookId as string} />
             </Box> */}
-            <Box marginBottom={3} padding={2}>
+            <Box marginBottom={3} padding={2} width={'100%'}>
                 {statusReviews == 'loading' && 'Ładowanie opinii...'}
                 {statusReviews == 'error' && 'Błąd!'}
                 {statusReviews == 'success' && <Reviews book={book} reviews={reviews.data} />}
