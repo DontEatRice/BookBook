@@ -10,7 +10,6 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import Typography from '@mui/material/Typography';
-import { useTheme } from '@mui/material/styles';
 import { useMutation } from '@tanstack/react-query';
 import { changePassword } from '../../api/account';
 import { ApiResponseError } from '../../utils/utils';
