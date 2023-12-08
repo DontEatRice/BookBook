@@ -41,6 +41,7 @@ import ReservationList from './pages/reservations/ReservationList';
 import AdminBookUpdateForm from './pages/admin/AdminBookUpdateForm';
 import Settings from './pages/account/AccountSettings';
 import AdminLogin from './pages/auth/AdminLogin';
+import AdminChangePassword from './pages/account/AdminChangePassword';
 
 const mainTheme = createTheme({
   palette: {
@@ -107,6 +108,7 @@ function App() {
       </Route>
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminHome />} />
+        <Route path="change-password" element={<AdminChangePassword />} />
         <Route path="login" element={<AdminLogin />} />
         <Route path="authors">
           <Route index element={<AdminAuthors />} />

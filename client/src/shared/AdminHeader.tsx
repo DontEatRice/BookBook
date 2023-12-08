@@ -2,15 +2,17 @@ import { Box, Grid, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import AuthorizedView from '../components/auth/AuthorizedView';
 import { useAuth } from '../utils/auth/useAuth';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 import NotAuthorizedView from '../components/auth/NotAuthorizedView';
+import AdminProfileHeaderIcon from '../components/profile/AdminProfileHeaderIcon';
 
 function AdminHeader() {
   const { logout } = useAuth();
+  const navigate = useNavigate();
   const theme = useTheme();
   return (
     <header
@@ -44,8 +46,29 @@ function AdminHeader() {
             <NavItem label="Dodaj pracownika" link="/admin/add-employee" />
           </AuthorizedView>
         </Grid>
-        <Grid item onClick={() => logout()}>
-          <AuthorizedView>
+        <AuthorizedView>
+          <Grid
+            item
+            sm={1}
+            //xs={2}
+            paddingY={2}
+            display={'flex'}
+            justifyContent={'center'}
+            alignItems={'center'}>
+            <AdminProfileHeaderIcon />
+          </Grid>
+          <Grid
+            item
+            sm={1}
+            //xs={2}
+            onClick={() => {
+              logout();
+              navigate('/admin');
+            }}
+            paddingY={2}
+            display={'flex'}
+            justifyContent={'center'}
+            alignItems={'center'}>
             <Tooltip title="Wyloguj się">
               <Box
                 sx={{
@@ -54,15 +77,15 @@ function AdminHeader() {
                 <LogoutIcon sx={{ fontSize: '2rem' }} />
               </Box>
             </Tooltip>
-          </AuthorizedView>
-          <NotAuthorizedView>
-            <Link to={'login'} style={{ textDecoration: 'none', color: 'inherit' }}>
-              <Tooltip title="Logowanie">
-                <LoginIcon sx={{ fontSize: '2rem' }} />
-              </Tooltip>
-            </Link>
-          </NotAuthorizedView>
-        </Grid>
+          </Grid>
+        </AuthorizedView>
+        <NotAuthorizedView>
+          <Link to={'login'} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Tooltip title="Logowanie">
+              <LoginIcon sx={{ fontSize: '2rem' }} />
+            </Tooltip>
+          </Link>
+        </NotAuthorizedView>
       </Grid>
     </header>
   );
