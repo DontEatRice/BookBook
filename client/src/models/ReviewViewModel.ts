@@ -5,7 +5,7 @@ const ReviewViewModel = z.object({
   title: z.string().max(200).nullable(),
   description: z.string().nullable(),
   rating: z.number(),
-  userId: z.string().uuid()
+  idUser: z.string().uuid()
 });
 
 export default ReviewViewModel;
