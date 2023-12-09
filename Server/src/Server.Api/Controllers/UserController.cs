@@ -49,4 +49,10 @@ public class UserController : ControllerBase
         var userId = GetUserIdOrThrow();
         return Ok(await Mediator.Send(new GetUserObservedBooksQuery(userId)));
     }
+
+    [HttpGet("users/{id:guid}")]
+    public async Task<ActionResult<UserProfileViewModel>> GetUserProfile(Guid id)
+    {
+        return Ok(await Mediator.Send(new GetUserProfileQuery(id)));
+    }
 }

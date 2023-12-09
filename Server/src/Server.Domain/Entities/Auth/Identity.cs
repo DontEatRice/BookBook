@@ -21,6 +21,7 @@ public class Identity
     public Address? Address { get; private set; }
     public double? Latitude { get; private set; }
     public double? Longitude { get; private set; }
+    public string? AboutMe { get; private set; }
 
     public static Identity Register(Guid id, string email, string password, string name, string? avatarImageUrl, Address? address, double? latitude, double? longitude)
     {
@@ -36,7 +37,8 @@ public class Identity
             UserBooks = new List<UserBook>(),
             Address = address,
             Latitude = latitude,
-            Longitude = longitude
+            Longitude = longitude,
+            AboutMe = null
         };
 
         return identity;
@@ -107,7 +109,7 @@ public class Identity
         Sessions[Sessions.IndexOf(session)] = Session.Create(TokenHasher.Hash(newRefreshToken));
     }
 
-    public void Update(string name, string? avatarImageUrl, Guid? libraryId, Address? address, double? latitude, double? longitude)
+    public void Update(string name, string? avatarImageUrl, Guid? libraryId, Address? address, double? latitude, double? longitude, string? aboutMe)
     {
         Name = name;
         AvatarImageUrl = avatarImageUrl;
@@ -115,5 +117,6 @@ public class Identity
         Address = address;
         Latitude = latitude;
         Longitude = longitude;
+        AboutMe = aboutMe;
     }
 }

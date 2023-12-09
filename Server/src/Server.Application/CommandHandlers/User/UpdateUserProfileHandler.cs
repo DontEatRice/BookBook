@@ -14,7 +14,7 @@ using Server.Domain.Repositories;
 namespace Server.Application.CommandHandlers.User;
 
 public sealed record UpdateUserProfileCommand(Guid Id, string Name, string? AvatarImageUrl, Guid? LibraryId,
-    string? Street, string? Number, string? Apartment, string? PostalCode, string? City) : IRequest<UserDetailViewModel>;
+    string? Street, string? Number, string? Apartment, string? PostalCode, string? City, string? AboutMe) : IRequest<UserDetailViewModel>;
 
 public sealed class UpdateUserProfileHandler : IRequestHandler<UpdateUserProfileCommand, UserDetailViewModel>
 {
@@ -119,7 +119,7 @@ public sealed class UpdateUserProfileHandler : IRequestHandler<UpdateUserProfile
             }
         }
 
-        identity.Update(request.Name, request.AvatarImageUrl, request.LibraryId, address, latitude, longitude);
+        identity.Update(request.Name, request.AvatarImageUrl, request.LibraryId, address, latitude, longitude, request.AboutMe);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

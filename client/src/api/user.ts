@@ -1,5 +1,6 @@
 import BookViewModel from '../models/BookViewModel';
 import { ToggleBookInUserListType } from '../models/ToggleBookInUserList';
+import UserProfileViewModel from '../models/user/UserProfile';
 import { handleBadResponse } from '../utils/utils';
 import { getAuthToken } from './auth';
 
@@ -36,4 +37,18 @@ export async function getUserBooks() {
 
   const data = await response.json();
   return BookViewModel.array().parse(data);
+}
+
+export async function getUserProfile(id: string) {
+  const response = await fetch(base + '/user/users/' + id, {
+    headers: new Headers({
+    'Content-Type': 'application/json'
+    })
+  });
+
+  if(!response.ok){
+    await handleBadResponse(response);
+  }
+  const data = await response.json();
+  return UserProfileViewModel.parse(data);
 }
