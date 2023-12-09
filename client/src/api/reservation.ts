@@ -66,9 +66,7 @@ export async function getReservation(reservationId: string) {
 }
 
 // admin
-
 export async function getReservations(args: PaginationRequest, libraryId: string | undefined) {
-  console.log(libraryId);
   const auth = await getAuthToken();
   const response = await fetch(base + '/reservations/admin/search', {
     method: 'post',
