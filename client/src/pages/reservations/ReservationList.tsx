@@ -36,11 +36,12 @@ export default function ReservationList() {
 
   useEffect(() => {
     refetch();
-  }, [cartStore.isChanged, refetch, onlyPending]);
+  }, [cartStore.isChanged, refetch]);
 
   const cancelThisReservation = async (reservationId: string) => {
     await cancelReservation(reservationId);
     await refetch();
+    queryClient.refetchQueries(['reservation', reservationId]);
   };
 
   return (
@@ -109,7 +110,7 @@ export default function ReservationList() {
                 open
                 onClose={() => {
                   setSelectedReservation(null);
-                  queryClient.invalidateQueries({ queryKey: ['reservation'] });
+                  queryClient.invalidateQueries({ queryKey: ['reservation', 'reservationsForUser'] });
                 }}>
                 <DialogTitle>Szczegóły Rezerwacji</DialogTitle>
                 <DialogContent>

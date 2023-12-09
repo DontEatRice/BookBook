@@ -68,7 +68,7 @@ export async function getReservation(reservationId: string) {
 // admin
 
 export async function getReservations(args: PaginationRequest, libraryId: string | undefined) {
-  libraryId = libraryId ?? '69C96AB3-1177-479D-841C-5674AA877909';
+  console.log(libraryId);
   const auth = await getAuthToken();
   const response = await fetch(base + '/reservations/admin/search', {
     method: 'post',
