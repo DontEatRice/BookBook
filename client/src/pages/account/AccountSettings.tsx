@@ -63,12 +63,12 @@ function AccountSettingsForm({
           label="Nazwa użytkownika"
           additionalProps={{ variant: 'filled' }}
         />
-        {/* <TextInputField2
+        <TextInputField2
           control={control}
           field="aboutMe"
           label="O mnie"
           additionalProps={{ variant: 'filled' }}
-        /> */}
+        />
         <Controller
           control={control}
           name="library"

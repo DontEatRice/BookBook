@@ -3,7 +3,7 @@ import { pictureSchema, userNameSchema } from '../../utils/zodSchemas';
 import LibraryViewModel from '../LibraryViewModel';
 
 const UpdateMyAccount = z.object({
-  //avatarPicture: pictureSchema,
+  avatarPicture: pictureSchema,
   name: userNameSchema,
   avatarImageUrl: z.string().url().nullable(),
   library: LibraryViewModel.optional().nullable(),
@@ -13,7 +13,7 @@ const UpdateMyAccount = z.object({
   postalCode: z.string().optional(),
   city: z.string().optional(),
   includeAddress: z.boolean(),
-  //aboutMe: z.string().nullable(),
+  aboutMe: z.string().nullable(),
 })
 .refine((input) => 
   !input.includeAddress || input.city!.length > 0, {
