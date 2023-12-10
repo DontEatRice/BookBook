@@ -18,7 +18,7 @@ function AdminHome() {
           <Typography variant="h5" sx={{ marginTop: 3, marginBottom: 2 }}>
             Zaloguj się w celu zarządzania zasobami
           </Typography>
-          <Button href="admin/login" variant="contained">
+          <Button href="/login" variant="contained">
             Logowanie
           </Button>
         </Box>

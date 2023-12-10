@@ -46,39 +46,41 @@ function Header() {
             <SearchBar />
           </Grid>
           <AuthorizedView>
-            {matches && (
+            <AuthorizedView roles={['User']}>
+              {matches && (
+                <Grid
+                  item
+                  sm={1}
+                  sx={{
+                    paddingLeft: 3,
+                    paddingY: 2,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  {cartStore.isOpen && <CartTab />}
+                  <Tooltip title="Koszyk">
+                    <Box
+                      sx={{
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => cartStore.toggleCart()}>
+                      <LocalMallIcon />
+                    </Box>
+                  </Tooltip>
+                </Grid>
+              )}
               <Grid
                 item
                 sm={1}
-                sx={{
-                  paddingLeft: 3,
-                  paddingY: 2,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                {cartStore.isOpen && <CartTab />}
-                <Tooltip title="Koszyk">
-                  <Box
-                    sx={{
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => cartStore.toggleCart()}>
-                    <LocalMallIcon />
-                  </Box>
-                </Tooltip>
+                xs={3}
+                paddingY={2}
+                display={'flex'}
+                justifyContent={'center'}
+                alignItems={'center'}>
+                <ProfileHeaderIcon />
               </Grid>
-            )}
-            <Grid
-              item
-              sm={1}
-              xs={3}
-              paddingY={2}
-              display={'flex'}
-              justifyContent={'center'}
-              alignItems={'center'}>
-              <ProfileHeaderIcon />
-            </Grid>
+            </AuthorizedView>
             <Grid
               item
               sm={1}

@@ -49,7 +49,7 @@ public class IdentityDomainService : IIdentityDomainService
         CancellationToken cancellationToken)
     {
         var identity = await _identityRepository.FirstOrDefaultByEmailAsync(email, cancellationToken);
-        if (identity == default || !identity.Roles.Contains(Role.User.GetDisplayName()))
+        if (identity == default )
         {
             throw new DomainException("Invalid credentials", DomainErrorCodes.InvalidCredentials);
         }
@@ -134,24 +134,5 @@ public class IdentityDomainService : IIdentityDomainService
         );
 
         return identity;
-    }
-
-    public async Task<AuthTokens> LoginAsAdminOrEmployeeAsync(string email, string password, CancellationToken cancellationToken = default)
-    {
-        var identity = await _identityRepository.FirstOrDefaultByEmailAsync(email, cancellationToken);
-        if (identity == default || !(identity.Roles.Contains(Role.Admin.GetDisplayName())) || identity.Roles.Contains(Role.Employee.GetDisplayName()))
-        {
-            throw new DomainException("Invalid credentials", DomainErrorCodes.InvalidCredentials);
-        }
-
-        var accessToken = _securityTokenService.GenerateAccessToken(identity);
-        var refreshToken = _securityTokenService.GenerateRefreshToken(identity.Id);
-
-        identity.Login(
-            password: password,
-            refreshToken: refreshToken
-        );
-
-        return new AuthTokens(accessToken, refreshToken);
     }
 }

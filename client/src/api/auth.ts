@@ -26,20 +26,6 @@ export const login = async (request: LoginRequestType) => {
   return (await result.json()) as { accessToken: string };
 };
 
-export const loginAsAdminOrEmployee = async (request: LoginRequestType) => {
-  const result = await fetch(base + '/adminLogin', {
-    method: 'post',
-    body: JSON.stringify(request),
-    headers: new Headers({ 'Content-Type': 'application/json' }),
-    credentials: 'include',
-  });
-  if (!result.ok) {
-    await handleBadResponse(result);
-  }
-
-  return (await result.json()) as { accessToken: string };
-};
-
 export const register = async (request: RegisterUserType) => {
   const copy = { ...request };
   copy.avatarPicture = null!;

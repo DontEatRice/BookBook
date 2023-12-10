@@ -30,7 +30,7 @@ function AdminHeader() {
         <Grid item>
           <Link to="/admin" style={{ textDecoration: 'none' }}>
             <Typography
-              sx={{ display: 'inline', backgroundColor: theme.palette.primary.light, p: 1, borderRadius: 2 }}
+              sx={{ display: 'inline', backgroundColor: theme.palette.primary.main, p: 1, borderRadius: 2 }}
               variant="h5">
               BookBook Admin
             </Typography>
