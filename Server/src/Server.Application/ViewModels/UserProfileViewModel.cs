@@ -12,4 +12,5 @@ public class UserProfileViewModel
     public string UserImageUrl { get; set; }
     public List<BookViewModel> UserLastReadBooks { get; set; }
     public string? UserLocation { get; set; }
+    public string? AboutMe { get; set; }
 }

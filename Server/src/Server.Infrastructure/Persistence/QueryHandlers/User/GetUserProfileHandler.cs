@@ -62,7 +62,8 @@ internal sealed class GetUserProfileHandler : IRequestHandler<GetUserProfileQuer
             UserName = user.Name,
             UserImageUrl = user.AvatarImageUrl,
             UserLocation = user.Address != null ? user.Address.City : null,
-            UserLastReadBooks = resultBooks
+            UserLastReadBooks = resultBooks,
+            AboutMe = user.AboutMe
         };
     }
 }
