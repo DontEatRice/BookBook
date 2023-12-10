@@ -48,7 +48,10 @@ export default function Reservation({
           <Button
             variant="contained"
             color="error"
-            onClick={() => cancelThisReservation(reservation?.id || '')}>
+            onClick={() => {
+              cancelThisReservation(reservation?.id || '');
+              data.status = 'Returned';
+            }}>
             Cancel
           </Button>
         )}

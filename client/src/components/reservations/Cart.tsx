@@ -12,12 +12,13 @@ import { useState } from 'react';
 import { getBook } from '../../api/book';
 import { useTheme } from '@mui/material/styles';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import useAlert from '../../utils/alerts/useAlert';
 
 export default function Cart() {
   const cartStore = useCartStore();
   const theme = useTheme();
   const [error, setError] = useState<string>('');
-  const [success, setSuccess] = useState<string>('');
+  const { showSuccess } = useAlert();
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const [libraryId, setLibraryId] = useState('');
@@ -48,12 +49,13 @@ export default function Cart() {
 
   const handleMakeReservation = async () => {
     try {
-      setLoading(true);
       await makeReservation({ libraryId });
+      cartStore.toggleCart();
+      showSuccess({ message: 'Rezerwacja została złożona' });
+      setLoading(true);
       await refetch();
       cartStore.toggleIsChanged();
       setError('');
-      setSuccess('Rezerwacja została złożona!');
       setLoading(false);
     } catch (error) {
       const err = error as Error;
@@ -125,11 +127,6 @@ export default function Cart() {
             {error && (
               <Typography variant="body1" color="error">
                 {error}
-              </Typography>
-            )}
-            {success && (
-              <Typography variant="body1" color="green">
-                {success}
               </Typography>
             )}
             <List>
