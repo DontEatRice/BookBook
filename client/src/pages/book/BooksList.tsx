@@ -105,10 +105,17 @@ function BooksList() {
 
   return (
     <div>
-      <Box marginBottom={2} marginTop={2} display={'flex'} flexDirection={'row'} flexWrap={'wrap'}>
+      <Box
+        marginBottom={2}
+        marginTop={2}
+        display={'flex'}
+        flexDirection={'row'}
+        flexWrap={'wrap'}
+        sx={{ zIndex: 5 }}>
         <Box marginBottom={1} marginRight={1} flexGrow={1}>
           <Autocomplete
             fullWidth
+            disablePortal={true}
             options={authorsData?.data || []}
             getOptionLabel={(author) => `${author.firstName} ${author.lastName}`}
             value={authorsData?.data.find((author) => author.id === authorId) || null}
@@ -118,6 +125,13 @@ function BooksList() {
               queryClient.refetchQueries(['searchBooks', query, authorId, year]);
             }}
             renderInput={(params) => <TextField {...params} label="Autor" placeholder="Autor" />}
+            slotProps={{
+              popper: {
+                sx: {
+                  zIndex: 1,
+                },
+              },
+            }}
           />
         </Box>
         <Box marginBottom={1} marginRight={1} flexGrow={1}>
@@ -132,6 +146,13 @@ function BooksList() {
               queryClient.refetchQueries(['searchBooks', query, authorId, yearFilter]);
             }}
             renderInput={(params) => <TextField {...params} label="Kategoria" placeholder="Kategoria" />}
+            slotProps={{
+              popper: {
+                sx: {
+                  zIndex: 1,
+                },
+              },
+            }}
           />
         </Box>
         <Box marginBottom={1} marginRight={1} flexGrow={1} width={10}>
