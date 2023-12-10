@@ -5,7 +5,8 @@ const UserProfileViewModel = z.object({
     userName: z.string(),
     userImageUrl: z.string().nullable(),
     userLocation: z.string().nullable(),
-    userLastReadBooks: BookViewModel.array()
+    userLastReadBooks: BookViewModel.array(),
+    aboutMe: z.string().nullable()
 });
 
 export default UserProfileViewModel;

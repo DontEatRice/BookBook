@@ -1,6 +1,6 @@
 import BookViewModel from '../models/BookViewModel';
 import { ToggleBookInUserListType } from '../models/ToggleBookInUserList';
-import UserProfileViewModel from '../models/user/UserProfile';
+import UserProfileViewModel from '../models/user/UserProfileViewModel';
 import { handleBadResponse } from '../utils/utils';
 import { getAuthToken } from './auth';
 

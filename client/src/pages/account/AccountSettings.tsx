@@ -171,6 +171,7 @@ function AccountSettings() {
     onSuccess: (data) => {
       showSuccess({ title: 'Sukces', message: 'Twój profil został zaktualizowany' });
       queryClient.setQueryData(['me'], data);
+      queryClient.invalidateQueries({ queryKey: ['users', data.id] });
       navigate('/user/' + user?.id);
     },
   });
