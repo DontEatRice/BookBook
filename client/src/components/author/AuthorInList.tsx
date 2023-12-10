@@ -6,20 +6,26 @@ import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { useState } from 'react';
 
 function AuthorInList({ author }: { author: AuthorViewModelType }) {
+  const [elevation, setElevation] = useState(3);
+
   return (
     <Paper
+      elevation={elevation}
+      onMouseOver={() => setElevation(3)}
+      onMouseOut={() => setElevation(1)}
       sx={{
         p: 2,
         margin: 'auto',
         flexGrow: 1,
         backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#1A2027' : '#fff'),
       }}>
-      <Grid container spacing={5}>
-        <Grid item>
-          <Box sx={{ width: 200, height: 200 }}>
-            <Link to={`/authors/${author.id}`}>
+      <Link to={`/authors/${author.id}`}>
+        <Grid container spacing={5}>
+          <Grid item>
+            <Box sx={{ width: 200, height: 200 }}>
               <Avatar
                 alt={author.firstName + ' ' + author.lastName}
                 src={imgUrl(author.profilePictureUrl, '/public/autor-szablon.jpg')}
@@ -28,22 +34,22 @@ function AuthorInList({ author }: { author: AuthorViewModelType }) {
                   loading: 'lazy',
                 }}
               />
-            </Link>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm container>
-          <Grid item xs container direction="column" spacing={2}>
-            <Grid item xs>
-              <Typography gutterBottom variant="h4" component="div">
-                <Link to={`/authors/${author.id}`}>{author.firstName + ' ' + author.lastName}</Link>
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                {'Rok urodzenia: ' + author.birthYear}
-              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm container>
+            <Grid item xs container direction="column" spacing={2}>
+              <Grid item xs>
+                <Typography gutterBottom variant="h4" component="div">
+                  <Link to={`/authors/${author.id}`}>{author.firstName + ' ' + author.lastName}</Link>
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  {'Rok urodzenia: ' + author.birthYear}
+                </Typography>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      </Link>
     </Paper>
   );
 }

@@ -1,4 +1,3 @@
-import { Box, Button, Grid, InputAdornment, TextField, Typography, useTheme } from '@mui/material';
 import { AuthorViewModelType } from '../../models/author/AuthorViewModel';
 import AuthorInList from '../../components/author/AuthorInList';
 import { getAuthors } from '../../api/author';
@@ -6,10 +5,17 @@ import { useQuery } from '@tanstack/react-query';
 import SearchIcon from '@mui/icons-material/Search';
 import { useState } from 'react';
 import LoadingTypography from '../../components/common/LoadingTypography';
+import InputAdornment from '@mui/material/InputAdornment';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
 
 function Authors({ data }: { data: AuthorViewModelType[] }) {
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={2}>
       {data.map((author) => (
         <Grid item xs={12} key={author.id}>
           <AuthorInList author={author} />
