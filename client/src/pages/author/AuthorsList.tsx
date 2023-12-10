@@ -37,7 +37,7 @@ function AuthorsList() {
   };
   const { data: searchData, status: searchStatus } = useQuery({
     queryKey: ['searchAuthors', query],
-    queryFn: () => getAuthors({ pageSize: 50, pageNumber: 0 }),
+    queryFn: () => getAuthors({ pageSize: 50, pageNumber: 0, query: query }),
   });
 
   return (
