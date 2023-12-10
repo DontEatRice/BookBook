@@ -9,13 +9,14 @@ import TextField from '@mui/material/TextField';
 import AddBookToLibrary, { AddBookToLibraryType } from '../../models/AddBookToLibrary';
 import { addBookToLibrary, getBooksAvailableToAdd } from '../../api/library';
 import NumberInputField from '../../components/common/NumberInputField';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../utils/auth/useAuth';
 import LoadingTypography from '../../components/common/LoadingTypography';
 
 function AdminAddBookToLibraryForm() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -28,6 +29,7 @@ function AdminAddBookToLibraryForm() {
     mutationFn: addBookToLibrary,
     onSuccess: () => {
       navigate('..');
+      queryClient.invalidateQueries({ queryKey: ['booksInLibrary', user!.libraryId!] });
     },
     onError: (e: Error) => {
       console.error(e);
