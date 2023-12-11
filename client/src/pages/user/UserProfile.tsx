@@ -17,7 +17,6 @@ function UserProfile() {
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
   const handleTabChange = (e: SyntheticEvent, tabIndex: number) => {
-    console.log(tabIndex);
     setCurrentTabIndex(tabIndex);
   };
   return (
@@ -65,23 +64,40 @@ function UserProfile() {
             </Tabs>
             {currentTabIndex === 0 && (
               <Box sx={{ p: 3 }}>
-                <Typography variant="h5" gutterBottom>
-                  Kilka słów o mnie
-                </Typography>
-                <Typography>{data.aboutMe}</Typography>
+                <>
+                  {data.aboutMe != null && data.aboutMe != '' && (
+                    <div>
+                      <Typography variant="h5" gutterBottom>
+                        Kilka słów o mnie
+                      </Typography>
+                      <Typography>{data.aboutMe}</Typography>
+                    </div>
+                  )}
+                  {data.aboutMe == null ||
+                    (data.aboutMe === '' && (
+                      <Typography variant="h5">{data.userName} nie dodał swojego opisu</Typography>
+                    ))}
+                </>
               </Box>
             )}
 
             {currentTabIndex === 1 && (
               <Box sx={{ p: 3 }} alignItems={'center'} justifyContent={'center'} display={'flex'}>
                 <Box display={'flex'} flexDirection={'row'}>
-                  <Grid container flexDirection={'row'} spacing={3}>
-                    {data.userLastReadBooks.map((book) => (
-                      <Grid item xs key={book.id}>
-                        <AuthorBookCard book={book} />
-                      </Grid>
-                    ))}
-                  </Grid>
+                  {data.userLastReadBooks.length == 0 && (
+                    <Typography variant="h5">
+                      Wygląda na to, że {data.userName} jeszcze nic u nas nie zarezerwował
+                    </Typography>
+                  )}
+                  {data.userLastReadBooks.length > 0 && (
+                    <Grid container flexDirection={'row'} spacing={3}>
+                      {data.userLastReadBooks.map((book) => (
+                        <Grid item xs key={book.id}>
+                          <AuthorBookCard book={book} />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  )}
                 </Box>
               </Box>
             )}

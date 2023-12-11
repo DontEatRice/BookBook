@@ -119,7 +119,7 @@ public sealed class UpdateUserProfileHandler : IRequestHandler<UpdateUserProfile
             }
         }
 
-        identity.Update(request.Name, request.AvatarImageUrl, request.LibraryId, address, latitude, longitude, request.AboutMe);
+        identity.Update(request.Name, request.AvatarImageUrl, request.LibraryId, address, latitude, longitude, request.AboutMe ?? "");
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -40,6 +40,7 @@ function AccountSettingsForm({
     resolver: zodResolver(UpdateMyAccount),
     defaultValues: {
       ...data,
+      aboutMe: data.aboutMe ?? '',
       library: data.libraryId ? libraries.find((x) => x.id == data.libraryId) : null,
       street: data.address ? data.address.street : undefined,
       number: data.address ? data.address.number : undefined,
