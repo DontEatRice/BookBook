@@ -27,7 +27,7 @@ function AdminHeader() {
         zIndex: 10,
       }}>
       <Grid container justifyContent={'space-between'}>
-        <Grid item>
+        <Grid item xs={10}>
           <Link to="/admin" style={{ textDecoration: 'none' }}>
             <Typography
               sx={{ display: 'inline', backgroundColor: theme.palette.primary.main, p: 1, borderRadius: 2 }}
