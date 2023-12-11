@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { editCategory, getCategory } from '../../api/category';
 import BookCategoryViewModel, { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
 import { useForm } from 'react-hook-form';
@@ -12,6 +12,7 @@ import LoadingTypography from '../../components/common/LoadingTypography';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import useAlert from '../../utils/alerts/useAlert';
+import Stack from '@mui/material/Stack';
 
 function CategoryUpdateForm({
   data,
@@ -36,9 +37,14 @@ function CategoryUpdateForm({
         }}>
         <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
           <TextInputField2 control={control} field="name" label="Nazwa kategorii" />
-          <Button type="submit" variant="contained">
-            Zapisz
-          </Button>
+          <Stack direction="row" spacing={2} justifyContent={'center'}>
+            <Button component={Link} to={'..'}>
+              Anuluj
+            </Button>
+            <Button type="submit" variant="contained">
+              Zapisz
+            </Button>
+          </Stack>
         </Paper>
       </Box>
     </form>
