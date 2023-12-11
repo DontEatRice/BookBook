@@ -43,7 +43,7 @@ const paginationDefaultRequest = {
 
 function Books({ data }: { data: BookViewModelType[] }) {
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={2}>
       {data.map((book) => (
         <Grid item xs={12} key={book.id}>
           <BookInList book={book} />
