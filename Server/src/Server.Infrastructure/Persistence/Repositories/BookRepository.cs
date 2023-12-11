@@ -17,13 +17,6 @@ internal sealed class BookRepository : IBookRepository
     {
         await _dbContext.AddAsync(book, cancellationToken);
     }
-    
-    public Task<int> Delete(Guid id, CancellationToken cancellationToken = default)
-    {
-        return _dbContext.Books
-            .Where(book => book.Id == id)
-            .ExecuteDeleteAsync(cancellationToken);
-    }
 
     public async Task<List<Book>> FindAllAsync(CancellationToken cancellationToken)
     {

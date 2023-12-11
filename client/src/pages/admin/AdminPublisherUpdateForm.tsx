@@ -5,17 +5,12 @@ import UpdatePublisher, { UpdatePublisherType } from '../../models/UpdatePublish
 import { zodResolver } from '@hookform/resolvers/zod';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import { updatePublisher, deletePublisher } from '../../api/publisher';
-import { useNavigate } from 'react-router-dom';
+import { updatePublisher } from '../../api/publisher';
+import { Link, useNavigate } from 'react-router-dom';
 import { getPublisher } from '../../api/publisher';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router';
-import { ApiResponseError } from '../../utils/utils';
-import { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
 import useAlert from '../../utils/alerts/useAlert';
-import Typography from '@mui/material/Typography';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import TextInputBox from '../../components/common/TextInputBox';
 import TextInputField from '../../components/common/TextInputField';
 
@@ -23,8 +18,6 @@ function AdminPublisherForm() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const params = useParams();
-  const theme = useTheme();
-  const [deleteError, setDeleteError] = useState<string | null>(null);
   const { handleError } = useAlert();
 
   const {
@@ -46,21 +39,6 @@ function AdminPublisherForm() {
     },
   });
 
-  const deletePublisherMutation = useMutation({
-    mutationFn: deletePublisher,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['publishers']);
-      navigate('..');
-    },
-    onError: (err) => {
-      if (err instanceof ApiResponseError && err.error.code == 'PUBLISHER_NOT_FOUND') {
-        setDeleteError('Ten wydawca już nie istnieje.');
-      } else {
-        handleError(err);
-      }
-    },
-  });
-
   const { data, status } = useQuery({
     queryKey: ['publishers', params.publisherId],
     queryFn: () => getPublisher(params.publisherId + ''),
@@ -72,22 +50,6 @@ function AdminPublisherForm() {
 
   return (
     <Box sx={{ mt: 2 }}>
-      {deleteError && (
-        <Paper
-          elevation={7}
-          sx={{
-            width: '100%',
-            padding: 2,
-            backgroundColor: theme.palette.error.main,
-            textAlign: 'center',
-            display: 'flex',
-            justifyContent: 'center',
-            mt: 2,
-          }}>
-          <ErrorOutlineIcon />
-          <Typography>{deleteError}</Typography>
-        </Paper>
-      )}
       {status == 'loading' && 'Ładowanie...'}
       {status == 'error' && 'Błąd!'}
       {status == 'success' && (
@@ -110,11 +72,11 @@ function AdminPublisherForm() {
                 defaultValue={data.description + ''}
               />
               <Stack direction="row" spacing={2} justifyContent={'center'}>
+                <Button component={Link} to={'..'}>
+                  Anuluj
+                </Button>
                 <Button type="submit" variant="contained">
                   Zapisz
-                </Button>
-                <Button color="error" onClick={() => deletePublisherMutation.mutate(params.publisherId + '')}>
-                  Usuń
                 </Button>
               </Stack>
             </Paper>

@@ -18,13 +18,6 @@ internal class PublisherRepository : IPublisherRepository
         await _dbContext.AddAsync(publisher, cancellationToken);
     }
 
-    public Task<int> Delete(Guid id, CancellationToken cancellationToken = default)
-    {
-        return _dbContext.Publishers
-            .Where(publisher => publisher.Id == id)
-            .ExecuteDeleteAsync(cancellationToken);
-    }
-
     public async Task<Publisher?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _dbContext.Publishers.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);

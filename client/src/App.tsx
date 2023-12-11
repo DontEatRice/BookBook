@@ -40,6 +40,7 @@ import BookRanking from './pages/book/BookRanking';
 import ReservationList from './pages/reservations/ReservationList';
 import AdminBookUpdateForm from './pages/admin/AdminBookUpdateForm';
 import Settings from './pages/account/AccountSettings';
+import AdminCategoryUpdateForm from './pages/admin/AdminCategoryUpdateForm';
 
 const mainTheme = createTheme({
   palette: {
@@ -119,7 +120,7 @@ function App() {
         <Route path="categories">
           <Route index element={<AdminCategories />} />
           <Route path="add" element={<AdminCategoryForm />} />
-          <Route path=":bookId" element={<AdminAuthorUpdateForm />} />
+          <Route path=":categoryId" element={<AdminCategoryUpdateForm />} />
         </Route>
         <Route path="publishers">
           <Route index element={<AdminPublishers />} />

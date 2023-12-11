@@ -16,14 +16,9 @@ internal class BookCategoryRepository : IBookCategoryRepository
         await _dbContext.BookCategories.AddAsync(bookCategory, cancellationToken);
     }
 
-    public void Delete(BookCategory bookCategory)
+    public Task<List<BookCategory>> FindAllAsync(CancellationToken cancellationToken)
     {
-        _dbContext.BookCategories.Remove(bookCategory);
-    }
-
-    public async Task<List<BookCategory>> FindAllAsync(CancellationToken cancellationToken)
-    {
-       return await _dbContext.BookCategories.ToListAsync();
+       return _dbContext.BookCategories.ToListAsync(cancellationToken);
     }
 
     public async Task<BookCategory?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)

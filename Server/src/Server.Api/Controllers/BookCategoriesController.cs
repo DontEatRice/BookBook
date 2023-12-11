@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Admin;
 using Server.Application.ViewModels;
@@ -24,6 +25,14 @@ public class BookCategoriesController : ControllerBase
         return Ok(await Mediator.Send(new GetBookCategoryQuery(id)));
     }
 
+    [Authorize]
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, UpdateBookCategoryCommand command)
+    {
+        await Mediator.Send(command with { Id = id });
+        return NoContent();
+    }
+
     [HttpPost]
     public async Task<ActionResult> Post(AddBookCategoryCommand command)
     {
@@ -33,12 +42,5 @@ public class BookCategoriesController : ControllerBase
             Id = id,
         });
         return Created($"/bookCategories/{id}", null);
-    }
-
-    [HttpDelete("{id:Guid}")]
-    public async Task<ActionResult> Delete(Guid id)
-    {
-        await Mediator.Send(new RemoveBookCategoryCommand(id));
-        return NoContent();
     }
 }

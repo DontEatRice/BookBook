@@ -4,9 +4,9 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AddLibraryType } from '../../models/AddLibrary';
-import { updateLibrary, deleteLibrary, getLibrary } from '../../api/library';
+import { updateLibrary, getLibrary } from '../../api/library';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
 import Accordion from '@mui/material/Accordion';
@@ -17,10 +17,6 @@ import { useEffect, useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import { useParams } from 'react-router';
 import { OpenHoursViewModelType } from '../../models/OpenHoursViewModel';
-import { ApiResponseError } from '../../utils/utils';
-import useAlert from '../../utils/alerts/useAlert';
-import { useTheme } from '@mui/material/styles';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import UpdateLibrary, { UpdateLibraryType } from '../../models/UpdateLibrary';
 import { MuiTelInput } from 'mui-tel-input';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
@@ -154,9 +150,6 @@ const daysOfWeek: DayOfWeek[] = [
 function AdminLibraryUpdateForm() {
   const navigate = useNavigate();
   const params = useParams();
-  const theme = useTheme();
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-  const { handleError } = useAlert();
   const queryClient = useQueryClient();
 
   const {
@@ -207,42 +200,11 @@ function AdminLibraryUpdateForm() {
     },
   });
 
-  const deleteLibraryMutation = useMutation({
-    mutationFn: deleteLibrary,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['libraries']);
-      navigate('..');
-    },
-    onError: (err) => {
-      if (err instanceof ApiResponseError && err.error.code == 'LIBRARY_NOT_FOUND') {
-        setDeleteError('Ta biblioteka już nie istnieje.');
-      } else {
-        handleError(err);
-      }
-    },
-  });
-
   const onSubmit = (data: UpdateLibraryType) => {
     updateLibraryMutation.mutate({ library: data, id: params.libraryId! });
   };
   return (
     <Box sx={{ mt: 2 }}>
-      {deleteError && (
-        <Paper
-          elevation={7}
-          sx={{
-            width: '100%',
-            padding: 2,
-            backgroundColor: theme.palette.error.main,
-            textAlign: 'center',
-            display: 'flex',
-            justifyContent: 'center',
-            mt: 2,
-          }}>
-          <ErrorOutlineIcon />
-          <Typography>{deleteError}</Typography>
-        </Paper>
-      )}
       {status == 'loading' && 'Ładowanie...'}
       {status == 'error' && 'Błąd!'}
       {status == 'success' && (
@@ -314,11 +276,11 @@ function AdminLibraryUpdateForm() {
                 </AccordionDetails>
               </Accordion>
               <Stack direction="row" spacing={2} justifyContent={'center'}>
+                <Button component={Link} to={'..'}>
+                  Anuluj
+                </Button>
                 <Button type="submit" variant="contained">
                   Zapisz
-                </Button>
-                <Button color="error" onClick={() => deleteLibraryMutation.mutate(params.libraryId + '')}>
-                  Usuń
                 </Button>
               </Stack>
             </Paper>

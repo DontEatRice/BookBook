@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import Table from '@mui/material/Table';
 import { BookCategorySearchResponse, getCategories } from '../../api/category';
@@ -37,8 +37,8 @@ interface HeadCell<T> {
 }
 
 const headCells: readonly HeadCell<BookCategoryViewModelType>[] = [
-  { field: 'id', label: 'Id', numeric: false, sortable: false },
   { field: 'name', label: 'Nazwa', numeric: false, sortable: true },
+  { field: 'id', label: 'Id', numeric: false, sortable: false },
 ];
 
 function BookCategoriesTable({
@@ -49,6 +49,8 @@ function BookCategoriesTable({
   sx,
 }: BookCategoriesTableProps) {
   const { pageNumber, pageSize, orderByField, orderDirection } = paginationProps;
+  const navigate = useNavigate();
+
   const handleChangePage = (_: React.MouseEvent | null, newPage: number) => {
     onPaginationPropsChange({ ...paginationProps, pageNumber: newPage });
   };
@@ -81,9 +83,17 @@ function BookCategoriesTable({
           </TableHead>
           <TableBody>
             {data.data.map((category) => (
-              <TableRow key={category.id}>
-                <TableCell>{category.id}</TableCell>
+              <TableRow
+                onClick={() => navigate(`./${category.id}`)}
+                key={category.id}
+                sx={{
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                  },
+                }}>
                 <TableCell>{category.name}</TableCell>
+                <TableCell>{category.id}</TableCell>
               </TableRow>
             ))}
           </TableBody>
