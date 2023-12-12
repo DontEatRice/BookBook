@@ -13,6 +13,7 @@ import { getBook } from '../../api/book';
 import { useTheme } from '@mui/material/styles';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import useAlert from '../../utils/alerts/useAlert';
+import { translateErrorCode } from '../../utils/functions/utilFunctions';
 
 export default function Cart() {
   const cartStore = useCartStore();
@@ -60,25 +61,7 @@ export default function Cart() {
     } catch (error) {
       const err = error as Error;
       const errorCode = err.message.split(':')[0];
-      const resourceId = err.message.split(':')[1];
-      switch (errorCode) {
-        case 'CANNOT_MAKE_ANOTHER_RESERVATION':
-          setError('Nie można złożyć drugiej rezerwacji dla tej samej biblioteki');
-          break;
-        case 'BOOK_NOT_FOUND': {
-          const book = await getBook(resourceId);
-          setError(`Książka ${book.title} nie została znaleziona`);
-          break;
-        }
-        case 'BOOK_NOT_AVAILABLE': {
-          const book = await getBook(resourceId);
-          setError(`Książka "${book.title}" w tej chwili nie jest dostępna w tej bibliotece`);
-          break;
-        }
-        default:
-          setError(`Wystąpił nieznany błąd: ${errorCode}`);
-          break;
-      }
+      setError(translateErrorCode(errorCode));
       setLoading(false);
     }
   };

@@ -35,7 +35,7 @@ public class RemoveFromCartHandler : IRequestHandler<RemoveFromCartCommand>
         
         var bookInCart = cart.CartItems.First(ci => ci.BookId == request.BookId);
         
-        cart.CartItems.Remove(bookInCart);
+        cart.RemoveBook(bookInCart.BookId);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

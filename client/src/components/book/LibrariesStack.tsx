@@ -14,6 +14,7 @@ import { useAuth } from '../../utils/auth/useAuth';
 import LibraryInBookDetails from '../../models/LibraryInBookDetails';
 import RoomIcon from '@mui/icons-material/Room';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { translateErrorCode } from '../../utils/functions/utilFunctions';
 
 function LibrariesStack({ bookId }: { bookId: string }) {
   const { user } = useAuth();
@@ -81,20 +82,7 @@ function LibrariesStack({ bookId }: { bookId: string }) {
       cartStore.toggleIsChanged();
     } catch (error) {
       const err = error as Error;
-      switch (err.message) {
-        case 'BOOK_ALREADY_IN_CART':
-          showError({ message: 'Książka została już dodana do koszyka' });
-          break;
-        case 'BOOK_NOT_FOUND':
-          showError({ message: 'Książka nie została znaleziona' });
-          break;
-        case 'LIBRARY_NOT_FOUND':
-          showError({ message: 'Biblioteka nie została znaleziona' });
-          break;
-        default:
-          showError({ message: `Wystąpił nieznany błąd: ${err.message}` });
-          break;
-      }
+      showError({ message: translateErrorCode(err.message) });
     }
   };
 
@@ -212,3 +200,4 @@ function LibrariesStack({ bookId }: { bookId: string }) {
 }
 
 export default LibrariesStack;
+

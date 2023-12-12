@@ -10,6 +10,7 @@ import { LibraryViewModelType } from '../../models/LibraryViewModel';
 import { Box, Button } from '@mui/material';
 import { addToCart } from '../../api/cart';
 import { useCartStore } from '../../store';
+import { translateErrorCode } from '../../utils/functions/utilFunctions';
 
 function LibraryDropdown({
   data,
@@ -65,20 +66,7 @@ export default function AddBookToCart({ bookId }: { bookId: string }) {
     } catch (error) {
       const err = error as Error;
       setSuccess('');
-      switch (err.message) {
-        case 'BOOK_ALREADY_IN_CART':
-          setError('Książka została już dodana do koszyka');
-          break;
-        case 'BOOK_NOT_FOUND':
-          setError('Książka nie została znaleziona');
-          break;
-        case 'LIBRARY_NOT_FOUND':
-          setError('Biblioteka nie została znaleziona');
-          break;
-        default:
-          setError(`Wystąpił nieznany błąd: ${err.message}`);
-          break;
-      }
+      setError(translateErrorCode(err.message));
     }
   };
 
@@ -119,3 +107,4 @@ export default function AddBookToCart({ bookId }: { bookId: string }) {
     </div>
   );
 }
+
