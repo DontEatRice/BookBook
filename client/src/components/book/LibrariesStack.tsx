@@ -147,7 +147,7 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                       {library.library.address.postalCode + ' ' + library.library.address.city}
                     </Typography>
                   </div>
-                  <AuthorizedView>
+                  <AuthorizedView roles={['User']}>
                     <Stack direction={'column'}>
                       <Button onClick={() => handleAddToCart(bookId, library.library.id)}>Do koszyka</Button>
                       {user?.lat != undefined && (
@@ -184,7 +184,7 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                     {library.address.apartment ?? ''}
                     <br /> {library.address.city}
                     <br />
-                    <AuthorizedView>
+                    <AuthorizedView roles={['User']}>
                       <Button onClick={() => handleAddToCart(bookId, library.id)}>Do koszyka</Button>
                     </AuthorizedView>
                   </Popup>
