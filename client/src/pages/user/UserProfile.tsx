@@ -75,7 +75,9 @@ function UserProfile() {
                   )}
                   {data.aboutMe == null ||
                     (data.aboutMe === '' && (
-                      <Typography variant="h5">{data.userName} nie dodał swojego opisu</Typography>
+                      <Typography variant="h5" textAlign={'center'}>
+                        {data.userName} nie dodał swojego opisu
+                      </Typography>
                     ))}
                 </>
               </Box>
