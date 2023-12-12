@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import { getUserProfile } from '../../api/user';
-import { useParams } from 'react-router-dom';
-import { Avatar, Box, Grid, Typography, Paper, Tabs, Tab } from '@mui/material';
+import { getUserProfile, getUserReviews } from '../../api/user';
+import { Link, useParams } from 'react-router-dom';
+import { Avatar, Box, Grid, Typography, Paper, Tabs, Tab, Button, styled } from '@mui/material';
 import { imgUrl } from '../../utils/utils';
 import LoadingTypography from '../../components/common/LoadingTypography';
 import PlaceIcon from '@mui/icons-material/Place';
 import { SyntheticEvent, useState } from 'react';
 import AuthorBookCard from '../../components/author/AuthorBookCard';
+import Loading from '../../components/common/Loading';
 
 function UserProfile() {
   const params = useParams();
@@ -14,6 +15,24 @@ function UserProfile() {
     queryKey: ['users', params.userId],
     queryFn: () => getUserProfile(params.userId!),
   });
+
+  const Img = styled('img')({
+    margin: 'auto',
+    display: 'block',
+    height: 200,
+    width: 160,
+  });
+
+  const { data: userReviews, status: userReviewsStatus } = useQuery({
+    queryKey: ['userReviews', params.userId],
+    queryFn: () =>
+      getUserReviews({
+        userId: params.userId!,
+        pageSize: 10,
+        pageNumber: 0,
+      }),
+  });
+
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
   const handleTabChange = (_e: SyntheticEvent, tabIndex: number) => {
@@ -101,17 +120,35 @@ function UserProfile() {
               </Box>
             )}
 
-            {currentTabIndex === 2 && (
+            {currentTabIndex === 2 && userReviewsStatus == 'success' && (
               <Box sx={{ p: 3 }}>
-                <Typography variant="h5">Tab 3 Content</Typography>
-                <Typography>
-                  It is a long established fact that a reader will be distracted by the readable content of a
-                  page when looking at its layout. The point of using Lorem Ipsum is that it has a
-                  more-or-less normal distribution of letters, as opposed to using 'Content here, content
-                  here', making it look like readable English.
+                <Typography variant="h5" textAlign={'center'} marginBottom={4}>
+                  Opinie użytkownika
                 </Typography>
+                {userReviews?.data.map((review) => (
+                  <Paper>
+                    <Grid container direction={'row'} spacing={2}>
+                      <Grid item>
+                        <Link to={`/books/${review.bookId}`}>
+                          <Img
+                            alt="complex"
+                            loading="lazy"
+                            src={imgUrl(review.bookCoverUrl, '/podstawowa-ksiazka-otwarta.jpg')}
+                          />
+                          <Typography textAlign={'center'}>{review.bookTitle}</Typography>
+                        </Link>
+                      </Grid>
+                      <Grid item direction={'column'}>
+                        <Typography>Tytuł: {review.title ?? 'brak'}</Typography>
+                        <Typography>Opis: {review.description ?? 'brak'}</Typography>
+                        <Typography>Ocena: {review.rating}</Typography>
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                ))}
               </Box>
             )}
+            {currentTabIndex === 2 && userReviewsStatus == 'loading' && <Loading></Loading>}
           </Paper>
         </>
       )}

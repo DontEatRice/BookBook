@@ -1,10 +1,14 @@
 import BookViewModel from '../models/BookViewModel';
 import { ToggleBookInUserListType } from '../models/ToggleBookInUserList';
+import ReviewInUserProfileViewModel from '../models/user/ReviewInUserProfileViewModel';
 import UserProfileViewModel from '../models/user/UserProfileViewModel';
-import { handleBadResponse } from '../utils/utils';
+import { PaginationRequest } from '../utils/constants';
+import { handleBadResponse, paginatedFetch } from '../utils/utils';
+import { paginatedResponse } from '../utils/zodSchemas';
 import { getAuthToken } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
+const reviewInUserProfilePaginated = paginatedResponse(ReviewInUserProfileViewModel);
 
 export const toggleBookInUserList = async (toggleBook: ToggleBookInUserListType) => {
   const auth = await getAuthToken();
@@ -40,15 +44,28 @@ export async function getUserBooks() {
 }
 
 export async function getUserProfile(id: string) {
-  const response = await fetch(base + '/user/users/' + id, {
+  const response = await fetch(base + '/user/' + id, {
     headers: new Headers({
-    'Content-Type': 'application/json'
-    })
+      'Content-Type': 'application/json',
+    }),
   });
 
-  if(!response.ok){
+  if (!response.ok) {
     await handleBadResponse(response);
   }
   const data = await response.json();
   return UserProfileViewModel.parse(data);
+}
+
+export async function getUserReviews(
+  args: PaginationRequest & {
+    userId: string;
+  }
+) {
+  const response = await paginatedFetch(base + '/User/' + args.userId + '/reviews', args);
+  if (!response.ok) {
+    handleBadResponse(response);
+  }
+  const data = await response.json();
+  return reviewInUserProfilePaginated.parse(data);
 }

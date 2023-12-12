@@ -22,14 +22,14 @@ public class UserController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> UserDetail(Guid id)
-    {
-        var user = await Mediator.Send(new GetUserByIdQuery(id)) ??
-            throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
+    //[HttpGet("{id:guid}")]
+    //public async Task<IActionResult> UserDetail(Guid id)
+    //{
+    //    var user = await Mediator.Send(new GetUserByIdQuery(id)) ??
+    //        throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
 
-        return Ok(user);
-    }
+    //    return Ok(user);
+    //}
 
     [HttpPost("toggle-observe")]
     public async Task<ActionResult> ToggleBookInUserList(ToggleBookInUsersListCommand command)
@@ -50,9 +50,16 @@ public class UserController : ControllerBase
         return Ok(await Mediator.Send(new GetUserObservedBooksQuery(userId)));
     }
 
-    [HttpGet("users/{id:guid}")]
+    [HttpGet("{id:guid}")]
     public async Task<ActionResult<UserProfileViewModel>> GetUserProfile(Guid id)
     {
         return Ok(await Mediator.Send(new GetUserProfileQuery(id)));
     }
+
+    [HttpPost("{id:guid}/reviews")]
+    public async Task<ActionResult<PaginatedResponseViewModel<ReviewInUserProfile>>> GetUserReviews(Guid id)
+    {
+        return Ok(await Mediator.Send(new GetUserReviewsQuery(id)));
+    }
+
 }
