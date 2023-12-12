@@ -13,4 +13,5 @@ public class UserProfileViewModel
     public List<BookViewModel> UserLastReadBooks { get; set; }
     public string? UserLocation { get; set; }
     public string? AboutMe { get; set; }
+    public int? ReadBooksCount { get; set; }
 }

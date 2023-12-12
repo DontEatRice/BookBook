@@ -45,14 +45,11 @@ function UserProfile() {
                     <Typography gutterBottom variant="h4" component="div">
                       {data.userName}
                     </Typography>
-                    {data.userLocation ?? (
-                      <Box>
-                        <PlaceIcon></PlaceIcon>
-                        <Typography variant="body1" gutterBottom>
-                          {data.userLocation}
-                        </Typography>
-                      </Box>
-                    )}
+                    <Typography variant="h6" gutterBottom>
+                      <PlaceIcon></PlaceIcon>
+                      {data.userLocation == null ? 'Brak adresu' : data.userLocation}
+                    </Typography>
+                    <Typography variant="body1">Przeczytane książki: {data.readBooksCount}</Typography>
                   </Grid>
                 </Grid>
               </Grid>

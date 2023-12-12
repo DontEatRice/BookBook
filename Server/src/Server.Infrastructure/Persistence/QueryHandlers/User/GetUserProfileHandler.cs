@@ -4,12 +4,7 @@ using Server.Application.Exceptions.Types;
 using Server.Application.Exceptions;
 using Server.Application.ViewModels;
 using Server.Domain.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Server.Domain.Entities;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers.User;
 
@@ -20,13 +15,15 @@ internal sealed class GetUserProfileHandler : IRequestHandler<GetUserProfileQuer
     private readonly IIdentityRepository _identityRepository;
     private readonly IBookRepository _bookRepository;
     private readonly IMapper _mapper;
+    private readonly IMemoryCache _memoryCache;
 
-    public GetUserProfileHandler(IReservationRepository reservationRepository, IIdentityRepository identityRepository, IBookRepository bookRepository, IMapper mapper)
+    public GetUserProfileHandler(IReservationRepository reservationRepository, IIdentityRepository identityRepository, IBookRepository bookRepository, IMapper mapper, IMemoryCache memoryCache)
     {
         _reservationRepository = reservationRepository;
         _identityRepository = identityRepository;
         _bookRepository = bookRepository;
         _mapper = mapper;
+        _memoryCache = memoryCache;
     }
 
     public async Task<UserProfileViewModel> Handle(GetUserProfileQuery request, CancellationToken cancellationToken)
@@ -38,23 +35,44 @@ internal sealed class GetUserProfileHandler : IRequestHandler<GetUserProfileQuer
             throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
         }
 
-        var userReservations = await _reservationRepository.ListByUserIdAsync(request.Id, cancellationToken);
+        var userReadBooks = new List<BookViewModel>();
+        int readBooksCount = 0;
 
-        var userGivenOutReservations = userReservations.
-            Where(x => x.Status == Domain.Entities.Reservations.ReservationStatus.GivenOut || x.Status == Domain.Entities.Reservations.ReservationStatus.Returned).ToList();
-
-        var lastReadBooks = userGivenOutReservations
-            .OrderBy(x => x.ReservationEndDate)
-            .SelectMany(x => x.ReservationItems)
-            .Select(x => x.BookId)
-            .Distinct()
-            .Take(5)
-            .ToList();
-
-        var resultBooks = new List<BookViewModel>();
-        foreach (var book in lastReadBooks)
+        if (!_memoryCache.TryGetValue($"lastReadBooks-{user.Id}", out userReadBooks) || !_memoryCache.TryGetValue($"readBooksCount-{user.Id}", out readBooksCount))
         {
-            resultBooks.Add(_mapper.Map<BookViewModel>(await _bookRepository.FirstOrDefaultByIdAsync(book, cancellationToken)));
+            var userReservations = await _reservationRepository.ListByUserIdAsync(request.Id, cancellationToken);
+
+            var userGivenOutReservations = userReservations.
+                Where(x => x.Status == Domain.Entities.Reservations.ReservationStatus.GivenOut || x.Status == Domain.Entities.Reservations.ReservationStatus.Returned).ToList();
+
+            var readBooks = userGivenOutReservations
+                .OrderBy(x => x.ReservationEndDate)
+                .SelectMany(x => x.ReservationItems)
+                .Select(x => x.BookId)
+                .Distinct();
+
+            var lastReadBooks = readBooks
+                .Take(5)
+                .ToList();
+
+            readBooksCount = readBooks.Count();
+
+            userReadBooks = new List<BookViewModel>(); 
+
+            foreach (var book in lastReadBooks)
+            {
+                userReadBooks.Add(_mapper.Map<BookViewModel>(await _bookRepository.FirstOrDefaultByIdAsync(book, cancellationToken)));
+            }
+
+            _memoryCache.Set($"lastReadBooks-{user.Id}", userReadBooks, new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+            });
+
+            _memoryCache.Set($"readBooksCount-{user.Id}", readBooksCount, new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+            });
         }
 
         return new UserProfileViewModel
@@ -62,8 +80,9 @@ internal sealed class GetUserProfileHandler : IRequestHandler<GetUserProfileQuer
             UserName = user.Name,
             UserImageUrl = user.AvatarImageUrl,
             UserLocation = user.Address != null ? user.Address.City : null,
-            UserLastReadBooks = resultBooks,
-            AboutMe = user.AboutMe
+            UserLastReadBooks = userReadBooks,
+            AboutMe = user.AboutMe,
+            ReadBooksCount = readBooksCount
         };
     }
 }
