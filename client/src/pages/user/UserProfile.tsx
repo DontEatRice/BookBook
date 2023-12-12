@@ -16,7 +16,7 @@ function UserProfile() {
   });
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
-  const handleTabChange = (e: SyntheticEvent, tabIndex: number) => {
+  const handleTabChange = (_e: SyntheticEvent, tabIndex: number) => {
     setCurrentTabIndex(tabIndex);
   };
   return (
