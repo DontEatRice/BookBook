@@ -33,7 +33,12 @@ function LibrariesTable({ data }: { data: LibraryViewModelType[] }) {
           {data.map((library) => (
             <TableRow
               key={library.id}
-              sx={{ cursor: 'pointer' }}
+              sx={{
+                cursor: 'pointer',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                },
+              }}
               onClick={() => navigate(`/admin/libraries/${library.id}`)}>
               <TableCell>{library.name}</TableCell>
               <TableCell>{library.address.city}</TableCell>

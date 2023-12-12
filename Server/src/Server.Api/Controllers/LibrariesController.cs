@@ -44,13 +44,6 @@ public class LibrariesController : ControllerBase
         return Created($"/libraries/{id}", null);
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> Delete(Guid id)
-    {
-        await Mediator.Send(new RemoveLibraryCommand(id));
-        return NoContent();
-    }
-
     [HttpPost("{id:guid}/books")]
     public async Task<ActionResult> AddBook(Guid id, AddBookToLibraryCommand newBookInLibrary)
     {

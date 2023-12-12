@@ -18,13 +18,6 @@ internal sealed class LibraryRepository : ILibraryRepository
         _dbContext.Add(library);
     }
 
-    public Task<int> Delete(Guid id, CancellationToken cancellationToken = default)
-    {
-        return _dbContext.Libraries
-            .Where(library => library.Id == id)
-            .ExecuteDeleteAsync(cancellationToken);
-    }
-
     public Task<Library?> FirstOrDefaultByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return _dbContext.Libraries.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);

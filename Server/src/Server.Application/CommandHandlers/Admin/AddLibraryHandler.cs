@@ -78,7 +78,7 @@ public sealed class AddLibraryHandler : IRequestHandler<AddLibraryCommand>
             .AddParameter("format", "json")
             .AddParameter("apiKey", _configuration.GetSection("ApiKeys").GetValue<string>("GeoapifyApiKey"));
 
-        var apiResponse = await restClient.GetAsync<GeoapifyResponse>(apiRequest);
+        var apiResponse = await restClient.GetAsync<GeoapifyResponse>(apiRequest, cancellationToken);
         
         var geoLocalization = apiResponse.Results.First();
 
