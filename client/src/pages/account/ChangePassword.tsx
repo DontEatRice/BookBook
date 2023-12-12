@@ -88,7 +88,7 @@ function ChangePassword() {
           <Button
             fullWidth={true}
             variant="contained"
-            color="secondary"
+            sx={{ backgroundColor: theme.palette.primary.main, color: theme.palette.secondary.dark }}
             type="submit"
             disabled={changePasswordMutation.isLoading}>
             Zmień hasło

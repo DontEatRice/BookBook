@@ -4,7 +4,7 @@ import Header from './shared/Header';
 import Container from '@mui/material/Container';
 import Footer from './shared/Footer';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { orange } from '@mui/material/colors';
+import { blue, orange, red } from '@mui/material/colors';
 import { grey } from '@mui/material/colors';
 import CssBaseline from '@mui/material/CssBaseline';
 import AdminBooks from './pages/admin/AdminBooks';
@@ -72,7 +72,38 @@ const mainTheme = createTheme({
   },
 });
 
-const adminTheme = createTheme({});
+const adminTheme = createTheme({
+  palette: {
+    background: {
+      default: grey[50],
+    },
+    primary: {
+      light: blue[200],
+      main: blue[600],
+    },
+    secondary: {
+      main: blue[200],
+      dark: blue[900],
+    },
+    warning: {
+      main: red[600],
+    },
+  },
+  typography: {
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+  },
+});
 
 function App() {
   return (
@@ -107,6 +138,7 @@ function App() {
       </Route>
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminHome />} />
+        <Route path="change-password" element={<ChangePassword />} />
         <Route path="authors">
           <Route index element={<AdminAuthors />} />
           <Route path="add" element={<AdminAuthorForm />} />
