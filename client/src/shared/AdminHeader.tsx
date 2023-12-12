@@ -1,9 +1,18 @@
+import { Box, Grid, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import AuthorizedView from '../components/auth/AuthorizedView';
+import { useAuth } from '../utils/auth/useAuth';
+import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
+import NotAuthorizedView from '../components/auth/NotAuthorizedView';
+import AdminProfileHeaderIcon from '../components/profile/AdminProfileHeaderIcon';
 
 function AdminHeader() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const theme = useTheme();
   return (
     <header
@@ -17,21 +26,67 @@ function AdminHeader() {
         padding: theme.spacing(2),
         zIndex: 10,
       }}>
-      <Link to="/admin" style={{ textDecoration: 'none' }}>
-        <Typography
-          sx={{ display: 'inline', backgroundColor: theme.palette.primary.light, p: 1 }}
-          variant="h5">
-          BookBook Admin
-        </Typography>
-      </Link>
-      <NavItem label="Autorzy" link="/admin/authors" />
-      <NavItem label="Książki" link="/admin/books" />
-      <NavItem label="Kategorie" link="/admin/categories" />
-      <NavItem label="Wydawcy" link="/admin/publishers" />
-      <NavItem label="Biblioteki" link="/admin/libraries" />
-      <NavItem label="Oferta" link="/admin/booksInLibrary" />
-      <NavItem label="Rezerwacje" link="/admin/reservations" />
-      <NavItem label="Dodaj pracownika" link="/admin/add-employee" />
+      <Grid container justifyContent={'space-between'}>
+        <Grid item xs={10}>
+          <Link to="/admin" style={{ textDecoration: 'none' }}>
+            <Typography
+              sx={{ display: 'inline', backgroundColor: theme.palette.primary.main, p: 1, borderRadius: 2 }}
+              variant="h5">
+              BookBook Admin
+            </Typography>
+          </Link>
+          <AuthorizedView>
+            <NavItem label="Autorzy" link="/admin/authors" />
+            <NavItem label="Książki" link="/admin/books" />
+            <NavItem label="Kategorie" link="/admin/categories" />
+            <NavItem label="Wydawcy" link="/admin/publishers" />
+            <NavItem label="Biblioteki" link="/admin/libraries" />
+            <NavItem label="Oferta" link="/admin/booksInLibrary" />
+            <NavItem label="Rezerwacje" link="/admin/reservations" />
+            <NavItem label="Dodaj pracownika" link="/admin/add-employee" />
+          </AuthorizedView>
+        </Grid>
+        <AuthorizedView>
+          <Grid
+            item
+            sm={1}
+            //xs={2}
+            paddingY={2}
+            display={'flex'}
+            justifyContent={'center'}
+            alignItems={'center'}>
+            <AdminProfileHeaderIcon />
+          </Grid>
+          <Grid
+            item
+            sm={1}
+            //xs={2}
+            onClick={() => {
+              logout();
+              navigate('/admin');
+            }}
+            paddingY={2}
+            display={'flex'}
+            justifyContent={'center'}
+            alignItems={'center'}>
+            <Tooltip title="Wyloguj się">
+              <Box
+                sx={{
+                  cursor: 'pointer',
+                }}>
+                <LogoutIcon sx={{ fontSize: '2rem' }} />
+              </Box>
+            </Tooltip>
+          </Grid>
+        </AuthorizedView>
+        <NotAuthorizedView>
+          <Link to={'login'} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Tooltip title="Logowanie">
+              <LoginIcon sx={{ fontSize: '2rem' }} />
+            </Tooltip>
+          </Link>
+        </NotAuthorizedView>
+      </Grid>
     </header>
   );
 }

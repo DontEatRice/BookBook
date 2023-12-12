@@ -40,14 +40,6 @@ function AdminCategoryForm() {
             textAlign: 'center',
           }}>
           <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
-            {/* <TextField
-              id="outlined-error-helper-text"
-              label="Nazwa kategorii"
-              {...register('name')}
-              error={errors.name != undefined}
-              helperText={errors.name?.message}
-              sx={{ width: '100%', mb: 2 }}
-            /> */}
             <TextInputField errors={errors} field="name" register={register} label="Nazwa kategorii" />
             <Button type="submit" variant="contained">
               Zapisz
