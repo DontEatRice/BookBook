@@ -3,23 +3,23 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { CartViewModelType } from '../../models/CartViewModel';
 import { useCartStore } from '../../store';
 import { getCart, removeFromCart } from '../../api/cart';
 import { makeReservation } from '../../api/reservation';
 import { useState } from 'react';
-import { getBook } from '../../api/book';
 import { useTheme } from '@mui/material/styles';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import useAlert from '../../utils/alerts/useAlert';
 import { translateErrorCode } from '../../utils/functions/utilFunctions';
+import { ApiResponseError } from '../../utils/utils';
 
 export default function Cart() {
   const cartStore = useCartStore();
   const theme = useTheme();
   const [error, setError] = useState<string>('');
-  const { showSuccess } = useAlert();
+  const { showSuccess, handleError } = useAlert();
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const [libraryId, setLibraryId] = useState('');
@@ -36,7 +36,7 @@ export default function Cart() {
 
   const handleConfirm = () => {
     setOpen(false);
-    handleMakeReservation();
+    makeReservationMutation({ libraryId });
   };
 
   const { data, status, refetch } = useQuery({ queryKey: ['cart'], queryFn: getCart });
@@ -48,9 +48,26 @@ export default function Cart() {
     cartStore.toggleIsChanged();
   };
 
-  const handleMakeReservation = async () => {
-    try {
-      await makeReservation({ libraryId });
+  // const handleMakeReservation = async () => {
+  //   try {
+  //     await makeReservation({ libraryId });
+  //     cartStore.toggleCart();
+  //     showSuccess({ message: 'Rezerwacja została złożona' });
+  //     setLoading(true);
+  //     await refetch();
+  //     cartStore.toggleIsChanged();
+  //     setError('');
+  //     setLoading(false);
+  //   } catch (error) {
+  //     const err = error as Error;
+  //     const errorCode = err.message.split(':')[0];
+  //     setError(translateErrorCode(errorCode));
+  //     setLoading(false);
+  //   }
+  // };
+  const { mutate: makeReservationMutation } = useMutation({
+    mutationFn: makeReservation,
+    onSuccess: async () => {
       cartStore.toggleCart();
       showSuccess({ message: 'Rezerwacja została złożona' });
       setLoading(true);
@@ -58,13 +75,16 @@ export default function Cart() {
       cartStore.toggleIsChanged();
       setError('');
       setLoading(false);
-    } catch (error) {
-      const err = error as Error;
-      const errorCode = err.message.split(':')[0];
-      setError(translateErrorCode(errorCode));
+    },
+    onError: (e) => {
+      if (e instanceof ApiResponseError) {
+        setError(translateErrorCode(e.error.code));
+      } else {
+        handleError(e);
+      }
       setLoading(false);
-    }
-  };
+    },
+  });
 
   return (
     <div>
@@ -186,4 +206,3 @@ export default function Cart() {
     );
   }
 }
-
