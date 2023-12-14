@@ -8,7 +8,7 @@ import { paginatedResponse } from '../utils/zodSchemas';
 import { getAuthToken } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
-const reviewInUserProfilePaginated = paginatedResponse(ReviewInUserProfileViewModel);
+export const ReviewInUserProfilePaginated = paginatedResponse(ReviewInUserProfileViewModel);
 
 export const toggleBookInUserList = async (toggleBook: ToggleBookInUserListType) => {
   const auth = await getAuthToken();
@@ -67,5 +67,5 @@ export async function getUserReviews(
     handleBadResponse(response);
   }
   const data = await response.json();
-  return reviewInUserProfilePaginated.parse(data);
+  return ReviewInUserProfilePaginated.parse(data);
 }

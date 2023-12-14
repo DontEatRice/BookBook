@@ -1,13 +1,28 @@
 import { useQuery } from '@tanstack/react-query';
-import { getUserProfile, getUserReviews } from '../../api/user';
+import { getUserProfile, getUserReviews, ReviewInUserProfilePaginated } from '../../api/user';
 import { Link, useParams } from 'react-router-dom';
-import { Avatar, Box, Grid, Typography, Paper, Tabs, Tab, Button, styled } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Grid,
+  Typography,
+  Paper,
+  Tabs,
+  Tab,
+  styled,
+  Rating,
+  SxProps,
+  Theme,
+  Pagination,
+} from '@mui/material';
 import { imgUrl } from '../../utils/utils';
 import LoadingTypography from '../../components/common/LoadingTypography';
 import PlaceIcon from '@mui/icons-material/Place';
-import { SyntheticEvent, useState } from 'react';
+import { ChangeEvent, SyntheticEvent, useState } from 'react';
 import AuthorBookCard from '../../components/author/AuthorBookCard';
 import Loading from '../../components/common/Loading';
+import { PaginationRequest } from '../../utils/constants';
+import { z } from 'zod';
 
 function UserProfile() {
   const params = useParams();
@@ -16,21 +31,17 @@ function UserProfile() {
     queryFn: () => getUserProfile(params.userId!),
   });
 
-  const Img = styled('img')({
-    margin: 'auto',
-    display: 'block',
-    height: 200,
-    width: 160,
-  });
+  const [paginationProps, setPaginationProps] = useState<PaginationRequest>({ pageNumber: 0, pageSize: 5 });
+  const { pageNumber } = paginationProps;
 
   const { data: userReviews, status: userReviewsStatus } = useQuery({
-    queryKey: ['userReviews', params.userId],
+    queryKey: ['userReviews', params.userId, pageNumber],
     queryFn: () =>
       getUserReviews({
+        ...paginationProps,
         userId: params.userId!,
-        pageSize: 10,
-        pageNumber: 0,
       }),
+    keepPreviousData: true,
   });
 
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
@@ -38,6 +49,7 @@ function UserProfile() {
   const handleTabChange = (_e: SyntheticEvent, tabIndex: number) => {
     setCurrentTabIndex(tabIndex);
   };
+
   return (
     <Box>
       {status == 'loading' && <LoadingTypography></LoadingTypography>}
@@ -46,7 +58,6 @@ function UserProfile() {
           <Paper
             sx={{
               p: 2,
-              // marginTop: 2,
               flexGrow: 1,
               backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#1A2027' : '#fff'),
             }}>
@@ -121,37 +132,86 @@ function UserProfile() {
             )}
 
             {currentTabIndex === 2 && userReviewsStatus == 'success' && (
-              <Box sx={{ p: 3 }}>
-                <Typography variant="h5" textAlign={'center'} marginBottom={4}>
-                  Opinie użytkownika
-                </Typography>
-                {userReviews?.data.map((review) => (
-                  <Paper>
-                    <Grid container direction={'row'} spacing={2}>
-                      <Grid item>
-                        <Link to={`/books/${review.bookId}`}>
-                          <Img
-                            alt="complex"
-                            loading="lazy"
-                            src={imgUrl(review.bookCoverUrl, '/podstawowa-ksiazka-otwarta.jpg')}
-                          />
-                          <Typography textAlign={'center'}>{review.bookTitle}</Typography>
-                        </Link>
-                      </Grid>
-                      <Grid item direction={'column'}>
-                        <Typography>Tytuł: {review.title ?? 'brak'}</Typography>
-                        <Typography>Opis: {review.description ?? 'brak'}</Typography>
-                        <Typography>Ocena: {review.rating}</Typography>
-                      </Grid>
-                    </Grid>
-                  </Paper>
-                ))}
-              </Box>
+              <UserProfileReviews
+                data={userReviews}
+                onPaginationPropsChange={setPaginationProps}
+                paginationProps={paginationProps}
+              />
             )}
             {currentTabIndex === 2 && userReviewsStatus == 'loading' && <Loading></Loading>}
           </Paper>
         </>
       )}
+    </Box>
+  );
+}
+
+type PaginatedReviewsResponse = z.infer<typeof ReviewInUserProfilePaginated>;
+interface UserProfileReviewsProps {
+  data: PaginatedReviewsResponse;
+  paginationProps: PaginationRequest;
+  onPaginationPropsChange: (args: PaginationRequest) => void;
+  sx?: SxProps<Theme>;
+}
+function UserProfileReviews({ data, paginationProps, onPaginationPropsChange, sx }: UserProfileReviewsProps) {
+  const { pageNumber } = paginationProps;
+  const handleChangePage = (_: ChangeEvent<unknown>, newPage: number) => {
+    onPaginationPropsChange({ ...paginationProps, pageNumber: newPage - 1 });
+  };
+  const Img = styled('img')({
+    margin: 'auto',
+    display: 'block',
+    height: 160,
+    width: 128,
+  });
+  return (
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h5" textAlign={'center'} marginBottom={6}>
+        Opinie użytkownika
+      </Typography>
+      <Grid container spacing={5} marginBottom={3}>
+        {data.data.map((review) => (
+          <Grid item xs={12} key={review.bookId}>
+            <Box sx={{ width: '100%', boxShadow: 1 }}>
+              <Grid container direction={'row'} spacing={3}>
+                <Grid item xs={3}>
+                  <Link to={`/books/${review.bookId}`}>
+                    <Img
+                      alt="complex"
+                      loading="lazy"
+                      src={imgUrl(review.bookCoverUrl, '/podstawowa-ksiazka-otwarta.jpg')}
+                    />
+                    <Typography textAlign={'center'} variant="h6">
+                      {review.bookTitle}
+                    </Typography>
+                  </Link>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography variant="h5" gutterBottom>
+                    {review.title ?? 'Brak tytułu'}
+                  </Typography>
+                  <Typography variant="subtitle1">{review.description ?? 'Brak'}</Typography>
+                </Grid>
+                <Grid item xs={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                  <Typography variant="h4">
+                    {review.rating}
+                    <Rating max={1} value={review.rating / 5} precision={0.1} size="large" readOnly></Rating>
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
+      <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
+        <Pagination
+          onChange={handleChangePage}
+          page={pageNumber + 1}
+          count={Math.ceil(data.count / 5)}
+          sx={{ justifySelf: 'center' }}
+          size="large"
+        />
+      </Box>
     </Box>
   );
 }

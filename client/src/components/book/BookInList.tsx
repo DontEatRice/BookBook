@@ -56,7 +56,7 @@ function BookInList({ book }: { book: BookViewModelType }) {
             </Grid>
             {book.averageRating && (
               <Grid item>
-                <Rating name="half-rating-read" value={book.averageRating} precision={0.25} readOnly />
+                <Rating value={book.averageRating} precision={0.25} readOnly />
               </Grid>
             )}
           </Grid>

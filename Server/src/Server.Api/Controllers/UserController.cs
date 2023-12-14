@@ -57,9 +57,12 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("{id:guid}/reviews")]
-    public async Task<ActionResult<PaginatedResponseViewModel<ReviewInUserProfile>>> GetUserReviews(Guid id)
+    public async Task<ActionResult<PaginatedResponseViewModel<ReviewInUserProfile>>> GetUserReviews(Guid id, GetUserReviewsQuery query)
     {
-        return Ok(await Mediator.Send(new GetUserReviewsQuery(id)));
+        return Ok(await Mediator.Send(query with
+        {
+            Id = id
+        }));
     }
 
 }
