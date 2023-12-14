@@ -1,20 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getUserProfile, getUserReviews, ReviewInUserProfilePaginated } from '../../api/user';
 import { Link, useParams } from 'react-router-dom';
-import {
-  Avatar,
-  Box,
-  Grid,
-  Typography,
-  Paper,
-  Tabs,
-  Tab,
-  styled,
-  Rating,
-  SxProps,
-  Theme,
-  Pagination,
-} from '@mui/material';
+import { Avatar, Box, Grid, Typography, Paper, Tabs, Tab, styled, Rating, Pagination } from '@mui/material';
 import { imgUrl } from '../../utils/utils';
 import LoadingTypography from '../../components/common/LoadingTypography';
 import PlaceIcon from '@mui/icons-material/Place';
@@ -151,9 +138,8 @@ interface UserProfileReviewsProps {
   data: PaginatedReviewsResponse;
   paginationProps: PaginationRequest;
   onPaginationPropsChange: (args: PaginationRequest) => void;
-  sx?: SxProps<Theme>;
 }
-function UserProfileReviews({ data, paginationProps, onPaginationPropsChange, sx }: UserProfileReviewsProps) {
+function UserProfileReviews({ data, paginationProps, onPaginationPropsChange }: UserProfileReviewsProps) {
   const { pageNumber } = paginationProps;
   const handleChangePage = (_: ChangeEvent<unknown>, newPage: number) => {
     onPaginationPropsChange({ ...paginationProps, pageNumber: newPage - 1 });
