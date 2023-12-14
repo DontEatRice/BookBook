@@ -5,10 +5,7 @@ using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
 using Server.Domain.Entities;
 using Server.Infrastructure.Persistence.QueryHandlers.User;
-using Server.Utils;
-using System.Security.Claims;
 using AutoMapper;
-using Server.Application.ViewModels;
 
 namespace Server.Api.Controllers;
 

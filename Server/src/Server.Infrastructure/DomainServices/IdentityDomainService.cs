@@ -103,6 +103,25 @@ public class IdentityDomainService : IIdentityDomainService
         return new AuthTokens(accessToken, refreshToken);
     }
 
+    public async Task LogoutAsync(string refreshToken, CancellationToken cancellationToken = default)
+    {
+        var (identityId, _) = _securityTokenService.GetIdentityIdAndExpirationTimeFromToken(refreshToken);
+        
+        if (!identityId.HasValue)
+        {
+            throw new DomainException("Invalid refresh token", DomainErrorCodes.InvalidRefreshToken);
+        }
+        
+        var identity = await _identityRepository.FirstOrDefaultByIdAsync(identityId.Value, cancellationToken);
+        
+        if (identity == default)
+        {
+            throw new DomainException("Invalid refresh token", DomainErrorCodes.InvalidRefreshToken);
+        }
+        
+        identity.RemoveRefreshToken(refreshToken);
+    }
+
     public async Task ChangePasswordAsync(Guid id, string oldPassword, string newPassword, CancellationToken cancellationToken = default)
     {
         if (oldPassword == newPassword)

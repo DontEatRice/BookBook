@@ -49,7 +49,7 @@ export async function getAuthTokenOrNull() {
 
 export async function getAuthToken() {
   const token = localStorage.getItem(LocalStorageTokenKey);
-  if (token === null) {
+  if (!token) {
     throw new AuthError('UNATHORIZED');
   }
   if (getJwtBody(token).exp < Date.now() / 1000) {
