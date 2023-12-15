@@ -6,7 +6,7 @@ import AuthorizedView from '../auth/AuthorizedView';
 import { Link } from 'react-router-dom';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { getLibrariesWithBook } from '../../api/book';
 import LoadingTypography from '../common/LoadingTypography';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
@@ -17,7 +17,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 function LibrariesStack({ bookId }: { bookId: string }) {
   const { user } = useAuth();
-  const { showError, showSuccess } = useAlert();
+  const { showSuccess } = useAlert();
   const cartStore = useCartStore();
 
   const { data: libraries, status: librariesStatus } = useQuery(
@@ -74,29 +74,13 @@ function LibrariesStack({ bookId }: { bookId: string }) {
     return result;
   }
 
-  const handleAddToCart = async (bookId: string, libraryId: string) => {
-    try {
-      await addToCart({ bookId, libraryId });
+  const { mutate: addToCartMutation } = useMutation({
+    mutationFn: addToCart,
+    onSuccess: () => {
       showSuccess({ message: 'Dodano do koszyka!' });
       cartStore.toggleIsChanged();
-    } catch (error) {
-      const err = error as Error;
-      switch (err.message) {
-        case 'BOOK_ALREADY_IN_CART':
-          showError({ message: 'Książka została już dodana do koszyka' });
-          break;
-        case 'BOOK_NOT_FOUND':
-          showError({ message: 'Książka nie została znaleziona' });
-          break;
-        case 'LIBRARY_NOT_FOUND':
-          showError({ message: 'Biblioteka nie została znaleziona' });
-          break;
-        default:
-          showError({ message: `Wystąpił nieznany błąd: ${err.message}` });
-          break;
-      }
-    }
-  };
+    },
+  });
 
   function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon2: number) {
     const R = 6371; // Radius of the earth in km
@@ -149,7 +133,9 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                   </div>
                   <AuthorizedView roles={['User']}>
                     <Stack direction={'column'}>
-                      <Button onClick={() => handleAddToCart(bookId, library.library.id)}>Do koszyka</Button>
+                      <Button onClick={() => addToCartMutation({ bookId, libraryId: library.library.id })}>
+                        Do koszyka
+                      </Button>
                       {user?.lat != undefined && (
                         <Typography>
                           <RoomIcon></RoomIcon>
@@ -185,7 +171,9 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                     <br /> {library.address.city}
                     <br />
                     <AuthorizedView roles={['User']}>
-                      <Button onClick={() => handleAddToCart(bookId, library.id)}>Do koszyka</Button>
+                      <Button onClick={() => addToCartMutation({ bookId, libraryId: library.id })}>
+                        Do koszyka
+                      </Button>
                     </AuthorizedView>
                   </Popup>
                 </Marker>
