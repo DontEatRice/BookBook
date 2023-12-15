@@ -11,9 +11,6 @@ const AddReview = z.object({
     idBook: z.custom<BookViewModelType>()
         .refine((book) => book != null, "Pole wymagane")
         .transform(book => book.id),
-    idUser: z.custom<UserDetailViewModelType>()
-    .refine((user) => user != null, "Pole wymagane")
-    .transform(user => user.id),
 });
 
 export default AddReview;

@@ -16,7 +16,7 @@ function Reviews({ book, reviews }: { book: BookViewModelType; reviews: ReviewVi
     <Stack
       sx={{ alignItems: 'center', backgroundColor: theme.palette.background.default, width: 'max' }}>
       <AuthorizedView roles={['User']}>
-        {reviews.filter((review => review.userId === user?.id)).length === 0 && 
+        {reviews.filter((review => review.user.id === user?.id)).length === 0 && 
             <AddReviewForm book={book}></AddReviewForm>
         }
       </AuthorizedView>

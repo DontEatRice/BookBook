@@ -55,7 +55,7 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
         </Grid>
         <Grid item xs={7}>
           <Typography variant="h4" marginBottom={2}>
-            {review.title + 'Tytul'}
+            {review.title}
           </Typography>
         </Grid>
         <Grid item xs={4}>
@@ -70,7 +70,7 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
         </Grid>
         <Grid item xs={12}>
           <Typography>
-            {review.description + 'Opis'}
+            {review.description}
           </Typography>
         </Grid>
         {deleteError && (
@@ -90,7 +90,7 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
                 </Paper>
               )}
         <AuthorizedView roles={['User']}>
-          {review.userId === user?.id && 
+          {review.user.id === user?.id && 
             <Grid item marginTop={1}>
               <Button sx={{ width: 50, height: 40 }} onClick={() => mutation.mutate(review.id)}>
                 Usuń

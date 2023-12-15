@@ -32,6 +32,7 @@ internal sealed class GetReviewsHandler
 
         var (reviews, totalCount) = await query
             .Where(x => x.Book.Id == request.BookId)
+            .Include(x => x.User)
             .ProjectTo<ReviewViewModel>(_mapper.ConfigurationProvider)
             .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);
 

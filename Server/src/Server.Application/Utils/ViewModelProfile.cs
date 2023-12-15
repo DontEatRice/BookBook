@@ -21,6 +21,7 @@ public class ViewModelProfile : Profile
         CreateMap<Review, ReviewViewModel>();
         CreateMap<LibraryBook, BookInLibraryViewModel>();
         CreateMap<Identity, UserDetailViewModel>();
+        CreateMap<Identity, ReviewUserViewModel>();
         CreateMap<Book, BookInRankingViewModel>()
             .ForMember(x => x.ReviewsCount,
                 opt => 

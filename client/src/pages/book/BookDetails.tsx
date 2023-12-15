@@ -143,7 +143,7 @@ function BookDetails() {
               </AuthorizedView>
             </Grid>
             <Grid item xs={12} marginBottom={2} padding={1}>
-              <Typography variant="h4">{book.averageRating + " "}
+              <Typography variant="h4">{book.averageRating == null ? 0 : book.averageRating}
               <Rating
                 name="half-rating-read"
                 value={book.averageRating == null ? 0 : book.averageRating}

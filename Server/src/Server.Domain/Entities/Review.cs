@@ -14,11 +14,11 @@ public class Review
     public string? Description { get; set; }
     public double Rating { get; set; }
     public Book Book { get; set; }
-    public Guid UserId { get; set; }
+    public Identity User { get; set; }
     public bool IsCriticRating { get; set; }
 
     public static Review Create(Guid id, string? title, string? description, double rating,
-        Book book, Guid userId, bool isCriticRating)
+        Book book, Identity user, bool isCriticRating)
         => new()
         {
             Id = id,
@@ -26,7 +26,7 @@ public class Review
             Description = description,
             Rating = rating,
             Book = book,
-            UserId = userId,
+            User = user,
             IsCriticRating = isCriticRating
         };
 }

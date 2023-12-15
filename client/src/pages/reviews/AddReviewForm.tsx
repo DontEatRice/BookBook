@@ -46,7 +46,6 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
   const onSubmit: SubmitHandler<AddReviewType> = (data) => {
     data.rating = value == null ? 0 : value;
     data.idBook = book.id;
-    data.idUser = user?.id + "";
     mutation.mutate(data);
   };
 
@@ -86,7 +85,6 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
           />
           <input type="hidden" {...register('idBook')} value={book.id} />
           <input type="hidden" {...register('rating')} value={value + ''} />
-          <input type="hidden" {...register('idUser')} value={user?.id + ''} />
           <Button type="submit" variant="contained">
             Dodaj
           </Button>

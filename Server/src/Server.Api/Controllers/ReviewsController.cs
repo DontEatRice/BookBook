@@ -22,16 +22,13 @@ public class ReviewsController : ControllerBase
     [Authorize]
     public async Task<ActionResult> Post(AddReviewCommand command)
     {
-        var userId = User.FindFirstValue(AuthConstants.IdClaim) ??
-                     throw new AuthenticationException(
-                         "User is not authenticated",
-                         ApplicationErrorCodes.NotAuthenticated);
+        var userId = GetUserIdOrThrow();
         
         var id = Guid.NewGuid();
         await Mediator.Send(command with
         {
             Id = id,
-            UserId = Guid.Parse(userId)
+            UserId = userId
         });
 
         return Created($"/reviews/{id}", null);
