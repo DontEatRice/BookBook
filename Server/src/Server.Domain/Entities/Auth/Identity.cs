@@ -38,7 +38,7 @@ public class Identity
             Address = address,
             Latitude = latitude,
             Longitude = longitude,
-            AboutMe = null
+            AboutMe = ""
         };
 
         return identity;
