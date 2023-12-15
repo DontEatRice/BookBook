@@ -79,7 +79,11 @@ function UserProfile() {
             {currentTabIndex === 0 && (
               <Box sx={{ p: 3 }}>
                 <>
-                  {data.aboutMe != null && data.aboutMe != '' && (
+                  {!data.aboutMe || data.aboutMe === '' ? (
+                    <Typography variant="h5" textAlign={'center'}>
+                      {data.userName} nie dodał swojego opisu
+                    </Typography>
+                  ) : (
                     <div>
                       <Typography variant="h5" gutterBottom>
                         Kilka słów o mnie
@@ -87,12 +91,6 @@ function UserProfile() {
                       <Typography>{data.aboutMe}</Typography>
                     </div>
                   )}
-                  {data.aboutMe == null ||
-                    (data.aboutMe === '' && (
-                      <Typography variant="h5" textAlign={'center'}>
-                        {data.userName} nie dodał swojego opisu
-                      </Typography>
-                    ))}
                 </>
               </Box>
             )}
