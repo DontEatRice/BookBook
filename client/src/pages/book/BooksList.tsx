@@ -4,7 +4,7 @@ import { BookViewModelType } from '../../models/BookViewModel';
 import { useTheme } from '@mui/material/styles';
 import { searchBooks } from '../../api/book';
 import BookInList from '../../components/book/BookInList';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import Grid from '@mui/material/Grid';
 import { Autocomplete, Button, InputAdornment, TextField } from '@mui/material';
 import { useState } from 'react';
