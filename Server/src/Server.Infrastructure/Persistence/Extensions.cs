@@ -39,7 +39,7 @@ internal static class Extensions
             options.UseSqlServer(sqlServerSettings.ConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
             {
-                options.LogTo(Console.WriteLine, LogLevel.Information);
+                // options.LogTo(Console.WriteLine, LogLevel.Information);
             }
         });
         services.AddScoped<IBookRepository, BookRepository>();

@@ -1,7 +1,7 @@
 import { AddBookType } from '../models/AddBook';
 import BookViewModel from '../models/BookViewModel';
 import BookInRankingViewModel from '../models/BookInRankingViewModel';
-import LibraryViewModel from '../models/LibraryViewModel';
+import LibraryWithBookViewModel from '../models/LibraryWithBookViewModel';
 import { UpdateBookType } from '../models/UpdateBook';
 import { PaginationRequest } from '../utils/constants';
 import { handleBadResponse, paginatedFetch } from '../utils/utils';
@@ -83,7 +83,7 @@ export async function getLibrariesWithBook(bookId: string) {
     await handleBadResponse(response);
   }
 
-  return LibraryViewModel.array().parse(data) ?? [];
+  return LibraryWithBookViewModel.array().parse(data) ?? [];
 }
 
 export async function searchBooks(
@@ -92,6 +92,7 @@ export async function searchBooks(
     authorId?: string;
     categoryId?: string;
     yearPublished?: number;
+    libraryId?: string;
   }
 ) {
   const response = await paginatedFetch(base + '/Books/search', args);
