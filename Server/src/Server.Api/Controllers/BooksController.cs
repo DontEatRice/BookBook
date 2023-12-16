@@ -5,6 +5,7 @@ using Server.Application.ViewModels;
 using Server.Infrastructure.Persistence.QueryHandlers;
 using Server.Utils;
 using System.Security.Claims;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Server.Api.Controllers;
 
@@ -12,14 +13,32 @@ namespace Server.Api.Controllers;
 [Route("[controller]")]
 public class BooksController : ControllerBase
 {
-    public BooksController(IMediator mediator) : base(mediator)
+    private readonly IMemoryCache _memoryCache;
+    private const string MostReservedBooksCacheKey = "MostReservedBooks";
+    private const int MaxAge = 6 * 60 * 60; // 6 hours, 60 minutes, 60 seconds
+
+    public BooksController(IMediator mediator, IMemoryCache memoryCache) : base(mediator)
     {
+        _memoryCache = memoryCache;
     }
     
     [HttpPost("search")]
     public async Task<ActionResult<IEnumerable<BookViewModel>>> List(GetBooksQuery request) 
         => Ok(await Mediator.Send(request));
-    
+
+    [HttpGet("most-reserved")]
+    public async Task<ActionResult<IEnumerable<BookViewModel>>> List()
+    {
+        if (!_memoryCache.TryGetValue(MostReservedBooksCacheKey, out IEnumerable<BookViewModel>? mostReservedBooks))
+        {
+            mostReservedBooks = await Mediator.Send(new GetBooksWithMostReservationsQuery());
+            var cacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(60));
+            _memoryCache.Set(MostReservedBooksCacheKey, mostReservedBooks, cacheOptions);
+        }
+
+        return Ok(mostReservedBooks);
+    }
+
     [HttpPost("ranking")]
     public async Task<ActionResult<IEnumerable<BookInRankingViewModel>>> List(GetBookRankingQuery request) 
         => Ok(await Mediator.Send(request));

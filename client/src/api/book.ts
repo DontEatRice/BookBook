@@ -7,6 +7,7 @@ import { PaginationRequest } from '../utils/constants';
 import { handleBadResponse, paginatedFetch } from '../utils/utils';
 import { paginatedResponse } from '../utils/zodSchemas';
 import { getAuthTokenOrNull } from './auth';
+import MostReservedBookViewModel from '../models/MostReseredBook';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 const BooksPaginated = paginatedResponse(BookViewModel);
@@ -62,6 +63,12 @@ export async function getBooks() {
   const response = await fetch(base + '/Books');
   const data = await response.json();
   return BookViewModel.array().parse(data);
+}
+
+export async function getMostReservedBooks() {
+  const response = await fetch(base + '/Books/most-reserved');
+  const data = await response.json();
+  return MostReservedBookViewModel.array().parse(data);
 }
 
 export async function getBook(id: string) {
