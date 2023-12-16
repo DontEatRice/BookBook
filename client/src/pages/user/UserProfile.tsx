@@ -88,7 +88,7 @@ function UserProfile() {
                       <Typography variant="h5" gutterBottom>
                         Kilka słów o mnie
                       </Typography>
-                      <Typography>{data.aboutMe}</Typography>
+                      <Typography variant="h6">{data.aboutMe}</Typography>
                     </div>
                   )}
                 </>
@@ -150,9 +150,15 @@ function UserProfileReviews({ data, paginationProps, onPaginationPropsChange }: 
   });
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h5" textAlign={'center'} marginBottom={6}>
-        Opinie użytkownika
-      </Typography>
+      {data.data.length > 0 ? (
+        <Typography variant="h5" textAlign={'center'} marginBottom={6}>
+          Opinie użytkownika
+        </Typography>
+      ) : (
+        <Typography variant="h5" textAlign={'center'}>
+          Użytkownik nie dodał żadnej opinii
+        </Typography>
+      )}
       <Grid container spacing={5} marginBottom={3}>
         {data.data.map((review) => (
           <Grid item xs={12} key={review.bookId}>
@@ -187,15 +193,17 @@ function UserProfileReviews({ data, paginationProps, onPaginationPropsChange }: 
           </Grid>
         ))}
       </Grid>
-      <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
-        <Pagination
-          onChange={handleChangePage}
-          page={pageNumber + 1}
-          count={Math.ceil(data.count / 5)}
-          sx={{ justifySelf: 'center' }}
-          size="large"
-        />
-      </Box>
+      {data.data.length > 0 && (
+        <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
+          <Pagination
+            onChange={handleChangePage}
+            page={pageNumber + 1}
+            count={Math.ceil(data.count / 5)}
+            sx={{ justifySelf: 'center' }}
+            size="large"
+          />
+        </Box>
+      )}
     </Box>
   );
 }
