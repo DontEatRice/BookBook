@@ -52,6 +52,9 @@ function BookInList({ book }: { book: BookViewModelType }) {
                 <Typography variant="body1" color="text.secondary">
                   {book.bookCategories.map((category) => category.name).join(', ')}
                 </Typography>
+                <Typography variant="body2" noWrap>
+                  {book.description}
+                </Typography>
               </Grid>
             </Grid>
             {book.averageRating && (

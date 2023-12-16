@@ -6,12 +6,13 @@ import { searchBooks } from '../../api/book';
 import BookInList from '../../components/book/BookInList';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Grid from '@mui/material/Grid';
-import { Autocomplete, Button, InputAdornment, TextField } from '@mui/material';
-import { useState } from 'react';
+import { Autocomplete, Button, InputAdornment, Pagination, TextField } from '@mui/material';
+import { ChangeEvent, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { getAuthors } from '../../api/author';
 import { getCategories } from '../../api/category';
 import LoadingTypography from '../../components/common/LoadingTypography';
+import { PaginationRequest } from '../../utils/constants';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 
@@ -74,19 +75,6 @@ function BooksList() {
 
   const [query, setQuery] = useState<string>('');
 
-  const { data: searchData, status: searchStatus } = useQuery({
-    queryKey: ['searchBooks', query, authorId, categoryId, yearFilter],
-    queryFn: () =>
-      searchBooks({
-        pageSize: 50,
-        pageNumber: 0,
-        query: query == null ? '' : query,
-        authorId: authorId,
-        categoryId: categoryId,
-        yearPublished: yearFilter,
-      }),
-  });
-
   const handleSearchType = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value } = e.target;
     setSearchInput(value);
@@ -102,6 +90,39 @@ function BooksList() {
       setQuery(searchInput);
     }
   };
+
+  const [paginationProps, setPaginationProps] = useState<PaginationRequest>({
+    pageNumber: 0,
+    pageSize: 10,
+  });
+  const handlePageChange = (_: ChangeEvent<unknown>, newPage: number) => {
+    console.log(newPage);
+    setPaginationProps({
+      ...paginationProps,
+      pageNumber: newPage - 1,
+    });
+  };
+
+  const { data: searchData, status: searchStatus } = useQuery({
+    queryKey: [
+      'searchBooks',
+      query,
+      authorId,
+      categoryId,
+      yearFilter,
+      paginationProps.pageNumber,
+      paginationProps.pageSize,
+    ],
+    queryFn: () =>
+      searchBooks({
+        pageSize: paginationProps.pageSize,
+        pageNumber: paginationProps.pageNumber,
+        query: query == null ? '' : query,
+        authorId: authorId,
+        categoryId: categoryId,
+        yearPublished: yearFilter,
+      }),
+  });
 
   return (
     <div>
@@ -199,7 +220,27 @@ function BooksList() {
             Błąd!
           </Typography>
         )}
-        {searchStatus == 'success' && <Books data={searchData.data} />}
+        {searchStatus == 'success' && (
+          <Box>
+            <Books data={searchData.data} />
+            {searchData.data.length > 0 ? (
+              <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>
+                <Pagination
+                  onChange={handlePageChange}
+                  page={paginationProps.pageNumber + 1}
+                  count={Math.ceil(searchData.count / paginationProps.pageSize)}
+                  sx={{ justifySelf: 'center' }}
+                  size="large"
+                  color="primary"
+                />
+              </Box>
+            ) : (
+              <Typography variant="h5" textAlign={'center'}>
+                Brak wyników
+              </Typography>
+            )}
+          </Box>
+        )}
       </Box>
     </div>
   );

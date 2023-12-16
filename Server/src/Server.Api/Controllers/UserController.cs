@@ -9,6 +9,7 @@ using Server.Utils;
 using System.Security.Claims;
 using AutoMapper;
 using Server.Application.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Server.Api.Controllers;
 
@@ -41,10 +42,10 @@ public class UserController : ControllerBase
 
         return NoContent();
     }
-    
 
-    [HttpGet("user-books")]
-    public async Task<ActionResult<IEnumerable<Book>>> GetUserObservedBooks()
+    [Authorize]
+    [HttpPost("user-books")]
+    public async Task<ActionResult<PaginatedResponseViewModel<BookViewModel>>> GetUserObservedBooks()
     {
         var userId = GetUserIdOrThrow();
         return Ok(await Mediator.Send(new GetUserObservedBooksQuery(userId)));

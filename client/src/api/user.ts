@@ -26,21 +26,17 @@ export const toggleBookInUserList = async (toggleBook: ToggleBookInUserListType)
   return response;
 };
 
-export async function getUserBooks() {
+const UserBooksPaginated = paginatedResponse(BookViewModel);
+export async function getUserBooks(body: PaginationRequest) {
   const auth = await getAuthToken();
-  const response = await fetch(base + '/User/user-books', {
-    headers: new Headers({
-      'Content-Type': 'application/json',
-      Authorization: auth,
-    }),
-  });
+  const response = await paginatedFetch(base + '/User/user-books', body, auth);
 
   if (!response.ok) {
     await handleBadResponse(response);
   }
 
   const data = await response.json();
-  return BookViewModel.array().parse(data);
+  return UserBooksPaginated.parse(data);
 }
 
 export async function getUserProfile(id: string) {
