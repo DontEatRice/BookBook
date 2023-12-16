@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { bookRanking } from '../../api/book';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import Grid from '@mui/material/Grid';
 import BookInRanking from '../../components/ranking/BookInRanking';
 import {
@@ -26,7 +26,6 @@ const paginationDefaultRequest = {
 
 export default function BookRanking() {
   const theme = useTheme();
-  const queryClient = useQueryClient();
   const [sortDirection, setSortDirection] = useState<Order>('desc');
   const [categoryId, setCategoryId] = useState<string>();
   const [paginationProps, setPaginationProps] = useState<PaginationRequest>({
@@ -76,16 +75,22 @@ export default function BookRanking() {
             pageNumber={paginationProps.pageNumber}
             pageSize={paginationProps.pageSize}
           />
-          <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>
-            <Pagination
-              onChange={handlePageChange}
-              page={paginationProps.pageNumber + 1}
-              count={Math.ceil(searchData.count / paginationProps.pageSize)}
-              sx={{ justifySelf: 'center' }}
-              size="large"
-              color="primary"
-            />
-          </Box>
+          {searchData.data.length > 0 ? (
+            <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>
+              <Pagination
+                onChange={handlePageChange}
+                page={paginationProps.pageNumber + 1}
+                count={Math.ceil(searchData.count / paginationProps.pageSize)}
+                sx={{ justifySelf: 'center' }}
+                size="large"
+                color="primary"
+              />
+            </Box>
+          ) : (
+            <Typography variant="h5" textAlign={'center'}>
+              Brak wyników
+            </Typography>
+          )}
         </Box>
       )}
     </Box>
@@ -105,21 +110,14 @@ export default function BookRanking() {
         <Box margin={3} display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
           <Typography variant="h3">Ranking książek</Typography>
           <Box display={'flex'} flexDirection={'row'}>
-            <Box marginBottom={1} marginRight={2} flexGrow={1} minWidth={120}>
+            <Box marginBottom={1} marginRight={2} flexGrow={1} minWidth={150}>
               <Autocomplete
                 fullWidth
                 options={categories?.data || []}
                 getOptionLabel={(category) => `${category.name}`}
                 value={categories?.data.find((category) => category.id === categoryId) || null}
                 onChange={(_, newValue) => {
-                  console.log(newValue);
                   setCategoryId(newValue?.id);
-                  queryClient.refetchQueries([
-                    'bookRanking',
-                    sortDirection,
-                    paginationProps.pageNumber,
-                    categoryId,
-                  ]);
                 }}
                 renderInput={(params) => <TextField {...params} label="Kategoria" placeholder="Kategoria" />}
                 slotProps={{
