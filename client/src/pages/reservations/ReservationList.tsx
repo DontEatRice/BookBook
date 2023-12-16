@@ -22,6 +22,7 @@ import {
   DialogTitle,
   FormControlLabel,
   TablePagination,
+  TableSortLabel,
 } from '@mui/material';
 import Reservation from './Reservation';
 import { PaginationRequest } from '../../utils/constants';
@@ -32,17 +33,33 @@ export default function ReservationList() {
   const theme = useTheme();
   const [onlyPending, setOnlyPending] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<ReservationViewModelType | null>(null);
-  const [paginationProps, setPaginationProps] = useState<PaginationRequest>({ pageNumber: 0, pageSize: 10 });
+  const [paginationProps, setPaginationProps] = useState<PaginationRequest>({
+    pageNumber: 0,
+    pageSize: 10,
+    orderDirection: 'desc',
+    orderByField: 'createdAt',
+  });
 
   const {
     data: reservations,
     status,
     refetch,
   } = useQuery({
-    queryKey: ['reservationsForUser', paginationProps.pageNumber, paginationProps.pageSize],
+    queryKey: [
+      'reservationsForUser',
+      paginationProps.pageNumber,
+      paginationProps.pageSize,
+      paginationProps.orderByField,
+      paginationProps.orderDirection,
+    ],
     keepPreviousData: true,
     queryFn: () =>
-      getReservationsForUser({ pageNumber: paginationProps.pageNumber, pageSize: paginationProps.pageSize }),
+      getReservationsForUser({
+        pageNumber: paginationProps.pageNumber,
+        pageSize: paginationProps.pageSize,
+        orderByField: paginationProps.orderByField,
+        orderDirection: paginationProps.orderDirection,
+      }),
   });
 
   useEffect(() => {
@@ -60,6 +77,15 @@ export default function ReservationList() {
   };
   const handleRowsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPaginationProps({ ...paginationProps, pageSize: parseInt(event.target.value, 10) });
+  };
+  const handleRequestSort = (property: keyof ReservationViewModelType) => {
+    console.log(property);
+    const isAsc = paginationProps.orderByField === property && paginationProps.orderDirection === 'asc';
+    setPaginationProps({
+      ...paginationProps,
+      orderByField: property,
+      orderDirection: isAsc ? 'desc' : 'asc',
+    });
   };
 
   return (
@@ -108,7 +134,20 @@ export default function ReservationList() {
                 <TableCell>ID</TableCell>
                 <TableCell>Nazwa Biblioteki</TableCell>
                 <TableCell>Status</TableCell>
-                <TableCell>Data Końca Rezerwacji</TableCell>
+                <TableCell
+                  sortDirection={
+                    paginationProps.orderByField === 'createdAd' ? paginationProps.orderDirection : 'desc'
+                  }>
+                  <TableSortLabel
+                    active={paginationProps.orderByField === 'createdAt'}
+                    direction={
+                      paginationProps.orderByField === 'createdAt' ? paginationProps.orderDirection : 'desc'
+                    }
+                    onClick={() => handleRequestSort('createdAt')}>
+                    Data rezerwacji
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell>Data końca rezerwacji</TableCell>
                 <TableCell>Akcje</TableCell>
               </TableRow>
             </TableHead>
@@ -122,6 +161,7 @@ export default function ReservationList() {
                     <TableCell>{reservation.id}</TableCell>
                     <TableCell>{reservation.library.name}</TableCell>
                     <TableCell>{translateStatus(reservation.status)}</TableCell>
+                    <TableCell>{new Date(reservation.createdAt).toLocaleDateString()}</TableCell>
                     <TableCell>{new Date(reservation.reservationEndDate).toLocaleDateString()}</TableCell>
                     {reservation.status == 'Pending' ? (
                       <TableCell>
