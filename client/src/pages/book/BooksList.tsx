@@ -11,8 +11,8 @@ import { ChangeEvent, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { getAuthors } from '../../api/author';
 import { getCategories } from '../../api/category';
-import LoadingTypography from '../../components/common/LoadingTypography';
 import { PaginationRequest } from '../../utils/constants';
+import Loading from '../../components/common/Loading';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 
@@ -121,6 +121,7 @@ function BooksList() {
         categoryId: categoryId,
         yearPublished: yearFilter,
       }),
+    keepPreviousData: true,
   });
 
   return (
@@ -213,7 +214,7 @@ function BooksList() {
         </Box>
       </Box>
       <Box marginTop={2}>
-        {searchStatus == 'loading' && <LoadingTypography />}
+        {searchStatus == 'loading' && <Loading />}
         {searchStatus == 'error' && (
           <Typography variant="h3" color={theme.palette.error.main}>
             Błąd!

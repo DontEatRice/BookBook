@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.User;
 using Server.Infrastructure.Persistence.QueryHandlers.User;
-using AutoMapper;
 using Server.Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 
@@ -12,10 +11,8 @@ namespace Server.Api.Controllers;
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly IMapper _mapper;
-    public UserController(IMediator mediator, IMapper mapper) : base(mediator)
+    public UserController(IMediator mediator) : base(mediator)
     {
-        _mapper = mapper;
     }
 
     [HttpPost("toggle-observe")]

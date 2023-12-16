@@ -64,6 +64,7 @@ function AuthorsList() {
         pageNumber: paginationProps.pageNumber,
         query: query,
       }),
+    keepPreviousData: true,
   });
 
   return (

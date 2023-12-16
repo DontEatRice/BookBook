@@ -15,8 +15,16 @@ import { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import LoadingTypography from '../../components/common/LoadingTypography';
-import { Checkbox, Dialog, DialogContent, DialogTitle, FormControlLabel } from '@mui/material';
+import {
+  Checkbox,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  TablePagination,
+} from '@mui/material';
 import Reservation from './Reservation';
+import { PaginationRequest } from '../../utils/constants';
 
 export default function ReservationList() {
   const queryClient = useQueryClient();
@@ -24,14 +32,17 @@ export default function ReservationList() {
   const theme = useTheme();
   const [onlyPending, setOnlyPending] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<ReservationViewModelType | null>(null);
+  const [paginationProps, setPaginationProps] = useState<PaginationRequest>({ pageNumber: 0, pageSize: 10 });
 
   const {
-    data: reservation,
+    data: reservations,
     status,
     refetch,
   } = useQuery({
-    queryKey: ['reservationsForUser'],
-    queryFn: () => getReservationsForUser({ pageNumber: 0, pageSize: 50 }),
+    queryKey: ['reservationsForUser', paginationProps.pageNumber, paginationProps.pageSize],
+    keepPreviousData: true,
+    queryFn: () =>
+      getReservationsForUser({ pageNumber: paginationProps.pageNumber, pageSize: paginationProps.pageSize }),
   });
 
   useEffect(() => {
@@ -44,6 +55,13 @@ export default function ReservationList() {
     queryClient.refetchQueries(['reservation', reservationId]);
   };
 
+  const handleChangePage = (_: React.MouseEvent | null, newPage: number) => {
+    setPaginationProps({ ...paginationProps, pageNumber: newPage });
+  };
+  const handleRowsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPaginationProps({ ...paginationProps, pageSize: parseInt(event.target.value, 10) });
+  };
+
   return (
     <Box sx={{ padding: '16px' }}>
       {status == 'loading' && <LoadingTypography />}
@@ -52,13 +70,31 @@ export default function ReservationList() {
           Błąd!
         </Typography>
       )}
-      {status == 'success' && <Reservations data={reservation.data} />}
+      {status == 'success' && (
+        <Box>
+          <Reservations data={reservations.data} />
+          <TablePagination
+            rowsPerPageOptions={[10, 20, 30]}
+            component={'div'}
+            rowsPerPage={paginationProps.pageSize}
+            count={reservations.count}
+            page={paginationProps.pageNumber}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleRowsChange}
+            labelRowsPerPage={'Ilość na stronie'}
+            labelDisplayedRows={({ from, to, count }) => {
+              return `${from}–${to} z ${count !== -1 ? count : `więcej niż ${to}`}`;
+            }}
+          />
+        </Box>
+      )}
     </Box>
   );
 
   function Reservations({ data }: { data: ReservationViewModelType[] }) {
     return (
       <div>
+        <Typography variant="h6">Filtry: </Typography>
         <Box sx={{ padding: '16px' }}>
           <FormControlLabel
             control={<Checkbox checked={onlyPending} onChange={(e) => setOnlyPending(e.target.checked)} />}
@@ -73,7 +109,7 @@ export default function ReservationList() {
                 <TableCell>Nazwa Biblioteki</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Data Końca Rezerwacji</TableCell>
-                <TableCell></TableCell>
+                <TableCell>Akcje</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -87,7 +123,7 @@ export default function ReservationList() {
                     <TableCell>{reservation.library.name}</TableCell>
                     <TableCell>{translateStatus(reservation.status)}</TableCell>
                     <TableCell>{new Date(reservation.reservationEndDate).toLocaleDateString()}</TableCell>
-                    {reservation.status == 'Pending' && (
+                    {reservation.status == 'Pending' ? (
                       <TableCell>
                         <Button
                           variant="contained"
@@ -99,6 +135,8 @@ export default function ReservationList() {
                           Anuluj
                         </Button>
                       </TableCell>
+                    ) : (
+                      <TableCell>Brak</TableCell>
                     )}
                   </TableRow>
                 )
@@ -127,4 +165,3 @@ export default function ReservationList() {
     );
   }
 }
-

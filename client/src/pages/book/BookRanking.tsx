@@ -18,6 +18,7 @@ import { ChangeEvent, useState } from 'react';
 import { Order, PaginationRequest } from '../../utils/constants';
 import { BookInRankingViewModelType } from '../../models/BookInRankingViewModel';
 import { getCategories } from '../../api/category';
+import Loading from '../../components/common/Loading';
 
 const paginationDefaultRequest = {
   pageNumber: 0,
@@ -58,11 +59,12 @@ export default function BookRanking() {
         orderDirection: sortDirection,
         categoryId: categoryId,
       }),
+    keepPreviousData: true,
   });
 
   return (
     <Box marginTop={2}>
-      {searchStatus == 'loading' && <Typography variant="h3">Ładowanie...</Typography>}
+      {searchStatus == 'loading' && <Loading />}
       {searchStatus == 'error' && (
         <Typography variant="h3" color={theme.palette.error.main}>
           Błąd!
