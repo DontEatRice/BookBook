@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { BookViewModelType } from './BookViewModel';
-import { UserDetailViewModelType } from './user/UserDetailViewModel';
 
 const AddReview = z.object({
     title: z.string().optional(),

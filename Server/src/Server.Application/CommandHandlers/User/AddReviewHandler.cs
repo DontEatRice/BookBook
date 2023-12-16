@@ -13,7 +13,7 @@ public sealed class AddReviewCommandValidator : AbstractValidator<AddReviewComma
 {
     public AddReviewCommandValidator()
     {
-        RuleFor(x => x.Title).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.Title).MaximumLength(250);
     }
 }
 

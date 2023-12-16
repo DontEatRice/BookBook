@@ -12,6 +12,8 @@ function Reviews({ book, reviews }: { book: BookViewModelType; reviews: ReviewVi
   const theme = useTheme();
   const { user } = useAuth();
 
+  reviews.sort(function(x, y){ return x.user.id === user?.id ? -1 : y.user.id === user?.id ? 1 : 0; });
+
   return (
     <Stack
       sx={{ alignItems: 'center', backgroundColor: theme.palette.background.default, width: 'max' }}>
@@ -27,5 +29,7 @@ function Reviews({ book, reviews }: { book: BookViewModelType; reviews: ReviewVi
     </Stack>
   );
 }
+
+
 
 export default Reviews;

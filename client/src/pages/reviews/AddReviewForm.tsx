@@ -34,6 +34,7 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
     mutationFn: postReview,
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['reviews', book.id] });
+      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
     },
     onError: (err) => {
       if (err instanceof ApiResponseError && err.error.code == 'USER_REVIEW_ALREADY_EXISTS') {

@@ -54,7 +54,7 @@ public class Book
         var reviewCount = reviews.Count;
         var averageRating = AverageRating ?? 0;
         
-        AverageRating = (averageRating * reviewCount + reviewRating) / (reviewCount + 1);
+        AverageRating = Math.Round((averageRating * reviewCount + reviewRating) / (reviewCount + 1), 2);
     }
     
     public void SubtractReviewFromRating(double reviewRating)
@@ -68,6 +68,6 @@ public class Book
             return;
         }
         
-        AverageRating = (averageRating ?? 0 * reviewCount - reviewRating) / (reviewCount - 1);
+        AverageRating = Math.Round((averageRating ?? 0 * reviewCount - reviewRating) / (reviewCount - 1), 2);
     }
 }

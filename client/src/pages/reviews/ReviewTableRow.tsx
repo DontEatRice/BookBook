@@ -35,6 +35,7 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
     mutationFn: deleteReview,
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['reviews', book.id] });
+      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
     },
     onError: (err) => {
       if (err instanceof ApiResponseError && err.error.code == 'REVIEW_NOT_FOUND') {
@@ -49,27 +50,33 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
       key={review.id}
       elevation={2}
       sx={{ padding: 2, width: '75%', mb: 2 }}>
-      <Grid container direction={'row'}>
-        <Grid item xs={1}>
-          <Avatar sx={{ bgcolor: theme.palette.secondary.main, marginRight: 2 }}>N</Avatar>
-        </Grid>
-        <Grid item xs={7}>
-          <Typography variant="h4" marginBottom={2}>
-            {review.title}
-          </Typography>
-        </Grid>
-        <Grid item xs={4}>
-          <Box display="flex" justifyContent="flex-end">
-            <Rating
-              name="half-rating-read"
-              value={review.rating == null ? 0 : review.rating}
-                precision={1}
-                readOnly
-            />
-          </Box>
+      <Grid container>
+        <Grid container direction={'row'} wrap="nowrap">
+          <Grid item xs={1} minHeight={56} minWidth={56}>
+            <Avatar src={review.user.avatarImageUrl == null ? 'client\public\autor-szablon.jpg' : review.user.avatarImageUrl} 
+            sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }} />
+          </Grid>
+          <Grid item xs={6} marginLeft={2}>
+            <Typography variant="h5">
+              {review.title}
+            </Typography>
+            <Typography marginBottom={2}>
+              {review.user.name}
+            </Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <Box display="flex" justifyContent="flex-end">
+              <Rating
+                name="half-rating-read"
+                value={review.rating == null ? 0 : review.rating}
+                  precision={1}
+                  readOnly
+              />
+            </Box>
+          </Grid>
         </Grid>
         <Grid item xs={12}>
-          <Typography>
+          <Typography marginLeft={1}>
             {review.description}
           </Typography>
         </Grid>
