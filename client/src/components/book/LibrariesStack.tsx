@@ -45,6 +45,7 @@ function LibrariesStack({ bookId }: { bookId: string }) {
             library.longitude
           ),
           userLibrary: false,
+          isBookCurrentlyAvailable: library.isBookCurrentlyAvailable,
         };
         result.push(tmp);
       });
@@ -57,6 +58,7 @@ function LibrariesStack({ bookId }: { bookId: string }) {
         const tmp: LibraryInBookDetails = {
           library: library,
           userLibrary: false,
+          isBookCurrentlyAvailable: library.isBookCurrentlyAvailable,
         };
         result.push(tmp);
       });
@@ -133,9 +135,13 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                   </div>
                   <AuthorizedView>
                     <Stack direction={'column'}>
-                      <Button onClick={() => addToCartMutation({ bookId, libraryId: library.library.id })}>
-                        Do koszyka
-                      </Button>
+                      {library.isBookCurrentlyAvailable ? (
+                        <Button onClick={() => addToCartMutation({ bookId, libraryId: library.library.id })}>
+                          Do koszyka
+                        </Button>
+                      ) : (
+                        <Typography paddingTop={3}>{'Tymczasowo Niedostępna'}</Typography>
+                      )}
                       {user?.lat != undefined && (
                         <Typography>
                           <RoomIcon></RoomIcon>
@@ -200,3 +206,4 @@ function LibrariesStack({ bookId }: { bookId: string }) {
 }
 
 export default LibrariesStack;
+

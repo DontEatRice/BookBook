@@ -1,9 +1,10 @@
-import { LibraryViewModelType } from "./LibraryViewModel";
+import { LibraryWithBookViewModelType } from './LibraryWithBookViewModel';
 
 type LibraryInBookDetails = {
-    library: LibraryViewModelType;
-    distanceFromUser?: number;
-    userLibrary: boolean;
-}
+  library: LibraryWithBookViewModelType;
+  distanceFromUser?: number;
+  userLibrary: boolean;
+  isBookCurrentlyAvailable: boolean;
+};
 
 export default LibraryInBookDetails;
