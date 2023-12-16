@@ -57,7 +57,8 @@ public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
         
         book.ComputeRating(reviews, request.Rating);
         
-        var review = Review.Create(request.Id, request.Title, request.Description, request.Rating, book, user, false);
+        var review = Review.Create(request.Id, request.Title, request.Description, request.Rating, book, user,
+            false);
 
         await _reviewRepository.AddAsync(review, cancellationToken);
 

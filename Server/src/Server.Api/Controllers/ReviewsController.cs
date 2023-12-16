@@ -35,9 +35,15 @@ public class ReviewsController : ControllerBase
     }
     
     [HttpPut]
+    [Authorize]
     public async Task<ActionResult> Update(UpdateReviewCommand command)
     {
-        await Mediator.Send(command);
+        var userId = GetUserIdOrThrow();
+        
+        await Mediator.Send(command with
+        {
+            UserId = userId
+        });
 
         return NoContent();
     }

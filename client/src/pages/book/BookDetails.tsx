@@ -15,8 +15,6 @@ import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import { getReviews } from '../../api/review';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import AddReviewForm from '../reviews/AddReviewForm';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import LoadingTypography from '../../components/common/LoadingTypography';
@@ -25,6 +23,9 @@ import { addToCart } from '../../api/cart';
 import useAlert from '../../utils/alerts/useAlert';
 import { useCartStore } from '../../store';
 import { Link } from 'react-router-dom';
+import { PaginationRequest } from '../../utils/constants';
+import { Pagination } from '@mui/material';
+import { ChangeEvent, useState } from 'react';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   return (
@@ -78,6 +79,18 @@ function BookDetails() {
     queryKey: ['books', params.bookId],
     queryFn: () => getBook(params.bookId + ''),
   });
+
+  const [paginationProps, setPaginationProps] = useState<PaginationRequest>({
+    pageNumber: 0,
+    pageSize: 10,
+  });
+  const handlePageChange = (_: ChangeEvent<unknown>, newPage: number) => {
+    console.log(newPage);
+    setPaginationProps({
+      ...paginationProps,
+      pageNumber: newPage - 1,
+    });
+  };
 
   const { data: reviews, status: statusReviews } = useQuery({
     queryKey: ['reviews', params.bookId],

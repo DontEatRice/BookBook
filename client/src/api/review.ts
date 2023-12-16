@@ -35,10 +35,12 @@ export const postReview = async (review: AddReviewType) => {
 };
 
 export const updateReview = async (review: UpdateReviewType) => {
+  const auth = await getAuthToken();
+
   const response = await fetch(base + '/Reviews', {
     method: 'put',
     body: JSON.stringify(review),
-    headers: new Headers({ 'Content-Type': 'application/json' }),
+    headers: new Headers({ 'Content-Type': 'application/json', Authorization: auth }),
   });
   if (!response.ok) {
     await handleBadResponse(response);

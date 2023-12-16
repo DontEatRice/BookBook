@@ -58,6 +58,7 @@ function UpdateReviewForm({
     },
   });
   const onSubmit: SubmitHandler<UpdateReviewType> = (data) => {
+    data.rating = data.rating == null ? 0 : data.rating;
     mutation.mutate(data);
   };
 
