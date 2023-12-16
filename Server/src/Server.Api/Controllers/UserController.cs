@@ -1,12 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.User;
-using Server.Application.Exceptions;
-using Server.Application.Exceptions.Types;
-using Server.Domain.Entities;
 using Server.Infrastructure.Persistence.QueryHandlers.User;
-using Server.Utils;
-using System.Security.Claims;
 using AutoMapper;
 using Server.Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -22,15 +17,6 @@ public class UserController : ControllerBase
     {
         _mapper = mapper;
     }
-
-    //[HttpGet("{id:guid}")]
-    //public async Task<IActionResult> UserDetail(Guid id)
-    //{
-    //    var user = await Mediator.Send(new GetUserByIdQuery(id)) ??
-    //        throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
-
-    //    return Ok(user);
-    //}
 
     [HttpPost("toggle-observe")]
     public async Task<ActionResult> ToggleBookInUserList(ToggleBookInUsersListCommand command)

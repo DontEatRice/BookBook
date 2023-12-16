@@ -102,7 +102,7 @@ export async function searchBooks(
   return BooksPaginated.parse(data);
 }
 
-export async function bookRanking(args: PaginationRequest) {
+export async function bookRanking(args: PaginationRequest & { categoryId?: string }) {
   const response = await paginatedFetch(base + '/Books/ranking', args);
   if (!response.ok) {
     await handleBadResponse(response);
@@ -110,4 +110,3 @@ export async function bookRanking(args: PaginationRequest) {
   const data = await response.json();
   return RankingPaginated.parse(data);
 }
-
