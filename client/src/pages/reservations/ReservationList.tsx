@@ -79,7 +79,6 @@ export default function ReservationList() {
     setPaginationProps({ ...paginationProps, pageSize: parseInt(event.target.value, 10) });
   };
   const handleRequestSort = (property: keyof ReservationViewModelType) => {
-    console.log(property);
     const isAsc = paginationProps.orderByField === property && paginationProps.orderDirection === 'asc';
     setPaginationProps({
       ...paginationProps,
