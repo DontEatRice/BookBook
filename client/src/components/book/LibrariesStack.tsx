@@ -177,9 +177,13 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                     <br /> {library.address.city}
                     <br />
                     <AuthorizedView>
-                      <Button onClick={() => addToCartMutation({ bookId, libraryId: library.id })}>
-                        Do koszyka
-                      </Button>
+                      {library.isBookCurrentlyAvailable ? (
+                        <Button onClick={() => addToCartMutation({ bookId, libraryId: library.library.id })}>
+                          Do koszyka
+                        </Button>
+                      ) : (
+                        <Typography paddingTop={3}>{'Tymczasowo Niedostępna'}</Typography>
+                      )}
                     </AuthorizedView>
                   </Popup>
                 </Marker>
