@@ -25,11 +25,11 @@ function AuthorInList({ author }: { author: AuthorViewModelType }) {
       <Link to={`/authors/${author.id}`}>
         <Grid container spacing={5}>
           <Grid item>
-            <Box sx={{ width: 200, height: 200 }}>
+            <Box>
               <Avatar
                 alt={author.firstName + ' ' + author.lastName}
                 src={imgUrl(author.profilePictureUrl, '/public/autor-szablon.jpg')}
-                sx={{ width: 200, height: 200 }}
+                sx={{ width: 150, height: 150 }}
                 imgProps={{
                   loading: 'lazy',
                 }}
@@ -44,6 +44,9 @@ function AuthorInList({ author }: { author: AuthorViewModelType }) {
                 </Typography>
                 <Typography variant="body1" gutterBottom>
                   {'Rok urodzenia: ' + author.birthYear}
+                </Typography>
+                <Typography variant="body2" noWrap>
+                  {author.description}
                 </Typography>
               </Grid>
             </Grid>

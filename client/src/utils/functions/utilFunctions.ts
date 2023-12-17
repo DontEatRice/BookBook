@@ -36,6 +36,9 @@ const errorCodesMapping: Record<string, string | undefined> = {
   RESERVATION_CANNOT_BE_RETURNED: 'Rezerwacja nie może zostać zwrócona',
   RESERVATION_CANNOT_BE_CANCELLED: 'Rezerwacja nie może zostać anulowana',
   RESERVATION_NOT_FOUND: 'Nie znaleziono takiej rezerwacji',
+  TOO_MANY_BOOKS_IN_CART: 'Zbyt dużo książek w koszyku',
+  TOO_MANY_BOOKS_IN_RESERVATION: 'Zbyt dużo książek w rezerwacji',
+  TOO_MANY_LIBRARIES_IN_CART: 'Zbyt dużo bibliotek w koszyku',
   // NO_BOOKS_TO_RESERVE,
   // BOOK_NOT_IN_CART,
   // CART_NOT_FOUND,
@@ -65,3 +68,4 @@ export function timeToDayjs(time: string | null) {
   dayjs.set('seconds', timeSplitted[2]);
   return dayjs;
 }
+

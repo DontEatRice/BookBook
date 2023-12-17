@@ -70,6 +70,10 @@ function RegisterForm({ onSubmit, sx, loading }: RegisterFormProps) {
     <Box sx={sx}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack direction="column" alignItems="center" spacing={2} mb={2} mt={2}>
+          <Avatar src={fileContent ?? undefined} sx={{ width: 250, height: 250 }} />
+          {errors.avatarPicture != undefined && (
+            <Typography color={'error'}>{errors.avatarPicture.message}</Typography>
+          )}
           <Button component="label" variant="contained" disabled={loading} startIcon={<CloudUploadIcon />}>
             Wstaw zdjęcie profilowe
             <VisuallyHiddenInput
@@ -78,10 +82,6 @@ function RegisterForm({ onSubmit, sx, loading }: RegisterFormProps) {
               {...register('avatarPicture')}
             />
           </Button>
-          <Avatar src={fileContent ?? undefined} sx={{ width: 250, height: 250 }} />
-          {errors.avatarPicture != undefined && (
-            <Typography color={'error'}>{errors.avatarPicture.message}</Typography>
-          )}
         </Stack>
         <TextInputField
           errors={errors}

@@ -14,7 +14,7 @@ function AuthorBookCard({ book }: { book: BookViewModelType }) {
         image={imgUrl(book.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg')}
       />
       <CardContent>
-        <Typography gutterBottom variant="h6" component="div" noWrap>
+        <Typography gutterBottom variant="h6" component="div" noWrap textAlign={'center'}>
           {book.title}
         </Typography>
       </CardContent>

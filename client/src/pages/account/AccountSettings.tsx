@@ -40,6 +40,7 @@ function AccountSettingsForm({
     resolver: zodResolver(UpdateMyAccount),
     defaultValues: {
       ...data,
+      aboutMe: data.aboutMe ?? '',
       library: data.libraryId ? libraries.find((x) => x.id == data.libraryId) : null,
       street: data.address ? data.address.street : undefined,
       number: data.address ? data.address.number : undefined,
@@ -61,6 +62,12 @@ function AccountSettingsForm({
           control={control}
           field="name"
           label="Nazwa użytkownika"
+          additionalProps={{ variant: 'filled' }}
+        />
+        <TextInputField2
+          control={control}
+          field="aboutMe"
+          label="O mnie"
           additionalProps={{ variant: 'filled' }}
         />
         <Controller
@@ -165,6 +172,7 @@ function AccountSettings() {
     onSuccess: (data) => {
       showSuccess({ title: 'Sukces', message: 'Twój profil został zaktualizowany' });
       queryClient.setQueryData(['me'], data);
+      queryClient.invalidateQueries({ queryKey: ['users', data.id] });
       navigate('/user/' + user?.id);
     },
   });

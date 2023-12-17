@@ -1,4 +1,3 @@
-import { MakeReservationType } from '../models/MakeReservation';
 import ReservationViewModel from '../models/ReservationViewModel';
 import { PaginationRequest } from '../utils/constants';
 import { handleBadResponse, paginatedFetch } from '../utils/utils';
@@ -8,20 +7,19 @@ import { getAuthToken } from './auth';
 const base = import.meta.env.VITE_API_BASE_URL;
 const ReservationSearchResponse = paginatedResponse(ReservationViewModel);
 
-export const makeReservation = async (makeReservation: MakeReservationType) => {
+export const makeReservation = async (body: { libraryId: string }) => {
   const auth = await getAuthToken();
   const response = await fetch(base + '/reservations', {
     method: 'post',
-    body: JSON.stringify(makeReservation),
+    body: JSON.stringify(body),
     headers: new Headers({
       'Content-Type': 'application/json',
       Authorization: auth,
     }),
   });
 
-  if (response.status !== 201) {
-    const data = await response.json();
-    throw new Error(`${data.code}:${data.resourceId}`);
+  if (!response.ok) {
+    await handleBadResponse(response);
   }
 };
 
@@ -118,4 +116,3 @@ export async function returnReservation(reservationId: string) {
     }),
   });
 }
-
