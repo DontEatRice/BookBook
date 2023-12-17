@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteReview } from '../../api/review';
 import { BookViewModelType } from '../../models/BookViewModel';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { ApiResponseError } from '../../utils/utils';
+import { ApiResponseError, imgUrl } from '../../utils/utils';
 import useAlert from '../../utils/alerts/useAlert';
 import UpdateReviewForm from './UpdateReviewForm';
 import AuthorizedView from '../../components/auth/AuthorizedView';
@@ -44,58 +44,52 @@ function ReviewPaper({ review, book }: { review: ReviewViewModelType; book: Book
     },
   });
   return (
-    <Paper
-      key={review.id}
-      elevation={2}
-      sx={{ padding: 2, width: '75%', mb: 2 }}>
+    <Paper key={review.id} elevation={2} sx={{ padding: 2, width: '75%', mb: 2 }}>
       <Grid container>
         <Grid container direction={'row'} wrap="nowrap">
           <Grid item xs={1} minHeight={56} minWidth={56}>
-            <Avatar src={review.user.avatarImageUrl == null ? 'client/public/autor-szablon.jpg' : review.user.avatarImageUrl} 
-            sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }} />
+            {/* imgUrl(book.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg') */}
+            <Avatar
+              src={imgUrl(review.user.avatarImageUrl, '/autor-szablon.jpg')}
+              sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }}
+            />
           </Grid>
           <Grid item xs={6} marginLeft={2}>
-            <Typography variant="h5">
-              {review.title}
-            </Typography>
-            <Typography marginBottom={2}>
-              {review.user.name}
-            </Typography>
+            <Typography variant="h5">{review.title}</Typography>
+            <Typography marginBottom={2}>{review.user.name}</Typography>
           </Grid>
           <Grid item xs={5}>
             <Box display="flex" justifyContent="flex-end">
               <Rating
                 name="half-rating-read"
                 value={review.rating == null ? 0 : review.rating}
-                  precision={1}
-                  readOnly
+                precision={1}
+                readOnly
               />
             </Box>
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <Typography marginLeft={1}>
-            {review.description}
-          </Typography>
+          <Typography marginLeft={1}>{review.description}</Typography>
         </Grid>
         {deleteError && (
-                <Paper
-                  elevation={7}
-                  sx={{
-                    width: '100%',
-                    padding: 2,
-                    backgroundColor: theme.palette.error.main,
-                    textAlign: 'center',
-                    display: 'flex',
-                  justifyContent: 'center',
-                    mt: 1,
-                  }}>
-                  <ErrorOutlineIcon />
-                  <Typography>{deleteError}</Typography>
-                </Paper>
-              )}
+          <Paper
+            elevation={7}
+            sx={{
+              width: '100%',
+              padding: 2,
+              backgroundColor: theme.palette.error.main,
+              textAlign: 'center',
+              display: 'flex',
+              justifyContent: 'center',
+              mt: 1,
+            }}>
+            <ErrorOutlineIcon />
+            <Typography>{deleteError}</Typography>
+          </Paper>
+        )}
         <AuthorizedView roles={['User']}>
-          {review.user.id === user?.id && 
+          {review.user.id === user?.id && (
             <Grid item marginTop={1}>
               <Button sx={{ width: 50, height: 40 }} onClick={() => mutation.mutate(review.id)}>
                 Usuń
@@ -107,7 +101,7 @@ function ReviewPaper({ review, book }: { review: ReviewViewModelType; book: Book
                 <UpdateReviewForm review={review} book={book} handleClose={handleClose} />
               </Dialog>
             </Grid>
-          }
+          )}
         </AuthorizedView>
       </Grid>
     </Paper>
