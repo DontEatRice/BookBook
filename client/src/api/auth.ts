@@ -76,6 +76,15 @@ export async function refresh() {
   return result;
 }
 
+export async function logout() {
+  const result = await fetch(base + '/logout', {
+    method: 'get',
+    headers: new Headers({ 'Content-Type': 'application/json' }),
+    credentials: 'include',
+  });
+  return result;
+}
+
 export const registerEmployee = async (request: RegisterEmployeeType) => {
   const auth = await getAuthToken();
   const copy = { ...request };

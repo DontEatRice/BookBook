@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import LoginForm from '../../components/auth/LoginForm';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { login } from '../../api/auth';
 import { useAuth } from '../../utils/auth/useAuth';
@@ -20,11 +20,16 @@ function Login() {
   const [loginError, setLoginError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { handleError } = useAlert();
+  const [params] = useSearchParams();
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: ({ accessToken }) => {
       setAccessToken(accessToken);
-      navigate('/');
+      if (params.has('returnTo')) {
+        navigate(params.get('returnTo') ?? '/');
+      } else {
+        navigate('/');
+      }
     },
     onError: async (error) => {
       if (error instanceof ApiResponseError && error.error.code === 'INVALID_CREDENTIALS') {
@@ -34,7 +39,6 @@ function Login() {
       }
     },
   });
-
   return (
     <Box width="100%">
       <Stack direction="row" justifyContent="center">

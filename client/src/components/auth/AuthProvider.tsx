@@ -3,8 +3,8 @@ import { AuthContext } from '../../utils/auth/AuthContext';
 import { User } from '../../models/user/User';
 import { getJwtBody, convertJwtToUser } from '../../utils/utils';
 import { LocalStorageTokenKey } from '../../utils/constants';
-import { refresh } from '../../api/auth';
-import { useQuery } from '@tanstack/react-query';
+import { refresh, logout as apiLogoutRequest } from '../../api/auth';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Loading from '../common/Loading';
 
 function initUser() {
@@ -33,19 +33,24 @@ function AuthProvider({ children }: { children?: ReactNode }) {
   const [expires, setExpires] = useState<Date | null>(initExpires);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(initUser);
+  const queryClient = useQueryClient();
 
-  const login = useCallback((token: string) => {
-    const claims = getJwtBody(token);
-    const expires = new Date(claims.exp * 1000);
-    if (expires < new Date()) {
-      return null;
-    }
-    localStorage.setItem(LocalStorageTokenKey, token);
-    setExpires(new Date(claims.exp * 1000));
-    const user = convertJwtToUser(token);
-    setUser(user);
-    return user;
-  }, []);
+  const login = useCallback(
+    (token: string) => {
+      const claims = getJwtBody(token);
+      const expires = new Date(claims.exp * 1000);
+      if (expires < new Date()) {
+        return null;
+      }
+      localStorage.setItem(LocalStorageTokenKey, token);
+      setExpires(new Date(claims.exp * 1000));
+      const user = convertJwtToUser(token);
+      queryClient.invalidateQueries();
+      setUser(user);
+      return user;
+    },
+    [queryClient]
+  );
 
   const handleTokenChange = useCallback(() => {
     const token = localStorage.getItem(LocalStorageTokenKey);
@@ -94,11 +99,17 @@ function AuthProvider({ children }: { children?: ReactNode }) {
     return () => window.removeEventListener('storage', handleTokenChange);
   }, [handleTokenChange]);
 
+  //wylogowanie
+  const { mutate: logoutMutate } = useMutation({
+    mutationFn: apiLogoutRequest,
+  });
   const logout = useCallback(() => {
     localStorage.setItem(LocalStorageTokenKey, '');
     setExpires(null);
     setUser(null);
-  }, []);
+    queryClient.invalidateQueries();
+    logoutMutate();
+  }, [logoutMutate, queryClient]);
 
   const cachedValues = useMemo(
     () => ({

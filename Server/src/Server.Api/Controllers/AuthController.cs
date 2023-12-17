@@ -43,7 +43,7 @@ public class AuthController : ControllerBase
     {
         if (!Request.Cookies.TryGetValue(RefreshTokenCookieName, out var refreshToken))
         {
-            return NoContent();
+            return BadRequest();
         }
 
         var cookieOptions = CreateCookieOptionsForRefreshToken();

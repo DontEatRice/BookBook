@@ -42,11 +42,11 @@ function AccountSettingsForm({
       ...data,
       aboutMe: data.aboutMe ?? '',
       library: data.libraryId ? libraries.find((x) => x.id == data.libraryId) : null,
-      street: data.address ? data.address.street : undefined,
-      number: data.address ? data.address.number : undefined,
-      apartment: data.address ? data.address.apartment : undefined,
-      postalCode: data.address ? data.address.postalCode : undefined,
-      city: data.address ? data.address.city : undefined,
+      street: data.address?.street ?? undefined,
+      number: data.address?.number ?? undefined,
+      apartment: data.address?.apartment ?? undefined,
+      postalCode: data.address?.postalCode ?? undefined,
+      city: data.address?.city ?? undefined,
     },
   });
 
