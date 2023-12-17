@@ -178,7 +178,7 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                     <br />
                     <AuthorizedView roles={['User']}>
                       {library.isBookCurrentlyAvailable ? (
-                        <Button onClick={() => addToCartMutation({ bookId, libraryId: library.library.id })}>
+                        <Button onClick={() => addToCartMutation({ bookId, libraryId: library.id })}>
                           Do koszyka
                         </Button>
                       ) : (
@@ -210,3 +210,4 @@ function LibrariesStack({ bookId }: { bookId: string }) {
 }
 
 export default LibrariesStack;
+
