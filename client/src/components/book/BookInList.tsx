@@ -52,11 +52,14 @@ function BookInList({ book }: { book: BookViewModelType }) {
                 <Typography variant="body1" color="text.secondary">
                   {book.bookCategories.map((category) => category.name).join(', ')}
                 </Typography>
+                <Typography variant="body2" noWrap>
+                  {book.description}
+                </Typography>
               </Grid>
             </Grid>
             {book.averageRating && (
               <Grid item>
-                <Rating name="half-rating-read" value={book.averageRating} precision={0.25} readOnly />
+                <Rating value={book.averageRating} precision={0.25} readOnly />
               </Grid>
             )}
           </Grid>

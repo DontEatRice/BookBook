@@ -7,7 +7,8 @@ const UserDetailViewModel = z.object({
   avatarImageUrl: z.string().nullable(),
   libraryId: z.string().nullable(),
   roles: z.string().array(),
-  address: AddressViewModel.nullable()
+  address: AddressViewModel.nullable(),
+  aboutMe: z.string().nullable()
 });
 
 export default UserDetailViewModel;

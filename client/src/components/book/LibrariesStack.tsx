@@ -133,7 +133,7 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                       {library.library.address.postalCode + ' ' + library.library.address.city}
                     </Typography>
                   </div>
-                  <AuthorizedView>
+                  <AuthorizedView roles={['User']}>
                     <Stack direction={'column'}>
                       {library.isBookCurrentlyAvailable ? (
                         <Button onClick={() => addToCartMutation({ bookId, libraryId: library.library.id })}>
@@ -176,7 +176,7 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                     {library.address.apartment ?? ''}
                     <br /> {library.address.city}
                     <br />
-                    <AuthorizedView>
+                    <AuthorizedView roles={['User']}>
                       {library.isBookCurrentlyAvailable ? (
                         <Button onClick={() => addToCartMutation({ bookId, libraryId: library.library.id })}>
                           Do koszyka
@@ -210,4 +210,3 @@ function LibrariesStack({ bookId }: { bookId: string }) {
 }
 
 export default LibrariesStack;
-

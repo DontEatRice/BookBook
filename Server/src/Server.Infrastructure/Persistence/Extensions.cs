@@ -57,6 +57,8 @@ internal static class Extensions
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });
 
+        services.AddMemoryCache();
+
         return services;
     }
 

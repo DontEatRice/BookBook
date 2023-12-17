@@ -61,10 +61,10 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
       <Grid container spacing={2}>
         <Grid item xs={2}>
           <Button
-            // sx={{
-            //   width: 128,
-            //   height: 200,
-            // }}
+            sx={{
+              width: 128,
+              height: 200,
+            }}
             onClick={() => navigate(`/books/${book.id}`)}>
             <Img alt={book.title} src={imgUrl(book.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg')} />
           </Button>
@@ -75,10 +75,10 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
               <Typography gutterBottom variant="h4" component="div">
                 {book.title}
               </Typography>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="subtitle1" gutterBottom>
                 {book.authors.map((author) => author.firstName + ' ' + author.lastName).join(', ')}
               </Typography>
-              <Typography variant="h6" color="text.secondary" gutterBottom>
+              <Typography variant="subtitle1" color="text.secondary" gutterBottom>
                 {book.bookCategories.map((category) => category.name).join(', ')}
               </Typography>
               {/* <Rating
