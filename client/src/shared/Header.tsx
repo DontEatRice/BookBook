@@ -18,6 +18,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useAuth } from '../utils/auth/useAuth';
 import ProfileHeaderIcon from '../components/profile/ProfileHeaderIcon';
 import Tooltip from '@mui/material/Tooltip';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 function Header() {
   const theme = useTheme();
@@ -46,43 +47,61 @@ function Header() {
             <SearchBar />
           </Grid>
           <AuthorizedView>
-            {matches && (
+            <AuthorizedView roles={['User']}>
+              {matches && (
+                <Grid
+                  item
+                  sm={1}
+                  sx={{
+                    paddingLeft: 3,
+                    paddingY: 2,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  {cartStore.isOpen && <CartTab />}
+                  <Tooltip title="Koszyk">
+                    <Box
+                      sx={{
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => cartStore.toggleCart()}>
+                      <LocalMallIcon />
+                    </Box>
+                  </Tooltip>
+                </Grid>
+              )}
               <Grid
                 item
                 sm={1}
-                sx={{
-                  paddingLeft: 3,
-                  paddingY: 2,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                {cartStore.isOpen && <CartTab />}
-                <Tooltip title="Koszyk">
-                  <Box
-                    sx={{
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => cartStore.toggleCart()}>
-                    <LocalMallIcon />
-                  </Box>
-                </Tooltip>
+                xs={3}
+                paddingY={2}
+                display={'flex'}
+                justifyContent={'center'}
+                alignItems={'center'}>
+                <ProfileHeaderIcon />
               </Grid>
-            )}
+            </AuthorizedView>
+            <AuthorizedView roles={['Admin', 'Employee']}>
+              <Grid
+                item
+                sm={1}
+                xs={2}
+                paddingY={2}
+                display={'flex'}
+                justifyContent={'center'}
+                alignItems={'center'}>
+                <Link to={'/admin'} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <Tooltip title="Panel administracyjny">
+                    <AdminPanelSettingsIcon sx={{ fontSize: '2rem' }} />
+                  </Tooltip>
+                </Link>
+              </Grid>
+            </AuthorizedView>
             <Grid
               item
               sm={1}
-              xs={3}
-              paddingY={2}
-              display={'flex'}
-              justifyContent={'center'}
-              alignItems={'center'}>
-              <ProfileHeaderIcon />
-            </Grid>
-            <Grid
-              item
-              sm={1}
-              xs={3}
+              xs={2}
               onClick={() => logout()}
               paddingY={2}
               display={'flex'}

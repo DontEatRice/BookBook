@@ -14,6 +14,7 @@ import { getAuthors } from '../../api/author';
 import Table from '@mui/material/Table';
 import Avatar from '@mui/material/Avatar';
 import LoadingTypography from '../../components/common/LoadingTypography';
+import { imgUrl } from '../../utils/utils';
 
 function AuthorsTable({ data }: { data: AuthorViewModelType[] }) {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ function AuthorsTable({ data }: { data: AuthorViewModelType[] }) {
               onClick={() => navigate(`/admin/authors/${author.id}`)}>
               <TableCell>{author.id}</TableCell>
               <TableCell>
-                <Avatar src={author.profilePictureUrl ?? undefined} />
+                <Avatar src={imgUrl(author.profilePictureUrl) ?? undefined} />
               </TableCell>
               <TableCell>{author.firstName}</TableCell>
               <TableCell>{author.lastName}</TableCell>

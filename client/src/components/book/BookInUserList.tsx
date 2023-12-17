@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toggleBookInUserList } from '../../api/user';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
+import { imgUrl } from '../../utils/utils';
 
 function BookInUserList({ book }: { book: BookViewModelType }) {
   const queryClient = useQueryClient();
@@ -33,6 +34,7 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['getUserBooks'] });
+      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
     },
   });
   const onClick: SubmitHandler<ToggleBookInUserListType> = (toggleData) => {
@@ -59,12 +61,12 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
       <Grid container spacing={2}>
         <Grid item xs={2}>
           <Button
-            // sx={{
-            //   width: 128,
-            //   height: 200,
-            // }}
+            sx={{
+              width: 128,
+              height: 200,
+            }}
             onClick={() => navigate(`/books/${book.id}`)}>
-            <Img alt={book.title} src={`${book.coverPictureUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}`} />
+            <Img alt={book.title} src={imgUrl(book.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg')} />
           </Button>
         </Grid>
         <Grid item xs={10} sm container>
@@ -73,10 +75,10 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
               <Typography gutterBottom variant="h4" component="div">
                 {book.title}
               </Typography>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="subtitle1" gutterBottom>
                 {book.authors.map((author) => author.firstName + ' ' + author.lastName).join(', ')}
               </Typography>
-              <Typography variant="h6" color="text.secondary" gutterBottom>
+              <Typography variant="subtitle1" color="text.secondary" gutterBottom>
                 {book.bookCategories.map((category) => category.name).join(', ')}
               </Typography>
               {/* <Rating

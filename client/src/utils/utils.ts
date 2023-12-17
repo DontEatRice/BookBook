@@ -4,6 +4,8 @@ import { User } from '../models/user/User';
 import { Claims, PaginationRequest } from './constants';
 import { ResponseError, ValidationError } from './zodSchemas';
 
+const base = import.meta.env.VITE_API_BASE_URL;
+
 export function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -29,6 +31,20 @@ export function paginatedFetch(
     headers,
     body: JSON.stringify(body),
   });
+}
+
+export function imgUrl(dbPath: string | undefined | null, defaultValue?: string) {
+  if (!dbPath) {
+    return defaultValue ?? '';
+  }
+  let prefix = base;
+  if (!prefix.endsWith('/')) {
+    prefix += '/';
+  }
+  if (dbPath.startsWith('/')) {
+    dbPath = dbPath.replace('/', '');
+  }
+  return prefix + 'images/' + dbPath;
 }
 
 export async function fileToUploadImage(file: File) {
@@ -78,6 +94,8 @@ export function convertJwtToUser(token: string): User {
     email: claims.email,
     libraryId: claims.libraryid,
     name: claims._name,
+    lat: claims.lat ? Number(claims.lat.toString().replace(',', '.')) : undefined,
+    lon: claims.lon ? Number(claims.lon.toString().replace(',', '.')) : undefined
   };
 }
 

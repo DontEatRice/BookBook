@@ -11,10 +11,10 @@ const ReservationViewModel = z.object({
   userId: z.string(),
   library: LibraryViewModel,
   status: z.string(),
+  createdAt: z.string(),
   reservationEndDate: z.string(),
   books: z.array(BookViewModel).optional(),
 });
 
 export default ReservationViewModel;
 export type ReservationViewModelType = z.infer<typeof ReservationViewModel>;
-

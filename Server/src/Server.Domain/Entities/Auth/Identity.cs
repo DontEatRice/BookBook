@@ -18,8 +18,12 @@ public class Identity
     public List<string> Roles { get; private init; }
     public List<Session> Sessions { get; private init; }
     public ICollection<UserBook> UserBooks { get; private init; }
+    public Address? Address { get; private set; }
+    public double? Latitude { get; private set; }
+    public double? Longitude { get; private set; }
+    public string? AboutMe { get; private set; }
 
-    public static Identity Register(Guid id, string email, string password, string name, string? avatarImageUrl)
+    public static Identity Register(Guid id, string email, string password, string name, string? avatarImageUrl, Address? address, double? latitude, double? longitude)
     {
         var identity = new Identity
         {
@@ -30,7 +34,11 @@ public class Identity
             AvatarImageUrl = avatarImageUrl,
             Sessions = new List<Session>(),
             Roles = new List<string> { Role.User.GetDisplayName() },
-            UserBooks = new List<UserBook>()
+            UserBooks = new List<UserBook>(),
+            Address = address,
+            Latitude = latitude,
+            Longitude = longitude,
+            AboutMe = ""
         };
 
         return identity;
@@ -46,7 +54,10 @@ public class Identity
             Name = name,
             Library = library,
             Sessions = new List<Session>(),
-            Roles = new List<string> { Role.Employee.GetDisplayName() }
+            Roles = new List<string> { Role.Employee.GetDisplayName() },
+            Address = null,
+            Latitude = null,
+            Longitude = null
         };
 
         return identity;
@@ -98,10 +109,14 @@ public class Identity
         Sessions[Sessions.IndexOf(session)] = Session.Create(TokenHasher.Hash(newRefreshToken));
     }
 
-    public void Update(string name, string? avatarImageUrl, Guid? libraryId)
+    public void Update(string name, string? avatarImageUrl, Guid? libraryId, Address? address, double? latitude, double? longitude, string? aboutMe)
     {
         Name = name;
         AvatarImageUrl = avatarImageUrl;
         LibraryId = libraryId;
+        Address = address;
+        Latitude = latitude;
+        Longitude = longitude;
+        AboutMe = aboutMe;
     }
 }

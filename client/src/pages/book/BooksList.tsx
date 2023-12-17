@@ -6,12 +6,13 @@ import { searchBooks } from '../../api/book';
 import BookInList from '../../components/book/BookInList';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Grid from '@mui/material/Grid';
-import { Autocomplete, Button, InputAdornment, TextField } from '@mui/material';
-import { useState } from 'react';
+import { Autocomplete, Button, InputAdornment, Pagination, TextField } from '@mui/material';
+import { ChangeEvent, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { getAuthors } from '../../api/author';
 import { getCategories } from '../../api/category';
-import LoadingTypography from '../../components/common/LoadingTypography';
+import { PaginationRequest } from '../../utils/constants';
+import Loading from '../../components/common/Loading';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 
@@ -43,7 +44,7 @@ const paginationDefaultRequest = {
 
 function Books({ data }: { data: BookViewModelType[] }) {
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={2}>
       {data.map((book) => (
         <Grid item xs={12} key={book.id}>
           <BookInList book={book} />
@@ -74,19 +75,6 @@ function BooksList() {
 
   const [query, setQuery] = useState<string>('');
 
-  const { data: searchData, status: searchStatus } = useQuery({
-    queryKey: ['searchBooks', query, authorId, categoryId, yearFilter],
-    queryFn: () =>
-      searchBooks({
-        pageSize: 50,
-        pageNumber: 0,
-        query: query == null ? '' : query,
-        authorId: authorId,
-        categoryId: categoryId,
-        yearPublished: yearFilter,
-      }),
-  });
-
   const handleSearchType = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value } = e.target;
     setSearchInput(value);
@@ -103,12 +91,52 @@ function BooksList() {
     }
   };
 
+  const [paginationProps, setPaginationProps] = useState<PaginationRequest>({
+    pageNumber: 0,
+    pageSize: 10,
+  });
+  const handlePageChange = (_: ChangeEvent<unknown>, newPage: number) => {
+    setPaginationProps({
+      ...paginationProps,
+      pageNumber: newPage - 1,
+    });
+  };
+
+  const { data: searchData, status: searchStatus } = useQuery({
+    queryKey: [
+      'searchBooks',
+      query,
+      authorId,
+      categoryId,
+      yearFilter,
+      paginationProps.pageNumber,
+      paginationProps.pageSize,
+    ],
+    queryFn: () =>
+      searchBooks({
+        pageSize: paginationProps.pageSize,
+        pageNumber: paginationProps.pageNumber,
+        query: query == null ? '' : query,
+        authorId: authorId,
+        categoryId: categoryId,
+        yearPublished: yearFilter,
+      }),
+    keepPreviousData: true,
+  });
+
   return (
     <div>
-      <Box marginBottom={2} marginTop={2} display={'flex'} flexDirection={'row'} flexWrap={'wrap'}>
+      <Box
+        marginBottom={2}
+        marginTop={2}
+        display={'flex'}
+        flexDirection={'row'}
+        flexWrap={'wrap'}
+        sx={{ zIndex: 5 }}>
         <Box marginBottom={1} marginRight={1} flexGrow={1}>
           <Autocomplete
             fullWidth
+            disablePortal={true}
             options={authorsData?.data || []}
             getOptionLabel={(author) => `${author.firstName} ${author.lastName}`}
             value={authorsData?.data.find((author) => author.id === authorId) || null}
@@ -118,6 +146,13 @@ function BooksList() {
               queryClient.refetchQueries(['searchBooks', query, authorId, year]);
             }}
             renderInput={(params) => <TextField {...params} label="Autor" placeholder="Autor" />}
+            slotProps={{
+              popper: {
+                sx: {
+                  zIndex: 1,
+                },
+              },
+            }}
           />
         </Box>
         <Box marginBottom={1} marginRight={1} flexGrow={1}>
@@ -132,6 +167,13 @@ function BooksList() {
               queryClient.refetchQueries(['searchBooks', query, authorId, yearFilter]);
             }}
             renderInput={(params) => <TextField {...params} label="Kategoria" placeholder="Kategoria" />}
+            slotProps={{
+              popper: {
+                sx: {
+                  zIndex: 1,
+                },
+              },
+            }}
           />
         </Box>
         <Box marginBottom={1} marginRight={1} flexGrow={1} width={10}>
@@ -172,13 +214,33 @@ function BooksList() {
         </Box>
       </Box>
       <Box marginTop={2}>
-        {searchStatus == 'loading' && <LoadingTypography />}
+        {searchStatus == 'loading' && <Loading />}
         {searchStatus == 'error' && (
           <Typography variant="h3" color={theme.palette.error.main}>
             Błąd!
           </Typography>
         )}
-        {searchStatus == 'success' && <Books data={searchData.data} />}
+        {searchStatus == 'success' && (
+          <Box>
+            <Books data={searchData.data} />
+            {searchData.data.length > 0 ? (
+              <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>
+                <Pagination
+                  onChange={handlePageChange}
+                  page={paginationProps.pageNumber + 1}
+                  count={Math.ceil(searchData.count / paginationProps.pageSize)}
+                  sx={{ justifySelf: 'center' }}
+                  size="large"
+                  color="primary"
+                />
+              </Box>
+            ) : (
+              <Typography variant="h5" textAlign={'center'}>
+                Brak wyników
+              </Typography>
+            )}
+          </Box>
+        )}
       </Box>
     </div>
   );

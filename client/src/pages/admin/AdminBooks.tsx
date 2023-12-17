@@ -57,7 +57,12 @@ function BooksTable({ data }: { data: BookViewModelType[] }) {
           {data.map((book) => (
             <TableRow
               key={book.id}
-              sx={{ cursor: 'pointer' }}
+              sx={{
+                cursor: 'pointer',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                },
+              }}
               onClick={() => navigate(`/admin/books/${book.id}`)}>
               <TableCell>{book.isbn}</TableCell>
               <TableCell>{book.title}</TableCell>

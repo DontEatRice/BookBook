@@ -1,0 +1,34 @@
+name: Prod deploy
+
+on:
+  push:
+    branches: [ "master" ]
+    paths: 
+      - 'client/**'
+
+jobs:
+  front-end-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - name: npm install and build
+        run: |
+          npm install
+          VITE_API_BASE_URL=/api npm run build
+      - name: SCP Files
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.KEY }}
+          source: "client/dist/*"
+          target: "/var/www/bookbook"
+          strip_components: 2

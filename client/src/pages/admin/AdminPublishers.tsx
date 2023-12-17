@@ -29,7 +29,15 @@ function PublishersTable({ data }: { data: PublisherViewModelType[] }) {
         </TableHead>
         <TableBody>
           {data.map((publisher) => (
-            <TableRow key={publisher.id} onClick={() => navigate(`/admin/publishers/${publisher.id}`)}>
+            <TableRow
+              key={publisher.id}
+              onClick={() => navigate(`/admin/publishers/${publisher.id}`)}
+              sx={{
+                cursor: 'pointer',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                },
+              }}>
               <TableCell>{publisher.id}</TableCell>
               <TableCell>{publisher.name}</TableCell>
             </TableRow>

@@ -44,13 +44,6 @@ public class LibrariesController : ControllerBase
         return Created($"/libraries/{id}", null);
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> Delete(Guid id)
-    {
-        await Mediator.Send(new RemoveLibraryCommand(id));
-        return NoContent();
-    }
-
     [HttpPost("{id:guid}/books")]
     public async Task<ActionResult> AddBook(Guid id, AddBookToLibraryCommand newBookInLibrary)
     {
@@ -63,9 +56,12 @@ public class LibrariesController : ControllerBase
     }
 
     [HttpPost("{id:guid}/books/search")]
-    public async Task<ActionResult<IEnumerable<BookInLibraryViewModel>>> GetBooks(GetBooksInLibraryQuery query)
+    public async Task<ActionResult<IEnumerable<BookInLibraryViewModel>>> GetBooks(Guid id, GetBooksInLibraryQuery query)
     {
-        return Ok(await Mediator.Send(query));
+        return Ok(await Mediator.Send(query with
+        {
+            Id = id
+        }));
     }
 
     [HttpGet("{id:guid}/not-added")]

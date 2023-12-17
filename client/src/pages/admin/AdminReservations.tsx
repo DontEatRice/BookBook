@@ -29,7 +29,7 @@ export default function AdminReservationList() {
     refetch,
   } = useQuery({
     queryKey: ['reservations'],
-    queryFn: () => getReservations({ pageNumber: 0, pageSize: 50 }, user?.libraryId),
+    queryFn: () => getReservations({ pageNumber: 0, pageSize: 50 }, user!.libraryId!),
   });
 
   const giveOutThisReservation = async (reservationId: string) => {
@@ -105,3 +105,4 @@ export default function AdminReservationList() {
     );
   }
 }
+

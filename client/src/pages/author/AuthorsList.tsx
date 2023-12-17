@@ -1,15 +1,23 @@
-import { Box, Button, Grid, InputAdornment, TextField, Typography, useTheme } from '@mui/material';
 import { AuthorViewModelType } from '../../models/author/AuthorViewModel';
 import AuthorInList from '../../components/author/AuthorInList';
 import { getAuthors } from '../../api/author';
 import { useQuery } from '@tanstack/react-query';
 import SearchIcon from '@mui/icons-material/Search';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import LoadingTypography from '../../components/common/LoadingTypography';
+import InputAdornment from '@mui/material/InputAdornment';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
+import { PaginationRequest } from '../../utils/constants';
+import { Pagination } from '@mui/material';
 
 function Authors({ data }: { data: AuthorViewModelType[] }) {
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={2}>
       {data.map((author) => (
         <Grid item xs={12} key={author.id}>
           <AuthorInList author={author} />
@@ -35,9 +43,27 @@ function AuthorsList() {
       setQuery(searchInput);
     }
   };
+
+  const [paginationProps, setPaginationProps] = useState<PaginationRequest>({
+    pageNumber: 0,
+    pageSize: 10,
+  });
+  const handlePageChange = (_: ChangeEvent<unknown>, newPage: number) => {
+    setPaginationProps({
+      ...paginationProps,
+      pageNumber: newPage - 1,
+    });
+  };
+
   const { data: searchData, status: searchStatus } = useQuery({
-    queryKey: ['searchAuthors', query],
-    queryFn: () => getAuthors({ pageSize: 50, pageNumber: 0 }),
+    queryKey: ['searchAuthors', query, paginationProps.pageNumber],
+    queryFn: () =>
+      getAuthors({
+        pageSize: paginationProps.pageSize,
+        pageNumber: paginationProps.pageNumber,
+        query: query,
+      }),
+    keepPreviousData: true,
   });
 
   return (
@@ -67,7 +93,27 @@ function AuthorsList() {
             Błąd!
           </Typography>
         )}
-        {searchStatus == 'success' && <Authors data={searchData.data} />}
+        {searchStatus == 'success' && (
+          <Box>
+            <Authors data={searchData.data} />
+            {searchData.data.length > 0 ? (
+              <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>
+                <Pagination
+                  onChange={handlePageChange}
+                  page={paginationProps.pageNumber + 1}
+                  count={Math.ceil(searchData.count / paginationProps.pageSize)}
+                  sx={{ justifySelf: 'center' }}
+                  size="large"
+                  color="primary"
+                />
+              </Box>
+            ) : (
+              <Typography variant="h5" textAlign={'center'}>
+                Brak wyników
+              </Typography>
+            )}
+          </Box>
+        )}
       </Box>
     </div>
   );

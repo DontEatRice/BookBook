@@ -8,9 +8,15 @@ body {
     background-color: #F3EEE7;
 }
 
+a:link {
+    text-decoration: none;
+    color: inherit;
+}
+
 a:visited {
     color: inherit;
 }
+
 #map{
     position: relative;
     height: inherit;

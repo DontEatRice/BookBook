@@ -17,11 +17,11 @@ public class BooksController : ControllerBase
     }
     
     [HttpPost("search")]
-    public async Task<ActionResult<IEnumerable<BookViewModel>>> List(GetBooksQuery request) 
+    public async Task<ActionResult<PaginatedResponseViewModel<BookViewModel>>> List(GetBooksQuery request) 
         => Ok(await Mediator.Send(request));
     
     [HttpPost("ranking")]
-    public async Task<ActionResult<IEnumerable<BookInRankingViewModel>>> List(GetBookRankingQuery request) 
+    public async Task<ActionResult<PaginatedResponseViewModel<BookInRankingViewModel>>> List(GetBookRankingQuery request) 
         => Ok(await Mediator.Send(request));
 
     [HttpGet("{id:guid}")]
@@ -64,12 +64,5 @@ public class BooksController : ControllerBase
         });
         
         return Created($"/books/{id}", null);
-    }
-
-    [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> Delete(Guid id)
-    {
-        await Mediator.Send(new RemoveBookCommand(id));
-        return NoContent();
     }
 }

@@ -94,6 +94,12 @@ namespace Server.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AboutMe")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("AddressId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("AvatarImageUrl")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
@@ -102,8 +108,14 @@ namespace Server.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("float");
+
                     b.Property<Guid?>("LibraryId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -116,6 +128,8 @@ namespace Server.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -524,6 +538,10 @@ namespace Server.Infrastructure.Migrations
 
             modelBuilder.Entity("Server.Domain.Entities.Auth.Identity", b =>
                 {
+                    b.HasOne("Server.Domain.Entities.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId");
+
                     b.HasOne("Server.Domain.Entities.Library", "Library")
                         .WithMany()
                         .HasForeignKey("LibraryId");
@@ -550,6 +568,8 @@ namespace Server.Infrastructure.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("IdentityId");
                         });
+
+                    b.Navigation("Address");
 
                     b.Navigation("Library");
 

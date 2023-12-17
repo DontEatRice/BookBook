@@ -47,7 +47,7 @@ export async function updateMyAccount(data: UpdateMyAccountType) {
       Authorization: auth,
       'Content-Type': 'application/json',
     }),
-    body: JSON.stringify(data),
+    body: JSON.stringify({...data, libraryId: data.library?.id}),
   });
   if (!result.ok) {
     await handleBadResponse(result);

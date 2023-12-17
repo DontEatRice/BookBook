@@ -22,6 +22,21 @@ public class Cart
             throw new DomainException("Book already in cart", DomainErrorCodes.BookAlreadyInCart);
         }
 
+        if (CartItems.Count > 3)
+        {
+            throw new DomainException("Too many books in cart", DomainErrorCodes.TooManyBooksInCart);
+        }
+
+        if (CartItems.Count(c => c.LibraryId == cartBook.LibraryId) > 2)
+        {
+            throw new DomainException("Too many books in one reservation", DomainErrorCodes.TooManyBooksInReservation);
+        }
+
+        if (CartItems.Select(c => c.LibraryId).Distinct().Count() >= 2 && !CartItems.Select(c => c.LibraryId).Contains(cartBook.LibraryId))
+        {
+            throw new DomainException("Too many libraries in cart", DomainErrorCodes.TooManyLibrariesInCart);
+        }
+
         CartItems.Add(cartBook);
     }
 

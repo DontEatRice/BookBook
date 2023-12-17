@@ -4,8 +4,8 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
-import { deleteBook, updateBook } from '../../api/book';
+import { Link, useNavigate } from 'react-router-dom';
+import { updateBook } from '../../api/book';
 import { getBook } from '../../api/book';
 import { getCategories } from '../../api/category';
 import { getAuthors } from '../../api/author';
@@ -14,12 +14,9 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { useParams } from 'react-router';
 import Stack from '@mui/material/Stack';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { ApiResponseError } from '../../utils/utils';
 import useAlert from '../../utils/alerts/useAlert';
-import Typography from '@mui/material/Typography';
-import { useTheme } from '@mui/material/styles';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import UpdateBook, { UpdateBookType } from '../../models/UpdateBook';
 import { languages } from '../../utils/constants';
 import { NumberInputField2 } from '../../components/common/NumberInputField';
@@ -37,8 +34,6 @@ function AdminBookUpdateForm() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const params = useParams();
-  const theme = useTheme();
-  const [deleteError, setDeleteError] = useState<string | null>(null);
   const { handleError } = useAlert();
 
   const {
@@ -71,21 +66,6 @@ function AdminBookUpdateForm() {
     onError: (err) => {
       if (err instanceof ApiResponseError && err.error.code == 'BOOK_ALREADY_ADDED') {
         setError('isbn', { message: 'Podany ISBN jest już zajęty' }, { shouldFocus: true });
-      } else {
-        handleError(err);
-      }
-    },
-  });
-
-  const deleteBookMutation = useMutation({
-    mutationFn: deleteBook,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['books']);
-      navigate('..');
-    },
-    onError: (err) => {
-      if (err instanceof ApiResponseError && err.error.code == 'BOOK_NOT_FOUND') {
-        setDeleteError('Ta książka już nie istnieje.');
       } else {
         handleError(err);
       }
@@ -130,22 +110,6 @@ function AdminBookUpdateForm() {
   } else {
     return (
       <Box sx={{ mt: 2 }}>
-        {deleteError && (
-          <Paper
-            elevation={7}
-            sx={{
-              width: '100%',
-              padding: 2,
-              backgroundColor: theme.palette.error.main,
-              textAlign: 'center',
-              display: 'flex',
-              justifyContent: 'center',
-              mt: 2,
-            }}>
-            <ErrorOutlineIcon />
-            <Typography>{deleteError}</Typography>
-          </Paper>
-        )}
         {status == 'loading' && 'Ładowanie...'}
         {status == 'error' && 'Błąd!'}
         {status == 'success' && (
@@ -263,11 +227,11 @@ function AdminBookUpdateForm() {
                 />
                 <NumberInputField2 field="pageCount" control={control} label="Ilość stron" />
                 <Stack direction="row" spacing={2} justifyContent={'center'}>
+                  <Button component={Link} to={'..'}>
+                    Anuluj
+                  </Button>
                   <Button type="submit" variant="contained">
                     Zapisz
-                  </Button>
-                  <Button color="error" onClick={() => deleteBookMutation.mutate(params.bookId + '')}>
-                    Usuń
                   </Button>
                 </Stack>
               </Paper>

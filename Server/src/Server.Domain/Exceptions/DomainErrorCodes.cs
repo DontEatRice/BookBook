@@ -10,4 +10,7 @@ public static class DomainErrorCodes
     public const string BookAlreadyInCart = "BOOK_ALREADY_IN_CART";
     public const string BookNotInCart = "BOOK_NOT_IN_CART";
     public const string SamePasswords = "SAME_PASSWORDS";
+    public const string TooManyBooksInCart = "TOO_MANY_BOOKS_IN_CART";
+    public const string TooManyBooksInReservation = "TOO_MANY_BOOKS_IN_RESERVATION";
+    public const string TooManyLibrariesInCart = "TOO_MANY_LIBRARIES_IN_CART";
 }

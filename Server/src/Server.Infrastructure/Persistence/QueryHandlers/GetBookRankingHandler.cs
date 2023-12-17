@@ -7,7 +7,7 @@ using Server.Utils;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
-public record GetBookRankingQuery : PaginationOptions, IRequest<PaginatedResponseViewModel<BookInRankingViewModel>>;
+public record GetBookRankingQuery(Guid? CategoryId) : PaginationOptions, IRequest<PaginatedResponseViewModel<BookInRankingViewModel>>;
 
 internal sealed class GetBookRankingHandler : IRequestHandler<GetBookRankingQuery, PaginatedResponseViewModel<BookInRankingViewModel>>
 {
@@ -25,12 +25,19 @@ internal sealed class GetBookRankingHandler : IRequestHandler<GetBookRankingQuer
     {
         var query = _dbContext.Books
             .AsNoTracking();
-        
-        query = !string.IsNullOrWhiteSpace(request.OrderByField) ? 
+
+        query = !string.IsNullOrWhiteSpace(request.OrderByField) ?
             request.OrderDirection == OrderDirection.Desc ?
-            query.OrderByDescending(request.OrderByField) : 
+            query.OrderByDescending(request.OrderByField) :
             query.OrderBy(request.OrderByField) :
             query.OrderBy(x => x.Id);
+
+        query = query.Where(x => x.AverageRating != null);
+
+        if(request.CategoryId.HasValue)
+        {
+            query = query.Where(x => x.BookCategories.Any(c => c.Id == request.CategoryId));
+        }
 
         var (books, totalCount) = await query
             .ProjectTo<BookInRankingViewModel>(_mapper.ConfigurationProvider)

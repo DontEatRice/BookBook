@@ -1,5 +1,6 @@
 import { AddToCartType } from '../models/AddToCart';
 import CartViewModel from '../models/CartViewModel';
+import { handleBadResponse } from '../utils/utils';
 import { getAuthToken } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
@@ -28,9 +29,8 @@ export const addToCart = async (addToCart: AddToCartType) => {
       Authorization: auth,
     }),
   });
-  if (response.status !== 200) {
-    const data = await response.json();
-    throw new Error(data.code);
+  if (!response.ok) {
+    await handleBadResponse(response);
   }
 };
 

@@ -29,7 +29,7 @@ const AddLibrary = z.object({
     .refine((value) => /^[0-9]{2}-[0-9]{3}$/.test(value), 'Kod pocztowy musi odpowiadać formatowi 00-000'),
   city: z.string().min(1, 'Pole jest wymagane'),
   street: z.string().min(1, 'Pole jest wymagane'),
-  number: z.string().min(1, 'Pole jest wymagane'),
+  number: z.string().min(1, 'Pole jest wymagane').refine((value) => /^\d*[A-Z]{0,1}$/.test(value), "Wprowadź poprawny numer budynku"),
   apartment: z.string().nullable(),
   additionalInfo: z.string().nullable(),
   mondayOpenTime: timeField,
