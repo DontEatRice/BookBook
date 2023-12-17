@@ -69,9 +69,9 @@ function AdminBooksInLibrary() {
     return (
       <Box textAlign={'center'} flexDirection={'column'}>
         <Typography variant="h5" sx={{ marginTop: 3, marginBottom: 2 }}>
-          Zaloguj za pomocą konta pracownika
+          Zaloguj się na konto pracownika
         </Typography>
-        <Button href="/login" variant="contained">
+        <Button variant="contained" component={Link} to={loginWithReturnToPath(window.location.pathname)}>
           Logowanie
         </Button>
       </Box>
