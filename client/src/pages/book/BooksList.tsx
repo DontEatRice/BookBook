@@ -13,7 +13,6 @@ import { getAuthors } from '../../api/author';
 import { getCategories } from '../../api/category';
 import { PaginationRequest } from '../../utils/constants';
 import Loading from '../../components/common/Loading';
-import LoadingTypography from '../../components/common/LoadingTypography';
 import { getLibraries } from '../../api/library';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
@@ -115,8 +114,8 @@ function BooksList() {
       query,
       authorId,
       categoryId,
-      yearFilter, 
-        libraryId,
+      yearFilter,
+      libraryId,
       paginationProps.pageNumber,
       paginationProps.pageSize,
     ],
@@ -199,36 +198,36 @@ function BooksList() {
           />
         </Box>
         <Box marginBottom={1} marginRight={1} flexGrow={1}>
-            <Autocomplete
-                fullWidth
-                options={librariesData?.data || []}
-                getOptionLabel={(library) => `${library.name}`}
-                value={librariesData?.data.find((library) => library.id === libraryId) || null}
-                onChange={(_, newValue) => {
-                    setLibraryId(newValue?.id);
-                }}
-                renderInput={(params) => <TextField {...params} label="Biblioteka" placeholder="Biblioteka" />}
-            />
+          <Autocomplete
+            fullWidth
+            options={librariesData?.data || []}
+            getOptionLabel={(library) => `${library.name}`}
+            value={librariesData?.data.find((library) => library.id === libraryId) || null}
+            onChange={(_, newValue) => {
+              setLibraryId(newValue?.id);
+            }}
+            renderInput={(params) => <TextField {...params} label="Biblioteka" placeholder="Biblioteka" />}
+          />
         </Box>
       </Box>
-        <Box marginBottom={1} marginRight={1} flexGrow={1}>
-            <TextField
-                fullWidth
-                placeholder="Szukaj książek"
-                value={searchInput}
-                onChange={handleSearchType}
-                onKeyDown={handleSearchOnEnter}
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <Button variant="contained" endIcon={<SearchIcon />} onClick={handleSearch}>
-                                Szukaj
-                            </Button>
-                        </InputAdornment>
-                    ),
-                }}
-            />
-        </Box>
+      <Box marginBottom={1} marginRight={1} flexGrow={1}>
+        <TextField
+          fullWidth
+          placeholder="Szukaj książek"
+          value={searchInput}
+          onChange={handleSearchType}
+          onKeyDown={handleSearchOnEnter}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <Button variant="contained" endIcon={<SearchIcon />} onClick={handleSearch}>
+                  Szukaj
+                </Button>
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Box>
       <Box marginTop={2}>
         {searchStatus == 'loading' && <Loading />}
         {searchStatus == 'error' && (
@@ -263,3 +262,4 @@ function BooksList() {
 }
 
 export default BooksList;
+
