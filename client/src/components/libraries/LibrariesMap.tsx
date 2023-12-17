@@ -1,12 +1,9 @@
 import { Box, Grid, Paper, Stack, Typography } from '@mui/material';
-import { addToCart } from '../../api/cart';
-import useAlert from '../../utils/alerts/useAlert';
-import { useCartStore } from '../../store';
 import AuthorizedView from '../auth/AuthorizedView';
 import { Link } from 'react-router-dom';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import LoadingTypography from '../common/LoadingTypography';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
 import { useAuth } from '../../utils/auth/useAuth';
@@ -17,8 +14,6 @@ import { getLibraries } from '../../api/library';
 
 export function LibrariesMap() {
   const { user } = useAuth();
-  const { showSuccess } = useAlert();
-  const cartStore = useCartStore();
 
   const { data: libraries, status: librariesStatus } = useQuery({
     queryKey: ['libraries'],
