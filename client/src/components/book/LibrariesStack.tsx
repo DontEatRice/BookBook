@@ -131,7 +131,7 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                       {library.library.address.postalCode + ' ' + library.library.address.city}
                     </Typography>
                   </div>
-                  <AuthorizedView>
+                  <AuthorizedView roles={['User']}>
                     <Stack direction={'column'}>
                       <Button onClick={() => addToCartMutation({ bookId, libraryId: library.library.id })}>
                         Do koszyka
@@ -170,7 +170,7 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                     {library.address.apartment ?? ''}
                     <br /> {library.address.city}
                     <br />
-                    <AuthorizedView>
+                    <AuthorizedView roles={['User']}>
                       <Button onClick={() => addToCartMutation({ bookId, libraryId: library.id })}>
                         Do koszyka
                       </Button>

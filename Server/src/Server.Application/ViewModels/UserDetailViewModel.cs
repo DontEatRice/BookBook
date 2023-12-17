@@ -8,4 +8,5 @@ public class UserDetailViewModel
     public Guid? LibraryId { get; set; }
     public List<string> Roles { get; set; } = new();
     public AddressViewModel? Address { get; set; }
+    public string? AboutMe { get; set; }
 }
