@@ -1,7 +1,10 @@
 import Typography from '@mui/material/Typography';
 import AuthorizedView from '../../components/auth/AuthorizedView';
-import { Box, Button } from '@mui/material';
 import NotAuthorizedView from '../../components/auth/NotAuthorizedView';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import { Link } from 'react-router-dom';
+import { loginWithReturnToPath } from '../../utils/utils';
 
 function AdminHome() {
   return (
@@ -18,7 +21,7 @@ function AdminHome() {
           <Typography variant="h5" sx={{ marginTop: 3, marginBottom: 2 }}>
             Zaloguj się w celu zarządzania zasobami
           </Typography>
-          <Button href="/login" variant="contained">
+          <Button variant="contained" component={Link} to={loginWithReturnToPath(window.location.pathname)}>
             Logowanie
           </Button>
         </Box>

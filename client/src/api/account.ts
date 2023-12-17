@@ -9,7 +9,7 @@ const base = import.meta.env.VITE_API_BASE_URL + '/Account';
 export async function changePassword({ oldPassword, newPassword }: ChangePasswordRequestType) {
   const auth = await getAuthToken();
   const result = await fetch(base + '/change-password', {
-    method: 'patch',
+    method: 'PATCH',
     body: JSON.stringify({ oldPassword, newPassword }),
     credentials: 'include',
     headers: new Headers({
@@ -41,17 +41,16 @@ export async function myAccount() {
 export async function updateMyAccount(data: UpdateMyAccountType) {
   const auth = await getAuthToken();
   const result = await fetch(base + '/me', {
-    method: 'patch',
+    method: 'PATCH',
     credentials: 'include',
     headers: new Headers({
       Authorization: auth,
       'Content-Type': 'application/json',
     }),
-    body: JSON.stringify({...data, libraryId: data.library?.id}),
+    body: JSON.stringify({ ...data, libraryId: data.library?.id }),
   });
   if (!result.ok) {
     await handleBadResponse(result);
   }
   return UserDetailViewModel.parse(await result.json());
 }
-

@@ -49,7 +49,7 @@ export async function getAuthTokenOrNull() {
 
 export async function getAuthToken() {
   const token = localStorage.getItem(LocalStorageTokenKey);
-  if (token === null) {
+  if (!token) {
     throw new AuthError('UNATHORIZED');
   }
   if (getJwtBody(token).exp < Date.now() / 1000) {
@@ -69,6 +69,15 @@ export async function getAuthToken() {
 
 export async function refresh() {
   const result = await fetch(base + '/refresh', {
+    method: 'get',
+    headers: new Headers({ 'Content-Type': 'application/json' }),
+    credentials: 'include',
+  });
+  return result;
+}
+
+export async function logout() {
+  const result = await fetch(base + '/logout', {
     method: 'get',
     headers: new Headers({ 'Content-Type': 'application/json' }),
     credentials: 'include',

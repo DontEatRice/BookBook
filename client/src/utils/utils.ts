@@ -77,6 +77,10 @@ export async function handleBadResponse(response: Response) {
   throw apiError;
 }
 
+export function loginWithReturnToPath(returnTo: string) {
+  return `/login?returnTo=${encodeURIComponent(returnTo)}`;
+}
+
 export function convertJwtToUser(token: string): User {
   const claims = getJwtBody(token);
   let roles: string[] = [];
@@ -95,7 +99,7 @@ export function convertJwtToUser(token: string): User {
     libraryId: claims.libraryid,
     name: claims._name,
     lat: claims.lat ? Number(claims.lat.toString().replace(',', '.')) : undefined,
-    lon: claims.lon ? Number(claims.lon.toString().replace(',', '.')) : undefined
+    lon: claims.lon ? Number(claims.lon.toString().replace(',', '.')) : undefined,
   };
 }
 

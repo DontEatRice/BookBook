@@ -12,5 +12,6 @@ public interface IIdentityDomainService
     Task<AuthTokens> LoginAsync(string email, string password, CancellationToken cancellationToken = default);
     Task<AuthTokens> RefreshAccessTokenAsync(string oldRefreshToken,
         CancellationToken cancellationToken = default);
+    Task LogoutAsync(string refreshToken, CancellationToken cancellationToken = default);
     Task ChangePasswordAsync(Guid id, string oldPassword, string newPassword, CancellationToken cancellationToken = default);
 }
