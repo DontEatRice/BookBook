@@ -1,8 +1,7 @@
-import { TableHead, TableBody, Table, TableRow, TableContainer, Stack } from '@mui/material';
-import StyledTableCell from '../../components/tableComponents/StyledTableCell';
+import { Stack } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { BookViewModelType } from '../../models/BookViewModel';
-import ReviewTableRow from './ReviewTableRow';
+import ReviewPaper from './ReviewPaper';
 import { ReviewViewModelType } from '../../models/ReviewViewModel';
 import AddReviewForm from './AddReviewForm';
 import AuthorizedView from '../../components/auth/AuthorizedView';
@@ -24,12 +23,10 @@ function Reviews({ book, reviews }: { book: BookViewModelType; reviews: ReviewVi
       </AuthorizedView>
           {reviews
             .map((review) => (
-              <ReviewTableRow review={review} book={book} key={review.id}></ReviewTableRow>
+              <ReviewPaper review={review} book={book} key={review.id}></ReviewPaper>
             ))}
     </Stack>
   );
 }
-
-
 
 export default Reviews;

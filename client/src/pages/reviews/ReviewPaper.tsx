@@ -1,6 +1,4 @@
-import { Dialog, TextField, Typography, Rating, Avatar, Button, Paper, Grid, Box } from '@mui/material';
-import StyledTableCell from '../../components/tableComponents/StyledTableCell';
-import StyledTableRow from '../../components/tableComponents/StyledTableRow';
+import { Dialog, Typography, Rating, Avatar, Button, Paper, Grid, Box } from '@mui/material';
 import { useState } from 'react';
 import { ReviewViewModelType } from '../../models/ReviewViewModel';
 import { useTheme } from '@mui/material/styles';
@@ -14,7 +12,7 @@ import UpdateReviewForm from './UpdateReviewForm';
 import AuthorizedView from '../../components/auth/AuthorizedView';
 import { useAuth } from '../../utils/auth/useAuth';
 
-function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: BookViewModelType }) {
+function ReviewPaper({ review, book }: { review: ReviewViewModelType; book: BookViewModelType }) {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const { handleError } = useAlert();
   const theme = useTheme();
@@ -53,7 +51,7 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
       <Grid container>
         <Grid container direction={'row'} wrap="nowrap">
           <Grid item xs={1} minHeight={56} minWidth={56}>
-            <Avatar src={review.user.avatarImageUrl == null ? 'client\public\autor-szablon.jpg' : review.user.avatarImageUrl} 
+            <Avatar src={review.user.avatarImageUrl == null ? 'client/public/autor-szablon.jpg' : review.user.avatarImageUrl} 
             sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }} />
           </Grid>
           <Grid item xs={6} marginLeft={2}>
@@ -64,7 +62,7 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
               {review.user.name}
             </Typography>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={5}>
             <Box display="flex" justifyContent="flex-end">
               <Rating
                 name="half-rating-read"
@@ -113,61 +111,7 @@ function ReviewTableRow({ review, book }: { review: ReviewViewModelType; book: B
         </AuthorizedView>
       </Grid>
     </Paper>
-    // <StyledTableRow>
-    //   <StyledTableCell>
-    //     <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>N</Avatar>
-    //     <div>username</div>
-    //   </StyledTableCell>
-    //   <StyledTableCell>
-    //     <Rating
-    //       name="half-rating-read"
-    //       value={review.rating == null ? 0 : review.rating}
-    //       precision={1}
-    //       readOnly
-    //     />
-    //   </StyledTableCell>
-    //   <StyledTableCell>
-    //     <Typography variant="h5">
-    //       <TextField
-    //         multiline
-    //         maxRows={2}
-    //         InputProps={{ readOnly: true }}
-    //         sx={{ mb: 2 }}
-    //         variant="standard"
-    //         value={review.title}
-    //       />
-    //     </Typography>
-    //     <TextField multiline InputProps={{ readOnly: true }} sx={{ mb: 2 }} value={review.description} />
-    //   </StyledTableCell>
-    //   <StyledTableCell>
-    //     {deleteError && (
-    //       <Paper
-    //         elevation={7}
-    //         sx={{
-    //           width: '100%',
-    //           padding: 2,
-    //           backgroundColor: theme.palette.error.main,
-    //           textAlign: 'center',
-    //           display: 'flex',
-    //           justifyContent: 'center',
-    //           mt: 1,
-    //         }}>
-    //         <ErrorOutlineIcon />
-    //         <Typography>{deleteError}</Typography>
-    //       </Paper>
-    //     )}
-    //     <Button sx={{ width: 50, height: 40 }} onClick={() => mutation.mutate(review.id)}>
-    //       Usuń
-    //     </Button>
-    //     <Button sx={{ width: 50, height: 40 }} onClick={handleOpen}>
-    //       Edytuj
-    //     </Button>
-    //     <Dialog open={open} onClose={handleClose}>
-    //       <UpdateReviewForm review={review} book={book} handleClose={handleClose} />
-    //     </Dialog>
-    //   </StyledTableCell>
-    // </StyledTableRow>
   );
 }
 
-export default ReviewTableRow;
+export default ReviewPaper;

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Rating, Stack, Paper, Button, Box } from '@mui/material';
+import { Rating, Paper, Button, Box } from '@mui/material';
 import TextInputField from '../../components/common/TextInputField';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,7 +14,6 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { ApiResponseError } from '../../utils/utils';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { useAuth } from '../../utils/auth/useAuth';
 
 function AddReviewForm({ book }: { book: BookViewModelType }) {
   const [addError, setAddError] = useState<string | null>(null);
@@ -22,7 +21,6 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
   const theme = useTheme();
   const [value, setValue] = React.useState<number | null>(0);
   const queryClient = useQueryClient();
-  const { user } = useAuth();
   const {
     register,
     handleSubmit,

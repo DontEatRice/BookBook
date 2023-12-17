@@ -4,7 +4,7 @@ import { AuthorViewModelType } from '../../models/author/AuthorViewModel';
 import { getBook, getLibrariesWithBook } from '../../api/book';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
-import Reviews from '../reviews/Reviews';
+import Reviews from '../reviews/ReviewsStack';
 import ToggleBookInUserList, { ToggleBookInUserListType } from '../../models/ToggleBookInUserList';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -93,7 +93,7 @@ function BookDetails() {
   };
 
   const { data: reviews, status: statusReviews } = useQuery({
-    queryKey: ['reviews', params.bookId],
+    queryKey: ['reviews', paginationProps.pageNumber],
     queryFn: () => getReviews(params.bookId + '', { pageNumber: 0, pageSize: 50 }),
   });
 
@@ -266,7 +266,21 @@ function BookDetails() {
             <Box marginBottom={3} padding={2} width={'100%'}>
                 {statusReviews == 'loading' && 'Ładowanie opinii...'}
                 {statusReviews == 'error' && 'Błąd!'}
-                {statusReviews == 'success' && <Reviews book={book} reviews={reviews.data} />}
+                {statusReviews == 'success' && (
+                <Box>
+                  <Reviews book={book} reviews={reviews.data}/>
+                  {reviews.data.length > 0 && (
+                    <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>
+                      <Pagination
+                        onChange={handlePageChange}
+                        page={paginationProps.pageNumber + 1}
+                        count={Math.ceil(reviews.count / paginationProps.pageSize)}
+                        sx={{ justifySelf: 'center' }}
+                        size="large"
+                        color="primary"
+                      />
+                    </Box>)}
+                </Box>)}
             </Box>
           </Grid>
         )}
