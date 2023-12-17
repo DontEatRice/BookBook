@@ -5,7 +5,6 @@ using Server.Application.CommandHandlers.Account;
 using Server.Application.CommandHandlers.User;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
-using Server.Application.ViewModels;
 using Server.Infrastructure.Persistence.QueryHandlers.User;
 
 namespace Server.Api.Controllers;
