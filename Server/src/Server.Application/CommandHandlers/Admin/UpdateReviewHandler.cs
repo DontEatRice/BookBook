@@ -22,13 +22,15 @@ public sealed class UpdateReviewHandler : IRequestHandler<UpdateReviewCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IReviewRepository _reviewRepository;
+    private readonly IBookRepository _bookRepository;
     private readonly IIdentityRepository _identityRepository;
 
     public UpdateReviewHandler(IUnitOfWork unitOfWork, IReviewRepository reviewRepository, 
-        IIdentityRepository identityRepository)
+        IBookRepository bookRepository, IIdentityRepository identityRepository)
     {
         _unitOfWork = unitOfWork;
         _reviewRepository = reviewRepository;
+        _bookRepository = bookRepository;
         _identityRepository = identityRepository;
     }
 
@@ -40,15 +42,21 @@ public sealed class UpdateReviewHandler : IRequestHandler<UpdateReviewCommand>
         {
             throw new NotFoundException("Review not found", ApplicationErrorCodes.ReviewNotFound);
         }
-        
-        var user = await _identityRepository.FirstOrDefaultByIdAsync(request.UserId, cancellationToken) ??
-                   throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
 
         if (request.UserId != review.User.Id)
         {
             throw new LogicException("User is not allowed to edit this review",
                 ApplicationErrorCodes.UserNotAllowed);
         }
+
+        var book = review.Book;
+        
+        if (book is null)
+        {
+            throw new NotFoundException("Book not found", ApplicationErrorCodes.BookNotFound);
+        }
+        
+        book.UpdateReviewRating(review.Rating, request.Rating);
         
         review.Title = request.Title;
         review.Description = request.Description;

@@ -60,7 +60,7 @@ public class Book
     public void SubtractReviewFromRating(double reviewRating)
     {
         var reviewCount = Reviews.Count;
-        var averageRating = AverageRating;
+        var averageRating = AverageRating ?? 0;
 
         if (reviewCount <= 1)
         {
@@ -68,6 +68,20 @@ public class Book
             return;
         }
         
-        AverageRating = Math.Round((averageRating ?? 0 * reviewCount - reviewRating) / (reviewCount - 1), 2);
+        AverageRating = Math.Round((averageRating * reviewCount - reviewRating) / (reviewCount - 1), 2);
+    }
+    
+    public void UpdateReviewRating(double oldReviewRating, double newReviewRating)
+    {
+        var reviewCount = Reviews.Count;
+        var averageRating = AverageRating ?? 0;
+        
+        if (reviewCount <= 1)
+        {
+            AverageRating = null;
+            return;
+        }
+        
+        AverageRating = Math.Round((averageRating * reviewCount - oldReviewRating + newReviewRating) / (reviewCount), 2);
     }
 }

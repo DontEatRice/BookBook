@@ -4,7 +4,7 @@ const UpdateReview = z.object({
   idReview: z.string(),
   title: z.string().optional(),
   description: z.string().optional(),
-  rating: z.number().min(1).max(5).nullable(),
+  rating: z.number().min(0).max(5).nullable(),
   idBook: z.string(),
 });
 
