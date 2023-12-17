@@ -55,9 +55,23 @@ function AdminBooksInLibrary() {
   const theme = useTheme();
   const { user } = useAuth();
   const { data: booksInLibrary, status: booksInLibraryStatus } = useQuery({
-    queryKey: ['booksInLibrary', user!.libraryId!],
+    queryKey: ['booksInLibrary', user?.libraryId],
     queryFn: ({ queryKey }) => getBooksInLibrary({ libraryId: queryKey[1]!, pageNumber: 0, pageSize: 50 }),
+    enabled: !!user?.libraryId,
   });
+
+  if (!user?.libraryId) {
+    return (
+      <Box textAlign={'center'} flexDirection={'column'}>
+        <Typography variant="h5" sx={{ marginTop: 3, marginBottom: 2 }}>
+          Zaloguj za pomocą konta pracownika
+        </Typography>
+        <Button href="/login" variant="contained">
+          Logowanie
+        </Button>
+      </Box>
+    );
+  }
 
   return (
     <Box mt={1}>
