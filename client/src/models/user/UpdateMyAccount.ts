@@ -12,7 +12,8 @@ const UpdateMyAccount = z.object({
   apartment: z.string().nullable().optional(),
   postalCode: z.string().optional(),
   city: z.string().optional(),
-  includeAddress: z.boolean()
+  includeAddress: z.boolean(),
+  aboutMe: z.string().nullable(),
 })
 .refine((input) => 
   !input.includeAddress || input.city!.length > 0, {

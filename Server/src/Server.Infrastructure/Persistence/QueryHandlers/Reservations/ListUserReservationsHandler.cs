@@ -26,11 +26,13 @@ internal sealed class ListUserReservationsHandler
     {
         var query = _bookBookDbContext.Reservations
             .Where(r => r.UserId == request.UserId);
-        
-        query = !string.IsNullOrWhiteSpace(request.OrderByField)
-            ? query.OrderBy(request.OrderByField)
-            : query.OrderBy(x => x.Id);
-        
+
+        query = !string.IsNullOrWhiteSpace(request.OrderByField) ?
+             request.OrderDirection == OrderDirection.Desc ?
+             query.OrderByDescending(request.OrderByField) :
+             query.OrderBy(request.OrderByField) :
+             query.OrderBy(x => x.Id);
+
         var (reservations, totalCount) = await query
             .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);
         
@@ -44,13 +46,13 @@ internal sealed class ListUserReservationsHandler
             PageSize = request.PageSize,
             Count = totalCount,
             Data = reservations
-                .OrderByDescending(x => x.CreatedAt)
                 .Select(x => new ReservationViewModel
                 {
                     Id = x.Id,
                     UserId = x.UserId,
                     Library = _mapper.Map<LibraryViewModel>(libraries.FirstOrDefault(l => l.Id == x.LibraryId)),
                     Status = x.Status.ToString(),
+                    CreatedAt = x.CreatedAt,
                     ReservationEndDate = x.ReservationEndDate
                 }).ToList()
         };

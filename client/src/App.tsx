@@ -41,6 +41,7 @@ import ReservationList from './pages/reservations/ReservationList';
 import AdminBookUpdateForm from './pages/admin/AdminBookUpdateForm';
 import Settings from './pages/account/AccountSettings';
 import AdminCategoryUpdateForm from './pages/admin/AdminCategoryUpdateForm';
+import UserProfile from './pages/user/UserProfile';
 
 const mainTheme = createTheme({
   palette: {
@@ -115,6 +116,9 @@ function App() {
         <Route path="account">
           <Route path="change-password" element={<ChangePassword />} />
           <Route path="settings" element={<Settings />} />
+        </Route>
+        <Route path="user">
+          <Route path=":userId" element={<UserProfile />} />
         </Route>
         <Route path="*" element={<div>NotFound</div>} />
         <Route path="books" element={<BooksList />} />

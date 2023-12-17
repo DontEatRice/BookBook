@@ -4,8 +4,10 @@ import { getUserBooks } from '../../api/user';
 import BookInUserList from '../../components/book/BookInUserList';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LoadingTypography from '../../components/common/LoadingTypography';
-import { Button, Typography } from '@mui/material';
+import { Button, Pagination, Typography } from '@mui/material';
+import { PaginationRequest } from '../../utils/constants';
+import { ChangeEvent, useState } from 'react';
+import Loading from '../../components/common/Loading';
 
 function UserBooks({ data }: { data: BookViewModelType[] }) {
   if (data.length == 0) {
@@ -21,7 +23,7 @@ function UserBooks({ data }: { data: BookViewModelType[] }) {
     );
   } else {
     return (
-      <Grid container spacing={3}>
+      <Grid container spacing={1}>
         {data.map((book) => (
           <Grid item xs={12} key={book.id}>
             <BookInUserList book={book} />
@@ -33,14 +35,41 @@ function UserBooks({ data }: { data: BookViewModelType[] }) {
 }
 
 function UserBooksList() {
+  const [paginationProps, setPaginationProps] = useState<PaginationRequest>({
+    pageNumber: 0,
+    pageSize: 10,
+  });
+  const handlePageChange = (_: ChangeEvent<unknown>, newPage: number) => {
+    setPaginationProps({
+      ...paginationProps,
+      pageNumber: newPage - 1,
+    });
+  };
+
   const { data, status } = useQuery({
-    queryKey: ['getUserBooks'],
-    queryFn: getUserBooks,
+    queryKey: ['getUserBooks', paginationProps.pageNumber],
+    queryFn: () => getUserBooks({ pageNumber: 0, pageSize: 10 }),
   });
   return (
     <Box>
-      {status == 'loading' && <LoadingTypography />}
-      {status == 'success' && <UserBooks data={data} />}
+      {status == 'loading' && <Loading />}
+      {status == 'success' && (
+        <Box>
+          <UserBooks data={data.data} />
+          {data.data.length > 0 && (
+            <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>
+              <Pagination
+                onChange={handlePageChange}
+                page={paginationProps.pageNumber + 1}
+                count={Math.ceil(data.count / paginationProps.pageSize)}
+                sx={{ justifySelf: 'center' }}
+                size="large"
+                color="primary"
+              />
+            </Box>
+          )}
+        </Box>
+      )}
     </Box>
   );
 }

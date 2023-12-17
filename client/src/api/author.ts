@@ -43,7 +43,9 @@ export const deleteAuthor = async (authorId: string) => {
   return response;
 };
 
-export async function getAuthors(body: PaginationRequest) {
+
+
+export async function getAuthors(body: PaginationRequest & {query?: string}) {
   const response = await paginatedFetch(base + '/authors/search', body);
   const data = await response.json();
 

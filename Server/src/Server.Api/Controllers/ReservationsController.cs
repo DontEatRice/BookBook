@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Reservations;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
+using Server.Application.ViewModels;
 using Server.Infrastructure.Persistence.QueryHandlers.Reservations;
 using Server.Utils;
 
@@ -48,7 +49,7 @@ public class ReservationsController : ControllerBase
     
     [HttpPost("search")]
     [Authorize]
-    public async Task<ActionResult> Get(ListUserReservationsQuery query)
+    public async Task<ActionResult<PaginatedResponseViewModel<ReservationViewModel>>> Get(ListUserReservationsQuery query)
     {
         var userId = User.FindFirstValue(AuthConstants.IdClaim) ??
                      throw new AuthenticationException(
