@@ -7,7 +7,7 @@ using Server.Utils;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
-public record GetBooksQuery(string? Query, Guid? AuthorId, Guid? CategoryId, int? YearPublished) : PaginationOptions, IRequest<PaginatedResponseViewModel<BookViewModel>>;
+public record GetBooksQuery(string? Query, Guid? AuthorId, Guid? CategoryId, int? YearPublished, Guid? LibraryId) : PaginationOptions, IRequest<PaginatedResponseViewModel<BookViewModel>>;
 
 internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, PaginatedResponseViewModel<BookViewModel>>
 {
@@ -51,6 +51,14 @@ internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, Paginated
         if (request is{ YearPublished: > 0})
         {
             query = query.Where(x => x.YearPublished.ToString().Contains(request.YearPublished.Value.ToString()));
+        }
+
+        if (request.LibraryId.HasValue)
+        {
+            var libraryBooks = _dbContext.LibraryBooks
+                .Where(x => x.LibraryId == request.LibraryId)
+                .Select(x => x.BookId);
+            query = query.Where(b => libraryBooks.Contains(b.Id));
         }
         
         var (books, totalCount) = await query

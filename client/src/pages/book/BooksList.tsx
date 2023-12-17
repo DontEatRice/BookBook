@@ -4,7 +4,7 @@ import { BookViewModelType } from '../../models/BookViewModel';
 import { useTheme } from '@mui/material/styles';
 import { searchBooks } from '../../api/book';
 import BookInList from '../../components/book/BookInList';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import Grid from '@mui/material/Grid';
 import { Autocomplete, Button, InputAdornment, Pagination, TextField } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
@@ -13,6 +13,7 @@ import { getAuthors } from '../../api/author';
 import { getCategories } from '../../api/category';
 import { PaginationRequest } from '../../utils/constants';
 import Loading from '../../components/common/Loading';
+import { getLibraries } from '../../api/library';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 
@@ -55,11 +56,11 @@ function Books({ data }: { data: BookViewModelType[] }) {
 }
 
 function BooksList() {
-  const queryClient = useQueryClient();
   const theme = useTheme();
   const [searchInput, setSearchInput] = useState<string>('');
   const [authorId, setAuthorId] = useState<string>();
   const [categoryId, setCategoryId] = useState<string>();
+  const [libraryId, setLibraryId] = useState<string>();
   const [year, setYear] = useState<number>();
   const [yearFilter, setYearFilter] = useState<number>();
 
@@ -71,6 +72,11 @@ function BooksList() {
   const { data: categoriesData } = useQuery({
     queryKey: ['categories'],
     queryFn: () => getCategories(paginationDefaultRequest),
+  });
+
+  const { data: librariesData } = useQuery({
+    queryKey: ['libraries'],
+    queryFn: () => getLibraries(paginationDefaultRequest),
   });
 
   const [query, setQuery] = useState<string>('');
@@ -109,6 +115,7 @@ function BooksList() {
       authorId,
       categoryId,
       yearFilter,
+      libraryId,
       paginationProps.pageNumber,
       paginationProps.pageSize,
     ],
@@ -142,8 +149,6 @@ function BooksList() {
             value={authorsData?.data.find((author) => author.id === authorId) || null}
             onChange={(_, newValue) => {
               setAuthorId(newValue?.id);
-              setYearFilter(year);
-              queryClient.refetchQueries(['searchBooks', query, authorId, year]);
             }}
             renderInput={(params) => <TextField {...params} label="Autor" placeholder="Autor" />}
             slotProps={{
@@ -163,8 +168,6 @@ function BooksList() {
             value={categoriesData?.data.find((category) => category.id === categoryId) || null}
             onChange={(_, newValue) => {
               setCategoryId(newValue?.id);
-              setYearFilter(year);
-              queryClient.refetchQueries(['searchBooks', query, authorId, yearFilter]);
             }}
             renderInput={(params) => <TextField {...params} label="Kategoria" placeholder="Kategoria" />}
             slotProps={{
@@ -176,6 +179,7 @@ function BooksList() {
             }}
           />
         </Box>
+
         <Box marginBottom={1} marginRight={1} flexGrow={1} width={10}>
           <TextField
             fullWidth
@@ -189,29 +193,40 @@ function BooksList() {
             onKeyDown={(e) => {
               if (e.key == 'Enter') {
                 setYearFilter(year);
-                queryClient.refetchQueries(['searchBooks', query, authorId, yearFilter]);
               }
             }}
           />
         </Box>
         <Box marginBottom={1} marginRight={1} flexGrow={1}>
-          <TextField
+          <Autocomplete
             fullWidth
-            placeholder="Szukaj książek"
-            value={searchInput}
-            onChange={handleSearchType}
-            onKeyDown={handleSearchOnEnter}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Button variant="contained" endIcon={<SearchIcon />} onClick={handleSearch}>
-                    Szukaj
-                  </Button>
-                </InputAdornment>
-              ),
+            options={librariesData?.data || []}
+            getOptionLabel={(library) => `${library.name}`}
+            value={librariesData?.data.find((library) => library.id === libraryId) || null}
+            onChange={(_, newValue) => {
+              setLibraryId(newValue?.id);
             }}
+            renderInput={(params) => <TextField {...params} label="Biblioteka" placeholder="Biblioteka" />}
           />
         </Box>
+      </Box>
+      <Box marginBottom={1} marginRight={1} flexGrow={1}>
+        <TextField
+          fullWidth
+          placeholder="Szukaj książek"
+          value={searchInput}
+          onChange={handleSearchType}
+          onKeyDown={handleSearchOnEnter}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <Button variant="contained" endIcon={<SearchIcon />} onClick={handleSearch}>
+                  Szukaj
+                </Button>
+              </InputAdornment>
+            ),
+          }}
+        />
       </Box>
       <Box marginTop={2}>
         {searchStatus == 'loading' && <Loading />}
@@ -247,3 +262,4 @@ function BooksList() {
 }
 
 export default BooksList;
+

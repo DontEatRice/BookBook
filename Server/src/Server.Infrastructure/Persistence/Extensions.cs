@@ -37,10 +37,6 @@ internal static class Extensions
         {
             // https://go.microsoft.com/fwlink/?linkid=2134277 
             options.UseSqlServer(sqlServerSettings.ConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-            {
-                options.LogTo(Console.WriteLine, LogLevel.Information);
-            }
         });
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IAuthorRepository, AuthorRepository>();

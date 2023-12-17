@@ -7,9 +7,9 @@ using Server.Application.ViewModels;
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
 public record GetLibrariesWithBookQuery(Guid Id)
-    : IRequest<List<LibraryViewModel>>;
+    : IRequest<List<LibraryWithBookViewModel>>;
 
-internal class GetLibrariesWithBookHandler : IRequestHandler<GetLibrariesWithBookQuery,List<LibraryViewModel>>
+internal class GetLibrariesWithBookHandler : IRequestHandler<GetLibrariesWithBookQuery,List<LibraryWithBookViewModel>>
 {
     private readonly BookBookDbContext _dbContext;
     private readonly IMapper _mapper;
@@ -20,7 +20,7 @@ internal class GetLibrariesWithBookHandler : IRequestHandler<GetLibrariesWithBoo
         _mapper = mapper;
     }
 
-    public async Task<List<LibraryViewModel>> Handle(
+    public async Task<List<LibraryWithBookViewModel>> Handle(
         GetLibrariesWithBookQuery request, CancellationToken cancellationToken)
     {
         var query = _dbContext.LibraryBooks.AsNoTracking();
@@ -32,9 +32,8 @@ internal class GetLibrariesWithBookHandler : IRequestHandler<GetLibrariesWithBoo
             .ThenInclude(xd => xd.OpenHours)
             .Include(x => x.Library)
             .ThenInclude(xd => xd.Address)
-            .Where(x => x.BookId == request.Id && x.Available > 0)
-            .Select(x => x.Library)
-            .ProjectTo<LibraryViewModel>(_mapper.ConfigurationProvider)
+            .Where(x => x.BookId == request.Id)
+            .ProjectTo<LibraryWithBookViewModel>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
     }
 }
