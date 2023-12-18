@@ -25,7 +25,10 @@ export function LibrariesMap() {
     if (user != undefined && user!.lat != undefined) {
       libraries?.data.map((library) => {
         const tmp: LibraryInBookDetails = {
-          library: library,
+          library: {
+            ...library,
+            isBookCurrentlyAvailable: false,
+          },
           distanceFromUser: getDistanceFromLatLonInKm(
             user!.lat!,
             user!.lon!,
@@ -33,6 +36,7 @@ export function LibrariesMap() {
             library.longitude
           ),
           userLibrary: false,
+          isBookCurrentlyAvailable: false,
         };
         result.push(tmp);
       });
@@ -43,8 +47,12 @@ export function LibrariesMap() {
     } else {
       libraries?.data.map((library) => {
         const tmp: LibraryInBookDetails = {
-          library: library,
+          library: {
+            ...library,
+            isBookCurrentlyAvailable: false,
+          },
           userLibrary: false,
+          isBookCurrentlyAvailable: false,
         };
         result.push(tmp);
       });
@@ -174,4 +182,3 @@ export function LibrariesMap() {
     </div>
   );
 }
-
