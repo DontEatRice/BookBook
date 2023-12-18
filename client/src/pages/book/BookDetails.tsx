@@ -82,7 +82,6 @@ function BookDetails() {
     pageSize: 10,
   });
   const handlePageChange = (_: ChangeEvent<unknown>, newPage: number) => {
-    console.log(newPage);
     setPaginationProps({
       ...paginationProps,
       pageNumber: newPage - 1,
