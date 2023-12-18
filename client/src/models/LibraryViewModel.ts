@@ -13,7 +13,6 @@ const LibraryViewModel = z.object({
   longitude: z.number(),
   address: AddressViewModel,
   openHours: OpenHoursViewModel,
-  isBookCurrentlyAvailable: z.boolean().optional(),
 });
 
 export default LibraryViewModel;
