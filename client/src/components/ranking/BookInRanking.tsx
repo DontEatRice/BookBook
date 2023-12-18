@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -48,7 +48,7 @@ export default function BookInRanking({
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
               <Typography gutterBottom variant="h4" component="div">
-                {book.title}
+                <Link to={`/books/${book.id}`}>{book.title}</Link>
               </Typography>
               <Typography variant="body1" gutterBottom>
                 {book.authors.map((author) => author.firstName + ' ' + author.lastName).join(', ')}
@@ -89,4 +89,3 @@ function getRatingText(count: number) {
     return 'ocen';
   }
 }
-
