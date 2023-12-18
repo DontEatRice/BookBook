@@ -7,5 +7,6 @@ public class ReservationWithBooksViewModel
     public LibraryViewModel Library { get; set; } = null!;
     public List<BookViewModel> Books { get; set; } = null!;
     public string Status { get; set; } = null!;
+    public DateTime CreatedAt { get; set; }
     public DateTime ReservationEndDate { get; set; }
 }

@@ -7,6 +7,7 @@ import Avatar from '@mui/material/Avatar';
 import Rating from '@mui/material/Rating';
 import { styled } from '@mui/material/styles';
 import { BookInRankingViewModelType } from '../../models/BookInRankingViewModel';
+import { imgUrl } from '../../utils/utils';
 
 export default function BookInRanking({
   book,
@@ -41,7 +42,11 @@ export default function BookInRanking({
         </Grid>
         <Grid item>
           <Button sx={{ width: 180, height: 180 }} onClick={() => navigate(`/books/${book.id}`)}>
-            <Img alt="complex" src={book.coverPictureUrl ?? '/public/podstawowa-ksiazka-otwarta.jpg'} />
+            <Img
+              alt="complex"
+              loading="lazy"
+              src={imgUrl(book.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg')}
+            />
           </Button>
         </Grid>
         <Grid item xs={12} sm container>

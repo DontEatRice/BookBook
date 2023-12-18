@@ -60,7 +60,8 @@ internal sealed class GetReservationHandler
             Library = library,
             Books = books,
             Status = reservation.Status.ToString(),
-            ReservationEndDate = reservation.ReservationEndDate
+            ReservationEndDate = reservation.ReservationEndDate,
+            CreatedAt = reservation.CreatedAt
         };
     }
 }

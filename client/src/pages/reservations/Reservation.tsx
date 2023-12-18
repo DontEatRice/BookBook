@@ -1,9 +1,20 @@
-import { Box, Button, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Typography,
+} from '@mui/material';
 import { translateStatus } from '../../utils/functions/utilFunctions';
 import { ReservationViewModelType } from '../../models/ReservationViewModel';
 import { useQuery } from '@tanstack/react-query';
 import { getReservation } from '../../api/reservation';
 import LoadingTypography from '../../components/common/LoadingTypography';
+import { useState } from 'react';
+import { useCartStore } from '../../store';
 
 export default function Reservation({
   reservationId,
@@ -15,6 +26,22 @@ export default function Reservation({
   const { data: reservation, status } = useQuery(['reservation', reservationId], () =>
     getReservation(reservationId)
   );
+  const cartStore = useCartStore();
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleConfirm = () => {
+    setOpen(false);
+    cancelThisReservation(reservation?.id || '');
+    cartStore.setSelectedReservation(null);
+  };
 
   return (
     <Box sx={{ padding: '16px' }}>
@@ -45,16 +72,36 @@ export default function Reservation({
           </Typography>
         ))}
         {data.status == 'Pending' && (
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              cancelThisReservation(reservation?.id || '');
-              data.status = 'Returned';
-            }}>
-            Cancel
+          <Button variant="contained" color="error" onClick={handleClickOpen}>
+            Anuluj
           </Button>
         )}
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description">
+          <DialogTitle id="alert-dialog-title">{'Potwierdzenie rezerwacji'}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Czy na pewno chcesz anulować rezerwację?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Anuluj
+            </Button>
+            <Button
+              onClick={() => {
+                handleConfirm();
+                data.status = 'Returned';
+              }}
+              color="primary"
+              autoFocus>
+              Potwierdź
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     );
   }

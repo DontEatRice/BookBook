@@ -60,6 +60,7 @@ export async function getReservation(reservationId: string) {
     await handleBadResponse(response);
   }
   const data = await response.json();
+
   return ReservationViewModel.parse(data);
 }
 
@@ -116,3 +117,4 @@ export async function returnReservation(reservationId: string) {
     }),
   });
 }
+

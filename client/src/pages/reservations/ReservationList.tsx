@@ -18,7 +18,9 @@ import LoadingTypography from '../../components/common/LoadingTypography';
 import {
   Checkbox,
   Dialog,
+  DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   FormControlLabel,
   TablePagination,
@@ -32,7 +34,8 @@ export default function ReservationList() {
   const cartStore = useCartStore();
   const theme = useTheme();
   const [onlyPending, setOnlyPending] = useState(false);
-  const [selectedReservation, setSelectedReservation] = useState<ReservationViewModelType | null>(null);
+  const [open, setOpen] = useState(false);
+  const [reservationId, setReservationId] = useState<string>('');
   const [paginationProps, setPaginationProps] = useState<PaginationRequest>({
     pageNumber: 0,
     pageSize: 10,
@@ -85,6 +88,21 @@ export default function ReservationList() {
       orderByField: property,
       orderDirection: isAsc ? 'desc' : 'asc',
     });
+  };
+
+  const handleClickOpen = (reservationId: string) => {
+    setReservationId(reservationId);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setReservationId('');
+  };
+
+  const handleConfirm = () => {
+    setOpen(false);
+    cancelThisReservation(reservationId);
   };
 
   return (
@@ -155,7 +173,7 @@ export default function ReservationList() {
                 onlyPending && reservation.status != 'Pending' ? null : (
                   <TableRow
                     key={reservation.id}
-                    onClick={() => setSelectedReservation(reservation)}
+                    onClick={() => cartStore.setSelectedReservation(reservation)}
                     sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}>
                     <TableCell>{reservation.id}</TableCell>
                     <TableCell>{reservation.library.name}</TableCell>
@@ -169,7 +187,7 @@ export default function ReservationList() {
                           color="error"
                           onClick={(event) => {
                             event.stopPropagation();
-                            cancelThisReservation(reservation.id);
+                            handleClickOpen(reservation.id);
                           }}>
                           Anuluj
                         </Button>
@@ -181,18 +199,18 @@ export default function ReservationList() {
                 )
               )}
             </TableBody>
-            {selectedReservation && (
+            {cartStore.selectedReservation && (
               <Dialog
-                key={selectedReservation.id}
+                key={cartStore.selectedReservation.id}
                 open
                 onClose={() => {
-                  setSelectedReservation(null);
+                  cartStore.setSelectedReservation(null);
                   queryClient.invalidateQueries({ queryKey: ['reservation', 'reservationsForUser'] });
                 }}>
                 <DialogTitle>Szczegóły Rezerwacji</DialogTitle>
                 <DialogContent>
                   <Reservation
-                    reservationId={selectedReservation.id}
+                    reservationId={cartStore.selectedReservation.id}
                     cancelThisReservation={cancelThisReservation}
                   />
                 </DialogContent>
@@ -200,7 +218,33 @@ export default function ReservationList() {
             )}
           </Table>
         </TableContainer>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description">
+          <DialogTitle id="alert-dialog-title">{'Potwierdzenie rezerwacji'}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Czy na pewno chcesz anulować rezerwację?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Anuluj
+            </Button>
+            <Button
+              onClick={() => {
+                handleConfirm();
+              }}
+              color="primary"
+              autoFocus>
+              Potwierdź
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
 }
+
