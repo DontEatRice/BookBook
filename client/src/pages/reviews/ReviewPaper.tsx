@@ -48,7 +48,6 @@ function ReviewPaper({ review, book }: { review: ReviewViewModelType; book: Book
       <Grid container>
         <Grid container direction={'row'} wrap="nowrap">
           <Grid item xs={1} minHeight={56} minWidth={56}>
-            {/* imgUrl(book.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg') */}
             <Avatar
               src={imgUrl(review.user.avatarImageUrl, '/autor-szablon.jpg')}
               sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }}
