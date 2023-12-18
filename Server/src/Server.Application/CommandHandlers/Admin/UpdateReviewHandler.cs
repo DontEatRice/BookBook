@@ -12,22 +12,26 @@ public sealed class UpdateReviewCommandValidator : AbstractValidator<UpdateRevie
 {
     public UpdateReviewCommandValidator()
     {
-        RuleFor(x => x.Rating).NotEmpty();
     }
 }
 
-public sealed record UpdateReviewCommand(Guid IdReview, string? Title, string? Description, 
+public sealed record UpdateReviewCommand(Guid UserId, Guid IdReview, string? Title, string? Description, 
     double Rating) : IRequest;
 
 public sealed class UpdateReviewHandler : IRequestHandler<UpdateReviewCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IReviewRepository _reviewRepository;
+    private readonly IBookRepository _bookRepository;
+    private readonly IIdentityRepository _identityRepository;
 
-    public UpdateReviewHandler(IUnitOfWork unitOfWork, IReviewRepository reviewRepository)
+    public UpdateReviewHandler(IUnitOfWork unitOfWork, IReviewRepository reviewRepository, 
+        IBookRepository bookRepository, IIdentityRepository identityRepository)
     {
         _unitOfWork = unitOfWork;
         _reviewRepository = reviewRepository;
+        _bookRepository = bookRepository;
+        _identityRepository = identityRepository;
     }
 
     public async Task Handle(UpdateReviewCommand request, CancellationToken cancellationToken)
@@ -39,6 +43,21 @@ public sealed class UpdateReviewHandler : IRequestHandler<UpdateReviewCommand>
             throw new NotFoundException("Review not found", ApplicationErrorCodes.ReviewNotFound);
         }
 
+        if (request.UserId != review.User.Id)
+        {
+            throw new LogicException("User is not allowed to edit this review",
+                ApplicationErrorCodes.UserNotAllowed);
+        }
+
+        var book = review.Book;
+        
+        if (book is null)
+        {
+            throw new NotFoundException("Book not found", ApplicationErrorCodes.BookNotFound);
+        }
+        
+        book.UpdateReviewRating(review.Rating, request.Rating);
+        
         review.Title = request.Title;
         review.Description = request.Description;
         review.Rating = request.Rating;

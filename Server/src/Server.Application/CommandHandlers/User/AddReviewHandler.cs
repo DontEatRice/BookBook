@@ -13,11 +13,11 @@ public sealed class AddReviewCommandValidator : AbstractValidator<AddReviewComma
 {
     public AddReviewCommandValidator()
     {
-        RuleFor(x => x.Title).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.Title).MaximumLength(250);
     }
 }
 
-public sealed record AddReviewCommand(Guid? UserId, Guid Id, string? Title, string? Description, 
+public sealed record AddReviewCommand(Guid UserId, Guid Id, string? Title, string? Description, 
     double Rating, Guid IdBook) : IRequest;
 
 public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
@@ -25,12 +25,15 @@ public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
     private readonly IUnitOfWork _unitOfWork;
     private readonly IReviewRepository _reviewRepository;
     private readonly IBookRepository _bookRepository;
+    private readonly IIdentityRepository _identityRepository;
 
-    public AddReviewHandler(IUnitOfWork unitOfWork, IReviewRepository reviewRepository, IBookRepository bookRepository)
+    public AddReviewHandler(IUnitOfWork unitOfWork, IReviewRepository reviewRepository, IBookRepository bookRepository,
+        IIdentityRepository identityRepository)
     {
         _unitOfWork = unitOfWork;
         _reviewRepository = reviewRepository;
         _bookRepository = bookRepository;
+        _identityRepository = identityRepository;
     }
 
     public async Task Handle(AddReviewCommand request, CancellationToken cancellationToken)
@@ -44,14 +47,18 @@ public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
 
         var reviews = await _reviewRepository.FindAllByBookIdAsync(request.IdBook, cancellationToken);
 
-        if (reviews.FirstOrDefault(x => x.UserId == request.UserId) is not null)
+        if (reviews.FirstOrDefault(x => x.User.Id == request.UserId) is not null)
         {
             throw new LogicException ("Review already exists", ApplicationErrorCodes.UserReviewAlreadyExists);
         }
         
+        var user = await _identityRepository.FirstOrDefaultByIdAsync(request.UserId, cancellationToken) ??
+                   throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
+        
         book.ComputeRating(reviews, request.Rating);
         
-        var review = Review.Create(request.Id, request.Title, request.Description, request.Rating, book, request.UserId!.Value, false);
+        var review = Review.Create(request.Id, request.Title, request.Description, request.Rating, book, user,
+            false);
 
         await _reviewRepository.AddAsync(review, cancellationToken);
 
