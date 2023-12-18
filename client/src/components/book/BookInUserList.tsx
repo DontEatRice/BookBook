@@ -9,6 +9,14 @@ import { toggleBookInUserList } from '../../api/user';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import { imgUrl } from '../../utils/utils';
 
+const Img = styled('img')({
+  margin: 'auto',
+  display: 'block',
+  maxWidth: '100%',
+  maxHeight: '100%',
+  aspectRatio: 11 / 16,
+});
+
 function BookInUserList({ book }: { book: BookViewModelType }) {
   const queryClient = useQueryClient();
 
@@ -41,14 +49,6 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
     mutation.mutate(toggleData);
   };
   const navigate = useNavigate();
-
-  const Img = styled('img')({
-    margin: 'auto',
-    display: 'block',
-    maxWidth: '100%',
-    maxHeight: '100%',
-    aspectRatio: 11 / 16,
-  });
 
   return (
     <Paper

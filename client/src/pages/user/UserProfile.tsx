@@ -11,6 +11,13 @@ import Loading from '../../components/common/Loading';
 import { PaginationRequest } from '../../utils/constants';
 import { z } from 'zod';
 
+const Img = styled('img')({
+  margin: 'auto',
+  display: 'block',
+  height: 160,
+  width: 128,
+});
+
 function UserProfile() {
   const params = useParams();
   const { data, status } = useQuery({
@@ -142,12 +149,7 @@ function UserProfileReviews({ data, paginationProps, onPaginationPropsChange }: 
   const handleChangePage = (_: ChangeEvent<unknown>, newPage: number) => {
     onPaginationPropsChange({ ...paginationProps, pageNumber: newPage - 1 });
   };
-  const Img = styled('img')({
-    margin: 'auto',
-    display: 'block',
-    height: 160,
-    width: 128,
-  });
+
   return (
     <Box sx={{ p: 3 }}>
       {data.data.length > 0 ? (

@@ -7,7 +7,7 @@ import { UserDetailViewModelType } from '../../models/user/UserDetailViewModel';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { myAccount, updateMyAccount } from '../../api/account';
 import LoadingTypography from '../../components/common/LoadingTypography';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import UpdateMyAccount, { UpdateMyAccountType } from '../../models/user/UpdateMyAccount';
 import { zodResolver } from '@hookform/resolvers/zod';
 import TextInputField, { TextInputField2 } from '../../components/common/TextInputField';
@@ -16,7 +16,9 @@ import useAlert from '../../utils/alerts/useAlert';
 import { getLibraries } from '../../api/library';
 import { Autocomplete, Checkbox, TextField, Typography } from '@mui/material';
 import { LibraryViewModelType } from '../../models/LibraryViewModel';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { fileToUploadImage, imgUrl } from '../../utils/utils';
+import { uploadImage } from '../../api/image';
 
 function AccountSettingsForm({
   data,
@@ -24,10 +26,11 @@ function AccountSettingsForm({
   libraries,
 }: {
   data: UserDetailViewModelType;
-  onSubmit: (newUser: UpdateMyAccountType, picture?: File) => void;
+  onSubmit: (newUser: UpdateMyAccountType) => void;
   libraries: LibraryViewModelType[];
 }) {
   const [displayAddressForm, setDisplayAddressForm] = useState(data.address !== null);
+
   const handleDisplayAddressFormChange = (value: boolean) => {
     setDisplayAddressForm(value);
   };
@@ -48,7 +51,23 @@ function AccountSettingsForm({
       postalCode: data.address?.postalCode ?? undefined,
       city: data.address?.city ?? undefined,
     },
+    reValidateMode: 'onChange',
   });
+
+  const watchAvatarPicture = useWatch({
+    control,
+    name: 'avatarPicture',
+  });
+
+  const fileUrl = useMemo(() => {
+    if (watchAvatarPicture instanceof FileList && watchAvatarPicture.length > 0) {
+      const picture = watchAvatarPicture.item(0);
+      if (picture !== null) {
+        return URL.createObjectURL(picture);
+      }
+    }
+    return undefined;
+  }, [watchAvatarPicture]);
 
   const handleFormSubmit = (updated: UpdateMyAccountType) => {
     onSubmit(updated);
@@ -57,7 +76,22 @@ function AccountSettingsForm({
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Stack direction="column" alignItems="center" spacing={2} mb={2} mt={2}>
-        <Avatar src={data.avatarImageUrl ?? undefined} sx={{ width: 250, height: 250 }} />
+        <Box component="label" htmlFor="upload-photo" textAlign={'center'} sx={{ width: '100%', mb: 2 }}>
+          <input
+            style={{ display: 'none' }}
+            id="upload-photo"
+            type="file"
+            accept="image/png,image/jpg,image/jpeg"
+            {...register('avatarPicture')}
+          />
+          <Button variant="contained" component="span">
+            Zmień zdjęcie
+          </Button>
+        </Box>
+        <Avatar src={fileUrl ?? imgUrl(data.avatarImageUrl)} sx={{ width: 250, height: 250 }} />
+        {errors.avatarPicture != undefined && (
+          <Typography color={'error'}>{errors.avatarPicture.message}</Typography>
+        )}
         <TextInputField2
           control={control}
           field="name"
@@ -167,15 +201,33 @@ function AccountSettings() {
     queryKey: ['libraries'],
     queryFn: () => getLibraries({ pageNumber: 0, pageSize: 1000 }),
   });
-  const { mutate } = useMutation({
+  const { mutate: updateUserMutation } = useMutation({
     mutationFn: updateMyAccount,
     onSuccess: (data) => {
       showSuccess({ title: 'Sukces', message: 'Twój profil został zaktualizowany' });
-      queryClient.setQueryData(['me'], data);
-      queryClient.invalidateQueries({ queryKey: ['users', data.id] });
+      queryClient.invalidateQueries(['me']);
+      queryClient.invalidateQueries(['users', data.id]);
       navigate('/user/' + user?.id);
     },
   });
+  const { mutate: uploadImageMutation } = useMutation({
+    mutationFn: uploadImage,
+  });
+  const handleUpdateUser = (newData: UpdateMyAccountType) => {
+    if (newData.avatarPicture) {
+      fileToUploadImage(newData.avatarPicture).then((model) =>
+        uploadImageMutation(model, {
+          onSuccess(imageId) {
+            newData.avatarImageUrl = imageId;
+            updateUserMutation(newData);
+          },
+        })
+      );
+    } else {
+      updateUserMutation(newData);
+    }
+  };
+
   if (!user) {
     return (
       <Box p={2}>
@@ -198,7 +250,7 @@ function AccountSettings() {
   return (
     <Stack direction="row" justifyContent="center">
       <Box sx={{ width: { xs: '90%', sm: '70%', md: '45%' } }}>
-        <AccountSettingsForm data={data} onSubmit={(user) => mutate(user)} libraries={librariesData.data} />
+        <AccountSettingsForm data={data} onSubmit={handleUpdateUser} libraries={librariesData.data} />
       </Box>
     </Stack>
   );

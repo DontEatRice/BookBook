@@ -5,8 +5,8 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import Rating from '@mui/material/Rating';
-import { styled } from '@mui/material/styles';
 import { BookInRankingViewModelType } from '../../models/BookInRankingViewModel';
+import Img from '../common/Img';
 
 export default function BookInRanking({
   book,
@@ -17,12 +17,6 @@ export default function BookInRanking({
 }) {
   const navigate = useNavigate();
 
-  const Img = styled('img')({
-    margin: 'auto',
-    display: 'block',
-    maxWidth: '100%',
-    maxHeight: '100%',
-  });
   return (
     <Paper
       sx={{
@@ -89,4 +83,3 @@ function getRatingText(count: number) {
     return 'ocen';
   }
 }
-
