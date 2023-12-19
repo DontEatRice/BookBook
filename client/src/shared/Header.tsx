@@ -5,8 +5,8 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Nav from './Nav';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import CartTab from '../components/reservations/CartTab';
 import { useCartStore } from '../../src/store';
@@ -19,6 +19,8 @@ import { useAuth } from '../utils/auth/useAuth';
 import ProfileHeaderIcon from '../components/profile/ProfileHeaderIcon';
 import Tooltip from '@mui/material/Tooltip';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import { Button, InputAdornment } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 function Header() {
   const theme = useTheme();
@@ -143,28 +145,43 @@ function Header() {
 function SearchBar() {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
-  const [params, setParams] = useSearchParams();
 
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const { value } = e.target;
-      setQuery(value);
-      setParams({ q: value });
-      if (location.pathname != '/books' && value != '') {
-        navigate('/books?q=' + value);
+  const handleSearchType = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { value } = e.target;
+    setQuery(value);
+  };
+  const handleSearchOnEnter = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key == 'Enter') {
+      if (query != '') {
+        navigate('/books?q=' + query);
       }
-    },
-    [navigate, setParams]
-  );
-  useEffect(() => {
-    if (!params.has('q')) {
-      setQuery('');
     }
-  }, [params]);
+  };
+
+  const handleSearch = () => {
+    if (query != '') {
+      navigate('/books?q=' + query);
+    }
+  };
 
   return (
     <Box m={1}>
-      <TextField fullWidth value={query} onChange={handleChange} placeholder="Gotowy na przygodę?" />
+      <TextField
+        fullWidth
+        value={query}
+        onChange={handleSearchType}
+        onKeyDown={handleSearchOnEnter}
+        placeholder="Gotowy na przygodę?"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Button variant="contained" endIcon={<SearchIcon />} onClick={handleSearch}>
+                Szukaj
+              </Button>
+            </InputAdornment>
+          ),
+        }}
+      />
     </Box>
   );
 }
