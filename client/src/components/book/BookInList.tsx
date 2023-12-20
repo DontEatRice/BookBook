@@ -10,7 +10,7 @@ import Box from '@mui/material/Box';
 import { Img } from '../common/Img';
 
 function BookInList({ book }: { book: BookViewModelType }) {
-  const [elevation, setElevation] = useState(3);
+  const [elevation, setElevation] = useState(1);
 
   return (
     <Paper

@@ -165,6 +165,8 @@ function UserProfileReviews({ data, paginationProps, onPaginationPropsChange }: 
         {data.data.map((review) => (
           <Grid item xs={12} key={review.bookId}>
             <Box sx={{ width: '100%', boxShadow: 1 }}>
+              {' '}
+              {/* TODO zamienić na paper i obrazek do zmiany */}
               <Grid container direction={'row'} spacing={3}>
                 <Grid item xs={3}>
                   <Link to={`/books/${review.bookId}`}>

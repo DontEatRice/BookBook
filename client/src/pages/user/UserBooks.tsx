@@ -23,7 +23,7 @@ function UserBooks({ data }: { data: BookViewModelType[] }) {
     );
   } else {
     return (
-      <Grid container spacing={1}>
+      <Grid container spacing={2}>
         {data.map((book) => (
           <Grid item xs={12} key={book.id}>
             <BookInUserList book={book} />
