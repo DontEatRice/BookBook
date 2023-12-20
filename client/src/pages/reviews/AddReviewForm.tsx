@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Rating, Box, Paper, Button } from '@mui/material';
+import { Rating, Paper, Button, Box } from '@mui/material';
 import TextInputField from '../../components/common/TextInputField';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -31,6 +31,7 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
   const mutation = useMutation({
     mutationFn: postReview,
     onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ['reviews', book.id] });
       queryClient.invalidateQueries({ queryKey: ['books', book.id] });
     },
     onError: (err) => {
@@ -48,17 +49,16 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
   };
 
   return (
-    <Box marginBottom={2}>
+    <Box alignItems={'center'} width={'75%'} marginBottom={2}>
       {addError && (
         <Paper
-          elevation={7}
+          elevation={2}
           sx={{
             width: '100%',
             padding: 2,
             backgroundColor: theme.palette.error.main,
             textAlign: 'center',
             display: 'flex',
-            justifyContent: 'center',
             mt: 0,
           }}>
           <ErrorOutlineIcon />
@@ -66,30 +66,28 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
         </Paper>
       )}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box>
-          <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
-            <Rating
-              name="simple-controlled"
-              value={value}
-              onChange={(_, newValue) => {
-                setValue(newValue);
-              }}
-            />
-            <TextInputField errors={errors} field="title" register={register} label="Tytuł" />
-            <TextInputBox
-              rows={3}
-              errors={errors}
-              field="description"
-              register={register}
-              label="Komentarz"
-            />
-            <input type="hidden" {...register('idBook')} value={book.id} />
-            <input type="hidden" {...register('rating')} value={value + ''} />
-            <Button type="submit" variant="contained">
-              Dodaj
-            </Button>
-          </Paper>
-        </Box>
+        <Paper sx={{ p: 2, width: '100%' }} elevation={2}>
+          <Rating
+            name="simple-controlled"
+            value={value}
+            onChange={(_, newValue) => {
+              setValue(newValue);
+            }}
+          />
+          <TextInputField errors={errors} field="title" register={register} label="Tytuł" />
+          <TextInputBox
+            rows={3}
+            errors={errors}
+            field="description"
+            register={register}
+            label="Komentarz"
+          />
+          <input type="hidden" {...register('idBook')} value={book.id} />
+          <input type="hidden" {...register('rating')} value={value + ''} />
+          <Button type="submit" variant="contained">
+            Dodaj
+          </Button>
+        </Paper>
       </form>
     </Box>
   );

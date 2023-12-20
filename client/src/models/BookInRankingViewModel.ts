@@ -7,7 +7,7 @@ const BookInRankingViewModel = z.object({
   id: z.string().uuid(),
   isbn: z.string().max(17),
   title: z.string(),
-  coverPictureUrl: z.string().url().max(256).nullable(),
+  coverPictureUrl: z.string().max(256).nullable(),
   averageRating: z.nullable(z.number()),
   averageCriticRating: z.nullable(z.number()),
   publisher: PublisherViewModel.nullable(),

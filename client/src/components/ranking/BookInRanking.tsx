@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -7,6 +7,7 @@ import Avatar from '@mui/material/Avatar';
 import Rating from '@mui/material/Rating';
 import { BookInRankingViewModelType } from '../../models/BookInRankingViewModel';
 import { Img } from '../common/Img';
+import { imgUrl } from '../../utils/utils';
 
 export default function BookInRanking({
   book,
@@ -35,14 +36,18 @@ export default function BookInRanking({
         </Grid>
         <Grid item>
           <Button sx={{ width: 180, height: 180 }} onClick={() => navigate(`/books/${book.id}`)}>
-            <Img alt="complex" src={book.coverPictureUrl ?? '/public/podstawowa-ksiazka-otwarta.jpg'} />
+            <Img
+              alt="complex"
+              loading="lazy"
+              src={imgUrl(book.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg')}
+            />
           </Button>
         </Grid>
         <Grid item xs={12} sm container>
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
               <Typography gutterBottom variant="h4" component="div">
-                {book.title}
+                <Link to={`/books/${book.id}`}>{book.title}</Link>
               </Typography>
               <Typography variant="body1" gutterBottom>
                 {book.authors.map((author) => author.firstName + ' ' + author.lastName).join(', ')}

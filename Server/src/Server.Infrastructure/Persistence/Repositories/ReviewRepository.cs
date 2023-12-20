@@ -29,6 +29,7 @@ internal class ReviewRepository : IReviewRepository
     {
         return await _dbContext.Reviews
             .Where(x => x.Book.Id == id)
+            .Include(x => x.User)
             .ToListAsync(cancellationToken);
     }
     
@@ -36,6 +37,7 @@ internal class ReviewRepository : IReviewRepository
     {
         return await _dbContext.Reviews
             .Include(x => x.Book)
+            .Include(x => x.User)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 }

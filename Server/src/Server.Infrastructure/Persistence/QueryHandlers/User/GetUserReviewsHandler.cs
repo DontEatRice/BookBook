@@ -32,10 +32,10 @@ internal sealed class GetUserReviewsHandler : IRequestHandler<GetUserReviewsQuer
 
         var (userReviews, totalCount) = await _bookBookDbContext.Reviews.AsNoTracking()
             .Include(x => x.Book)
-            .Where(x => x.UserId == request.Id)
+            .Where(x => x.User.Id == request.Id)
             .Select(x => new ReviewInUserProfile
             {
-                UserId = x.UserId,
+                UserId = x.User.Id,
                 Title = x.Title,
                 Description = x.Description,
                 Rating = x.Rating,
