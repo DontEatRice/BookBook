@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import Rating from '@mui/material/Rating';
 import { BookInRankingViewModelType } from '../../models/BookInRankingViewModel';
-import Img from '../common/Img';
+import { Img } from '../common/Img';
 
 export default function BookInRanking({
   book,

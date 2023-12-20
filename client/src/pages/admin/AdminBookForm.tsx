@@ -23,7 +23,7 @@ import { fileToUploadImage } from '../../utils/utils';
 import { languages } from '../../utils/constants';
 import TextInputBox from '../../components/common/TextInputBox';
 import LoadingTypography from '../../components/common/LoadingTypography';
-import Img from '../../components/common/Img';
+import { BookCoverImg } from '../../components/common/Img';
 
 const paginationDefaultRequest = {
   pageNumber: 0,
@@ -131,11 +131,9 @@ function AdminBookForm() {
                 </Button>
               </Box>
               {fileUrl !== null && (
-                <Img
-                  src={fileUrl ?? '/podstawowa-ksiazka-otwarta.jpg'}
-                  alt="Zdjęcie autora"
-                  sx={{ aspectRatio: 11 / 16, mb: 2, mt: 2, height: '400px' }}
-                />
+                <Box height="400px" width="275px" mb={2} mt={2}>
+                  <BookCoverImg src={fileUrl ?? '/podstawowa-ksiazka-otwarta.jpg'} alt={'Zdjęcie autora'} />
+                </Box>
               )}
               {errors.coverPicture != undefined && (
                 <Typography color={'error'}>{errors.coverPicture.message}</Typography>

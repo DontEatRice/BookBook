@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Rating from '@mui/material/Rating';
 import Box from '@mui/material/Box';
-import Img from '../common/Img';
+import { Img } from '../common/Img';
 
 function BookInList({ book }: { book: BookViewModelType }) {
   const [elevation, setElevation] = useState(3);
