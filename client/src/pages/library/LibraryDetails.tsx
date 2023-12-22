@@ -8,6 +8,7 @@ import useAlert from '../../utils/alerts/useAlert';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
+import { MarkerIcon } from '../../utils/utils';
 
 function formatOpenHours(openHours: string | null) {
   if (openHours == null) {
@@ -132,7 +133,7 @@ function LibraryDetails() {
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                <Marker position={[data.latitude, data.longitude]} key={data.id}>
+                <Marker icon={MarkerIcon} position={[data.latitude, data.longitude]} key={data.id}>
                   <Popup>Tutaj nas znajdziesz!</Popup>
                 </Marker>
               </MapContainer>

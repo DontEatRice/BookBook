@@ -3,6 +3,7 @@ import UploadImage from '../models/UploadImage';
 import { User } from '../models/user/User';
 import { Claims, PaginationRequest } from './constants';
 import { ResponseError, ValidationError } from './zodSchemas';
+import { icon } from 'leaflet';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 
@@ -102,6 +103,11 @@ export function convertJwtToUser(token: string): User {
     lon: claims.lon ? Number(claims.lon.toString().replace(',', '.')) : undefined,
   };
 }
+
+export const MarkerIcon = icon({
+  iconUrl: './marker-icon.png',
+  iconSize: [25, 41],
+});
 
 export class ApiError {
   private _rawResponse?: Response;
