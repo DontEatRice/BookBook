@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Rating, Paper, Button, Box } from '@mui/material';
 import TextInputField from '../../components/common/TextInputField';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -14,13 +13,15 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { ApiResponseError } from '../../utils/utils';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
+import { useAuth } from '../../utils/auth/useAuth';
 
 function AddReviewForm({ book }: { book: BookViewModelType }) {
   const [addError, setAddError] = useState<string | null>(null);
   const { handleError } = useAlert();
   const theme = useTheme();
-  const [value, setValue] = React.useState<number | null>(0);
+  const [value, setValue] = useState<number | null>(0);
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   const {
     register,
     handleSubmit,
@@ -30,9 +31,10 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
   });
   const mutation = useMutation({
     mutationFn: postReview,
-    onSuccess: async () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reviews', book.id] });
       queryClient.invalidateQueries({ queryKey: ['books', book.id] });
+      queryClient.invalidateQueries(['userReviews', user?.id]);
     },
     onError: (err) => {
       if (err instanceof ApiResponseError && err.error.code == 'USER_REVIEW_ALREADY_EXISTS') {
@@ -75,13 +77,7 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
             }}
           />
           <TextInputField errors={errors} field="title" register={register} label="Tytuł" />
-          <TextInputBox
-            rows={3}
-            errors={errors}
-            field="description"
-            register={register}
-            label="Komentarz"
-          />
+          <TextInputBox rows={3} errors={errors} field="description" register={register} label="Komentarz" />
           <input type="hidden" {...register('idBook')} value={book.id} />
           <input type="hidden" {...register('rating')} value={value + ''} />
           <Button type="submit" variant="contained">

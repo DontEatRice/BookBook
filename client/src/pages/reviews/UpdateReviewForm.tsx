@@ -14,6 +14,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { ApiResponseError } from '../../utils/utils';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
+import { useAuth } from '../../utils/auth/useAuth';
 
 function UpdateReviewForm({
   review,
@@ -28,6 +29,8 @@ function UpdateReviewForm({
   const { handleError } = useAlert();
   const theme = useTheme();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -45,6 +48,7 @@ function UpdateReviewForm({
     mutationFn: updateReview,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reviews', book.id] });
+      queryClient.invalidateQueries(['userReviews', user?.id]);
       if (updateError == null) {
         handleClose();
       }

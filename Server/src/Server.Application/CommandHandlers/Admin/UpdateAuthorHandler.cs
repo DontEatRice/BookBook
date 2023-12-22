@@ -3,7 +3,6 @@ using MediatR;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
 using Server.Application.InfrastructureInterfaces;
-using Server.Domain.Entities;
 using Server.Domain.Repositories;
 
 namespace Server.Application.CommandHandlers.Admin;
