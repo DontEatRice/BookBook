@@ -10,7 +10,7 @@ import { getAuthTokenOrNull } from './auth';
 import MostReservedBookViewModel from '../models/MostReseredBook';
 
 const base = import.meta.env.VITE_API_BASE_URL;
-const BooksPaginated = paginatedResponse(BookViewModel);
+export const BooksSearchResponse = paginatedResponse(BookViewModel);
 const RankingPaginated = paginatedResponse(BookInRankingViewModel);
 
 export const postBook = async (book: AddBookType) => {
@@ -107,7 +107,7 @@ export async function searchBooks(
     await handleBadResponse(response);
   }
   const data = await response.json();
-  return BooksPaginated.parse(data);
+  return BooksSearchResponse.parse(data);
 }
 
 export async function bookRanking(args: PaginationRequest & { categoryId?: string }) {
