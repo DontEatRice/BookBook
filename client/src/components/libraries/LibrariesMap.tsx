@@ -126,7 +126,7 @@ export function LibrariesMap() {
                   <AuthorizedView>
                     <Stack direction={'column'}>
                       {user?.lat != undefined && (
-                        <Typography>
+                        <Typography noWrap>
                           <RoomIcon></RoomIcon>
                           {library.distanceFromUser!.toFixed(1).toString() + ' km'}
                         </Typography>
