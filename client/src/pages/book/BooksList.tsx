@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { BookViewModelType } from '../../models/BookViewModel';
-import { useTheme } from '@mui/material/styles';
 import { searchBooks } from '../../api/book';
 import BookInList from '../../components/book/BookInList';
 import { useQuery } from '@tanstack/react-query';
@@ -56,7 +55,6 @@ function Books({ data }: { data: BookViewModelType[] }) {
 }
 
 function BooksList() {
-  const theme = useTheme();
   const [searchParams] = useSearchParams();
   const [authorId, setAuthorId] = useState<string>();
   const [categoryId, setCategoryId] = useState<string>();
