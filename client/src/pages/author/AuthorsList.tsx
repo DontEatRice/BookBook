@@ -10,7 +10,6 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import { PaginationRequest } from '../../utils/constants';
 import { Pagination } from '@mui/material';
@@ -28,7 +27,6 @@ function Authors({ data }: { data: AuthorViewModelType[] }) {
 }
 
 function AuthorsList() {
-  const theme = useTheme();
   const [query, setQuery] = useState<string>('');
   const [searchInput, setSearchInput] = useState<string>('');
   const handleSearchType = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -88,11 +86,6 @@ function AuthorsList() {
       </Box>
       <Box>
         {searchStatus == 'loading' && <LoadingTypography />}
-        {searchStatus == 'error' && (
-          <Typography variant="h3" color={theme.palette.error.main} textAlign={'center'}>
-            Błąd!
-          </Typography>
-        )}
         {searchStatus == 'success' && (
           <Box>
             <Authors data={searchData.data} />
