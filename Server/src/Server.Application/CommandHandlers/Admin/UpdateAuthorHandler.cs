@@ -3,7 +3,6 @@ using MediatR;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
 using Server.Application.InfrastructureInterfaces;
-using Server.Domain.Entities;
 using Server.Domain.Repositories;
 
 namespace Server.Application.CommandHandlers.Admin;
@@ -18,7 +17,7 @@ public sealed class UpdateAuthorCommandValidator : AbstractValidator<UpdateAutho
 }
 
 public sealed record UpdateAuthorCommand(Guid IdAuthor, string FirstName, string LastName, 
-    int BirthYear, string? ProfilePictureUrl) : IRequest;
+    int BirthYear, string? ProfilePictureUrl, string? Description) : IRequest;
 
 public sealed class UpdateAuthorHandler : IRequestHandler<UpdateAuthorCommand>
 {
@@ -33,17 +32,13 @@ public sealed class UpdateAuthorHandler : IRequestHandler<UpdateAuthorCommand>
 
     public async Task Handle(UpdateAuthorCommand request, CancellationToken cancellationToken)
     {
-        var author = await _authorRepository.FirstOrDefaultByIdAsync(request.IdAuthor, cancellationToken);
-        
-        if (author is null)
-        {
-            throw new NotFoundException("Author not found", ApplicationErrorCodes.AuthorNotFound);
-        }
+        var author = await _authorRepository.FirstOrDefaultByIdAsync(request.IdAuthor, cancellationToken) ?? throw new NotFoundException("Author not found", ApplicationErrorCodes.AuthorNotFound);
 
         author.FirstName = request.FirstName;
         author.LastName = request.LastName;
         author.BirthYear = request.BirthYear;
         author.ProfilePictureUrl = request.ProfilePictureUrl;
+        author.Description = request.Description;
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

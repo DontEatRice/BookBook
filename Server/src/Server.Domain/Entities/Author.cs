@@ -10,7 +10,7 @@ public class Author
     public int BirthYear { get;  set; }
     public string? ProfilePictureUrl { get;  set; }
     public string FullText { get; private set; }
-    public string? Description { get; private set; }
+    public string? Description { get; set; }
     public ICollection<Book> Books { get;  init; }
 
     public static Author Create(Guid id, string firstName, string lastName, int birthYear, string? profilePictureUrl, string? description)

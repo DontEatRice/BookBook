@@ -88,11 +88,6 @@ function AuthorsList() {
       </Box>
       <Box>
         {searchStatus == 'loading' && <LoadingTypography />}
-        {searchStatus == 'error' && (
-          <Typography variant="h3" color={theme.palette.error.main} textAlign={'center'}>
-            Błąd!
-          </Typography>
-        )}
         {searchStatus == 'success' && (
           <Box>
             <Authors data={searchData.data} />

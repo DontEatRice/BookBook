@@ -194,11 +194,6 @@ function BooksList() {
       </Box>
       <Box marginTop={2}>
         {searchStatus == 'loading' && <LoadingTypography />}
-        {searchStatus == 'error' && (
-          <Typography variant="h3" color={theme.palette.error.main}>
-            Błąd!
-          </Typography>
-        )}
         {searchStatus == 'success' && (
           <Box>
             <Books data={searchData.data} />
