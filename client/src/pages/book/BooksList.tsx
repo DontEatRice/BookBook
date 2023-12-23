@@ -11,7 +11,6 @@ import { ChangeEvent, useState } from 'react';
 import { getAuthors } from '../../api/author';
 import { getCategories } from '../../api/category';
 import { PaginationRequest } from '../../utils/constants';
-import Loading from '../../components/common/Loading';
 import { getLibraries } from '../../api/library';
 import { useSearchParams } from 'react-router-dom';
 import LoadingTypography from '../../components/common/LoadingTypography';
