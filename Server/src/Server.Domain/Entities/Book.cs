@@ -76,12 +76,6 @@ public class Book
         var reviewCount = reviews.Count;
         var averageRating = AverageRating ?? 0;
         
-        if (reviewCount < 1)
-        {
-            AverageRating = null;
-            return;
-        }
-        
         AverageRating = Math.Round((averageRating * reviewCount - oldReviewRating + newReviewRating) / (reviewCount), 2);
     }
 }
