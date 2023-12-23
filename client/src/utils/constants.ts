@@ -1,3 +1,5 @@
+import { SxProps, Theme } from "@mui/system";
+
 export type Role = 'User' | 'Admin' | 'Employee';
 
 export type ErrorResponse = {
@@ -19,6 +21,22 @@ export type Claims = {
 };
 
 export type Order = 'asc' | 'desc';
+
+export interface PaginatedTableProps<T,S>{
+  data: T;
+  paginationProps: PaginationRequest;
+  onPaginationPropsChange: (args: PaginationRequest) => void;
+  onRequestSort: (field: keyof S) => void;
+  sx?: SxProps<Theme>;
+};
+
+export interface PaginatedTableHeadCell<T> {
+  field: keyof T;
+  label: string;
+  sortable: boolean;
+  numeric: boolean;
+};
+
 
 export type PaginationRequest = {
   pageSize: number;

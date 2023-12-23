@@ -8,7 +8,7 @@ import { paginatedResponse } from '../utils/zodSchemas';
 import { getAuthTokenOrNull } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
-const AuthorSearchResponse = paginatedResponse(AuthorViewModel);
+export const AuthorSearchResponse = paginatedResponse(AuthorViewModel);
 
 export const postAuthor = async (author: AddAuthorType) => {
   delete author.avatarPicture;
