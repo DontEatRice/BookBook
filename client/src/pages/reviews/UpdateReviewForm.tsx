@@ -45,6 +45,7 @@ function UpdateReviewForm({
     mutationFn: updateReview,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reviews', book.id] });
+      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
       if (updateError == null) {
         handleClose();
       }
