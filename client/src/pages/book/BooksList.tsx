@@ -14,6 +14,7 @@ import { PaginationRequest } from '../../utils/constants';
 import Loading from '../../components/common/Loading';
 import { getLibraries } from '../../api/library';
 import { useSearchParams } from 'react-router-dom';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 
@@ -193,7 +194,7 @@ function BooksList() {
         </Box>
       </Box>
       <Box marginTop={2}>
-        {searchStatus == 'loading' && <Loading />}
+        {searchStatus == 'loading' && <LoadingTypography />}
         {searchStatus == 'error' && (
           <Typography variant="h3" color={theme.palette.error.main}>
             Błąd!
