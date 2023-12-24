@@ -37,7 +37,6 @@ export interface PaginatedTableHeadCell<T> {
   numeric: boolean;
 };
 
-
 export type PaginationRequest = {
   pageSize: number;
   pageNumber: number;
