@@ -28,14 +28,14 @@ export interface PaginatedTableProps<T,S>{
   onPaginationPropsChange: (args: PaginationRequest) => void;
   onRequestSort: (field: keyof S) => void;
   sx?: SxProps<Theme>;
-};
+}
 
 export interface PaginatedTableHeadCell<T> {
   field: keyof T;
   label: string;
   sortable: boolean;
   numeric: boolean;
-};
+}
 
 export type PaginationRequest = {
   pageSize: number;
