@@ -90,7 +90,7 @@ export async function getBooksAvailableToAdd(libraryId: string) {
   return BookViewModel.array().parse(data);
 }
 
-const BookInLibrarySearchResponse = paginatedResponse(BookInLibraryViewModel);
+export const BookInLibrarySearchResponse = paginatedResponse(BookInLibraryViewModel);
 
 export async function getBooksInLibrary(request: PaginationRequest & { libraryId: string }) {
   const { libraryId } = request;
