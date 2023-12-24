@@ -50,7 +50,14 @@ function LibrariesTable({
                   Nazwa
                 </TableSortLabel>
               </TableCell>
-              <TableCell>Miejscowość</TableCell>
+              <TableCell sortDirection={orderByField === 'address' ? orderDirection : 'desc'}>
+                <TableSortLabel
+                  active={orderByField === 'address'}
+                  direction={orderByField === 'address' ? orderDirection : 'asc'}
+                  onClick={() => onRequestSort('address')}>
+                  Miejscowość
+                </TableSortLabel>
+              </TableCell>
               <TableCell>Ulica</TableCell>
               <TableCell>Numer</TableCell>
             </TableRow>
