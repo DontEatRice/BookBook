@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Server.Application.ViewModels;
+﻿namespace Server.Application.ViewModels;
 
 public class UserProfileViewModel
 {
@@ -14,4 +8,6 @@ public class UserProfileViewModel
     public string? UserLocation { get; set; }
     public string? AboutMe { get; set; }
     public int? ReadBooksCount { get; set; }
+    public bool IsCritic { get; set; }
+    public DateTime RegisteredAt { get; set; }
 }

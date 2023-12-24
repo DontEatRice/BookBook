@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.User;
 using Server.Infrastructure.Persistence.QueryHandlers.User;
-using AutoMapper;
 using Server.Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 
@@ -48,6 +47,14 @@ public class UserController : ControllerBase
         {
             Id = id
         }));
+    }
+
+    [Authorize]
+    [HttpGet("users")]
+    public async Task<ActionResult<PaginatedResponseViewModel<AdminUserViewModel>>> GetUsers()
+    {
+        var userId = GetUserIdOrThrow();
+        return Ok();
     }
 
 }

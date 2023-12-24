@@ -82,7 +82,9 @@ internal sealed class GetUserProfileHandler : IRequestHandler<GetUserProfileQuer
             UserLocation = user.Address != null ? user.Address.City : null,
             UserLastReadBooks = userReadBooks,
             AboutMe = user.AboutMe,
-            ReadBooksCount = readBooksCount
+            ReadBooksCount = readBooksCount,
+            IsCritic = user.IsCritic,
+            RegisteredAt = user.RegisteredAt
         };
     }
 }

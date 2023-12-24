@@ -66,6 +66,9 @@ function UserProfile() {
                       <PlaceIcon></PlaceIcon>
                       {data.userLocation == null ? 'Brak adresu' : data.userLocation}
                     </Typography>
+                    <Typography variant="subtitle1" gutterBottom>
+                      Użytkownik od: {getUserFrom(data.registeredAt)}
+                    </Typography>
                     <Typography variant="body1">Przeczytane książki: {data.readBooksCount}</Typography>
                   </Grid>
                 </Grid>
@@ -205,6 +208,17 @@ function UserProfileReviews({ data, paginationProps, onPaginationPropsChange }: 
         </Box>
       )}
     </Box>
+  );
+}
+
+function getUserFrom(registeredAt: string) {
+  const date = new Date(registeredAt);
+  return (
+    date.toLocaleString('pl-PL', {
+      month: 'long',
+    }) +
+    ' ' +
+    date.getFullYear()
   );
 }
 

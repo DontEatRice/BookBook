@@ -22,6 +22,8 @@ public class Identity
     public double? Latitude { get; private set; }
     public double? Longitude { get; private set; }
     public string? AboutMe { get; private set; }
+    public bool IsCritic { get; private set; }
+    public DateTime RegisteredAt { get; private set; }
 
     public static Identity Register(Guid id, string email, string password, string name, string? avatarImageUrl, Address? address, double? latitude, double? longitude)
     {
@@ -38,7 +40,9 @@ public class Identity
             Address = address,
             Latitude = latitude,
             Longitude = longitude,
-            AboutMe = ""
+            AboutMe = "",
+            IsCritic = false,
+            RegisteredAt = DateTime.Now
         };
 
         return identity;
@@ -57,7 +61,9 @@ public class Identity
             Roles = new List<string> { Role.Employee.GetDisplayName() },
             Address = null,
             Latitude = null,
-            Longitude = null
+            Longitude = null,
+            IsCritic = false,
+            RegisteredAt = DateTime.Now
         };
 
         return identity;
