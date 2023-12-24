@@ -5,7 +5,7 @@ import { paginatedResponse } from '../utils/zodSchemas';
 import { getAuthToken } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
-const ReservationSearchResponse = paginatedResponse(ReservationViewModel);
+export const ReservationSearchResponse = paginatedResponse(ReservationViewModel);
 
 export const makeReservation = async (body: { libraryId: string }) => {
   const auth = await getAuthToken();
@@ -76,7 +76,7 @@ export async function getReservations(args: PaginationRequest, libraryId: string
     }),
   });
   if (!response.ok) {
-    throw new Error(await response.text());
+    await handleBadResponse(response)
   }
   const data = await response.json();
   return ReservationSearchResponse.parse(data);

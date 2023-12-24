@@ -100,6 +100,6 @@ public class ReservationsController : ControllerBase
 
     [Authorize]
     [HttpPost("admin/search")]
-    public async Task<ActionResult> GetAll(ListReservationsQuery query)
+    public async Task<ActionResult<PaginatedResponseViewModel<ReservationViewModel>>> GetAll(ListReservationsQuery query)
         => Ok(await Mediator.Send(query));
 }
