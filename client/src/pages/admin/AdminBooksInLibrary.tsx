@@ -1,6 +1,6 @@
 import { useTheme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
-import { getBooksInLibrary, updateBookInLibrary } from '../../api/library';
+import { deleteBookFromLibrary, getBooksInLibrary, updateBookInLibrary } from '../../api/library';
 import { BookInLibraryViewModelType } from '../../models/BookInLibraryViewModel';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../utils/auth/useAuth';
@@ -67,8 +67,34 @@ function UpdateBookInLibraryDialog({
   );
 }
 
+function DeleteBookFromLibraryDialog({
+  bookInLibrary,
+  onClose,
+  onConfirm,
+  open,
+}: {
+  bookInLibrary: BookInLibraryViewModelType;
+  onClose: () => void;
+  open: boolean;
+  onConfirm: (data: BookInLibraryViewModelType) => void;
+}) {
+  return (
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>{bookInLibrary.book.title}</DialogTitle>
+      <DialogContent>Czy na pewno chcesz usunąć tę książkę z oferty biblioteki?</DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Anuluj</Button>
+        <Button color="error" variant="contained" onClick={() => onConfirm(bookInLibrary)}>
+          Usuń
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
 function BooksInLibraryTable({ data, libraryId }: { data: BookInLibraryViewModelType[]; libraryId: string }) {
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { showSuccess } = useAlert();
   const queryClient = useQueryClient();
   const [chosenOffer, setChosenOffer] = useState<BookInLibraryViewModelType | undefined>(undefined);
@@ -76,6 +102,14 @@ function BooksInLibraryTable({ data, libraryId }: { data: BookInLibraryViewModel
     mutationFn: updateBookInLibrary,
     onSuccess: (_, { libraryId }) => {
       showSuccess({ title: 'Sukces!', message: `Zaktualizowano ofertę` });
+      queryClient.invalidateQueries(['booksInLibrary', libraryId]);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteBookFromLibrary,
+    onSuccess: (_, { libraryId }) => {
+      showSuccess({ title: 'Sukces!', message: `Pomyślnie usunięto książkę z oferty.` });
       queryClient.invalidateQueries(['booksInLibrary', libraryId]);
     },
   });
@@ -117,7 +151,13 @@ function BooksInLibraryTable({ data, libraryId }: { data: BookInLibraryViewModel
               <TableCell>{bookInLibrary.amount}</TableCell>
               <TableCell>{bookInLibrary.available}</TableCell>
               <TableCell>
-                <Button color="error" onClick={(e) => e.stopPropagation()}>
+                <Button
+                  color="error"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setChosenOffer(bookInLibrary);
+                    setDeleteDialogOpen(true);
+                  }}>
                   Usuń
                 </Button>
               </TableCell>
@@ -131,8 +171,20 @@ function BooksInLibraryTable({ data, libraryId }: { data: BookInLibraryViewModel
         bookInLibrary={chosenOffer}
         onSubmit={(data) => {
           updateMutation.mutate({ body: data, libraryId, bookId: chosenOffer?.book.id ?? '' });
+          setUpdateDialogOpen(false);
         }}
       />
+      {chosenOffer && (
+        <DeleteBookFromLibraryDialog
+          open={deleteDialogOpen}
+          onClose={() => setDeleteDialogOpen(false)}
+          bookInLibrary={chosenOffer}
+          onConfirm={(bookInLibrary) => {
+            deleteMutation.mutate({ bookId: bookInLibrary.book.id, libraryId });
+            setDeleteDialogOpen(false);
+          }}
+        />
+      )}
     </TableContainer>
   );
 }

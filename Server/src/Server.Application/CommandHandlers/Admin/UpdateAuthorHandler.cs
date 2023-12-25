@@ -18,7 +18,6 @@ public sealed class UpdateAuthorCommandValidator : AbstractValidator<UpdateAutho
 
 public sealed record UpdateAuthorCommand(Guid IdAuthor, string FirstName, string LastName, 
     int BirthYear, string? Description, string? ProfilePictureUrl) : IRequest;
-    int BirthYear, string? ProfilePictureUrl, string? Description) : IRequest;
 
 public sealed class UpdateAuthorHandler : IRequestHandler<UpdateAuthorCommand>
 {

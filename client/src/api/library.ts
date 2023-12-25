@@ -109,6 +109,21 @@ export async function updateBookInLibrary({
   }
 }
 
+export async function deleteBookFromLibrary({ libraryId, bookId }: { libraryId: string; bookId: string }) {
+  const token = await getAuthToken();
+  const response = await fetch(`${base}/Libraries/${libraryId}/books/${bookId}`, {
+    method: 'DELETE',
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      Authorization: token,
+    }),
+  });
+
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+}
+
 export async function getBooksAvailableToAdd(libraryId: string) {
   const response = await fetch(base + '/Libraries/' + libraryId + '/not-added');
   if (!response.ok) {
