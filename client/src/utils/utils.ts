@@ -83,18 +83,11 @@ export function loginWithReturnToPath(returnTo: string) {
 
 export function convertJwtToUser(token: string): User {
   const claims = getJwtBody(token);
-  let roles: string[] = [];
-
-  if (Array.isArray(claims.r)) {
-    roles = claims.r;
-  } else if (typeof claims.r === 'string') {
-    roles = [claims.r];
-  }
 
   return {
     id: claims.identityid,
     token,
-    roles,
+    role: claims.r,
     email: claims.email,
     libraryId: claims.libraryid,
     name: claims._name,
