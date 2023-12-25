@@ -17,7 +17,15 @@ import { PaginationRequest } from '../../utils/constants';
 import LoadingTypography from '../../components/common/LoadingTypography';
 import { UserSearchPaginated, getUsers, makeUserCritic } from '../../api/user';
 import { AdminUserViewModelType } from '../../models/user/AdminUserViewModel';
-import { Avatar, Button } from '@mui/material';
+import {
+  Avatar,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@mui/material';
 import { imgUrl } from '../../utils/utils';
 
 type ResponseType = z.infer<typeof UserSearchPaginated>;
@@ -46,6 +54,8 @@ const headCells: readonly HeadCell<AdminUserViewModelType>[] = [
 
 function UsersTable({ data, paginationProps, onPaginationPropsChange, onRequestSort, sx }: UsersTableProps) {
   const queryClient = useQueryClient();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [userIdInDialog, setUserIdInDialog] = useState('');
   const { pageNumber, pageSize, orderByField, orderDirection } = paginationProps;
   const handleChangePage = (_: React.MouseEvent | null, newPage: number) => {
     onPaginationPropsChange({ ...paginationProps, pageNumber: newPage });
@@ -57,6 +67,17 @@ function UsersTable({ data, paginationProps, onPaginationPropsChange, onRequestS
   const handleMakeUserCritic = async (id: string) => {
     await makeUserCritic(id);
     await queryClient.invalidateQueries(['users', pageNumber, pageSize, orderByField, orderDirection]);
+    setUserIdInDialog('');
+    setOpenDialog(false);
+  };
+
+  const handleOpenDialog = (userId: string) => {
+    setUserIdInDialog(userId);
+    setOpenDialog(true);
+  };
+  const handleCloseDialog = () => {
+    setUserIdInDialog('');
+    setOpenDialog(false);
   };
 
   return (
@@ -104,7 +125,7 @@ function UsersTable({ data, paginationProps, onPaginationPropsChange, onRequestS
                   {user.isCritic ? (
                     'Brak'
                   ) : (
-                    <Button onClick={() => handleMakeUserCritic(user.id)}>Mianuj krytykiem</Button>
+                    <Button onClick={() => handleOpenDialog(user.id)}>Mianuj krytykiem</Button>
                   )}
                 </TableCell>
               </TableRow>
@@ -121,6 +142,27 @@ function UsersTable({ data, paginationProps, onPaginationPropsChange, onRequestS
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleRowsChange}
       />
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description">
+        <DialogTitle id="alert-dialog-title">{'Potwierdzenie rezerwacji'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Czy na pewno chcesz nadać temu użytkownikowi status krytyka?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Anuluj
+          </Button>
+          <Button onClick={() => handleMakeUserCritic(userIdInDialog)} color="primary" autoFocus>
+            Potwierdź
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

@@ -98,6 +98,7 @@ function UpdateReviewForm({
                   onChange={(_, value) => {
                     onChange(value);
                   }}
+                  sx={{ fontSize: '2rem', marginBottom: 2 }}
                 />
               )}
             />
@@ -116,12 +117,14 @@ function UpdateReviewForm({
               label="Komentarz"
               defaultValue={review.description + ''}
             />
-            <Button variant="contained" type="submit" sx={{ margin: 1 }}>
-              Uaktualnij
-            </Button>
-            <Button variant="contained" onClick={() => handleClose()} sx={{ margin: 1 }}>
-              Anuluj
-            </Button>
+            <Box textAlign={'center'}>
+              <Button variant="contained" type="submit" sx={{ margin: 1 }}>
+                Uaktualnij
+              </Button>
+              <Button variant="contained" onClick={() => handleClose()} sx={{ margin: 1 }}>
+                Anuluj
+              </Button>
+            </Box>
           </Paper>
         </Box>
       </form>

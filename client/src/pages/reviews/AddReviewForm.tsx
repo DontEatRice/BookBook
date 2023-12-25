@@ -31,8 +31,9 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
   const mutation = useMutation({
     mutationFn: postReview,
     onSuccess: async () => {
-      queryClient.invalidateQueries({ queryKey: ['reviews', book.id] });
-      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
+      await queryClient.invalidateQueries({ queryKey: ['reviews', book.id] });
+      await queryClient.invalidateQueries({ queryKey: ['criticReviews', book.id] });
+      await queryClient.invalidateQueries({ queryKey: ['books', book.id] });
     },
     onError: (err) => {
       if (err instanceof ApiResponseError && err.error.code == 'USER_REVIEW_ALREADY_EXISTS') {
@@ -75,13 +76,7 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
             }}
           />
           <TextInputField errors={errors} field="title" register={register} label="Tytuł" />
-          <TextInputBox
-            rows={3}
-            errors={errors}
-            field="description"
-            register={register}
-            label="Komentarz"
-          />
+          <TextInputBox rows={3} errors={errors} field="description" register={register} label="Komentarz" />
           <input type="hidden" {...register('idBook')} value={book.id} />
           <input type="hidden" {...register('rating')} value={value + ''} />
           <Button type="submit" variant="contained">
