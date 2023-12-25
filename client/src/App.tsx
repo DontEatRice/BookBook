@@ -42,6 +42,7 @@ import AdminBookUpdateForm from './pages/admin/AdminBookUpdateForm';
 import Settings from './pages/account/AccountSettings';
 import AdminCategoryUpdateForm from './pages/admin/AdminCategoryUpdateForm';
 import UserProfile from './pages/user/UserProfile';
+import AdminUsers from './pages/admin/AdminUsers';
 
 const mainTheme = createTheme({
   palette: {
@@ -174,6 +175,9 @@ function App() {
         </Route>
         <Route path="reservations">
           <Route index element={<AdminReservationList />} />
+        </Route>
+        <Route path="users">
+          <Route index element={<AdminUsers />} />
         </Route>
         <Route path="add-employee">
           <Route index element={<AdminRegisterEmployeeForm />} />

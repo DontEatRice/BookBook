@@ -33,5 +33,6 @@ public class ViewModelProfile : Profile
             .ForMember(dest => dest.Latitude, opt => opt.MapFrom(src => src.Library.Latitude))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Library.Address))
             .ForMember(dest => dest.IsBookCurrentlyAvailable, opt => opt.MapFrom(src => src.Available > 0));
+        CreateMap<Identity, AdminUserViewModel>();
     }
 }
