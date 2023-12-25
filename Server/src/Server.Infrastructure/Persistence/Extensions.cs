@@ -13,7 +13,6 @@ using Server.Infrastructure.Persistence.Settings;
 using Server.Infrastructure.Services;
 using System.Reflection;
 using System.Text;
-using Microsoft.Extensions.Logging;
 
 namespace Server.Infrastructure.Persistence;
 

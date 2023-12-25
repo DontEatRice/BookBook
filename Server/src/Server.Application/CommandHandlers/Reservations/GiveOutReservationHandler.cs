@@ -9,12 +9,12 @@ namespace Server.Application.CommandHandlers.Reservations;
 
 public sealed record GiveOutReservationCommand(Guid ReservationId) : IRequest;
 
-public class GiveOutReservation : IRequestHandler<GiveOutReservationCommand>
+public class GiveOutReservationHandler : IRequestHandler<GiveOutReservationCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IReservationRepository _reservationRepository;
 
-    public GiveOutReservation(IReservationRepository reservationRepository, IUnitOfWork unitOfWork)
+    public GiveOutReservationHandler(IReservationRepository reservationRepository, IUnitOfWork unitOfWork)
     {
         _reservationRepository = reservationRepository;
         _unitOfWork = unitOfWork;

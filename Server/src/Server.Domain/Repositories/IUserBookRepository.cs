@@ -1,5 +1,4 @@
-﻿using Server.Domain.Entities;
-using Server.Domain.Entities.User;
+﻿using Server.Domain.Entities.User;
 
 namespace Server.Domain.Repositories;
 

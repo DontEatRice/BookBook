@@ -1,6 +1,5 @@
 // ReSharper disable CollectionNeverUpdated.Global
 
-using System.Diagnostics.CodeAnalysis;
 using Server.Domain.Entities.Auth;
 
 #pragma warning disable CS8618

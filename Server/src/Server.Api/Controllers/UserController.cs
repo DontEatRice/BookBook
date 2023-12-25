@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.User;
 using Server.Infrastructure.Persistence.QueryHandlers.User;
-using AutoMapper;
 using Server.Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 
