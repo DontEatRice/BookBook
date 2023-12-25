@@ -23,6 +23,7 @@ internal sealed class GetUsersHandler : IRequestHandler<GetUsersQuery, Paginated
     public async Task<PaginatedResponseViewModel<AdminUserViewModel>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     { 
         var (users, totalCount) = await _bookDbContext.Identities.AsNoTracking()
+            .Where(x => x.Role == Domain.Entities.Auth.Role.User)
             .OrderBy(x => x.Id)
             .ProjectTo<AdminUserViewModel>(_mapper.ConfigurationProvider)
             .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);

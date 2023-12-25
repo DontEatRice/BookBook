@@ -10,6 +10,7 @@ import AuthorBookCard from '../../components/author/AuthorBookCard';
 import Loading from '../../components/common/Loading';
 import { PaginationRequest } from '../../utils/constants';
 import { z } from 'zod';
+import StarsIcon from '@mui/icons-material/Stars';
 
 function UserProfile() {
   const params = useParams();
@@ -59,9 +60,16 @@ function UserProfile() {
               <Grid item xs={12} sm container>
                 <Grid item xs container direction="column" spacing={2}>
                   <Grid item xs>
-                    <Typography gutterBottom variant="h4" component="div">
-                      {data.userName}
-                    </Typography>
+                    <Grid item xs container flexDirection={'row'} justifyContent={'space-between'}>
+                      <Typography gutterBottom variant="h4" component="div">
+                        {data.userName}
+                      </Typography>
+                      {data.isCritic && (
+                        <Typography variant="h5">
+                          Krytyk<StarsIcon></StarsIcon>
+                        </Typography>
+                      )}
+                    </Grid>
                     <Typography variant="h6" gutterBottom>
                       <PlaceIcon></PlaceIcon>
                       {data.userLocation == null ? 'Brak adresu' : data.userLocation}
