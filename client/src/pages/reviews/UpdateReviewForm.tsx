@@ -49,6 +49,7 @@ function UpdateReviewForm({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reviews', book.id] });
       queryClient.invalidateQueries(['userReviews', user?.id]);
+      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
       if (updateError == null) {
         handleClose();
       }

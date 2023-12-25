@@ -135,16 +135,16 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                     </Typography>
                   </div>
                   <AuthorizedView roles={['User']}>
-                    <Stack direction={'column'}>
+                    <Stack direction={'column'} sx={{flexWrap: 'nowrap'}}>
                       {library.isBookCurrentlyAvailable ? (
-                        <Button onClick={() => addToCartMutation({ bookId, libraryId: library.library.id })}>
+                        <Button onClick={() => addToCartMutation({ bookId, libraryId: library.library.id })} sx={{whiteSpace: 'nowrap'}}>
                           Do koszyka
                         </Button>
                       ) : (
                         <Typography paddingTop={3}>{'Tymczasowo Niedostępna'}</Typography>
                       )}
                       {user?.lat != undefined && (
-                        <Typography>
+                        <Typography noWrap>
                           <RoomIcon></RoomIcon>
                           {library.distanceFromUser!.toFixed(1).toString() + ' km'}
                         </Typography>

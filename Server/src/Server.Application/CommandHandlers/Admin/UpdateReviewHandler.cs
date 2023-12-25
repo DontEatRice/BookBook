@@ -54,8 +54,10 @@ public sealed class UpdateReviewHandler : IRequestHandler<UpdateReviewCommand>
         {
             throw new NotFoundException("Book not found", ApplicationErrorCodes.BookNotFound);
         }
+
+        var reviews = await _reviewRepository.FindAllByBookIdAsync(book.Id, cancellationToken);
         
-        book.UpdateReviewRating(review.Rating, request.Rating);
+        book.UpdateReviewRating(reviews, review.Rating, request.Rating);
         
         review.Title = request.Title;
         review.Description = request.Description;

@@ -18,6 +18,7 @@ public sealed class UpdateAuthorCommandValidator : AbstractValidator<UpdateAutho
 
 public sealed record UpdateAuthorCommand(Guid IdAuthor, string FirstName, string LastName, 
     int BirthYear, string? Description, string? ProfilePictureUrl) : IRequest;
+    int BirthYear, string? ProfilePictureUrl, string? Description) : IRequest;
 
 public sealed class UpdateAuthorHandler : IRequestHandler<UpdateAuthorCommand>
 {
@@ -32,12 +33,7 @@ public sealed class UpdateAuthorHandler : IRequestHandler<UpdateAuthorCommand>
 
     public async Task Handle(UpdateAuthorCommand request, CancellationToken cancellationToken)
     {
-        var author = await _authorRepository.FirstOrDefaultByIdAsync(request.IdAuthor, cancellationToken);
-        
-        if (author is null)
-        {
-            throw new NotFoundException("Author not found", ApplicationErrorCodes.AuthorNotFound);
-        }
+        var author = await _authorRepository.FirstOrDefaultByIdAsync(request.IdAuthor, cancellationToken) ?? throw new NotFoundException("Author not found", ApplicationErrorCodes.AuthorNotFound);
 
         author.FirstName = request.FirstName;
         author.LastName = request.LastName;

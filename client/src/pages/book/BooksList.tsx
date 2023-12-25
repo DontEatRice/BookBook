@@ -1,19 +1,18 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { BookViewModelType } from '../../models/BookViewModel';
-import { useTheme } from '@mui/material/styles';
 import { searchBooks } from '../../api/book';
 import BookInList from '../../components/book/BookInList';
 import { useQuery } from '@tanstack/react-query';
 import Grid from '@mui/material/Grid';
-import { Autocomplete, Button, InputAdornment, Pagination, TextField } from '@mui/material';
+import { Autocomplete, Pagination, TextField } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
-import SearchIcon from '@mui/icons-material/Search';
 import { getAuthors } from '../../api/author';
 import { getCategories } from '../../api/category';
 import { PaginationRequest } from '../../utils/constants';
-import Loading from '../../components/common/Loading';
 import { getLibraries } from '../../api/library';
+import { useSearchParams } from 'react-router-dom';
+import LoadingTypography from '../../components/common/LoadingTypography';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 
@@ -56,8 +55,7 @@ function Books({ data }: { data: BookViewModelType[] }) {
 }
 
 function BooksList() {
-  const theme = useTheme();
-  const [searchInput, setSearchInput] = useState<string>('');
+  const [searchParams] = useSearchParams();
   const [authorId, setAuthorId] = useState<string>();
   const [categoryId, setCategoryId] = useState<string>();
   const [libraryId, setLibraryId] = useState<string>();
@@ -79,24 +77,6 @@ function BooksList() {
     queryFn: () => getLibraries(paginationDefaultRequest),
   });
 
-  const [query, setQuery] = useState<string>('');
-
-  const handleSearchType = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { value } = e.target;
-    setSearchInput(value);
-  };
-
-  const handleSearch = () => {
-    setYearFilter(year);
-    setQuery(searchInput);
-  };
-  const handleSearchOnEnter = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key == 'Enter') {
-      setYearFilter(year);
-      setQuery(searchInput);
-    }
-  };
-
   const [paginationProps, setPaginationProps] = useState<PaginationRequest>({
     pageNumber: 0,
     pageSize: 10,
@@ -111,7 +91,7 @@ function BooksList() {
   const { data: searchData, status: searchStatus } = useQuery({
     queryKey: [
       'searchBooks',
-      query,
+      searchParams.get('q') ?? '',
       authorId,
       categoryId,
       yearFilter,
@@ -123,7 +103,7 @@ function BooksList() {
       searchBooks({
         pageSize: paginationProps.pageSize,
         pageNumber: paginationProps.pageNumber,
-        query: query == null ? '' : query,
+        query: searchParams.get('q') ?? '',
         authorId: authorId,
         categoryId: categoryId,
         yearPublished: yearFilter,
@@ -210,31 +190,8 @@ function BooksList() {
           />
         </Box>
       </Box>
-      <Box marginBottom={1} marginRight={1} flexGrow={1}>
-        <TextField
-          fullWidth
-          placeholder="Szukaj książek"
-          value={searchInput}
-          onChange={handleSearchType}
-          onKeyDown={handleSearchOnEnter}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <Button variant="contained" endIcon={<SearchIcon />} onClick={handleSearch}>
-                  Szukaj
-                </Button>
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Box>
       <Box marginTop={2}>
-        {searchStatus == 'loading' && <Loading />}
-        {searchStatus == 'error' && (
-          <Typography variant="h3" color={theme.palette.error.main}>
-            Błąd!
-          </Typography>
-        )}
+        {searchStatus == 'loading' && <LoadingTypography />}
         {searchStatus == 'success' && (
           <Box>
             <Books data={searchData.data} />
@@ -262,4 +219,3 @@ function BooksList() {
 }
 
 export default BooksList;
-
