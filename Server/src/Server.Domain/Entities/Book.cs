@@ -56,6 +56,14 @@ public class Book
         
         AverageRating = Math.Round((averageRating * reviewCount + reviewRating) / (reviewCount + 1), 2);
     }
+
+    public void ComputeCriticRating(ICollection<Review> reviews, double reviewRating)
+    {
+        var reviewCount = reviews.Count;
+        var averageCriticRating = AverageCriticRating ?? 0;
+
+        AverageCriticRating = Math.Round((averageCriticRating * reviewCount + reviewRating) / (reviewCount + 1), 2);
+    }
     
     public void SubtractReviewFromRating(ICollection<Review> reviews, double reviewRating)
     {

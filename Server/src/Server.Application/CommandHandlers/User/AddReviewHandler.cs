@@ -49,8 +49,16 @@ public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
         
         var user = await _identityRepository.FirstOrDefaultByIdAsync(request.UserId, cancellationToken) ??
                    throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
-        
-        book.ComputeRating(reviews, request.Rating);
+
+
+        if (user.IsCritic)
+        {
+            book.ComputeCriticRating(reviews.Where(x => x.IsCriticRating).ToList(), request.Rating);
+        }
+        else
+        {
+            book.ComputeRating(reviews.Where(x => !x.IsCriticRating).ToList(), request.Rating);
+        }
         
         var review = Review.Create(request.Id, request.Title, request.Description, request.Rating, book, user);
 
