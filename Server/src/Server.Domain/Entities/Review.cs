@@ -1,6 +1,5 @@
 // ReSharper disable CollectionNeverUpdated.Global
 
-using System.Diagnostics.CodeAnalysis;
 using Server.Domain.Entities.Auth;
 
 #pragma warning disable CS8618
@@ -18,7 +17,7 @@ public class Review
     public bool IsCriticRating { get; set; }
 
     public static Review Create(Guid id, string? title, string? description, double rating,
-        Book book, Identity user, bool isCriticRating)
+        Book book, Identity user)
         => new()
         {
             Id = id,
@@ -27,6 +26,6 @@ public class Review
             Rating = rating,
             Book = book,
             User = user,
-            IsCriticRating = isCriticRating
+            IsCriticRating = user.IsCritic
         };
 }

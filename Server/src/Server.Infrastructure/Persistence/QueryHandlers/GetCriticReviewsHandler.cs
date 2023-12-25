@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -7,22 +7,22 @@ using Server.Utils;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
-public record GetReviewsQuery(Guid BookId) : PaginationOptions, IRequest<PaginatedResponseViewModel<ReviewViewModel>>;
+public record GetCriticReviewsQuery(Guid BookId) : PaginationOptions, IRequest<PaginatedResponseViewModel<ReviewViewModel>>;
 
-internal sealed class GetReviewsHandler
-    : IRequestHandler<GetReviewsQuery, PaginatedResponseViewModel<ReviewViewModel>>
+internal sealed class GetCriticReviewsHandler
+    : IRequestHandler<GetCriticReviewsQuery, PaginatedResponseViewModel<ReviewViewModel>>
 {
     private readonly BookBookDbContext _dbContext;
     private readonly IMapper _mapper;
 
-    public GetReviewsHandler(BookBookDbContext dbContext, IMapper mapper)
+    public GetCriticReviewsHandler(BookBookDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
         _mapper = mapper;
     }
 
     public async Task<PaginatedResponseViewModel<ReviewViewModel>> Handle(
-        GetReviewsQuery request, CancellationToken cancellationToken)
+        GetCriticReviewsQuery request, CancellationToken cancellationToken)
     {
         var query = _dbContext.Reviews.AsNoTracking();
 
@@ -31,7 +31,7 @@ internal sealed class GetReviewsHandler
             : query.OrderBy(x => x.Id);
 
         var (reviews, totalCount) = await query
-            .Where(x => x.Book.Id == request.BookId && !x.IsCriticRating)
+            .Where(x => x.Book.Id == request.BookId && x.IsCriticRating)
             .Include(x => x.User)
             .ProjectTo<ReviewViewModel>(_mapper.ConfigurationProvider)
             .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);

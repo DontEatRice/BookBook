@@ -37,12 +37,8 @@ public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
 
     public async Task Handle(AddReviewCommand request, CancellationToken cancellationToken)
     {
-        var book = await _bookRepository.FirstOrDefaultByIdAsync(request.IdBook, cancellationToken);
-        
-        if (book is null)
-        {
+        var book = await _bookRepository.FirstOrDefaultByIdAsync(request.IdBook, cancellationToken) ?? 
             throw new NotFoundException("Book not found", ApplicationErrorCodes.BookNotFound);
-        }
 
         var reviews = await _reviewRepository.FindAllByBookIdAsync(request.IdBook, cancellationToken);
 
@@ -56,8 +52,7 @@ public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
         
         book.ComputeRating(reviews, request.Rating);
         
-        var review = Review.Create(request.Id, request.Title, request.Description, request.Rating, book, user,
-            false);
+        var review = Review.Create(request.Id, request.Title, request.Description, request.Rating, book, user);
 
         await _reviewRepository.AddAsync(review, cancellationToken);
 

@@ -104,7 +104,7 @@ function UsersTable({ data, paginationProps, onPaginationPropsChange, onRequestS
                   {user.isCritic ? (
                     'Brak'
                   ) : (
-                    <Button onClick={() => handleMakeUserCritic(user.id)}>Krytyk</Button>
+                    <Button onClick={() => handleMakeUserCritic(user.id)}>Mianuj krytykiem</Button>
                   )}
                 </TableCell>
               </TableRow>

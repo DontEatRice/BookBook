@@ -19,6 +19,16 @@ export async function getReviews(bookId: string, body: PaginationRequest) {
   return ReviewSearchResponse.parse(data);
 }
 
+export async function getCriticReviews(bookId: string, body: PaginationRequest) {
+  const response = await paginatedFetch(base + '/Books/' + bookId + '/Reviews-critic/search', body);
+  const data = await response.json();
+
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+  return ReviewSearchResponse.parse(data);
+}
+
 export const postReview = async (review: AddReviewType) => {
   const auth = await getAuthToken();
 

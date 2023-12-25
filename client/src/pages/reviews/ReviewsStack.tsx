@@ -2,8 +2,6 @@ import { useTheme } from '@mui/material/styles';
 import { BookViewModelType } from '../../models/BookViewModel';
 import ReviewPaper from './ReviewPaper';
 import { ReviewViewModelType } from '../../models/ReviewViewModel';
-import AddReviewForm from './AddReviewForm';
-import AuthorizedView from '../../components/auth/AuthorizedView';
 import { useAuth } from '../../utils/auth/useAuth';
 import Stack from '@mui/material/Stack';
 
@@ -17,11 +15,6 @@ function Reviews({ book, reviews }: { book: BookViewModelType; reviews: ReviewVi
 
   return (
     <Stack sx={{ alignItems: 'center', backgroundColor: theme.palette.background.default, width: 'max' }}>
-      <AuthorizedView roles={['User']}>
-        {reviews.filter((review) => review.user.id === user?.id).length === 0 && (
-          <AddReviewForm book={book}></AddReviewForm>
-        )}
-      </AuthorizedView>
       {reviews.map((review) => (
         <ReviewPaper review={review} book={book} key={review.id}></ReviewPaper>
       ))}
