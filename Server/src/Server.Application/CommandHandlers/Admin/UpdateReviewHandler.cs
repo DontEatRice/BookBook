@@ -3,7 +3,6 @@ using MediatR;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
 using Server.Application.InfrastructureInterfaces;
-using Server.Domain.Entities;
 using Server.Domain.Repositories;
 
 namespace Server.Application.CommandHandlers.Admin;
@@ -36,12 +35,8 @@ public sealed class UpdateReviewHandler : IRequestHandler<UpdateReviewCommand>
 
     public async Task Handle(UpdateReviewCommand request, CancellationToken cancellationToken)
     {
-        var review = await _reviewRepository.FirstOrDefaultByIdAsync(request.IdReview, cancellationToken);
-        
-        if (review is null)
-        {
+        var review = await _reviewRepository.FirstOrDefaultByIdAsync(request.IdReview, cancellationToken) ?? 
             throw new NotFoundException("Review not found", ApplicationErrorCodes.ReviewNotFound);
-        }
 
         if (request.UserId != review.User.Id)
         {
@@ -49,20 +44,29 @@ public sealed class UpdateReviewHandler : IRequestHandler<UpdateReviewCommand>
                 ApplicationErrorCodes.UserNotAllowed);
         }
 
-        var book = review.Book;
-        
-        if (book is null)
-        {
+        var book = review.Book ?? 
             throw new NotFoundException("Book not found", ApplicationErrorCodes.BookNotFound);
-        }
 
         var reviews = await _reviewRepository.FindAllByBookIdAsync(book.Id, cancellationToken);
-        
-        book.UpdateReviewRating(reviews, review.Rating, request.Rating);
+
+        if(review.User.IsCritic && !review.IsCriticRating)
+        {
+            book.SubtractReviewFromRating(reviews.Where(x => !x.IsCriticRating).ToList(), review.Rating);
+            book.ComputeCriticRating(reviews.Where(x => x.IsCriticRating).ToList(), request.Rating);
+        }
+        else if(review.User.IsCritic && review.IsCriticRating) 
+        {
+            book.UpdateCriticReviewRating(reviews.Where(x => x.IsCriticRating).ToList(), review.Rating, request.Rating);
+        }
+        else
+        {
+            book.UpdateReviewRating(reviews.Where(x => !x.IsCriticRating).ToList(), review.Rating, request.Rating);
+        }
         
         review.Title = request.Title;
         review.Description = request.Description;
         review.Rating = request.Rating;
+        review.IsCriticRating = review.User.IsCritic;
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

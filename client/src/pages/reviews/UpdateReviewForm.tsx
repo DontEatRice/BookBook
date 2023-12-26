@@ -44,8 +44,9 @@ function UpdateReviewForm({
   const mutation = useMutation({
     mutationFn: updateReview,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['reviews', book.id] });
-      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
+      queryClient.invalidateQueries(['reviews', book.id]);
+      queryClient.invalidateQueries(['criticReviews', book.id]);
+      queryClient.invalidateQueries(['books', book.id]);
       if (updateError == null) {
         handleClose();
       }

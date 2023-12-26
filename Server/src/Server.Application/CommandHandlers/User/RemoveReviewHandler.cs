@@ -24,23 +24,21 @@ public sealed class RemoveReviewHandler : IRequestHandler<RemoveReviewCommand>
 
     public async Task Handle(RemoveReviewCommand request, CancellationToken cancellationToken)
     {
-        var review = await _reviewRepository.FirstOrDefaultByIdAsync(request.Id, cancellationToken);
-
-        if (review is null)
-        {
+        var review = await _reviewRepository.FirstOrDefaultByIdAsync(request.Id, cancellationToken) ?? 
             throw new NotFoundException("Review not found", ApplicationErrorCodes.ReviewNotFound);
-        }
-        
-        var book = await _bookRepository.FirstOrDefaultByIdAsync(review.Book.Id, cancellationToken);
 
-        if (book is null)
-        {
-            throw new NotFoundException("Book not found", ApplicationErrorCodes.PublisherNotFound);
-        }
-        
+        var book = await _bookRepository.FirstOrDefaultByIdAsync(review.Book.Id, cancellationToken) ?? 
+            throw new NotFoundException("Book not found", ApplicationErrorCodes.BookNotFound);
+
         var reviews = await _reviewRepository.FindAllByBookIdAsync(book.Id, cancellationToken);
 
-        book.SubtractReviewFromRating(reviews, review.Rating);
+        if (review.IsCriticRating)
+        {
+            book.SubtractReviewFromCriticRating(reviews.Where(x => x.IsCriticRating).ToList(), review.Rating);
+        }
+        else {
+            book.SubtractReviewFromRating(reviews.Where(x => !x.IsCriticRating).ToList(), review.Rating);
+        }
 
         await _reviewRepository.Delete(request.Id, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -144,10 +144,19 @@ function BookDetails() {
             <Grid container spacing={1} marginBottom={3} padding={2}>
               <Grid item xs={12} marginBottom={2} padding={1}>
                 <Typography variant="h4">
-                  {book.averageRating == null ? 0 : book.averageRating}
+                  {book.averageRating == null ? 'Brak ocen' : book.averageRating}
                   <Rating
                     name="half-rating-read"
                     value={book.averageRating == null ? 0 : book.averageRating}
+                    precision={0.25}
+                    readOnly
+                  />
+                </Typography>
+                <Typography variant="h5">
+                  {book.averageCriticRating == null ? 'Brak ocen krytków' : book.averageCriticRating}
+                  <Rating
+                    name="half-rating-read"
+                    value={book.averageCriticRating == null ? 0 : book.averageCriticRating}
                     precision={0.25}
                     readOnly
                   />

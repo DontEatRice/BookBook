@@ -78,12 +78,34 @@ public class Book
         
         AverageRating = Math.Round((averageRating * reviewCount - reviewRating) / (reviewCount - 1), 2);
     }
-    
+
+    public void SubtractReviewFromCriticRating(ICollection<Review> reviews, double reviewRating)
+    {
+        var reviewCount = reviews.Count;
+        var averageCriticRating = AverageCriticRating ?? 0;
+
+        if (reviewCount <= 1)
+        {
+            AverageCriticRating = null;
+            return;
+        }
+
+        AverageCriticRating = Math.Round((averageCriticRating * reviewCount - reviewRating) / (reviewCount - 1), 2);
+    }
+
     public void UpdateReviewRating(ICollection<Review> reviews, double oldReviewRating, double newReviewRating)
     {
         var reviewCount = reviews.Count;
         var averageRating = AverageRating ?? 0;
         
         AverageRating = Math.Round((averageRating * reviewCount - oldReviewRating + newReviewRating) / (reviewCount), 2);
+    }
+
+    public void UpdateCriticReviewRating(ICollection<Review> reviews, double oldReviewRating, double newReviewRating)
+    {
+        var reviewCount = reviews.Count;
+        var averageCriticRating = AverageCriticRating ?? 0;
+
+        AverageCriticRating = Math.Round((averageCriticRating * reviewCount - oldReviewRating + newReviewRating) / (reviewCount), 2);
     }
 }
