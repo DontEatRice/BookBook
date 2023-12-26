@@ -25,6 +25,7 @@ import { ChangeEvent, SyntheticEvent, useState } from 'react';
 import { imgUrl } from '../../utils/utils';
 import AddReviewForm from '../reviews/AddReviewForm';
 import { useAuth } from '../../utils/auth/useAuth';
+import ReviewPaper from '../reviews/ReviewPaper';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   return (
@@ -212,6 +213,29 @@ function BookDetails() {
               </Grid>
             </Grid>
             <LibrariesStack bookId={params.bookId!} />
+            <AuthorizedView roles={['User']}>
+              {book.userReview == null ? (
+                <Box
+                  display={'flex'}
+                  flexDirection={'column'}
+                  alignItems={'center'}
+                  justifyContent={'center'}>
+                  <Typography variant="h5">Dodaj swoją opinię</Typography>
+                  <AddReviewForm book={book}></AddReviewForm>
+                </Box>
+              ) : (
+                <Box
+                  display={'flex'}
+                  flexDirection={'column'}
+                  alignItems={'center'}
+                  justifyContent={'center'}>
+                  <Typography variant="h6" gutterBottom>
+                    Twoja ocena
+                  </Typography>
+                  <ReviewPaper book={book} review={book.userReview} />
+                </Box>
+              )}
+            </AuthorizedView>
             <Box marginBottom={3} padding={2} width={'100%'}>
               {(statusReviews == 'loading' || statusCriticReviews === 'loading') && <LoadingTypography />}
               {statusReviews == 'success' && statusCriticReviews == 'success' && (
@@ -222,13 +246,13 @@ function BookDetails() {
                   </Tabs>
                   {currentTabIndex === 0 && (
                     <Box marginTop={3}>
-                      <AuthorizedView roles={['User']}>
+                      {/* <AuthorizedView roles={['User']}>
                         {reviews.data
                           .concat(criticReviews.data)
                           .filter((review) => review.user.id === user?.id).length === 0 && (
                           <AddReviewForm book={book}></AddReviewForm>
                         )}
-                      </AuthorizedView>
+                      </AuthorizedView> */}
                       <Reviews book={book} reviews={reviews.data} />
                       {reviews.data.length > 0 ? (
                         <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>

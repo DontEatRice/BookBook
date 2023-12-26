@@ -7,7 +7,7 @@ using Server.Utils;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
-public record GetCriticReviewsQuery(Guid BookId) : PaginationOptions, IRequest<PaginatedResponseViewModel<ReviewViewModel>>;
+public record GetCriticReviewsQuery(Guid BookId, string? UserId) : PaginationOptions, IRequest<PaginatedResponseViewModel<ReviewViewModel>>;
 
 internal sealed class GetCriticReviewsHandler
     : IRequestHandler<GetCriticReviewsQuery, PaginatedResponseViewModel<ReviewViewModel>>
@@ -24,7 +24,15 @@ internal sealed class GetCriticReviewsHandler
     public async Task<PaginatedResponseViewModel<ReviewViewModel>> Handle(
         GetCriticReviewsQuery request, CancellationToken cancellationToken)
     {
-        var query = _dbContext.Reviews.AsNoTracking();
+        var query = _dbContext.Reviews
+            .Include(x => x.User)
+            .AsNoTracking();
+
+        if(request.UserId is not null)
+        {
+            var userIdParsed = Guid.Parse(request.UserId);
+            query = query.Where(x => x.User.Id !=  userIdParsed);
+        }
 
         query = !string.IsNullOrWhiteSpace(request.OrderByField)
             ? query.OrderBy(request.OrderByField)

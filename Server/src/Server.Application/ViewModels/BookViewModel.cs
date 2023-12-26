@@ -20,4 +20,5 @@ public class BookViewModel
     public ICollection<BookCategoryViewModel> BookCategories { get; set; }
     public int? ReservationCount { get; set; }
     public bool? DoesUserObserve { get; set; }
+    public ReviewViewModel? UserReview { get; set; }
 }
