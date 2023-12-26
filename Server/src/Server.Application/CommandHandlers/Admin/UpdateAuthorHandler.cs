@@ -17,7 +17,7 @@ public sealed class UpdateAuthorCommandValidator : AbstractValidator<UpdateAutho
 }
 
 public sealed record UpdateAuthorCommand(Guid IdAuthor, string FirstName, string LastName, 
-    int BirthYear, string? ProfilePictureUrl, string? Description) : IRequest;
+    int BirthYear, string? Description, string? ProfilePictureUrl) : IRequest;
 
 public sealed class UpdateAuthorHandler : IRequestHandler<UpdateAuthorCommand>
 {
@@ -39,6 +39,7 @@ public sealed class UpdateAuthorHandler : IRequestHandler<UpdateAuthorCommand>
         author.BirthYear = request.BirthYear;
         author.ProfilePictureUrl = request.ProfilePictureUrl;
         author.Description = request.Description;
+        author.FullText = author.FirstName + " " + author.LastName;
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

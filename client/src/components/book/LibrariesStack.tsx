@@ -14,6 +14,7 @@ import { useAuth } from '../../utils/auth/useAuth';
 import LibraryInBookDetails from '../../models/LibraryInBookDetails';
 import RoomIcon from '@mui/icons-material/Room';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { MarkerIcon } from '../../utils/utils';
 
 function LibrariesStack({ bookId }: { bookId: string }) {
   const { user } = useAuth();
@@ -167,7 +168,7 @@ function LibrariesStack({ bookId }: { bookId: string }) {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               {libraries.map((library) => (
-                <Marker position={[library.latitude, library.longitude]} key={library.id}>
+                <Marker icon={MarkerIcon} position={[library.latitude, library.longitude]} key={library.id}>
                   <Popup>
                     <Link to={`/libraries/${library.id}`}>{library.name}</Link>
                     <br />
@@ -210,4 +211,3 @@ function LibrariesStack({ bookId }: { bookId: string }) {
 }
 
 export default LibrariesStack;
-

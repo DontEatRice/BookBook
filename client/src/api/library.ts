@@ -3,11 +3,12 @@ import { AddLibraryType } from '../models/AddLibrary';
 import BookInLibraryViewModel from '../models/BookInLibraryViewModel';
 import BookViewModel from '../models/BookViewModel';
 import LibraryViewModel from '../models/LibraryViewModel';
+import { UpdateBookInLibraryType } from '../models/UpdateBookInLibrary';
 import { UpdateLibraryType } from '../models/UpdateLibrary';
 import { PaginationRequest } from '../utils/constants';
 import { handleBadResponse, paginatedFetch } from '../utils/utils';
 import { paginatedResponse } from '../utils/zodSchemas';
-import { getAuthTokenOrNull } from './auth';
+import { getAuthToken, getAuthTokenOrNull } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 const LibrarySearchResponse = paginatedResponse(LibraryViewModel);
@@ -76,8 +77,52 @@ export const addBookToLibrary = async (addBookToLibrary: AddBookToLibraryType) =
     body: JSON.stringify(addBookToLibrary),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   });
+
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+
   return response;
 };
+
+export async function updateBookInLibrary({
+  libraryId,
+  bookId,
+  body,
+}: {
+  libraryId: string;
+  bookId: string;
+  body: UpdateBookInLibraryType;
+}) {
+  const token = await getAuthToken();
+  const response = await fetch(`${base}/Libraries/${libraryId}/books/${bookId}`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      Authorization: token,
+    }),
+  });
+
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+}
+
+export async function deleteBookFromLibrary({ libraryId, bookId }: { libraryId: string; bookId: string }) {
+  const token = await getAuthToken();
+  const response = await fetch(`${base}/Libraries/${libraryId}/books/${bookId}`, {
+    method: 'DELETE',
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      Authorization: token,
+    }),
+  });
+
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+}
 
 export async function getBooksAvailableToAdd(libraryId: string) {
   const response = await fetch(base + '/Libraries/' + libraryId + '/not-added');
