@@ -1,6 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { BookInLibrarySearchResponse, getBooksInLibrary } from '../../api/library';
-import { deleteBookFromLibrary, getBooksInLibrary, updateBookInLibrary } from '../../api/library';
+import {
+  BookInLibrarySearchResponse,
+  deleteBookFromLibrary,
+  getBooksInLibrary,
+  updateBookInLibrary,
+} from '../../api/library';
 import { BookInLibraryViewModelType } from '../../models/BookInLibraryViewModel';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../utils/auth/useAuth';
@@ -19,7 +23,6 @@ import { loginWithReturnToPath } from '../../utils/utils';
 import { z } from 'zod';
 import { PaginatedTableProps, PaginationRequest } from '../../utils/constants';
 import { TablePagination, TableSortLabel } from '@mui/material';
-import { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import { useEffect, useState } from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -96,7 +99,16 @@ function DeleteBookFromLibraryDialog({
   );
 }
 
-function BooksInLibraryTable({ data, libraryId }: { data: BookInLibraryViewModelType[]; libraryId: string }) {
+type ResponseType = z.infer<typeof BookInLibrarySearchResponse>;
+function BooksInLibraryTable({
+  data,
+  libraryId,
+  paginationProps,
+  onPaginationPropsChange,
+  onRequestSort,
+  sx,
+}: PaginatedTableProps<ResponseType, BookInLibraryViewModelType> & { libraryId: string }) {
+  const { pageNumber, pageSize, orderByField, orderDirection } = paginationProps;
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { showSuccess } = useAlert();
@@ -118,16 +130,6 @@ function BooksInLibraryTable({ data, libraryId }: { data: BookInLibraryViewModel
     },
   });
 
-type ResponseType = z.infer<typeof BookInLibrarySearchResponse>;
-
-function BooksInLibraryTable({
-  data,
-  paginationProps,
-  onPaginationPropsChange,
-  onRequestSort,
-  sx,
-}: PaginatedTableProps<ResponseType, BookInLibraryViewModelType>) {
-  const { pageNumber, pageSize, orderByField, orderDirection } = paginationProps;
   const handleChangePage = (_: React.MouseEvent | null, newPage: number) => {
     onPaginationPropsChange({ ...paginationProps, pageNumber: newPage });
   };
@@ -136,77 +138,6 @@ function BooksInLibraryTable({
   };
 
   return (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>ISBN</TableCell>
-            <TableCell>Tytuł</TableCell>
-            <TableCell>Autorzy</TableCell>
-            <TableCell>Ilość</TableCell>
-            <TableCell>Dostępne</TableCell>
-            <TableCell>Akcje</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((bookInLibrary) => (
-            <TableRow
-              key={bookInLibrary.book.id}
-              sx={{
-                cursor: 'pointer',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                },
-              }}
-              onClick={() => {
-                setUpdateDialogOpen(true);
-                setChosenOffer({ ...bookInLibrary });
-              }}>
-              <TableCell>{bookInLibrary.book.isbn}</TableCell>
-              <TableCell>{bookInLibrary.book.title}</TableCell>
-              <TableCell>
-                {bookInLibrary.book.authors
-                  .map((author) => author.firstName + ' ' + author.lastName)
-                  .join(', ')}
-              </TableCell>
-              <TableCell>{bookInLibrary.amount}</TableCell>
-              <TableCell>{bookInLibrary.available}</TableCell>
-              <TableCell>
-                <Button
-                  color="error"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setChosenOffer(bookInLibrary);
-                    setDeleteDialogOpen(true);
-                  }}>
-                  Usuń
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <UpdateBookInLibraryDialog
-        onClose={() => setUpdateDialogOpen(false)}
-        open={updateDialogOpen}
-        bookInLibrary={chosenOffer}
-        onSubmit={(data) => {
-          updateMutation.mutate({ body: data, libraryId, bookId: chosenOffer?.book.id ?? '' });
-          setUpdateDialogOpen(false);
-        }}
-      />
-      {chosenOffer && (
-        <DeleteBookFromLibraryDialog
-          open={deleteDialogOpen}
-          onClose={() => setDeleteDialogOpen(false)}
-          bookInLibrary={chosenOffer}
-          onConfirm={(bookInLibrary) => {
-            deleteMutation.mutate({ bookId: bookInLibrary.book.id, libraryId });
-            setDeleteDialogOpen(false);
-          }}
-        />
-      )}
-    </TableContainer>
     <Box sx={sx}>
       <TableContainer>
         <Table>
@@ -238,6 +169,7 @@ function BooksInLibraryTable({
                   Dostępne
                 </TableSortLabel>
               </TableCell>
+              <TableCell>Akcje</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -249,6 +181,10 @@ function BooksInLibraryTable({
                   '&:hover': {
                     backgroundColor: 'rgba(0, 0, 0, 0.1)',
                   },
+                }}
+                onClick={() => {
+                  setUpdateDialogOpen(true);
+                  setChosenOffer({ ...bookInLibrary });
                 }}>
                 <TableCell>{bookInLibrary.book.isbn}</TableCell>
                 <TableCell>{bookInLibrary.book.title}</TableCell>
@@ -259,10 +195,41 @@ function BooksInLibraryTable({
                 </TableCell>
                 <TableCell>{bookInLibrary.amount}</TableCell>
                 <TableCell>{bookInLibrary.available}</TableCell>
+                <TableCell>
+                  <Button
+                    color="error"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setChosenOffer(bookInLibrary);
+                      setDeleteDialogOpen(true);
+                    }}>
+                    Usuń
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
+        <UpdateBookInLibraryDialog
+          onClose={() => setUpdateDialogOpen(false)}
+          open={updateDialogOpen}
+          bookInLibrary={chosenOffer}
+          onSubmit={(data) => {
+            updateMutation.mutate({ body: data, libraryId, bookId: chosenOffer?.book.id ?? '' });
+            setUpdateDialogOpen(false);
+          }}
+        />
+        {chosenOffer && (
+          <DeleteBookFromLibraryDialog
+            open={deleteDialogOpen}
+            onClose={() => setDeleteDialogOpen(false)}
+            bookInLibrary={chosenOffer}
+            onConfirm={(bookInLibrary) => {
+              deleteMutation.mutate({ bookId: bookInLibrary.book.id, libraryId });
+              setDeleteDialogOpen(false);
+            }}
+          />
+        )}
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 20, 30]}
@@ -303,10 +270,25 @@ function AdminBooksInLibrary() {
     }
   }, [navigate, user]);
 
-  const { data: booksInLibrary, status: booksInLibraryStatus } = useQuery({
-    queryKey: ['booksInLibrary', user?.libraryId],
-    queryFn: ({ queryKey }) => getBooksInLibrary({ libraryId: queryKey[1]!, pageNumber: 0, pageSize: 50 }),
+  const {
+    data: booksInLibrary,
+    status: booksInLibraryStatus,
+    isLoading,
+  } = useQuery({
+    queryKey: ['booksInLibrary', user?.libraryId, pageNumber, pageSize, orderByField, orderDirection],
+    queryFn: ({ queryKey }) =>
+      getBooksInLibrary({
+        libraryId: queryKey[1]!.toString(),
+        pageNumber: pageNumber,
+        pageSize: pageSize,
+        orderByField: orderByField,
+        orderDirection: orderDirection,
+      }),
     enabled: !!user?.libraryId,
+    keepPreviousData: true,
+    onSettled: () => {
+      setIsInitLoading(false);
+    },
   });
 
   if (!user?.libraryId) {
@@ -338,13 +320,11 @@ function AdminBooksInLibrary() {
       {booksInLibraryStatus == 'success' && (
         <BooksInLibraryTable
           data={booksInLibrary}
+          libraryId={user.libraryId!}
           paginationProps={paginationProps}
           onPaginationPropsChange={setPaginationProps}
           onRequestSort={handleRequestSort}
         />
-      )}
-      {booksInLibraryStatus == 'success' && (
-        <BooksInLibraryTable data={booksInLibrary.data} libraryId={user.libraryId!} />
       )}
     </Box>
   );
