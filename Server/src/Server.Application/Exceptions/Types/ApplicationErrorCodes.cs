@@ -25,4 +25,6 @@ public static class ApplicationErrorCodes
     public const string UserNotAllowed = "USER_NOT_ALLOWED";
     public const string ReviewNotFound = "REVIEW_NOT_FOUND";
     public const string UserReviewAlreadyExists = "USER_REVIEW_ALREADY_EXISTS";
+    public const string BookInLibraryNotFound = "BOOK_IN_LIBRARY_NOT_FOUND";
+    public const string AvailableGtAmount = "BOOK_IN_LIBRARY_AVAIL_GT_AMOUNT";
 }

@@ -26,9 +26,16 @@ internal sealed class GetAuthorsHandler
     {
         var query = _dbContext.Authors.AsNoTracking();
 
-        query = !string.IsNullOrWhiteSpace(request.OrderByField)
-            ? query.OrderBy(request.OrderByField)
-            : query.OrderBy(x => x.Id);
+        if (!string.IsNullOrWhiteSpace(request.OrderByField))
+        {
+            query = request.OrderDirection == OrderDirection.Asc
+                ? query.OrderBy(request.OrderByField).ThenBy(x => x.Id)
+                : query.OrderByDescending(request.OrderByField).ThenBy(x => x.Id);
+        }
+        else
+        {
+            query = query.OrderBy(x => x.Id);
+        }
 
         if (!string.IsNullOrWhiteSpace(request.Query))
         {

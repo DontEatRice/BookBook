@@ -2,22 +2,15 @@ import { BookViewModelType } from '../../models/BookViewModel';
 import { Link } from 'react-router-dom';
 import { imgUrl } from '../../utils/utils';
 import { useState } from 'react';
-import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Rating from '@mui/material/Rating';
+import Box from '@mui/material/Box';
+import { Img } from '../common/Img';
 
 function BookInList({ book }: { book: BookViewModelType }) {
-  const [elevation, setElevation] = useState(3);
-
-  const Img = styled('img')({
-    margin: 'auto',
-    display: 'block',
-    maxWidth: '100%',
-    maxHeight: '100%',
-  });
+  const [elevation, setElevation] = useState(1);
 
   return (
     <Paper
@@ -32,13 +25,13 @@ function BookInList({ book }: { book: BookViewModelType }) {
       <Link to={`/books/${book.id}`}>
         <Grid container spacing={2}>
           <Grid item>
-            <Button sx={{ width: 180, height: 180 }}>
+            <Box sx={{ width: 180, height: 180 }}>
               <Img
                 alt="complex"
                 loading="lazy"
                 src={imgUrl(book.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg')}
               />
-            </Button>
+            </Box>
           </Grid>
           <Grid item xs={12} sm container>
             <Grid item xs container direction="column" spacing={2}>

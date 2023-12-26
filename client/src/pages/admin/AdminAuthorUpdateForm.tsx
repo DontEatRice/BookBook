@@ -8,9 +8,9 @@ import Button from '@mui/material/Button';
 import { updateAuthor } from '../../api/author';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAuthor } from '../../api/author';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { uploadImage } from '../../api/image';
-import { fileToBase64 } from '../../utils/utils';
+import { fileToBase64, imgUrl } from '../../utils/utils';
 import UploadImage from '../../models/UploadImage';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router';
@@ -18,6 +18,7 @@ import { NumberInputField2 } from '../../components/common/NumberInputField';
 import { TextInputField2 } from '../../components/common/TextInputField';
 import { TextInputBox2 } from '../../components/common/TextInputBox';
 import useAlert from '../../utils/alerts/useAlert';
+import Avatar from '@mui/material/Avatar';
 
 async function fileToUploadImage(file: File) {
   let base64 = await fileToBase64(file);
@@ -47,17 +48,22 @@ function AuthorUpdateForm({
       ...data,
     },
   });
-
+  const [fileUrl, setFileUrl] = useState<string | undefined>(undefined);
   const watchAvatarPicture = useWatch({
     control,
     name: 'avatarPicture',
   });
 
-  const fileName = useMemo(() => {
-    if (watchAvatarPicture instanceof FileList) {
-      return watchAvatarPicture.item(0)?.name;
+  const file = useMemo(() => {
+    if (watchAvatarPicture instanceof FileList && watchAvatarPicture.length > 0) {
+      const picture = watchAvatarPicture.item(0);
+      if (picture !== null) {
+        setFileUrl(URL.createObjectURL(picture));
+        return picture;
+      }
     }
-    return undefined;
+    setFileUrl(undefined);
+    return null;
   }, [watchAvatarPicture]);
 
   return (
@@ -73,10 +79,15 @@ function AuthorUpdateForm({
               {...register('avatarPicture')}
             />
             <Button variant="contained" component="span">
-              Wstaw zdjęcie (opcjonalnie)
+              Zmień zdjęcie
             </Button>
-            {fileName && <span>{fileName}</span>}
+            {file && <span>{file.name}</span>}
           </Box>
+          <Avatar
+            src={fileUrl ?? imgUrl(data.profilePictureUrl)}
+            alt="Zdjęcie autora"
+            sx={{ width: 250, height: 250, marginBottom: 2 }}
+          />
           {errors.avatarPicture != undefined && <span>{errors.avatarPicture.message}</span>}
           <TextInputField2 field="firstName" label="Imię" control={control} />
           <TextInputField2 control={control} field="lastName" label="Nazwisko/Nazwiska" />

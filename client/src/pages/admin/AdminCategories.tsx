@@ -16,27 +16,12 @@ import { useState } from 'react';
 import { z } from 'zod';
 import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import { SxProps, Theme } from '@mui/material/styles';
-import { PaginationRequest } from '../../utils/constants';
+import { PaginatedTableHeadCell, PaginatedTableProps, PaginationRequest } from '../../utils/constants';
 import LoadingTypography from '../../components/common/LoadingTypography';
 
 type ResponseType = z.infer<typeof BookCategorySearchResponse>;
-interface BookCategoriesTableProps {
-  data: ResponseType;
-  paginationProps: PaginationRequest;
-  onPaginationPropsChange: (args: PaginationRequest) => void;
-  onRequestSort: (field: keyof BookCategoryViewModelType) => void;
-  sx?: SxProps<Theme>;
-}
 
-interface HeadCell<T> {
-  field: keyof T;
-  label: string;
-  sortable: boolean;
-  numeric: boolean;
-}
-
-const headCells: readonly HeadCell<BookCategoryViewModelType>[] = [
+const headCells: readonly PaginatedTableHeadCell<BookCategoryViewModelType>[] = [
   { field: 'name', label: 'Nazwa', numeric: false, sortable: true },
   { field: 'id', label: 'Id', numeric: false, sortable: false },
 ];
@@ -47,7 +32,7 @@ function BookCategoriesTable({
   onPaginationPropsChange,
   onRequestSort,
   sx,
-}: BookCategoriesTableProps) {
+}: PaginatedTableProps<ResponseType, BookCategoryViewModelType>) {
   const { pageNumber, pageSize, orderByField, orderDirection } = paginationProps;
   const navigate = useNavigate();
 
@@ -107,6 +92,10 @@ function BookCategoriesTable({
         page={pageNumber}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleRowsChange}
+        labelRowsPerPage={'Ilość na stronie'}
+        labelDisplayedRows={({ from, to, count }) => {
+          return `${from}–${to} z ${count !== -1 ? count : `więcej niż ${to}`}`;
+        }}
       />
     </Box>
   );

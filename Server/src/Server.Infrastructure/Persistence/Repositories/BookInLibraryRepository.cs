@@ -13,28 +13,33 @@ namespace Server.Infrastructure.Persistence.Repositories
         }
         public async Task AddAsync(LibraryBook libraryBook, CancellationToken cancellationToken)
         {
-            await _dbContext.AddAsync(libraryBook);
+            await _dbContext.AddAsync(libraryBook, cancellationToken);
         }
 
-        public async Task<LibraryBook?> FirstOrDefaultByLibraryAndBookAsync(Guid libraryId, Guid bookId, CancellationToken cancellationToken)
+        public Task<LibraryBook?> FirstOrDefaultByLibraryAndBookAsync(Guid libraryId, Guid bookId, CancellationToken cancellationToken)
         {
-            return await _dbContext.LibraryBooks
-                .FirstOrDefaultAsync(x => x.LibraryId == libraryId && x.BookId == bookId);
+            return _dbContext.LibraryBooks
+                .FirstOrDefaultAsync(x => x.LibraryId == libraryId && x.BookId == bookId, cancellationToken);
         }
 
-        public async Task<List<LibraryBook>> GetAllBooksInProvidedLibrary(Guid libraryId, CancellationToken cancellationToken)
+        public Task DeleteBookInLibraryAsync(Guid libraryId, Guid bookId, CancellationToken cancellationToken) =>
+            _dbContext.LibraryBooks
+                .Where(x => x.LibraryId == libraryId && x.BookId == bookId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+        public Task<List<LibraryBook>> GetAllBooksInProvidedLibrary(Guid libraryId, CancellationToken cancellationToken)
         {
-            return await _dbContext.LibraryBooks
+            return _dbContext.LibraryBooks
             .AsNoTracking()
             .Include(x => x.Book)
             .ThenInclude(x => x.Authors)
             .Where(x => x.LibraryId == libraryId)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<Guid>> GetBooksIdsInProvidedLibrary(Guid libraryId, CancellationToken cancellationToken)
+        public Task<List<Guid>> GetBooksIdsInProvidedLibrary(Guid libraryId, CancellationToken cancellationToken)
         {
-            return await _dbContext.LibraryBooks
+            return _dbContext.LibraryBooks
             .AsNoTracking()
             .Where(x => x.LibraryId == libraryId)
             .Select(x => x.Book.Id)

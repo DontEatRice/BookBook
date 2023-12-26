@@ -195,8 +195,7 @@ export default function BookRanking() {
             </Box>
           </Box>
         </Box>
-
-        <Grid container spacing={1}>
+        <Grid container spacing={2}>
           {data.map((book, index) => (
             <Grid item xs={12} key={book.id}>
               <BookInRanking book={book} position={pageNumber * pageSize + index + 1} />

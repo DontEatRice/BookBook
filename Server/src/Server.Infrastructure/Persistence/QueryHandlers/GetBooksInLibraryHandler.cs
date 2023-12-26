@@ -25,15 +25,31 @@ internal sealed class GetBooksInLibraryHandler
     public async Task<PaginatedResponseViewModel<BookInLibraryViewModel>> Handle(
         GetBooksInLibraryQuery request, CancellationToken cancellationToken)
     {
-        var query = _dbContext.LibraryBooks.AsNoTracking();
-
-        query = !string.IsNullOrWhiteSpace(request.OrderByField)
-            ? query.OrderBy(request.OrderByField)
-            : query.OrderBy(x => x.BookId);
-
-        var (books, totalCount) = await query
+        var query = _dbContext.LibraryBooks
             .Include(x => x.Book)
             .ThenInclude(x => x.Authors)
+            .AsNoTracking()
+            .AsSingleQuery();
+
+        if (!string.IsNullOrWhiteSpace(request.OrderByField))
+        {
+            if(request.OrderByField == "book")
+            {
+                query = request.OrderDirection == OrderDirection.Asc
+                ? query.OrderBy(x => x.Book.Title)
+                : query.OrderByDescending(x => x.Book.Title);
+            }
+            else
+            {
+                query = request.OrderDirection == OrderDirection.Asc
+                ? query.OrderBy(request.OrderByField)
+                : query.OrderByDescending(request.OrderByField);
+            }
+        }
+
+        
+
+        var (books, totalCount) = await query
             .Where(x => x.LibraryId == request.Id)
             .ProjectTo<BookInLibraryViewModel>(_mapper.ConfigurationProvider)
             .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);
