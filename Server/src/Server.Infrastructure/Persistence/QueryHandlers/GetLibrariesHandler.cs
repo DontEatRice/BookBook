@@ -26,9 +26,25 @@ internal sealed class GetLibrariesHandler
     {
         var query = _dbContext.Libraries.AsNoTracking();
 
-        query = !string.IsNullOrWhiteSpace(request.OrderByField)
-            ? query.OrderBy(request.OrderByField)
-            : query.OrderBy(x => x.Id);
+        if (!string.IsNullOrWhiteSpace(request.OrderByField))
+        {
+            if (request.OrderByField == "address")
+            {
+                query = request.OrderDirection == OrderDirection.Asc
+                ? query.OrderBy(x => x.Address.City).ThenBy(x => x.Id)
+                : query.OrderByDescending(x => x.Address.City).ThenBy(x => x.Id);
+            }
+            else
+            {
+                query = request.OrderDirection == OrderDirection.Asc
+                    ? query.OrderBy(request.OrderByField).ThenBy(x => x.Id)
+                    : query.OrderByDescending(request.OrderByField).ThenBy(x => x.Id);
+            }
+        }
+        else
+        {
+            query = query.OrderBy(x => x.Id);
+        }
 
         var (libraries, totalCount) = await query
             .Include(x => x.Address)

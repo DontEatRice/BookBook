@@ -26,9 +26,16 @@ internal sealed class GetPublishersHandler
     {
         var query = _dbContext.Publishers.AsNoTracking();
 
-        query = !string.IsNullOrWhiteSpace(request.OrderByField)
-            ? query.OrderBy(request.OrderByField)
-            : query.OrderBy(x => x.Id);
+        if (!string.IsNullOrWhiteSpace(request.OrderByField))
+        {
+            query = request.OrderDirection == OrderDirection.Asc
+                ? query.OrderBy(request.OrderByField).ThenBy(x => x.Id)
+                : query.OrderByDescending(request.OrderByField).ThenBy(x => x.Id);
+        }
+        else
+        {
+            query = query.OrderBy(x => x.Id);
+        }
 
         var (publishers, totalCount) = await query
             .ProjectTo<PublisherViewModel>(_mapper.ConfigurationProvider)

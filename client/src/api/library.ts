@@ -11,7 +11,7 @@ import { paginatedResponse } from '../utils/zodSchemas';
 import { getAuthToken, getAuthTokenOrNull } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
-const LibrarySearchResponse = paginatedResponse(LibraryViewModel);
+export const LibrariesSearchResponse = paginatedResponse(LibraryViewModel);
 
 export async function getLibraries(args: PaginationRequest) {
   const response = await paginatedFetch(base + '/Libraries/search', args);
@@ -19,7 +19,7 @@ export async function getLibraries(args: PaginationRequest) {
     await handleBadResponse(response);
   }
   const data = await response.json();
-  return LibrarySearchResponse.parse(data);
+  return LibrariesSearchResponse.parse(data);
 }
 
 export async function getLibrary(id: string) {
@@ -135,7 +135,7 @@ export async function getBooksAvailableToAdd(libraryId: string) {
   return BookViewModel.array().parse(data);
 }
 
-const BookInLibrarySearchResponse = paginatedResponse(BookInLibraryViewModel);
+export const BookInLibrarySearchResponse = paginatedResponse(BookInLibraryViewModel);
 
 export async function getBooksInLibrary(request: PaginationRequest & { libraryId: string }) {
   const { libraryId } = request;

@@ -83,7 +83,7 @@ public class LibrariesController : ControllerBase
     }
     
     [HttpPost("{id:guid}/books/search")]
-    public async Task<ActionResult<IEnumerable<BookInLibraryViewModel>>> GetBooks(Guid id, GetBooksInLibraryQuery query)
+    public async Task<ActionResult<PaginatedResponseViewModel<BookInLibraryViewModel>>> GetBooks(Guid id, GetBooksInLibraryQuery query)
     {
         return Ok(await Mediator.Send(query with
         {

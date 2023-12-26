@@ -7,7 +7,7 @@ import { paginatedResponse } from '../utils/zodSchemas';
 import { getAuthTokenOrNull } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
-const PublisherSearchResponse = paginatedResponse(PublisherViewModel);
+export const PublisherSearchResponse = paginatedResponse(PublisherViewModel);
 
 export const postPublisher = async (publisher: AddPublisherType) => {
   const response = await fetch(base + '/Publishers', {
