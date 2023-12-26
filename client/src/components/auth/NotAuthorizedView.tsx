@@ -13,7 +13,7 @@ export default function NotAuthorizedView({ children, roles }: NotAuthorizedView
     return children;
   }
   if (roles !== undefined && roles.length > 0) {
-    return roles.every((role) => user.roles.includes(role)) ? null : children;
+    return roles.some((role) => user.role == role) ? null : children;
   }
   return null;
 }
