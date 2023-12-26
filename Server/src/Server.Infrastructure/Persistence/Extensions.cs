@@ -13,6 +13,8 @@ using Server.Infrastructure.Persistence.Settings;
 using Server.Infrastructure.Services;
 using System.Reflection;
 using System.Text;
+using Server.Domain.Entities.Auth;
+using Server.Utils;
 
 namespace Server.Infrastructure.Persistence;
 
@@ -97,6 +99,12 @@ internal static class Extensions
                 };
             }
         );
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            foreach (var role in Enum.GetNames(typeof(Role)))
+            {
+                options.AddPolicy(role, builder => builder.RequireClaim(AuthConstants.RoleClaim, role));
+            }
+        });
     }
 }

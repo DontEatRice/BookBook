@@ -14,8 +14,10 @@ namespace Server.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private const string RefreshTokenCookieName = "refreshToken";
-    public AuthController(IMediator mediator) : base(mediator)
+    private readonly IConfiguration _configuration;
+    public AuthController(IMediator mediator, IConfiguration configuration) : base(mediator)
     {
+        _configuration = configuration;
     }
     
     [HttpPost("register")]
@@ -87,12 +89,7 @@ public class AuthController : ControllerBase
     {
         // tutaj będzie problem przy deploymencie, jak będziemy mieć gdzie indziej front a gdzie indziej backend
         // bo SameSite None to wtedy trzeba dać Secure na true czyli HTTPS
-        var path = "/Auth";
-        if (!Request.Path.StartsWithSegments(path) || !Request.Path.StartsWithSegments(path.ToLower()))
-        {
-            var pathValue = Request.Path.Value!.ToLower();
-            path = pathValue[..pathValue.IndexOf("/auth", StringComparison.Ordinal)] + path;
-        }
+        var path = (_configuration.GetValue<string>("ApiUrlPrefix") ?? string.Empty) + "/Auth";
         return new CookieOptions
         {
             Domain = Request.Host.Host,

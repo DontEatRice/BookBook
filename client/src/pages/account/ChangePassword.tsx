@@ -41,7 +41,6 @@ function ChangePassword() {
       navigate('/');
     },
     onError: (error) => {
-      // TODO jakiś format wprowadzić
       if (error instanceof ApiResponseError && error.error.code === 'INVALID_CREDENTIALS') {
         setValue('oldPassword', '');
         setError('oldPassword', { message: 'Błędne hasło' }, { shouldFocus: true });

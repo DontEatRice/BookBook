@@ -89,8 +89,9 @@ function AuthProvider({ children }: { children?: ReactNode }) {
     }
     if (isError) {
       localStorage.setItem(LocalStorageTokenKey, '');
+    } else if (data) {
+      login(data.accessToken);
     }
-    login(data!.accessToken);
     setLoading(false);
   }, [login, isError, data, isLoading]);
 

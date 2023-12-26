@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AuthProvider from './components/auth/AuthProvider';
 import AlertProvider from './components/alert/AlertProvider';
 import AlertBar from './components/alert/AlertBar';
+import ScrollToTop from './components/utils/ScrollToTop.tsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,6 +31,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <AlertProvider>
             <AlertBar />
+            <ScrollToTop />
             <AuthProvider>
               <App />
             </AuthProvider>

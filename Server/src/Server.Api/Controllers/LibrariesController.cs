@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Admin;
 using Server.Application.ViewModels;
@@ -55,8 +56,34 @@ public class LibrariesController : ControllerBase
         return Ok();
     }
 
+    [Authorize("Admin")]
+    [Authorize("Employee")]
+    [HttpPut("{id:guid}/books/{bookId:guid}")]
+    public async Task<ActionResult> UpdateBook(Guid id, Guid bookId, UpdateBookInLibraryCommand command)
+    {
+        await Mediator.Send(command with
+        {
+            BookId = bookId,
+            LibraryId = id
+        });
+
+        return Ok();
+    }
+
+    [HttpDelete("{id:guid}/books/{bookId:guid}")]
+    public async Task<ActionResult> DeleteBook(Guid id, Guid bookId)
+    {
+        await Mediator.Send(new DeleteBookInLibraryCommand
+        {
+            LibraryId = id,
+            BookId = bookId
+        });
+        
+        return NoContent();
+    }
+    
     [HttpPost("{id:guid}/books/search")]
-    public async Task<ActionResult<IEnumerable<BookInLibraryViewModel>>> GetBooks(Guid id, GetBooksInLibraryQuery query)
+    public async Task<ActionResult<PaginatedResponseViewModel<BookInLibraryViewModel>>> GetBooks(Guid id, GetBooksInLibraryQuery query)
     {
         return Ok(await Mediator.Send(query with
         {

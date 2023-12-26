@@ -32,10 +32,16 @@ internal sealed class ListReservationsHandler
                         r.Status != ReservationStatus.CancelledByAdmin &&
                         r.LibraryId == request.LibraryId);
 
-        query = !string.IsNullOrWhiteSpace(request.OrderByField)
-            ? query.OrderBy(request.OrderByField)
-            : query.OrderBy(x => x.Id);
-        
+        if (!string.IsNullOrWhiteSpace(request.OrderByField))
+        { 
+             query = request.OrderDirection == OrderDirection.Asc
+                 ? query.OrderBy(request.OrderByField).ThenBy(x => x.Id)
+                 : query.OrderByDescending(request.OrderByField).ThenBy(x => x.Id);
+        }
+        else
+        {
+            query = query.OrderByDescending(x => x.CreatedAt);
+        }
         var (reservations, totalCount) = await query
             .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);
         
@@ -51,13 +57,13 @@ internal sealed class ListReservationsHandler
             PageSize = request.PageSize,
             Count = totalCount,
             Data = reservations
-                .OrderByDescending(x => x.CreatedAt)
                 .Select(x => new ReservationViewModel
                 {
                     Id = x.Id,
                     UserId = x.UserId,
                     Library = _mapper.Map<LibraryViewModel>(libraries.FirstOrDefault(l => l.Id == x.LibraryId)),
                     Status = x.Status.ToString(),
+                    CreatedAt = x.CreatedAt,
                     ReservationEndDate = x.ReservationEndDate
                 }).ToList()
         };

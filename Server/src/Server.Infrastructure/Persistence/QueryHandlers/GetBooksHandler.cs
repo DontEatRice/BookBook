@@ -25,12 +25,17 @@ internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, Paginated
     {
         var query = _dbContext.Books
             .AsNoTracking();
-        
-        query = !string.IsNullOrWhiteSpace(request.OrderByField) ? 
-            request.OrderDirection == OrderDirection.Desc ?
-            query.OrderByDescending(request.OrderByField) : 
-            query.OrderBy(request.OrderByField) :
-            query.OrderBy(x => x.Id);
+
+        if (!string.IsNullOrWhiteSpace(request.OrderByField))
+        {
+            query = request.OrderDirection == OrderDirection.Asc
+                ? query.OrderBy(request.OrderByField).ThenBy(x => x.Id)
+                : query.OrderByDescending(request.OrderByField).ThenBy(x => x.Id);
+        }
+        else
+        {
+            query = query.OrderBy(x => x.Id);
+        }
 
         if (!string.IsNullOrWhiteSpace(request.Query))
         {

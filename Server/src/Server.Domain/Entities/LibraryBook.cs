@@ -4,8 +4,8 @@ public class LibraryBook
 {
     public Guid LibraryId { get; set; }
     public Guid BookId { get; set; }
-    public Library Library { get; set; }
-    public Book Book { get; set; }
+    public Library Library { get; set; } = null!;
+    public Book Book { get; set; } = null!;
     public int Amount { get; set; }
     public int Available { get; set; }
 

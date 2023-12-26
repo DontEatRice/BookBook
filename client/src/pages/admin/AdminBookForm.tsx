@@ -16,14 +16,14 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { ApiResponseError } from '../../utils/utils';
 import useAlert from '../../utils/alerts/useAlert';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import Typography from '@mui/material/Typography';
 import { uploadImage } from '../../api/image';
 import { fileToUploadImage } from '../../utils/utils';
-import { Avatar } from '@mui/material';
 import { languages } from '../../utils/constants';
 import TextInputBox from '../../components/common/TextInputBox';
 import LoadingTypography from '../../components/common/LoadingTypography';
+import { BookCoverImg } from '../../components/common/Img';
 
 const paginationDefaultRequest = {
   pageNumber: 0,
@@ -31,7 +31,6 @@ const paginationDefaultRequest = {
 };
 
 function AdminBookForm() {
-  const [fileUrl, setFileUrl] = useState<string | undefined>(undefined);
   const navigate = useNavigate();
   const { handleError } = useAlert();
   const queryClient = useQueryClient();
@@ -50,16 +49,14 @@ function AdminBookForm() {
     name: 'coverPicture',
   });
 
-  const file = useMemo(() => {
+  const fileUrl = useMemo(() => {
     if (watchCoverPicture instanceof FileList && watchCoverPicture.length > 0) {
       const picture = watchCoverPicture.item(0);
       if (picture !== null) {
-        setFileUrl(URL.createObjectURL(picture));
-        return picture;
+        return URL.createObjectURL(picture);
       }
     }
-    setFileUrl(undefined);
-    return null;
+    return undefined;
   }, [watchCoverPicture]);
 
   const uploadImageMutation = useMutation({
@@ -120,7 +117,8 @@ function AdminBookForm() {
               <Box
                 component="label"
                 htmlFor="upload-photo"
-                sx={{ width: '100%', display: 'inline-flex', mb: 2 }}>
+                textAlign={'center'}
+                sx={{ width: '100%', mb: 2 }}>
                 <input
                   style={{ display: 'none' }}
                   id="upload-photo"
@@ -131,14 +129,11 @@ function AdminBookForm() {
                 <Button variant="contained" component="span">
                   Wstaw zdjęcie (opcjonalnie)
                 </Button>
-                {file !== null && <span>{file.name}</span>}
               </Box>
               {fileUrl !== null && (
-                <Avatar
-                  src={fileUrl}
-                  alt="Zdjęcie autora"
-                  sx={{ width: 250, height: 250, marginBottom: 2 }}
-                />
+                <Box height="400px" width="275px" mb={2} mt={2}>
+                  <BookCoverImg src={fileUrl ?? '/podstawowa-ksiazka-otwarta.jpg'} alt={'Zdjęcie autora'} />
+                </Box>
               )}
               {errors.coverPicture != undefined && (
                 <Typography color={'error'}>{errors.coverPicture.message}</Typography>

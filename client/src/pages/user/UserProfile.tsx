@@ -10,6 +10,14 @@ import AuthorBookCard from '../../components/author/AuthorBookCard';
 import Loading from '../../components/common/Loading';
 import { PaginationRequest } from '../../utils/constants';
 import { z } from 'zod';
+import { ReviewInUserProfileViewModelType } from '../../models/user/ReviewInUserProfileViewModel';
+
+const Img = styled('img')({
+  margin: 'auto',
+  display: 'block',
+  height: 160,
+  width: 128,
+});
 
 function UserProfile() {
   const params = useParams();
@@ -131,6 +139,45 @@ function UserProfile() {
   );
 }
 
+function ReviewItem({ review }: { review: ReviewInUserProfileViewModelType }) {
+  const [elevation, setElevation] = useState(1);
+
+  return (
+    <Paper
+      onMouseOver={() => setElevation(3)}
+      onMouseOut={() => setElevation(1)}
+      sx={{ width: '100%', p: 2 }}
+      elevation={elevation}>
+      <Grid container direction={'row'} spacing={2}>
+        <Grid item xs={3} sx={{ '&:hover': { textDecorationLine: 'underline' } }}>
+          <Link to={`/books/${review.bookId}`}>
+            <Img
+              alt="complex"
+              loading="lazy"
+              src={imgUrl(review.bookCoverUrl, '/podstawowa-ksiazka-otwarta.jpg')}
+            />
+            <Typography textAlign={'center'} variant="h6">
+              {review.bookTitle}
+            </Typography>
+          </Link>
+        </Grid>
+        <Grid item xs={7}>
+          <Typography variant="h5" gutterBottom>
+            {review.title ?? 'Brak tytułu'}
+          </Typography>
+          <Typography variant="subtitle1">{review.description ?? 'Brak'}</Typography>
+        </Grid>
+        <Grid item xs={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+          <Typography variant="h4">
+            {review.rating}
+            <Rating max={1} value={review.rating / 5} precision={0.1} size="large" readOnly></Rating>
+          </Typography>
+        </Grid>
+      </Grid>
+    </Paper>
+  );
+}
+
 type PaginatedReviewsResponse = z.infer<typeof ReviewInUserProfilePaginated>;
 interface UserProfileReviewsProps {
   data: PaginatedReviewsResponse;
@@ -142,12 +189,7 @@ function UserProfileReviews({ data, paginationProps, onPaginationPropsChange }: 
   const handleChangePage = (_: ChangeEvent<unknown>, newPage: number) => {
     onPaginationPropsChange({ ...paginationProps, pageNumber: newPage - 1 });
   };
-  const Img = styled('img')({
-    margin: 'auto',
-    display: 'block',
-    height: 160,
-    width: 128,
-  });
+
   return (
     <Box sx={{ p: 3 }}>
       {data.data.length > 0 ? (
@@ -159,37 +201,10 @@ function UserProfileReviews({ data, paginationProps, onPaginationPropsChange }: 
           Użytkownik nie dodał żadnej opinii
         </Typography>
       )}
-      <Grid container spacing={5} marginBottom={3}>
+      <Grid container spacing={3} marginBottom={3}>
         {data.data.map((review) => (
           <Grid item xs={12} key={review.bookId}>
-            <Box sx={{ width: '100%', boxShadow: 1 }}>
-              <Grid container direction={'row'} spacing={3}>
-                <Grid item xs={3}>
-                  <Link to={`/books/${review.bookId}`}>
-                    <Img
-                      alt="complex"
-                      loading="lazy"
-                      src={imgUrl(review.bookCoverUrl, '/podstawowa-ksiazka-otwarta.jpg')}
-                    />
-                    <Typography textAlign={'center'} variant="h6">
-                      {review.bookTitle}
-                    </Typography>
-                  </Link>
-                </Grid>
-                <Grid item xs={7}>
-                  <Typography variant="h5" gutterBottom>
-                    {review.title ?? 'Brak tytułu'}
-                  </Typography>
-                  <Typography variant="subtitle1">{review.description ?? 'Brak'}</Typography>
-                </Grid>
-                <Grid item xs={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                  <Typography variant="h4">
-                    {review.rating}
-                    <Rating max={1} value={review.rating / 5} precision={0.1} size="large" readOnly></Rating>
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Box>
+            <ReviewItem review={review} />
           </Grid>
         ))}
       </Grid>
