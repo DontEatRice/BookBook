@@ -4,7 +4,6 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
-import Rating from '@mui/material/Rating';
 import { styled } from '@mui/material/styles';
 import { BookInRankingViewModelType } from '../../models/BookInRankingViewModel';
 import { imgUrl } from '../../utils/utils';
@@ -49,7 +48,7 @@ export default function BookInRanking({
             />
           </Button>
         </Grid>
-        <Grid item xs={12} sm container>
+        <Grid item xs={10} sm container>
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
               <Typography gutterBottom variant="h4" component="div">
@@ -63,22 +62,30 @@ export default function BookInRanking({
               </Typography>
             </Grid>
           </Grid>
-          {book.averageRating && (
-            <Grid item display={'flex'} flexDirection={'column'} minWidth={150} marginY={2}>
-              <Rating name="half-rating-read" value={book.averageRating} precision={0.25} readOnly />
-              <Typography variant="body1" gutterBottom marginTop={1}>
-                średnia: {book.averageRating}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                {book.reviewsCount} {getRatingText(book.reviewsCount)}
-              </Typography>
-              {book.averageCriticRating && (
-                <Typography marginTop={1} variant="body1" gutterBottom>
-                  średnia krytyków: {book.averageCriticRating}
-                </Typography>
-              )}
-            </Grid>
-          )}
+          <Grid item display={'flex'} flexDirection={'column'} minWidth={150} marginY={2}>
+            <Typography variant="subtitle1" marginTop={1}>
+              Użytkownicy:
+            </Typography>
+            <Typography variant="h6" marginTop={1}>
+              średnia:{' '}
+              {book.averageRating == null
+                ? 'brak ocen'
+                : book.averageRating + ' z ' + book.reviewsCount + ' ' + getRatingText(book.reviewsCount)}
+            </Typography>
+            <Typography variant="subtitle1" marginTop={1}>
+              Krytycy:
+            </Typography>
+            <Typography marginTop={1} variant="h6">
+              średnia:{' '}
+              {book.averageCriticRating == null
+                ? 'brak ocen'
+                : book.averageCriticRating +
+                  ' z ' +
+                  book.criticReviewsCount +
+                  ' ' +
+                  getRatingText(book.criticReviewsCount)}
+            </Typography>
+          </Grid>
         </Grid>
       </Grid>
     </Paper>
@@ -87,8 +94,6 @@ export default function BookInRanking({
 
 function getRatingText(count: number) {
   if (count === 1) {
-    return 'ocena';
-  } else if (count > 1 && count < 5) {
     return 'oceny';
   } else {
     return 'ocen';

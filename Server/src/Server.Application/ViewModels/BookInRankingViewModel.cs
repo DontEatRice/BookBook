@@ -14,4 +14,5 @@ public class BookInRankingViewModel
     public PublisherViewModel Publisher { get; set; }
     public ICollection<BookCategoryViewModel> BookCategories { get; set; }
     public int ReviewsCount { get; set; }
+    public int CriticReviewsCount { get; set; }
 }

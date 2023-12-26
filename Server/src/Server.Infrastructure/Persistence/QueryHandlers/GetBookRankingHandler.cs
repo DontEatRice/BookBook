@@ -26,18 +26,27 @@ internal sealed class GetBookRankingHandler : IRequestHandler<GetBookRankingQuer
         var query = _dbContext.Books
             .AsNoTracking();
 
+        if (request.CategoryId.HasValue)
+        {
+            query = query.Where(x => x.BookCategories.Any(c => c.Id == request.CategoryId));
+        }
+
+        if(request.OrderByField == "averageRating")
+        {
+            query = query.Where(x => x.AverageRating != null);
+        }
+
+        if (request.OrderByField == "averageCriticRating")
+        {
+            query = query.Where(x => x.AverageCriticRating != null);
+        }
+
         query = !string.IsNullOrWhiteSpace(request.OrderByField) ?
             request.OrderDirection == OrderDirection.Desc ?
             query.OrderByDescending(request.OrderByField) :
             query.OrderBy(request.OrderByField) :
             query.OrderBy(x => x.Id);
 
-        query = query.Where(x => x.AverageRating != null);
-
-        if(request.CategoryId.HasValue)
-        {
-            query = query.Where(x => x.BookCategories.Any(c => c.Id == request.CategoryId));
-        }
 
         var (books, totalCount) = await query
             .ProjectTo<BookInRankingViewModel>(_mapper.ConfigurationProvider)

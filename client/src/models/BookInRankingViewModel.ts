@@ -14,6 +14,7 @@ const BookInRankingViewModel = z.object({
   authors: z.array(AuthorViewModel),
   bookCategories: z.array(BookCategoryViewModel),
   reviewsCount: z.number().int(),
+  criticReviewsCount: z.number().int()
 });
 
 export default BookInRankingViewModel;
