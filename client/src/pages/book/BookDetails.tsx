@@ -24,7 +24,6 @@ import { Pagination } from '@mui/material';
 import { ChangeEvent, SyntheticEvent, useState } from 'react';
 import { imgUrl } from '../../utils/utils';
 import AddReviewForm from '../reviews/AddReviewForm';
-import { useAuth } from '../../utils/auth/useAuth';
 import ReviewPaper from '../reviews/ReviewPaper';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
@@ -58,7 +57,6 @@ function CategoriesList({ categories }: { categories: BookCategoryViewModelType[
 }
 
 function BookDetails() {
-  const { user } = useAuth();
   const queryClient = useQueryClient();
   const { register, handleSubmit } = useForm<ToggleBookInUserListType>({
     resolver: zodResolver(ToggleBookInUserList),
@@ -246,13 +244,6 @@ function BookDetails() {
                   </Tabs>
                   {currentTabIndex === 0 && (
                     <Box marginTop={3}>
-                      {/* <AuthorizedView roles={['User']}>
-                        {reviews.data
-                          .concat(criticReviews.data)
-                          .filter((review) => review.user.id === user?.id).length === 0 && (
-                          <AddReviewForm book={book}></AddReviewForm>
-                        )}
-                      </AuthorizedView> */}
                       <Reviews book={book} reviews={reviews.data} />
                       {reviews.data.length > 0 ? (
                         <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>
