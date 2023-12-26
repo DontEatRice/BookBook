@@ -1,8 +1,8 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { AlertBody, AlertContext, AlertProps } from '../../utils/alerts/AlertContext';
 import { useQueryClient } from '@tanstack/react-query';
-import { ApiResponseError, ValidationApiError } from '../../utils/utils';
-import { translateErrorCode } from '../../utils/functions/utilFunctions';
+import { ApiError, ApiResponseError, ValidationApiError } from '../../utils/utils';
+import { translateApiStatus, translateErrorCode } from '../../utils/functions/utilFunctions';
 
 function AlertProvider({ children }: { children?: ReactNode }) {
   const query = useQueryClient();
@@ -29,6 +29,8 @@ function AlertProvider({ children }: { children?: ReactNode }) {
       showError({ title: 'Wystąpił błąd', message: translateErrorCode(error.error.code) });
     } else if (error instanceof ValidationApiError) {
       showError({ title: 'Wystąpił błąd w danych', message: error.validationError.title });
+    } else if (error instanceof ApiError) {
+      showError({ title: 'Wystąpił błąd!', message: translateApiStatus(error.getCode()) });
     } else {
       console.error(error);
       showError({ message: 'Wystąpił nieoczekiwany błąd' });
@@ -47,7 +49,7 @@ function AlertProvider({ children }: { children?: ReactNode }) {
         onError: handleError,
       },
     });
-  })
+  });
 
   useEffect(() => {
     const defaultOptions = query.getDefaultOptions();

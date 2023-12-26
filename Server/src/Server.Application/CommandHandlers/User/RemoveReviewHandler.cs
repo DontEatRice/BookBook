@@ -37,8 +37,10 @@ public sealed class RemoveReviewHandler : IRequestHandler<RemoveReviewCommand>
         {
             throw new NotFoundException("Book not found", ApplicationErrorCodes.PublisherNotFound);
         }
+        
+        var reviews = await _reviewRepository.FindAllByBookIdAsync(book.Id, cancellationToken);
 
-        book.SubtractReviewFromRating(review.Rating);
+        book.SubtractReviewFromRating(reviews, review.Rating);
 
         await _reviewRepository.Delete(request.Id, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

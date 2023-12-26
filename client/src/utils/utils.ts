@@ -3,6 +3,7 @@ import UploadImage from '../models/UploadImage';
 import { User } from '../models/user/User';
 import { Claims, PaginationRequest } from './constants';
 import { ResponseError, ValidationError } from './zodSchemas';
+import { icon } from 'leaflet';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 
@@ -63,7 +64,13 @@ export function getJwtBody(token: string): Claims {
 }
 
 export async function handleBadResponse(response: Response) {
-  const body = await response.json();
+  const rawBody = await response.text();
+  let body;
+  try {
+    body = JSON.parse(rawBody);
+  } catch {
+    body = {};
+  }
   const validationErrorParse = ValidationError.safeParse(body);
   if (validationErrorParse.success) {
     throw new ValidationApiError(response.status, validationErrorParse.data);
@@ -72,7 +79,7 @@ export async function handleBadResponse(response: Response) {
   if (apiResponseError.success) {
     throw new ApiResponseError(response.status, apiResponseError.data);
   }
-  const apiError = new ApiError(response.status, await response.text());
+  const apiError = new ApiError(response.status, rawBody);
   apiError.rawResponse = response;
   throw apiError;
 }
@@ -102,6 +109,11 @@ export function convertJwtToUser(token: string): User {
     lon: claims.lon ? Number(claims.lon.toString().replace(',', '.')) : undefined,
   };
 }
+
+export const MarkerIcon = icon({
+  iconUrl: './marker-icon.png',
+  iconSize: [25, 41],
+});
 
 export class ApiError {
   private _rawResponse?: Response;

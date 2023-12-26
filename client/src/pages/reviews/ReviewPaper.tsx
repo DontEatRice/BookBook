@@ -11,6 +11,7 @@ import useAlert from '../../utils/alerts/useAlert';
 import UpdateReviewForm from './UpdateReviewForm';
 import AuthorizedView from '../../components/auth/AuthorizedView';
 import { useAuth } from '../../utils/auth/useAuth';
+import { Link } from 'react-router-dom';
 
 function ReviewPaper({ review, book }: { review: ReviewViewModelType; book: BookViewModelType }) {
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -48,10 +49,12 @@ function ReviewPaper({ review, book }: { review: ReviewViewModelType; book: Book
       <Grid container>
         <Grid container direction={'row'} wrap="nowrap">
           <Grid item xs={1} minHeight={56} minWidth={56}>
+            <Link to={'/user/' + review.user.id}>
             <Avatar
               src={imgUrl(review.user.avatarImageUrl, '/autor-szablon.jpg')}
               sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }}
             />
+            </Link>
           </Grid>
           <Grid item xs={6} marginLeft={2}>
             <Typography variant="h5">{review.title}</Typography>

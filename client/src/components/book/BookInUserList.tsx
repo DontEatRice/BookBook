@@ -1,6 +1,5 @@
 import { BookViewModelType } from '../../models/BookViewModel';
-import { useNavigate } from 'react-router-dom';
-import { Button, Grid, Paper, Typography, styled } from '@mui/material';
+import { Box, Button, Grid, Paper, Typography } from '@mui/material';
 import ToggleBookInUserList, { ToggleBookInUserListType } from '../../models/ToggleBookInUserList';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,8 +7,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toggleBookInUserList } from '../../api/user';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import { imgUrl } from '../../utils/utils';
+import { useState } from 'react';
+import { BookCoverImg } from '../common/Img';
+import { Link } from 'react-router-dom';
 
 function BookInUserList({ book }: { book: BookViewModelType }) {
+  const [elevation, setElevation] = useState(1);
+
   const queryClient = useQueryClient();
 
   const { register, handleSubmit } = useForm<ToggleBookInUserListType>({
@@ -29,9 +33,6 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
       }
       return { previousUserBooks };
     },
-    onError: (e: Error) => {
-      console.log(e);
-    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['getUserBooks'] });
       queryClient.invalidateQueries({ queryKey: ['books', book.id] });
@@ -40,18 +41,12 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
   const onClick: SubmitHandler<ToggleBookInUserListType> = (toggleData) => {
     mutation.mutate(toggleData);
   };
-  const navigate = useNavigate();
-
-  const Img = styled('img')({
-    margin: 'auto',
-    display: 'block',
-    maxWidth: '100%',
-    maxHeight: '100%',
-    aspectRatio: 11 / 16,
-  });
 
   return (
     <Paper
+      elevation={elevation}
+      onMouseOver={() => setElevation(3)}
+      onMouseOut={() => setElevation(1)}
       sx={{
         p: 2,
         margin: 'auto',
@@ -59,21 +54,29 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
         backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#1A2027' : '#fff'),
       }}>
       <Grid container spacing={2}>
-        <Grid item xs={2}>
-          <Button
-            sx={{
-              width: 128,
-              height: 200,
-            }}
-            onClick={() => navigate(`/books/${book.id}`)}>
-            <Img alt={book.title} src={imgUrl(book.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg')} />
-          </Button>
+        <Grid item container justifyContent={'center'} xs={2}>
+          <Link to={`/books/${book.id}`}>
+            <Box
+              sx={{
+                width: 128,
+                height: 200,
+              }}>
+              <BookCoverImg
+                alt={book.title}
+                src={imgUrl(book.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg')}
+              />
+            </Box>
+          </Link>
         </Grid>
         <Grid item xs={10} sm container>
           <Grid item xs={10} container direction="column" spacing={3}>
             <Grid item xs>
-              <Typography gutterBottom variant="h4" component="div">
-                {book.title}
+              <Typography
+                gutterBottom
+                variant="h4"
+                component="div"
+                sx={{ '&:hover': { textDecorationLine: 'underline' } }}>
+                <Link to={`/books/${book.id}`}>{book.title}</Link>
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
                 {book.authors.map((author) => author.firstName + ' ' + author.lastName).join(', ')}
@@ -81,12 +84,6 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
               <Typography variant="subtitle1" color="text.secondary" gutterBottom>
                 {book.bookCategories.map((category) => category.name).join(', ')}
               </Typography>
-              {/* <Rating
-                name="half-rating-read"
-                value={book.averageRating == null ? 2.25 : book.averageRating}
-                precision={0.25}
-                readOnly
-              /> */}
             </Grid>
           </Grid>
           <Grid item xs>

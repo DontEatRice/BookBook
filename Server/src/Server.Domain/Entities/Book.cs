@@ -57,9 +57,9 @@ public class Book
         AverageRating = Math.Round((averageRating * reviewCount + reviewRating) / (reviewCount + 1), 2);
     }
     
-    public void SubtractReviewFromRating(double reviewRating)
+    public void SubtractReviewFromRating(ICollection<Review> reviews, double reviewRating)
     {
-        var reviewCount = Reviews.Count;
+        var reviewCount = reviews.Count;
         var averageRating = AverageRating ?? 0;
 
         if (reviewCount <= 1)
@@ -71,16 +71,10 @@ public class Book
         AverageRating = Math.Round((averageRating * reviewCount - reviewRating) / (reviewCount - 1), 2);
     }
     
-    public void UpdateReviewRating(double oldReviewRating, double newReviewRating)
+    public void UpdateReviewRating(ICollection<Review> reviews, double oldReviewRating, double newReviewRating)
     {
-        var reviewCount = Reviews.Count;
+        var reviewCount = reviews.Count;
         var averageRating = AverageRating ?? 0;
-        
-        if (reviewCount <= 1)
-        {
-            AverageRating = null;
-            return;
-        }
         
         AverageRating = Math.Round((averageRating * reviewCount - oldReviewRating + newReviewRating) / (reviewCount), 2);
     }

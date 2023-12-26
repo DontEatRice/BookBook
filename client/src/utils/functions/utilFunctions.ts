@@ -57,6 +57,23 @@ export function translateErrorCode(code: string) {
   return errorCodesMapping[code] ?? 'Wystąpił niespodziewany błąd';
 }
 
+export function translateApiStatus(status: number) {
+  let message = '';
+  switch (status) {
+    case 403:
+      message = 'Nie masz dostępu do tego zasobu';
+      break;
+    case 404:
+      message = 'Nie znaleziono zasobu (404)';
+      break;
+    default:
+      message = 'Wystąpił problem po stronie serwera. Prosimy spróbować później';
+      break;
+  }
+
+  return message;
+}
+
 export function timeToDayjs(time: string | null) {
   if (!time) {
     return null;
@@ -68,4 +85,3 @@ export function timeToDayjs(time: string | null) {
   dayjs.set('seconds', timeSplitted[2]);
   return dayjs;
 }
-
