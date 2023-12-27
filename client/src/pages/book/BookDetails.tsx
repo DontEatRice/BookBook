@@ -176,16 +176,6 @@ function BookDetails() {
                     sx={{ display: 'flex', flexDirection: 'column', padding: 2, marginBottom: 5 }}
                     container
                     spacing={2}>
-                    <Grid item>
-                      <Typography variant="subtitle1">ISBN</Typography>
-                      <Typography variant="h6" width="100%">
-                        {book.isbn}
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="subtitle1">Rok wydania</Typography>
-                      <Typography variant="h6">{book.yearPublished}</Typography>
-                    </Grid>
                     <AuthorsList authors={book.authors} />
                     <CategoriesList categories={book.bookCategories} />
                     <Grid item>
@@ -199,6 +189,16 @@ function BookDetails() {
                     <Grid item>
                       <Typography variant="subtitle1">Ilość stron</Typography>
                       <Typography variant="h6">{book.pageCount}</Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="subtitle1">Rok wydania</Typography>
+                      <Typography variant="h6">{book.yearPublished}</Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="subtitle1">ISBN</Typography>
+                      <Typography variant="h6" width="100%">
+                        {book.isbn}
+                      </Typography>
                     </Grid>
                   </Grid>
                 </Grid>
