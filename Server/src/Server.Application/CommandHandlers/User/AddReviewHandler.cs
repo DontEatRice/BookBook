@@ -40,12 +40,10 @@ public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
         var book = await _bookRepository.FirstOrDefaultByIdAsync(request.IdBook, cancellationToken) ?? 
             throw new NotFoundException("Book not found", ApplicationErrorCodes.BookNotFound);
 
-        var reviews = await _reviewRepository.FindAllByBookIdAsync(request.IdBook, cancellationToken);
-
-        if (reviews.FirstOrDefault(x => x.User.Id == request.UserId) is not null)
-        {
-            throw new LogicException ("Review already exists", ApplicationErrorCodes.UserReviewAlreadyExists);
-        }
+        //if (reviews.FirstOrDefault(x => x.User.Id == request.UserId) is not null)
+        //{
+        //    throw new LogicException ("Review already exists", ApplicationErrorCodes.UserReviewAlreadyExists);
+        //}
         
         var user = await _identityRepository.FirstOrDefaultByIdAsync(request.UserId, cancellationToken) ??
                    throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
@@ -53,11 +51,13 @@ public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
 
         if (user.IsCritic)
         {
-            book.ComputeCriticRating(reviews.Where(x => x.IsCriticRating).ToList(), request.Rating);
+            var reviewsCount = await _reviewRepository.GetReviewsCountByBookId(book.Id, cancellationToken);
+            book.ComputeCriticRating(reviewsCount, request.Rating);
         }
         else
         {
-            book.ComputeRating(reviews.Where(x => !x.IsCriticRating).ToList(), request.Rating);
+            var criticReviewsCount = await _reviewRepository.GetCriticReviewsCountByBookId(book.Id, cancellationToken);
+            book.ComputeRating(criticReviewsCount, request.Rating);
         }
         
         var review = Review.Create(request.Id, request.Title, request.Description, request.Rating, book, user);

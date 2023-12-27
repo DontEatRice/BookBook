@@ -30,14 +30,14 @@ public sealed class RemoveReviewHandler : IRequestHandler<RemoveReviewCommand>
         var book = await _bookRepository.FirstOrDefaultByIdAsync(review.Book.Id, cancellationToken) ?? 
             throw new NotFoundException("Book not found", ApplicationErrorCodes.BookNotFound);
 
-        var reviews = await _reviewRepository.FindAllByBookIdAsync(book.Id, cancellationToken);
-
         if (review.IsCriticRating)
         {
-            book.SubtractReviewFromCriticRating(reviews.Where(x => x.IsCriticRating).ToList(), review.Rating);
+            var criticReviewsCount = await _reviewRepository.GetCriticReviewsCountByBookId(book.Id, cancellationToken);
+            book.SubtractReviewFromCriticRating(criticReviewsCount, review.Rating);
         }
         else {
-            book.SubtractReviewFromRating(reviews.Where(x => !x.IsCriticRating).ToList(), review.Rating);
+            var reviewsCount = await _reviewRepository.GetReviewsCountByBookId(book.Id, cancellationToken);
+            book.SubtractReviewFromRating(reviewsCount, review.Rating);
         }
 
         await _reviewRepository.Delete(request.Id, cancellationToken);

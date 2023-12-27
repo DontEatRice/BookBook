@@ -48,4 +48,18 @@ internal class ReviewRepository : IReviewRepository
             .Include(x => x.Book)
             .FirstOrDefaultAsync(x => x.Book.Id == bookId && x.User.Id == userId, cancellationToken);
     }
+
+    public async Task<int> GetReviewsCountByBookId(Guid bookId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Reviews.AsNoTracking()
+            .Where(x => x.BookId == bookId && !x.IsCriticRating)
+            .CountAsync(cancellationToken);
+    }
+
+    public async Task<int> GetCriticReviewsCountByBookId(Guid bookId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Reviews.AsNoTracking()
+            .Where(x => x.BookId == bookId && x.IsCriticRating)
+            .CountAsync(cancellationToken);
+    }
 }

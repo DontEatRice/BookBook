@@ -47,20 +47,23 @@ public sealed class UpdateReviewHandler : IRequestHandler<UpdateReviewCommand>
         var book = review.Book ?? 
             throw new NotFoundException("Book not found", ApplicationErrorCodes.BookNotFound);
 
-        var reviews = await _reviewRepository.FindAllByBookIdAsync(book.Id, cancellationToken);
 
         if(review.User.IsCritic && !review.IsCriticRating)
         {
-            book.SubtractReviewFromRating(reviews.Where(x => !x.IsCriticRating).ToList(), review.Rating);
-            book.ComputeCriticRating(reviews.Where(x => x.IsCriticRating).ToList(), request.Rating);
+            var reviewsCriticCount = await _reviewRepository.GetCriticReviewsCountByBookId(book.Id, cancellationToken);
+            var reviewsCount = await _reviewRepository.GetReviewsCountByBookId(book.Id, cancellationToken);
+            book.SubtractReviewFromRating(reviewsCount, review.Rating);
+            book.ComputeCriticRating(reviewsCriticCount, request.Rating);
         }
         else if(review.User.IsCritic && review.IsCriticRating) 
         {
-            book.UpdateCriticReviewRating(reviews.Where(x => x.IsCriticRating).ToList(), review.Rating, request.Rating);
+            var reviewsCriticCount = await _reviewRepository.GetCriticReviewsCountByBookId(book.Id, cancellationToken);
+            book.UpdateCriticReviewRating(reviewsCriticCount, review.Rating, request.Rating);
         }
         else
         {
-            book.UpdateReviewRating(reviews.Where(x => !x.IsCriticRating).ToList(), review.Rating, request.Rating);
+            var reviewsCount = await _reviewRepository.GetReviewsCountByBookId(book.Id, cancellationToken);
+            book.UpdateReviewRating(reviewsCount, review.Rating, request.Rating);
         }
         
         review.Title = request.Title;

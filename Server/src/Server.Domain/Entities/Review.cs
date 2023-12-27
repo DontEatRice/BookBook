@@ -13,7 +13,9 @@ public class Review
     public string? Description { get; set; }
     public double Rating { get; set; }
     public Book Book { get; set; }
+    public Guid BookId { get; set; }
     public Identity User { get; set; }
+    public Guid UserId { get; set; }
     public bool IsCriticRating { get; set; }
 
     public static Review Create(Guid id, string? title, string? description, double rating,
