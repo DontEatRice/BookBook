@@ -11,6 +11,7 @@ import Loading from '../../components/common/Loading';
 import { PaginationRequest } from '../../utils/constants';
 import { z } from 'zod';
 import { ReviewInUserProfileViewModelType } from '../../models/user/ReviewInUserProfileViewModel';
+import ExpandableText from '../../components/common/ExpandableText';
 
 const Img = styled('img')({
   margin: 'auto',
@@ -96,7 +97,10 @@ function UserProfile() {
                       <Typography variant="h5" gutterBottom>
                         Kilka słów o mnie
                       </Typography>
-                      <Typography variant="h6">{data.aboutMe}</Typography>
+                      {/* <Typography variant="h6">{data.aboutMe}</Typography> */}
+                      <Typography variant="h6">
+                        <ExpandableText value={data.aboutMe} maxChars={200} />
+                      </Typography>
                     </div>
                   )}
                 </>

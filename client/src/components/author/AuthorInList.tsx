@@ -7,6 +7,7 @@ import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
+import ExpandableText from '../common/ExpandableText';
 
 function AuthorInList({ author }: { author: AuthorViewModelType }) {
   const [elevation, setElevation] = useState(3);
@@ -40,13 +41,13 @@ function AuthorInList({ author }: { author: AuthorViewModelType }) {
             <Grid item xs container direction="column" spacing={2}>
               <Grid item xs>
                 <Typography gutterBottom variant="h4" component="div">
-                  <Link to={`/authors/${author.id}`}>{author.firstName + ' ' + author.lastName}</Link>
+                  {author.firstName + ' ' + author.lastName}
                 </Typography>
                 <Typography variant="body1" gutterBottom>
                   {'Rok urodzenia: ' + author.birthYear}
                 </Typography>
-                <Typography variant="body2" noWrap>
-                  {author.description}
+                <Typography variant="body2">
+                  <ExpandableText value={author.description ?? ''} maxChars={300} />
                 </Typography>
               </Grid>
             </Grid>
