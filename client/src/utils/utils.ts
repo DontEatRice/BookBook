@@ -148,11 +148,3 @@ export class ValidationApiError extends ApiError {
     return this.error;
   }
 }
-
-export function getRatingText(count: number) {
-  if (count === 1) {
-    return 'oceny';
-  } else {
-    return 'ocen';
-  }
-}

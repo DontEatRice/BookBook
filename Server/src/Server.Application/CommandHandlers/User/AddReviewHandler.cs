@@ -50,15 +50,15 @@ public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
             throw new LogicException("Review already exists", ApplicationErrorCodes.UserReviewAlreadyExists);
         }
 
-        if (user.IsCritic)
+        if (!user.IsCritic)
         {
             var reviewsCount = await _reviewRepository.GetReviewsCountByBookId(book.Id, cancellationToken);
-            book.ComputeCriticRating(reviewsCount, request.Rating);
+            book.ComputeRating(reviewsCount, request.Rating);
         }
         else
         {
             var criticReviewsCount = await _reviewRepository.GetCriticReviewsCountByBookId(book.Id, cancellationToken);
-            book.ComputeRating(criticReviewsCount, request.Rating);
+            book.ComputeCriticRating(criticReviewsCount, request.Rating);
         }
         
         var review = Review.Create(request.Id, request.Title, request.Description, request.Rating, book, user);

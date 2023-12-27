@@ -22,7 +22,7 @@ import { Link } from 'react-router-dom';
 import { PaginationRequest } from '../../utils/constants';
 import { Pagination } from '@mui/material';
 import { ChangeEvent, SyntheticEvent, useState } from 'react';
-import { getRatingText, imgUrl } from '../../utils/utils';
+import { imgUrl } from '../../utils/utils';
 import AddReviewForm from '../reviews/AddReviewForm';
 import ReviewPaper from '../reviews/ReviewPaper';
 
@@ -303,6 +303,14 @@ function BookDetails() {
       </Box>
     </div>
   );
+}
+
+function getRatingText(count: number) {
+  if (count === 1) {
+    return 'oceny';
+  } else {
+    return 'ocen';
+  }
 }
 
 export default BookDetails;

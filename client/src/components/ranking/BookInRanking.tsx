@@ -4,10 +4,10 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import { BookInRankingViewModelType } from '../../models/BookInRankingViewModel';
-import { getRatingText, imgUrl } from '../../utils/utils';
+import { imgUrl } from '../../utils/utils';
 import { BookCoverImg } from '../common/Img';
 import { useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, Rating } from '@mui/material';
 
 export default function BookInRanking({
   book,
@@ -60,33 +60,64 @@ export default function BookInRanking({
                 </Typography>
               </Grid>
             </Grid>
-            <Grid item display={'flex'} flexDirection={'column'} minWidth={150} marginY={2}>
-              <Typography variant="subtitle1" marginTop={1}>
+            <Grid item xs={3} display={'flex'} flexDirection={'column'} minWidth={150}>
+              <Typography variant="subtitle2" marginTop={1}>
                 Użytkownicy:
               </Typography>
-              <Typography variant="h6" marginTop={1}>
-                średnia:{' '}
-                {book.averageRating == null
-                  ? 'brak ocen'
-                  : book.averageRating + ' z ' + book.reviewsCount + ' ' + getRatingText(book.reviewsCount)}
-              </Typography>
-              <Typography variant="subtitle1" marginTop={1}>
+              {book.averageRating != null ? (
+                <Box>
+                  <Box display={'flex'} flexDirection={'row'}>
+                    <Rating readOnly max={1} defaultValue={1} sx={{ fontSize: '2rem', marginTop: 1 }} />
+                    <Typography variant="h5" marginTop={1} marginLeft={1}>
+                      {book.averageRating}
+                    </Typography>
+                  </Box>
+                  <Typography variant="subtitle1" marginLeft={0.5}>
+                    {book.reviewsCount} {getRatingText(book.reviewsCount, false)}
+                  </Typography>
+                </Box>
+              ) : (
+                <Typography variant="subtitle1" marginTop={1}>
+                  Brak ocen
+                </Typography>
+              )}
+              <Typography variant="subtitle2" marginTop={1}>
                 Krytycy:
               </Typography>
-              <Typography marginTop={1} variant="h6">
-                średnia:{' '}
-                {book.averageCriticRating == null
-                  ? 'brak ocen'
-                  : book.averageCriticRating +
+              {book.averageCriticRating != null ? (
+                <Typography marginTop={1} variant="subtitle1">
+                  średnia:{' '}
+                  {book.averageCriticRating +
                     ' z ' +
                     book.criticReviewsCount +
                     ' ' +
-                    getRatingText(book.criticReviewsCount)}
-              </Typography>
+                    getRatingText(book.criticReviewsCount, true)}
+                </Typography>
+              ) : (
+                <Typography variant="subtitle1" marginTop={1}>
+                  Brak ocen
+                </Typography>
+              )}
             </Grid>
           </Grid>
         </Grid>
       </Link>
     </Paper>
   );
+}
+
+function getRatingText(count: number, criticRating: boolean) {
+  if (criticRating) {
+    if (count === 1) {
+      return 'oceny';
+    } else {
+      return 'ocen';
+    }
+  } else {
+    if (count === 1) {
+      return 'ocena';
+    } else {
+      return 'oceny';
+    }
+  }
 }
