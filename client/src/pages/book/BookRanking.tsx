@@ -28,6 +28,7 @@ const paginationDefaultRequest = {
 
 export default function BookRanking() {
   const theme = useTheme();
+  const [sortValue, setSortValue] = useState<string>('desc');
   const [categoryId, setCategoryId] = useState<string>();
   const [paginationProps, setPaginationProps] = useState<PaginationRequest>({
     pageNumber: 0,
@@ -37,8 +38,8 @@ export default function BookRanking() {
   });
   const { pageNumber, pageSize, orderByField, orderDirection } = paginationProps;
 
-  const handleSortDirectionChange = (e: SelectChangeEvent<string>) => {
-    switch (e.target.value) {
+  const handleSortDirectionChange = (newSortValue: string) => {
+    switch (newSortValue) {
       case 'desc':
         setPaginationProps({
           ...paginationProps,
@@ -74,6 +75,7 @@ export default function BookRanking() {
           orderDirection: 'desc',
         });
     }
+    setSortValue(newSortValue);
   };
   const handlePageChange = (_: ChangeEvent<unknown>, newPage: number) => {
     setPaginationProps({
@@ -116,6 +118,7 @@ export default function BookRanking() {
             pageSize={pageSize}
             orderByField={orderByField!}
             orderDirection={orderDirection!}
+            sortValue={sortValue}
           />
           {searchData.data.length > 0 ? (
             <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>
@@ -142,14 +145,15 @@ export default function BookRanking() {
     data,
     pageNumber,
     pageSize,
+    sortValue,
   }: {
     data: BookInRankingViewModelType[];
     pageNumber: number;
     pageSize: number;
     orderByField: string;
     orderDirection: string;
+    sortValue: string;
   }) {
-    const [sortValue, setSortValue] = useState<string>('desc');
     return (
       <Box marginTop={2}>
         <Box margin={3} display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
@@ -182,8 +186,7 @@ export default function BookRanking() {
                   value={sortValue}
                   label="Sortuj"
                   onChange={(e: SelectChangeEvent<string>) => {
-                    setSortValue(e.target.value);
-                    handleSortDirectionChange(e);
+                    handleSortDirectionChange(e.target.value);
                   }}
                   labelId="ranking-direction-label">
                   <MenuItem value={'asc'}>Najgorsze</MenuItem>
