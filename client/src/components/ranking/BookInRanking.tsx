@@ -4,7 +4,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import { BookInRankingViewModelType } from '../../models/BookInRankingViewModel';
-import { imgUrl } from '../../utils/utils';
+import { getRatingText, imgUrl } from '../../utils/utils';
 import { BookCoverImg } from '../common/Img';
 import { useState } from 'react';
 import { Box } from '@mui/material';
@@ -89,12 +89,4 @@ export default function BookInRanking({
       </Link>
     </Paper>
   );
-}
-
-function getRatingText(count: number) {
-  if (count === 1) {
-    return 'oceny';
-  } else {
-    return 'ocen';
-  }
 }

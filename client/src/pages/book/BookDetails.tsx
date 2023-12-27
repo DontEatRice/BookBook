@@ -22,7 +22,7 @@ import { Link } from 'react-router-dom';
 import { PaginationRequest } from '../../utils/constants';
 import { Pagination } from '@mui/material';
 import { ChangeEvent, SyntheticEvent, useState } from 'react';
-import { imgUrl } from '../../utils/utils';
+import { getRatingText, imgUrl } from '../../utils/utils';
 import AddReviewForm from '../reviews/AddReviewForm';
 import ReviewPaper from '../reviews/ReviewPaper';
 
@@ -143,22 +143,15 @@ function BookDetails() {
             <Grid container spacing={1} marginBottom={3} padding={2}>
               <Grid item xs={12} marginBottom={2} padding={1}>
                 <Typography variant="h4">
-                  {book.averageRating == null ? 'Brak ocen' : book.averageRating}
-                  <Rating
-                    name="half-rating-read"
-                    value={book.averageRating == null ? 0 : book.averageRating}
-                    precision={0.25}
-                    readOnly
-                  />
-                </Typography>
-                <Typography variant="h5">
-                  {book.averageCriticRating == null ? 'Brak ocen krytków' : book.averageCriticRating}
-                  <Rating
-                    name="half-rating-read"
-                    value={book.averageCriticRating == null ? 0 : book.averageCriticRating}
-                    precision={0.25}
-                    readOnly
-                  />
+                  {book.averageRating == null ? 'Brak ocen użytkowników' : book.averageRating}
+                  {book.averageRating != null && (
+                    <Rating
+                      name="half-rating-read"
+                      value={book.averageRating == null ? 0 : book.averageRating}
+                      precision={0.25}
+                      readOnly
+                    />
+                  )}
                 </Typography>
               </Grid>
               <Grid container spacing={1}>
@@ -218,7 +211,9 @@ function BookDetails() {
                   flexDirection={'column'}
                   alignItems={'center'}
                   justifyContent={'center'}>
-                  <Typography variant="h5">Dodaj swoją opinię</Typography>
+                  <Typography variant="h5" gutterBottom>
+                    Dodaj swoją opinię
+                  </Typography>
                   <AddReviewForm book={book}></AddReviewForm>
                 </Box>
               ) : (
@@ -244,6 +239,14 @@ function BookDetails() {
                   </Tabs>
                   {currentTabIndex === 0 && (
                     <Box marginTop={3}>
+                      {reviews.count > 0 && (
+                        <Box textAlign={'center'}>
+                          <Typography variant="h5" gutterBottom>
+                            Średnia {book.averageRating} z {reviews.count} {getRatingText(reviews.count)}{' '}
+                            użytkowników
+                          </Typography>
+                        </Box>
+                      )}
                       <Reviews book={book} reviews={reviews.data} />
                       {reviews.data.length > 0 ? (
                         <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>
@@ -265,6 +268,14 @@ function BookDetails() {
                   )}
                   {currentTabIndex === 1 && (
                     <Box marginTop={3}>
+                      {criticReviews.count > 0 && (
+                        <Box textAlign={'center'}>
+                          <Typography variant="h5" gutterBottom>
+                            Średnia {book.averageCriticRating} z {criticReviews.count}{' '}
+                            {getRatingText(criticReviews.count)} krytyków
+                          </Typography>
+                        </Box>
+                      )}
                       <Reviews book={book} reviews={criticReviews.data} />
                       {criticReviews.data.length > 0 ? (
                         <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>
