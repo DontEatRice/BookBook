@@ -184,11 +184,12 @@ function SearchBar() {
         InputProps={{
           endAdornment: (
             <Box>
-              <InputAdornment position="end"></InputAdornment>
               <InputAdornment position="end">
-                <Button onClick={clearQuery}>
-                  <ClearIcon></ClearIcon>
-                </Button>
+                {query.length > 0 && (
+                  <Button onClick={clearQuery}>
+                    <ClearIcon></ClearIcon>
+                  </Button>
+                )}
                 <Button variant="contained" endIcon={<SearchIcon />} onClick={handleSearch}>
                   Szukaj
                 </Button>
