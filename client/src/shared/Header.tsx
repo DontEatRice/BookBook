@@ -5,7 +5,7 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Nav from './Nav';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import CartTab from '../components/reservations/CartTab';
@@ -21,6 +21,7 @@ import Tooltip from '@mui/material/Tooltip';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import { Button, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
 
 function Header() {
   const theme = useTheme();
@@ -144,6 +145,7 @@ function Header() {
 
 function SearchBar() {
   const [query, setQuery] = useState('');
+  const [_, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const handleSearchType = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -164,6 +166,11 @@ function SearchBar() {
     }
   };
 
+  const clearQuery = () => {
+    setQuery('');
+    setSearchParams({ ['q']: '' });
+  };
+
   return (
     <Box m={1}>
       <TextField
@@ -174,11 +181,17 @@ function SearchBar() {
         placeholder="Gotowy na przygodę?"
         InputProps={{
           endAdornment: (
-            <InputAdornment position="end">
-              <Button variant="contained" endIcon={<SearchIcon />} onClick={handleSearch}>
-                Szukaj
-              </Button>
-            </InputAdornment>
+            <Box>
+              <InputAdornment position="end"></InputAdornment>
+              <InputAdornment position="end">
+                <Button onClick={clearQuery}>
+                  <ClearIcon></ClearIcon>
+                </Button>
+                <Button variant="contained" endIcon={<SearchIcon />} onClick={handleSearch}>
+                  Szukaj
+                </Button>
+              </InputAdornment>
+            </Box>
           ),
         }}
       />
