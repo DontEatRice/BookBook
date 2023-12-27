@@ -145,7 +145,9 @@ function Header() {
 
 function SearchBar() {
   const [query, setQuery] = useState('');
+  /* eslint-disable */
   const [_, setSearchParams] = useSearchParams();
+  /* eslint-enable */
   const navigate = useNavigate();
 
   const handleSearchType = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
