@@ -23,7 +23,7 @@ namespace Server.Infrastructure.Persistence.Migrations
                 table: "Identities",
                 type: "datetime2",
                 nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+                defaultValue: new DateTime(2023, 12, 24, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_UserId",
