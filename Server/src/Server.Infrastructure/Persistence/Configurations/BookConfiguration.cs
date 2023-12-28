@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Server.Domain.Entities;
-using Server.Domain.Entities.User;
 
 namespace Server.Infrastructure.Persistence.Configurations;
 

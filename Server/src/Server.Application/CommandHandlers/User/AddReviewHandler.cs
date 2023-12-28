@@ -1,6 +1,5 @@
 using FluentValidation;
 using MediatR;
-using Microsoft.IdentityModel.Tokens;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
 using Server.Application.InfrastructureInterfaces;

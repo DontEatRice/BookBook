@@ -1,5 +1,3 @@
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.ViewModels;
@@ -32,6 +30,11 @@ internal sealed class GetBooksWithMostReservationsHandler
         var books = await _dbContext.Books
             .Where(x => booksWithMostReservations.Select(r => r.BookId).Contains(x.Id))
             .ToListAsync(cancellationToken);
+
+        if (books.Count < 3)
+        {
+            books = await _dbContext.Books.Take(3).ToListAsync(cancellationToken);
+        }
 
         return books.Select(b => new BookViewModel
             {

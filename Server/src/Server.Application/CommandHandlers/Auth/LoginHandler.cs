@@ -4,7 +4,6 @@ using Server.Application.Exceptions;
 using Server.Application.InfrastructureInterfaces;
 using Server.Application.ViewModels;
 using Server.Domain.DomainServices;
-using Server.Domain.Entities.Auth;
 using Server.Domain.Exceptions;
 
 namespace Server.Application.CommandHandlers.Auth;
