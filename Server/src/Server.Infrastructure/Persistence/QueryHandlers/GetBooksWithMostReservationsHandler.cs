@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.ViewModels;
-using Server.Domain.Entities;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
