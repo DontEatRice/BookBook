@@ -44,17 +44,11 @@ public class BookTests
     {
         // Arrange
         var book = new Book { AverageRating = 4.5 };
-        var reviews = new List<Review>
-        {
-            Review.Create(Guid.Empty, "", "", 4.5, new Book(), new Identity(), false),
-            Review.Create(Guid.Empty, "", "", 4.5, new Book(), new Identity(), false),
-            Review.Create(Guid.Empty, "", "", 4.5, new Book(), new Identity(), false),
-            Review.Create(Guid.Empty, "", "", 4.5, new Book(), new Identity(), false),
-        };
+        var reviewsCount = 4;
         var reviewRating = 5.0;
 
         // Act
-        book.ComputeRating(reviews, reviewRating);
+        book.ComputeRating(reviewsCount, reviewRating);
 
         // Assert
         Assert.Equal(4.6, book.AverageRating);
@@ -65,16 +59,11 @@ public class BookTests
     {
         // Arrange
         var book = new Book { AverageRating = 4 };
-        var reviews = new List<Review>
-        {
-            Review.Create(Guid.Empty, "", "", 3, new Book(), new Identity(), false),
-            Review.Create(Guid.Empty, "", "", 4, new Book(), new Identity(), false),
-            Review.Create(Guid.Empty, "", "", 5, new Book(), new Identity(), false),
-        };
+        var reviewsCount = 3;
         var reviewRating = 5.0;
 
         // Act
-        book.SubtractReviewFromRating(reviews, reviewRating);
+        book.SubtractReviewFromRating(reviewsCount, reviewRating);
 
         // Assert
         Assert.Equal(3.5, book.AverageRating);
@@ -85,18 +74,12 @@ public class BookTests
     {
         // Arrange
         var book = new Book { AverageRating = 4.5 };
-        var reviews = new List<Review>
-        {
-            Review.Create(Guid.Empty, "", "", 4, new Book(), new Identity(), false),
-            Review.Create(Guid.Empty, "", "", 4, new Book(), new Identity(), false),
-            Review.Create(Guid.Empty, "", "", 5, new Book(), new Identity(), false),
-            Review.Create(Guid.Empty, "", "", 5, new Book(), new Identity(), false)
-        };
+        var reviewsCount = 4;
         var oldReviewRating = 5.0;
         var newReviewRating = 4.0;
 
         // Act
-        book.UpdateReviewRating(reviews, oldReviewRating, newReviewRating);
+        book.UpdateReviewRating(reviewsCount, oldReviewRating, newReviewRating);
 
         // Assert
         Assert.Equal(4.25, book.AverageRating);
@@ -107,16 +90,51 @@ public class BookTests
     {
         // Arrange
         var book = new Book { AverageRating = 5 };
-        var reviews = new List<Review>
-        {
-            Review.Create(Guid.Empty, "", "", 5, new Book(), new Identity(), false)
-        };
+        var reviewsCount = 1;
         var reviewRating = 5;
 
         // Act
-        book.SubtractReviewFromRating(reviews, reviewRating);
+        book.SubtractReviewFromRating(reviewsCount, reviewRating);
 
         // Assert
         Assert.Null(book.AverageRating);
+    }
+
+    [Fact]
+    public void UpdateReviewRating_AfterUserWasNominatedCritic_ShouldSubstractOldReviewFromAverageRatingAndUpdateAverageCriticRating_OneReview()
+    {
+        // Arrange
+        var book = new Book { AverageRating = 5, AverageCriticRating = null };
+        var reviewsCount = 1;
+        var criticReviewsCount = 0;
+        var oldReviewRating = 5;
+        var reviewRating = 4;
+
+        // Act
+        book.SubtractReviewFromRating(reviewsCount, oldReviewRating);
+        book.ComputeCriticRating(criticReviewsCount, reviewRating);
+
+        // Assert
+        Assert.Null(book.AverageRating);
+        Assert.Equal(4, book.AverageCriticRating);
+    }
+
+    [Fact]
+    public void UpdateReviewRating_AfterUserWasNominatedCritic_ShouldSubstractOldReviewFromAverageRatingAndUpdateAverageCriticRating_MoreReviews()
+    {
+        // Arrange
+        var book = new Book { AverageRating = 4.5, AverageCriticRating = 3 };
+        var reviewsCount = 2;
+        var criticReviewsCount = 1;
+        var oldReviewRating = 5;
+        var reviewRating = 4;
+
+        // Act
+        book.SubtractReviewFromRating(reviewsCount, oldReviewRating);
+        book.ComputeCriticRating(criticReviewsCount, reviewRating);
+
+        // Assert
+        Assert.Equal(4, book.AverageRating);
+        Assert.Equal(3.5, book.AverageCriticRating);
     }
 }

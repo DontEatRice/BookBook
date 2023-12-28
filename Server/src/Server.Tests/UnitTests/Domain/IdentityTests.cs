@@ -36,7 +36,7 @@ namespace Server.Tests.UnitTests.Domain
             Assert.Equal(latitude, identity.Latitude);
             Assert.Equal(longitude, identity.Longitude);
             Assert.Equal("", identity.AboutMe);
-            Assert.Contains(Role.User.GetDisplayName(), identity.Roles);
+            Assert.Equal(Role.User.GetDisplayName(), identity.Role.ToString());
         }
 
         [Fact]
