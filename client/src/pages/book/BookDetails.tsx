@@ -242,7 +242,15 @@ function BookDetails() {
                       {reviews.count > 0 && (
                         <Box textAlign={'center'}>
                           <Typography variant="h5" gutterBottom>
-                            Średnia {book.averageRating} z {reviews.count} {getRatingText(reviews.count)}{' '}
+                            Średnia {book.averageRating} z{' '}
+                            {book.userReview != null && !book.userReview.isCriticRating
+                              ? reviews.count + 1
+                              : reviews.count}{' '}
+                            {getRatingText(
+                              book.userReview != null && !book.userReview.isCriticRating
+                                ? reviews.count + 1
+                                : reviews.count
+                            )}{' '}
                             użytkowników
                           </Typography>
                         </Box>
@@ -261,7 +269,9 @@ function BookDetails() {
                         </Box>
                       ) : (
                         <Typography variant="h6" textAlign={'center'}>
-                          Brak ocen użytkowników
+                          {book.userReview != null && !book.userReview.isCriticRating
+                            ? 'Brak ocen innych użytkowników'
+                            : 'Brak ocen użytkowników'}
                         </Typography>
                       )}
                     </Box>
@@ -271,8 +281,16 @@ function BookDetails() {
                       {criticReviews.count > 0 && (
                         <Box textAlign={'center'}>
                           <Typography variant="h5" gutterBottom>
-                            Średnia {book.averageCriticRating} z {criticReviews.count}{' '}
-                            {getRatingText(criticReviews.count)} krytyków
+                            Średnia {book.averageCriticRating} z{' '}
+                            {book.userReview != null && book.userReview.isCriticRating
+                              ? criticReviews.count + 1
+                              : criticReviews.count}{' '}
+                            {getRatingText(
+                              book.userReview != null && book.userReview.isCriticRating
+                                ? criticReviews.count + 1
+                                : criticReviews.count
+                            )}{' '}
+                            krytyków
                           </Typography>
                         </Box>
                       )}
@@ -290,7 +308,9 @@ function BookDetails() {
                         </Box>
                       ) : (
                         <Typography variant="h6" textAlign={'center'}>
-                          Brak ocen krytyków
+                          {book.userReview != null && book.userReview.isCriticRating
+                            ? 'Brak ocen innych krytyków'
+                            : 'Brak ocen krytyków'}
                         </Typography>
                       )}
                     </Box>

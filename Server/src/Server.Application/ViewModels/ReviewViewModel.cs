@@ -7,4 +7,5 @@ public class ReviewViewModel
     public string? Description { get; set; }
     public double Rating { get; set; }
     public ReviewUserViewModel User { get; set; }
+    public bool IsCriticRating { get; set; }
 }
