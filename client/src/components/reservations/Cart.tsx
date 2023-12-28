@@ -10,7 +10,7 @@ import { getCart, removeFromCart } from '../../api/cart';
 import { makeReservation } from '../../api/reservation';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import useAlert from '../../utils/alerts/useAlert';
 import { translateErrorCode } from '../../utils/functions/utilFunctions';
 import { ApiResponseError } from '../../utils/utils';
@@ -122,7 +122,7 @@ export default function Cart() {
     const libraries = data.librariesInCart;
 
     return (
-      <div>
+      <Box zIndex={5}>
         {loading ? (
           <Typography variant="h3">Ładowanie...</Typography>
         ) : (
@@ -202,7 +202,7 @@ export default function Cart() {
             </List>
           </div>
         )}
-      </div>
+      </Box>
     );
   }
 }

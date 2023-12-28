@@ -1,24 +1,25 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    background-color: #F3EEE7;
+  background-color: #f3eee7;
 }
 
 a:link {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 
 a:visited {
-    color: inherit;
+  color: inherit;
 }
 
-#map{
-    position: relative;
-    height: inherit;
-    width: inherit;
+#map {
+  position: relative;
+  height: inherit;
+  width: inherit;
+  z-index: 1;
 }
