@@ -1,12 +1,8 @@
-using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Admin;
 using Server.Application.CommandHandlers.User;
-using Server.Application.Exceptions;
-using Server.Application.Exceptions.Types;
-using Server.Utils;
 
 namespace Server.Api.Controllers;
 

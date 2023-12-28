@@ -107,6 +107,7 @@ function BooksList() {
         authorId: authorId,
         categoryId: categoryId,
         yearPublished: yearFilter,
+        libraryId: libraryId,
       }),
     keepPreviousData: true,
   });

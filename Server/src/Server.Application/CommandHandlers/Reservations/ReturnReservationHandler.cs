@@ -9,14 +9,14 @@ namespace Server.Application.CommandHandlers.Reservations;
 
 public sealed record ReturnReservationCommand(Guid ReservationId) : IRequest;
 
-public class ReturnReservationCommandHandler : IRequestHandler<ReturnReservationCommand>
+public class ReturnReservationHandler : IRequestHandler<ReturnReservationCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IReservationRepository _reservationRepository;
     private readonly ILibraryRepository _libraryRepository;
     private readonly IBookInLibraryRepository _bookInLibraryRepository;
 
-    public ReturnReservationCommandHandler(
+    public ReturnReservationHandler(
         IUnitOfWork unitOfWork,
         IReservationRepository reservationRepository, 
         ILibraryRepository libraryRepository, 

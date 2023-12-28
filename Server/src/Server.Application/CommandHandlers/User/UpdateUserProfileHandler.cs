@@ -8,7 +8,6 @@ using Server.Application.Exceptions.Types;
 using Server.Application.InfrastructureInterfaces;
 using Server.Application.ViewModels;
 using Server.Domain.Entities;
-using Server.Domain.Entities.Auth;
 using Server.Domain.Repositories;
 
 namespace Server.Application.CommandHandlers.User;
