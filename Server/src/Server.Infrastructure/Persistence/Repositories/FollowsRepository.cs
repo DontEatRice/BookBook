@@ -24,4 +24,17 @@ internal sealed class FollowsRepository : IFollowsRepository
             .Where(x => x.FollowerId == followerId && x.FollowedId == followedId)
             .ExecuteDeleteAsync(cancellationToken);
     }
+
+    public Task<int> UserFollowersCountAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        return _dbContext.Follows
+            .Where(x => x.FollowedId == userId)
+            .CountAsync(cancellationToken);
+    }
+
+    public Task<bool> DoesUserFollowUserAsync(Guid followedId, Guid followerId, CancellationToken cancellationToken)
+    {
+        return _dbContext.Follows
+            .AnyAsync(x => x.FollowedId == followedId && x.FollowerId == followerId, cancellationToken);
+    }
 }

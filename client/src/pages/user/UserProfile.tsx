@@ -66,7 +66,7 @@ function UserProfile() {
                   sx={{ width: 200, height: 200, margin: 1 }}
                 />
               </Grid>
-              <Grid item xs={12} sm container>
+              <Grid item xs sm container>
                 <Grid item xs container direction="column" spacing={2}>
                   <Grid item xs>
                     <Grid item xs container flexDirection={'row'} justifyContent={'space-between'}>
@@ -98,23 +98,21 @@ function UserProfile() {
             </Tabs>
             {currentTabIndex === 0 && (
               <Box sx={{ p: 3 }}>
-                <>
-                  {!data.aboutMe || data.aboutMe === '' ? (
-                    <Typography variant="h5" textAlign={'center'}>
-                      {data.userName} nie dodał swojego opisu
+                {!data.aboutMe || data.aboutMe === '' ? (
+                  <Typography variant="h5" textAlign={'center'}>
+                    {data.userName} nie dodał swojego opisu
+                  </Typography>
+                ) : (
+                  <div>
+                    <Typography variant="h5" gutterBottom>
+                      Kilka słów o mnie
                     </Typography>
-                  ) : (
-                    <div>
-                      <Typography variant="h5" gutterBottom>
-                        Kilka słów o mnie
-                      </Typography>
-                      {/* <Typography variant="h6">{data.aboutMe}</Typography> */}
-                      <Typography variant="h6">
-                        <ExpandableText value={data.aboutMe} maxChars={200} />
-                      </Typography>
-                    </div>
-                  )}
-                </>
+                    {/* <Typography variant="h6">{data.aboutMe}</Typography> */}
+                    <Typography variant="h6">
+                      <ExpandableText value={data.aboutMe} maxChars={200} />
+                    </Typography>
+                  </div>
+                )}
               </Box>
             )}
 

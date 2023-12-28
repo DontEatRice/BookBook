@@ -4,10 +4,13 @@ import { getUserBooks } from '../../api/user';
 import BookInUserList from '../../components/book/BookInUserList';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { Button, Pagination, Typography } from '@mui/material';
 import { PaginationRequest } from '../../utils/constants';
 import { ChangeEvent, useState } from 'react';
-import Loading from '../../components/common/Loading';
+import LoadingTypography from '../../components/common/LoadingTypography';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
+import Pagination from '@mui/material/Pagination';
 
 function UserBooks({ data }: { data: BookViewModelType[] }) {
   if (data.length == 0) {
@@ -16,7 +19,7 @@ function UserBooks({ data }: { data: BookViewModelType[] }) {
         <Typography variant="h5" sx={{ marginBottom: 3 }}>
           Nie masz żadnych obserwowanych książek!
         </Typography>
-        <Button href="/books" variant="contained">
+        <Button variant="contained" component={Link} to={'/books'}>
           Przeglądaj książki
         </Button>
       </Box>
@@ -52,7 +55,7 @@ function UserBooksList() {
   });
   return (
     <Box>
-      {status == 'loading' && <Loading />}
+      {status == 'loading' && <LoadingTypography />}
       {status == 'success' && (
         <Box>
           <UserBooks data={data.data} />

@@ -68,19 +68,19 @@ export async function getUserReviews(
   return ReviewInUserProfilePaginated.parse(data);
 }
 
-export async function getUsers (body: PaginationRequest) {
+export async function getUsers(body: PaginationRequest) {
   const auth = await getAuthToken();
   const response = await paginatedFetch(base + '/user', body, auth);
-  if(!response.ok){
+  if (!response.ok) {
     handleBadResponse(response);
   }
   const data = await response.json();
   return UserSearchPaginated.parse(data);
 }
 
-export async function makeUserCritic(id: string){
+export async function makeUserCritic(id: string) {
   const auth = await getAuthToken();
-  const response = await fetch(base + '/user/'+ id + '/make-critic', {
+  const response = await fetch(base + '/user/' + id + '/make-critic', {
     method: 'PATCH',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -91,4 +91,32 @@ export async function makeUserCritic(id: string){
     await handleBadResponse(response);
   }
   return response;
+}
+
+export async function followUser(id: string) {
+  const auth = await getAuthToken();
+  const response = await fetch(`${base}/user/${id}/follow`, {
+    method: 'POST',
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      Authorization: auth,
+    }),
+  });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+}
+
+export async function unfollowUser(id: string) {
+  const auth = await getAuthToken();
+  const response = await fetch(`${base}/user/${id}/unfollow`, {
+    method: 'POST',
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      Authorization: auth,
+    }),
+  });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
 }

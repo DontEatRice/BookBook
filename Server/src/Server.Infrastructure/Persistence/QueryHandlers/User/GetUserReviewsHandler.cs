@@ -22,7 +22,7 @@ internal sealed class GetUserReviewsHandler : IRequestHandler<GetUserReviewsQuer
         _identityRepository = identityRepository;
     }
 
-    public async Task<PaginatedResponseViewModel<ReviewInUserProfile>> Handle (GetUserReviewsQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResponseViewModel<ReviewInUserProfile>> Handle(GetUserReviewsQuery request, CancellationToken cancellationToken)
     {
         var user = await _identityRepository.FirstOrDefaultByIdAsync(request.Id, cancellationToken);
 

@@ -1,9 +1,11 @@
-﻿using MediatR;
+﻿using System.Security.Claims;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.User;
 using Server.Infrastructure.Persistence.QueryHandlers.User;
 using Server.Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Server.Utils;
 
 namespace Server.Api.Controllers;
 
@@ -37,7 +39,12 @@ public class UserController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<UserProfileViewModel>> GetUserProfile(Guid id)
     {
-        return Ok(await Mediator.Send(new GetUserProfileQuery(id)));
+        Guid? visitorId = null;
+        if (Guid.TryParse(User.FindFirstValue(AuthConstants.IdClaim), out var parsed))
+        {
+            visitorId = parsed;
+        }
+        return Ok(await Mediator.Send(new GetUserProfileQuery(id, visitorId)));
     }
 
     [HttpPost("{id:guid}/reviews")]
@@ -53,7 +60,6 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<PaginatedResponseViewModel<AdminUserViewModel>>> GetUsers(GetUsersQuery query)
     {
-        var userId = GetUserIdOrThrow();
         return Ok(await Mediator.Send(query));
     }
 
@@ -61,7 +67,6 @@ public class UserController : ControllerBase
     [HttpPatch("{id:guid}/make-critic")]
     public async Task<ActionResult> MakeUserCritic(Guid id)
     {
-        var userId = GetUserIdOrThrow();
         await Mediator.Send(new MakeUserCriticCommand
         {
             Id = id
@@ -81,6 +86,18 @@ public class UserController : ControllerBase
             FollowedId = id
         });
 
+        return NoContent();
+    }
+
+    [HttpPost("{id:guid}/unfollow")]
+    public async Task<ActionResult> UnfollowUser(Guid id)
+    {
+        var followerId = GetUserIdOrThrow();
+        await Mediator.Send(new UnfollowUserCommand
+        {
+            FollowerId = followerId,
+            FollowedId = id
+        });
         return NoContent();
     }
 }

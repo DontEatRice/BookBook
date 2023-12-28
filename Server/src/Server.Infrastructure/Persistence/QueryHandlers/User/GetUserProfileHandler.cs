@@ -8,22 +8,30 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers.User;
 
-public sealed record GetUserProfileQuery(Guid Id) : IRequest<UserProfileViewModel>;
+public sealed record GetUserProfileQuery(Guid Id, Guid? VisitorId) : IRequest<UserProfileViewModel>;
 internal sealed class GetUserProfileHandler : IRequestHandler<GetUserProfileQuery, UserProfileViewModel>
 {
     private readonly IReservationRepository _reservationRepository;
+    private readonly IFollowsRepository _followsRepository;
     private readonly IIdentityRepository _identityRepository;
     private readonly IBookRepository _bookRepository;
     private readonly IMapper _mapper;
     private readonly IMemoryCache _memoryCache;
 
-    public GetUserProfileHandler(IReservationRepository reservationRepository, IIdentityRepository identityRepository, IBookRepository bookRepository, IMapper mapper, IMemoryCache memoryCache)
-    {
+    public GetUserProfileHandler(
+        IReservationRepository reservationRepository,
+        IIdentityRepository identityRepository,
+        IBookRepository bookRepository,
+        IMapper mapper,
+        IMemoryCache memoryCache,
+        IFollowsRepository followsRepository
+    ) {
         _reservationRepository = reservationRepository;
         _identityRepository = identityRepository;
         _bookRepository = bookRepository;
         _mapper = mapper;
         _memoryCache = memoryCache;
+        _followsRepository = followsRepository;
     }
 
     public async Task<UserProfileViewModel> Handle(GetUserProfileQuery request, CancellationToken cancellationToken)
@@ -35,10 +43,7 @@ internal sealed class GetUserProfileHandler : IRequestHandler<GetUserProfileQuer
             throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
         }
 
-        var userReadBooks = new List<BookViewModel>();
-        int readBooksCount = 0;
-
-        if (!_memoryCache.TryGetValue($"lastReadBooks-{user.Id}", out userReadBooks) || !_memoryCache.TryGetValue($"readBooksCount-{user.Id}", out readBooksCount))
+        if (!_memoryCache.TryGetValue($"lastReadBooks-{user.Id}", out List<BookViewModel>? userReadBooks) || !_memoryCache.TryGetValue($"readBooksCount-{user.Id}", out int readBooksCount))
         {
             var userReservations = await _reservationRepository.ListByUserIdAsync(request.Id, cancellationToken);
 
@@ -49,13 +54,14 @@ internal sealed class GetUserProfileHandler : IRequestHandler<GetUserProfileQuer
                 .OrderBy(x => x.ReservationEndDate)
                 .SelectMany(x => x.ReservationItems)
                 .Select(x => x.BookId)
-                .Distinct();
+                .Distinct()
+                .ToList();
 
             var lastReadBooks = readBooks
                 .Take(5)
                 .ToList();
 
-            readBooksCount = readBooks.Count();
+            readBooksCount = readBooks.Count;
 
             userReadBooks = new List<BookViewModel>(); 
 
@@ -64,27 +70,36 @@ internal sealed class GetUserProfileHandler : IRequestHandler<GetUserProfileQuer
                 userReadBooks.Add(_mapper.Map<BookViewModel>(await _bookRepository.FirstOrDefaultByIdAsync(book, cancellationToken)));
             }
 
-            _memoryCache.Set($"lastReadBooks-{user.Id}", userReadBooks, new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
-            });
+            _memoryCache.Set($"lastReadBooks-{user.Id}", userReadBooks, TimeSpan.FromMinutes(5));
 
-            _memoryCache.Set($"readBooksCount-{user.Id}", readBooksCount, new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
-            });
+            _memoryCache.Set($"readBooksCount-{user.Id}", readBooksCount, TimeSpan.FromMinutes(5));
+        }
+
+        if (!_memoryCache.TryGetValue($"userFollowersCount-{user.Id}", out int followersCount))
+        {
+            followersCount = await _followsRepository.UserFollowersCountAsync(user.Id, cancellationToken);
+
+            _memoryCache.Set($"userFollowersCount-{user.Id}", followersCount, TimeSpan.FromMinutes(5));
+        }
+
+        bool? followedByMe = null;
+        if (request.VisitorId is { } followerId)
+        {
+            followedByMe = await _followsRepository.DoesUserFollowUserAsync(user.Id, followerId, cancellationToken);
         }
 
         return new UserProfileViewModel
         {
-            UserName = user.Name,
+            UserName = user.Name ?? string.Empty,
             UserImageUrl = user.AvatarImageUrl,
-            UserLocation = user.Address != null ? user.Address.City : null,
+            UserLocation = user.Address?.City,
             UserLastReadBooks = userReadBooks,
             AboutMe = user.AboutMe,
             ReadBooksCount = readBooksCount,
+            FollowersCount = followersCount,
             IsCritic = user.IsCritic,
-            RegisteredAt = user.RegisteredAt
+            RegisteredAt = user.RegisteredAt,
+            FollowedByMe = followedByMe
         };
     }
 }
