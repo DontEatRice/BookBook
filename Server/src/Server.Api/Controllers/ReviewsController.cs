@@ -27,7 +27,7 @@ public class ReviewsController : ControllerBase
             UserId = userId
         });
 
-        return Created($"/reviews/{id}", null);
+        return Ok();
     }
     
     [HttpPut]

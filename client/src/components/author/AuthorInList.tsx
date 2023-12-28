@@ -29,7 +29,7 @@ function AuthorInList({ author }: { author: AuthorViewModelType }) {
             <Box>
               <Avatar
                 alt={author.firstName + ' ' + author.lastName}
-                src={imgUrl(author.profilePictureUrl, '/public/autor-szablon.jpg')}
+                src={imgUrl(author.profilePictureUrl, '/autor-szablon.jpg')}
                 sx={{ width: 150, height: 150 }}
                 imgProps={{
                   loading: 'lazy',

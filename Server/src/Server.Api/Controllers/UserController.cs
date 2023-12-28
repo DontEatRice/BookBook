@@ -49,4 +49,17 @@ public class UserController : ControllerBase
         }));
     }
 
+    // [Authorize("User")]
+    [HttpPost("{id:guid}/follow")]
+    public async Task<ActionResult> FollowUser(Guid id)
+    {
+        var followerId = GetUserIdOrThrow();
+        await Mediator.Send(new FollowUserCommand
+        {
+            FollowerId = followerId,
+            FollowedId = id
+        });
+
+        return NoContent();
+    }
 }

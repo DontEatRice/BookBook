@@ -43,4 +43,9 @@ internal class IdentityRepository : IIdentityRepository
     {
         return await _dbContext.Identities.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
     }
+
+    public Task<bool> IdentityByIdExistsAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return _dbContext.Identities.AnyAsync(x => x.Id == id, cancellationToken);
+    }
 }

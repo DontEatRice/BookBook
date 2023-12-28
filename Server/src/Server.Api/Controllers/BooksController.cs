@@ -15,7 +15,6 @@ public class BooksController : ControllerBase
 {
     private readonly IMemoryCache _memoryCache;
     private const string MostReservedBooksCacheKey = "MostReservedBooks";
-    private const int MaxAge = 6 * 60 * 60; // 6 hours, 60 minutes, 60 seconds
 
     public BooksController(IMediator mediator, IMemoryCache memoryCache) : base(mediator)
     {
@@ -32,8 +31,7 @@ public class BooksController : ControllerBase
         if (!_memoryCache.TryGetValue(MostReservedBooksCacheKey, out IEnumerable<BookViewModel>? mostReservedBooks))
         {
             mostReservedBooks = await Mediator.Send(new GetBooksWithMostReservationsQuery());
-            var cacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(60));
-            _memoryCache.Set(MostReservedBooksCacheKey, mostReservedBooks, cacheOptions);
+            _memoryCache.Set(MostReservedBooksCacheKey, mostReservedBooks, TimeSpan.FromMinutes(5));
         }
 
         return Ok(mostReservedBooks);

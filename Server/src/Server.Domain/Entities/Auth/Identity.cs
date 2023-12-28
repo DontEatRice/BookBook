@@ -22,6 +22,8 @@ public class Identity
     public double? Latitude { get; private set; }
     public double? Longitude { get; private set; }
     public string? AboutMe { get; private set; }
+    public ICollection<Identity> Followers { get; set; } = new List<Identity>();
+    public ICollection<Identity> Followed { get; set; } = new List<Identity>();
 
     public static Identity Register(Guid id, string email, string password, string name, string? avatarImageUrl, Address? address, double? latitude, double? longitude)
     {
