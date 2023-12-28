@@ -31,7 +31,7 @@ function AuthorDetails() {
             <Grid item xs={12} md={5}>
               <Avatar
                 alt={authorData.firstName + ' ' + authorData.lastName}
-                src={imgUrl(authorData.profilePictureUrl, '/public/autor-szablon.jpg')}
+                src={imgUrl(authorData.profilePictureUrl, '/autor-szablon.jpg')}
                 sx={{ width: 300, height: 300 }}
               />
             </Grid>

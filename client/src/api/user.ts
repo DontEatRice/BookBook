@@ -1,5 +1,6 @@
 import BookViewModel from '../models/BookViewModel';
 import { ToggleBookInUserListType } from '../models/ToggleBookInUserList';
+import AdminUserViewModel from '../models/user/AdminUserViewModel';
 import ReviewInUserProfileViewModel from '../models/user/ReviewInUserProfileViewModel';
 import UserProfileViewModel from '../models/user/UserProfileViewModel';
 import { PaginationRequest } from '../utils/constants';
@@ -9,6 +10,8 @@ import { getAuthToken } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 export const ReviewInUserProfilePaginated = paginatedResponse(ReviewInUserProfileViewModel);
+export const UserSearchPaginated = paginatedResponse(AdminUserViewModel);
+const UserBooksPaginated = paginatedResponse(BookViewModel);
 
 export const toggleBookInUserList = async (toggleBook: ToggleBookInUserListType) => {
   const auth = await getAuthToken();
@@ -26,7 +29,6 @@ export const toggleBookInUserList = async (toggleBook: ToggleBookInUserListType)
   return response;
 };
 
-const UserBooksPaginated = paginatedResponse(BookViewModel);
 export async function getUserBooks(body: PaginationRequest) {
   const auth = await getAuthToken();
   const response = await paginatedFetch(base + '/User/user-books', body, auth);
@@ -64,4 +66,29 @@ export async function getUserReviews(
   }
   const data = await response.json();
   return ReviewInUserProfilePaginated.parse(data);
+}
+
+export async function getUsers (body: PaginationRequest) {
+  const auth = await getAuthToken();
+  const response = await paginatedFetch(base + '/user', body, auth);
+  if(!response.ok){
+    handleBadResponse(response);
+  }
+  const data = await response.json();
+  return UserSearchPaginated.parse(data);
+}
+
+export async function makeUserCritic(id: string){
+  const auth = await getAuthToken();
+  const response = await fetch(base + '/user/'+ id + '/make-critic', {
+    method: 'PATCH',
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      Authorization: auth,
+    }),
+  });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+  return response;
 }

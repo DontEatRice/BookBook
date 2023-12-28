@@ -11,7 +11,7 @@ export const LocalStorageTokenKey = 'token';
 
 export type Claims = {
   identityid: string;
-  r: string | Array<string>;
+  r: string;
   exp: number;
   email: string;
   libraryid?: string;

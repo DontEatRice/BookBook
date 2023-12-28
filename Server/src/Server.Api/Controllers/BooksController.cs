@@ -56,11 +56,25 @@ public class BooksController : ControllerBase
         => Ok(await Mediator.Send(new GetLibrariesWithBookQuery(id)));
 
     [HttpPost("{id:guid}/reviews/search")]
-    public async Task<ActionResult<IEnumerable<ReviewViewModel>>> List(GetReviewsQuery query, Guid id)
-        => Ok(await Mediator.Send(query with
+    public async Task<ActionResult<PaginatedResponseViewModel<ReviewViewModel>>> GetBookReviews(GetReviewsQuery query, Guid id)
+    {
+        var userId = User.FindFirstValue(AuthConstants.IdClaim);
+        return Ok(await Mediator.Send(query with
         {
-            BookId = id
-        }));
+            BookId = id,
+            UserId = userId
+        })) ;
+    }
+
+    [HttpPost("{id:guid}/reviews-critic/search")]
+    public async Task<ActionResult<PaginatedResponseViewModel<ReviewViewModel>>> GetBookCriticReviews(GetCriticReviewsQuery query, Guid id)
+    {
+        var userId = User.FindFirstValue(AuthConstants.IdClaim);
+        return Ok(await Mediator.Send(query with { 
+            BookId = id,
+            UserId = userId
+        })); 
+    }
 
     [HttpPost]
     public async Task<ActionResult> Post(AddBookCommand command)

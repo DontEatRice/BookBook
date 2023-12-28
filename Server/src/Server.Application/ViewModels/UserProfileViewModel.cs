@@ -8,4 +8,6 @@ public class UserProfileViewModel
     public string? UserLocation { get; set; }
     public string? AboutMe { get; set; }
     public int? ReadBooksCount { get; set; }
+    public bool IsCritic { get; set; }
+    public DateTime RegisteredAt { get; set; }
 }

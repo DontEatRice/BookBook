@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Server.Application.Exceptions;
 using Server.Application.Exceptions.Types;
 using Server.Application.ViewModels;
+using Server.Domain.Entities.Auth;
 using Server.Domain.Repositories;
 using Server.Utils;
 
@@ -25,7 +26,7 @@ internal sealed class GetUserReviewsHandler : IRequestHandler<GetUserReviewsQuer
     {
         var user = await _identityRepository.FirstOrDefaultByIdAsync(request.Id, cancellationToken);
 
-        if (user == null || !user.Roles.Contains("User"))
+        if (user == null || user.Role != Role.User)
         {
             throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
         }

@@ -37,27 +37,31 @@ public sealed class AddReviewHandler : IRequestHandler<AddReviewCommand>
 
     public async Task Handle(AddReviewCommand request, CancellationToken cancellationToken)
     {
-        var book = await _bookRepository.FirstOrDefaultByIdAsync(request.IdBook, cancellationToken);
-        
-        if (book is null)
-        {
+        var book = await _bookRepository.FirstOrDefaultByIdAsync(request.IdBook, cancellationToken) ?? 
             throw new NotFoundException("Book not found", ApplicationErrorCodes.BookNotFound);
-        }
 
-        var reviews = await _reviewRepository.FindAllByBookIdAsync(request.IdBook, cancellationToken);
 
-        if (reviews.FirstOrDefault(x => x.User.Id == request.UserId) is not null)
-        {
-            throw new LogicException ("Review already exists", ApplicationErrorCodes.UserReviewAlreadyExists);
-        }
-        
         var user = await _identityRepository.FirstOrDefaultByIdAsync(request.UserId, cancellationToken) ??
                    throw new NotFoundException("User not found", ApplicationErrorCodes.UserNotFound);
+
+        var userReview = await _reviewRepository.FirstOrDefaultByUserAndBookIdsAsync(book.Id, request.UserId, cancellationToken);
+        if (userReview is not null)
+        {
+            throw new LogicException("Review already exists", ApplicationErrorCodes.UserReviewAlreadyExists);
+        }
+
+        if (!user.IsCritic)
+        {
+            var reviewsCount = await _reviewRepository.GetReviewsCountByBookId(book.Id, cancellationToken);
+            book.ComputeRating(reviewsCount, request.Rating);
+        }
+        else
+        {
+            var criticReviewsCount = await _reviewRepository.GetCriticReviewsCountByBookId(book.Id, cancellationToken);
+            book.ComputeCriticRating(criticReviewsCount, request.Rating);
+        }
         
-        book.ComputeRating(reviews, request.Rating);
-        
-        var review = Review.Create(request.Id, request.Title, request.Description, request.Rating, book, user,
-            false);
+        var review = Review.Create(request.Id, request.Title, request.Description, request.Rating, book, user);
 
         await _reviewRepository.AddAsync(review, cancellationToken);
 

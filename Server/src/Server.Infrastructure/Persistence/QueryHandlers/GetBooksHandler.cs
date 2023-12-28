@@ -53,7 +53,7 @@ internal sealed class GetBooksHandler : IRequestHandler<GetBooksQuery, Paginated
             query = query.Where(x => x.BookCategories.Any(a => a.Id == request.CategoryId));
         }
         
-        if (request is{ YearPublished: > 0})
+        if (request is { YearPublished: > 0})
         {
             query = query.Where(x => x.YearPublished.ToString().Contains(request.YearPublished.Value.ToString()));
         }

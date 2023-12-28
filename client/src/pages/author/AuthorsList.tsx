@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { PaginationRequest } from '../../utils/constants';
 import { Pagination } from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
 
 function Authors({ data }: { data: AuthorViewModelType[] }) {
   return (
@@ -40,6 +41,10 @@ function AuthorsList() {
     if (e.key == 'Enter') {
       setQuery(searchInput);
     }
+  };
+  const clearQuery = () => {
+    setSearchInput('');
+    setQuery('');
   };
 
   const [paginationProps, setPaginationProps] = useState<PaginationRequest>({
@@ -76,6 +81,11 @@ function AuthorsList() {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
+                {searchInput.length > 0 && (
+                  <Button onClick={clearQuery}>
+                    <ClearIcon />
+                  </Button>
+                )}
                 <Button variant="contained" endIcon={<SearchIcon />} onClick={handleSearch}>
                   Szukaj
                 </Button>

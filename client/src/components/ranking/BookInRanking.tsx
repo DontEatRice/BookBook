@@ -3,12 +3,11 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
-import Rating from '@mui/material/Rating';
 import { BookInRankingViewModelType } from '../../models/BookInRankingViewModel';
 import { imgUrl } from '../../utils/utils';
 import { BookCoverImg } from '../common/Img';
-import Box from '@mui/material/Box';
 import { useState } from 'react';
+import { Box, Rating } from '@mui/material';
 
 export default function BookInRanking({
   book,
@@ -47,11 +46,11 @@ export default function BookInRanking({
               />
             </Box>
           </Grid>
-          <Grid item xs={12} sm container>
+          <Grid item xs={10} sm container>
             <Grid item xs container direction="column" spacing={2}>
               <Grid item xs>
                 <Typography gutterBottom variant="h4" component="div">
-                  {book.title}
+                  <Link to={`/books/${book.id}`}>{book.title}</Link>
                 </Typography>
                 <Typography variant="body1" gutterBottom>
                   {book.authors.map((author) => author.firstName + ' ' + author.lastName).join(', ')}
@@ -61,22 +60,45 @@ export default function BookInRanking({
                 </Typography>
               </Grid>
             </Grid>
-            {book.averageRating && (
-              <Grid item display={'flex'} flexDirection={'column'} minWidth={150} marginY={2}>
-                <Rating name="half-rating-read" value={book.averageRating} precision={0.25} readOnly />
-                <Typography variant="body1" gutterBottom marginTop={1}>
-                  średnia: {book.averageRating}
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  {book.reviewsCount} {getRatingText(book.reviewsCount)}
-                </Typography>
-                {book.averageCriticRating && (
-                  <Typography marginTop={1} variant="body1" gutterBottom>
-                    średnia krytyków: {book.averageCriticRating}
+            <Grid item xs={3} display={'flex'} flexDirection={'column'} minWidth={150}>
+              <Typography variant="subtitle2" marginTop={1}>
+                Użytkownicy:
+              </Typography>
+              {book.averageRating != null ? (
+                <Box>
+                  <Box display={'flex'} flexDirection={'row'}>
+                    <Rating readOnly max={1} defaultValue={1} sx={{ fontSize: '2rem', marginTop: 1 }} />
+                    <Typography variant="h5" marginTop={1} marginLeft={1}>
+                      {book.averageRating}
+                    </Typography>
+                  </Box>
+                  <Typography variant="subtitle1" marginLeft={0.5}>
+                    {book.reviewsCount} {getRatingText(book.reviewsCount, false)}
                   </Typography>
-                )}
-              </Grid>
-            )}
+                </Box>
+              ) : (
+                <Typography variant="subtitle1" marginTop={1}>
+                  Brak ocen
+                </Typography>
+              )}
+              <Typography variant="subtitle2" marginTop={1}>
+                Krytycy:
+              </Typography>
+              {book.averageCriticRating != null ? (
+                <Typography marginTop={1} variant="subtitle1">
+                  średnia:{' '}
+                  {book.averageCriticRating +
+                    ' z ' +
+                    book.criticReviewsCount +
+                    ' ' +
+                    getRatingText(book.criticReviewsCount, true)}
+                </Typography>
+              ) : (
+                <Typography variant="subtitle1" marginTop={1}>
+                  Brak ocen
+                </Typography>
+              )}
+            </Grid>
           </Grid>
         </Grid>
       </Link>
@@ -84,12 +106,18 @@ export default function BookInRanking({
   );
 }
 
-function getRatingText(count: number) {
-  if (count === 1) {
-    return 'ocena';
-  } else if (count > 1 && count < 5) {
-    return 'oceny';
+function getRatingText(count: number, criticRating: boolean) {
+  if (criticRating) {
+    if (count === 1) {
+      return 'oceny';
+    } else {
+      return 'ocen';
+    }
   } else {
-    return 'ocen';
+    if (count === 1) {
+      return 'ocena';
+    } else {
+      return 'oceny';
+    }
   }
 }

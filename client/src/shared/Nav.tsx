@@ -34,7 +34,7 @@ function NavItem({ label, link }: { label: string; link: string }) {
         backgroundColor: isActive ? 'darkOrange' : 'transparent',
       })}>
       <Box sx={{ p: 1, '&:hover': { backgroundColor: 'darkOrange' } }}>
-        <Typography variant="h6" align="center" fontFamily="Lato">
+        <Typography variant="h6" align="center">
           {label}
         </Typography>
       </Box>

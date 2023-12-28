@@ -49,33 +49,57 @@ public class Book
             UserBooks = new List<UserBook>()
         };
 
-    public void ComputeRating(ICollection<Review> reviews, double reviewRating)
+    public void ComputeRating(int reviewsCount, double reviewRating)
     {
-        var reviewCount = reviews.Count;
         var averageRating = AverageRating ?? 0;
         
-        AverageRating = Math.Round((averageRating * reviewCount + reviewRating) / (reviewCount + 1), 2);
+        AverageRating = Math.Round((averageRating * reviewsCount + reviewRating) / (reviewsCount + 1), 2);
+    }
+
+    public void ComputeCriticRating(int reviewsCount, double reviewRating)
+    {
+        var averageCriticRating = AverageCriticRating ?? 0;
+
+        AverageCriticRating = Math.Round((averageCriticRating * reviewsCount + reviewRating) / (reviewsCount + 1), 2);
     }
     
-    public void SubtractReviewFromRating(ICollection<Review> reviews, double reviewRating)
+    public void SubtractReviewFromRating(int reviewsCount, double reviewRating)
     {
-        var reviewCount = reviews.Count;
         var averageRating = AverageRating ?? 0;
 
-        if (reviewCount <= 1)
+        if (reviewsCount <= 1)
         {
             AverageRating = null;
             return;
         }
         
-        AverageRating = Math.Round((averageRating * reviewCount - reviewRating) / (reviewCount - 1), 2);
+        AverageRating = Math.Round((averageRating * reviewsCount - reviewRating) / (reviewsCount - 1), 2);
     }
-    
-    public void UpdateReviewRating(ICollection<Review> reviews, double oldReviewRating, double newReviewRating)
+
+    public void SubtractReviewFromCriticRating(int reviewsCount, double reviewRating)
     {
-        var reviewCount = reviews.Count;
+        var averageCriticRating = AverageCriticRating ?? 0;
+
+        if (reviewsCount <= 1)
+        {
+            AverageCriticRating = null;
+            return;
+        }
+
+        AverageCriticRating = Math.Round((averageCriticRating * reviewsCount - reviewRating) / (reviewsCount - 1), 2);
+    }
+
+    public void UpdateReviewRating(int reviewsCount, double oldReviewRating, double newReviewRating)
+    {
         var averageRating = AverageRating ?? 0;
         
-        AverageRating = Math.Round((averageRating * reviewCount - oldReviewRating + newReviewRating) / (reviewCount), 2);
+        AverageRating = Math.Round((averageRating * reviewsCount - oldReviewRating + newReviewRating) / (reviewsCount), 2);
+    }
+
+    public void UpdateCriticReviewRating(int reviewsCount, double oldReviewRating, double newReviewRating)
+    {
+        var averageCriticRating = AverageCriticRating ?? 0;
+
+        AverageCriticRating = Math.Round((averageCriticRating * reviewsCount - oldReviewRating + newReviewRating) / (reviewsCount), 2);
     }
 }

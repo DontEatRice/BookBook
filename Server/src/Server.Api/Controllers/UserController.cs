@@ -49,4 +49,25 @@ public class UserController : ControllerBase
         }));
     }
 
+    [Authorize]
+    [HttpPost]
+    public async Task<ActionResult<PaginatedResponseViewModel<AdminUserViewModel>>> GetUsers(GetUsersQuery query)
+    {
+        var userId = GetUserIdOrThrow();
+        return Ok(await Mediator.Send(query));
+    }
+
+    [Authorize]
+    [HttpPatch("{id:guid}/make-critic")]
+    public async Task<ActionResult> MakeUserCritic(Guid id)
+    {
+        var userId = GetUserIdOrThrow();
+        await Mediator.Send(new MakeUserCriticCommand
+        {
+            Id = id
+        });
+        return NoContent();
+    }
+
+
 }

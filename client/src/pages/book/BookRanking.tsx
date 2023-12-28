@@ -12,30 +12,70 @@ import {
   MenuItem,
   Pagination,
   Select,
+  SelectChangeEvent,
   TextField,
 } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
-import { Order, PaginationRequest } from '../../utils/constants';
+import { PaginationRequest } from '../../utils/constants';
 import { BookInRankingViewModelType } from '../../models/BookInRankingViewModel';
 import { getCategories } from '../../api/category';
 import Loading from '../../components/common/Loading';
 
 const paginationDefaultRequest = {
   pageNumber: 0,
-  pageSize: 10,
+  pageSize: 100,
 };
 
 export default function BookRanking() {
   const theme = useTheme();
-  const [sortDirection, setSortDirection] = useState<Order>('desc');
+  const [sortValue, setSortValue] = useState<string>('desc');
   const [categoryId, setCategoryId] = useState<string>();
   const [paginationProps, setPaginationProps] = useState<PaginationRequest>({
     pageNumber: 0,
     pageSize: 10,
+    orderByField: 'averageRating',
+    orderDirection: 'desc',
   });
+  const { pageNumber, pageSize, orderByField, orderDirection } = paginationProps;
 
-  const handleSortDirectionChange = () => {
-    setSortDirection((prevSortDirection) => (prevSortDirection === 'desc' ? 'asc' : 'desc'));
+  const handleSortDirectionChange = (newSortValue: string) => {
+    switch (newSortValue) {
+      case 'desc':
+        setPaginationProps({
+          ...paginationProps,
+          orderByField: 'averageRating',
+          orderDirection: 'desc',
+        });
+        break;
+      case 'asc':
+        setPaginationProps({
+          ...paginationProps,
+          orderByField: 'averageRating',
+          orderDirection: 'asc',
+        });
+        break;
+      case 'descCritic':
+        setPaginationProps({
+          ...paginationProps,
+          orderByField: 'averageCriticRating',
+          orderDirection: 'desc',
+        });
+        break;
+      case 'ascCritic':
+        setPaginationProps({
+          ...paginationProps,
+          orderByField: 'averageCriticRating',
+          orderDirection: 'asc',
+        });
+        break;
+      default:
+        setPaginationProps({
+          ...paginationProps,
+          orderByField: 'averageRating',
+          orderDirection: 'desc',
+        });
+    }
+    setSortValue(newSortValue);
   };
   const handlePageChange = (_: ChangeEvent<unknown>, newPage: number) => {
     setPaginationProps({
@@ -50,13 +90,13 @@ export default function BookRanking() {
   });
 
   const { data: searchData, status: searchStatus } = useQuery({
-    queryKey: ['bookRanking', sortDirection, paginationProps.pageNumber, categoryId],
+    queryKey: ['bookRanking', categoryId, pageNumber, pageSize, orderByField, orderDirection],
     queryFn: () =>
       bookRanking({
-        pageSize: paginationProps.pageSize,
-        pageNumber: paginationProps.pageNumber,
-        orderByField: 'AverageRating',
-        orderDirection: sortDirection,
+        pageSize: pageSize,
+        pageNumber: pageNumber,
+        orderByField: orderByField,
+        orderDirection: orderDirection,
         categoryId: categoryId,
       }),
     keepPreviousData: true,
@@ -74,8 +114,11 @@ export default function BookRanking() {
         <Box>
           <Books
             data={searchData.data}
-            pageNumber={paginationProps.pageNumber}
-            pageSize={paginationProps.pageSize}
+            pageNumber={pageNumber}
+            pageSize={pageSize}
+            orderByField={orderByField!}
+            orderDirection={orderDirection!}
+            sortValue={sortValue}
           />
           {searchData.data.length > 0 ? (
             <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>
@@ -102,13 +145,17 @@ export default function BookRanking() {
     data,
     pageNumber,
     pageSize,
+    sortValue,
   }: {
     data: BookInRankingViewModelType[];
     pageNumber: number;
     pageSize: number;
+    orderByField: string;
+    orderDirection: string;
+    sortValue: string;
   }) {
     return (
-      <Box key={sortDirection} marginTop={2}>
+      <Box marginTop={2}>
         <Box margin={3} display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
           <Typography variant="h3">Ranking książek</Typography>
           <Box display={'flex'} flexDirection={'row'}>
@@ -135,12 +182,17 @@ export default function BookRanking() {
               <FormControl>
                 <InputLabel id="ranking-direction-label">Sortuj</InputLabel>
                 <Select
-                  value={sortDirection}
+                  fullWidth
+                  value={sortValue}
                   label="Sortuj"
-                  onChange={handleSortDirectionChange}
+                  onChange={(e: SelectChangeEvent<string>) => {
+                    handleSortDirectionChange(e.target.value);
+                  }}
                   labelId="ranking-direction-label">
                   <MenuItem value={'asc'}>Najgorsze</MenuItem>
                   <MenuItem value={'desc'}>Najlepsze</MenuItem>
+                  <MenuItem value={'ascCritic'}>Najgorsze według krytyków</MenuItem>
+                  <MenuItem value={'descCritic'}>Najlepsze według krytyków</MenuItem>
                 </Select>
               </FormControl>
             </Box>

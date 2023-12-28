@@ -32,8 +32,9 @@ function AddReviewForm({ book }: { book: BookViewModelType }) {
   const mutation = useMutation({
     mutationFn: postReview,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['reviews', book.id] });
-      queryClient.invalidateQueries({ queryKey: ['books', book.id] });
+      queryClient.invalidateQueries(['reviews', book.id]);
+      queryClient.invalidateQueries(['criticReviews', book.id]);
+      queryClient.invalidateQueries(['books', book.id]);
       queryClient.invalidateQueries(['userReviews', user?.id]);
     },
     onError: (err) => {
