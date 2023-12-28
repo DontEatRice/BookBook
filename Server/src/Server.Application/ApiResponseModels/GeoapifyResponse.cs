@@ -1,4 +1,3 @@
-﻿
 namespace Server.Application.ApiResponseModels;
 
 public class GeoapifyResponse
