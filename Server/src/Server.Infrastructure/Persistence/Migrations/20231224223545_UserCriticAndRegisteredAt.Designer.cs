@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Server.Infrastructure.Migrations
+namespace Server.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    partial class BookBookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231224223545_UserCriticAndRegisteredAt")]
+    partial class UserCriticAndRegisteredAt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,8 +132,9 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime>("RegisteredAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
+                    b.Property<string>("Roles")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -250,21 +254,6 @@ namespace Server.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("BookCategories");
-                });
-
-            modelBuilder.Entity("Server.Domain.Entities.Follows", b =>
-                {
-                    b.Property<Guid>("FollowedId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("FollowerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("FollowedId", "FollowerId");
-
-                    b.HasIndex("FollowerId");
-
-                    b.ToTable("Follows");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Image", b =>
@@ -488,9 +477,6 @@ namespace Server.Infrastructure.Migrations
                     b.Property<Guid>("BookId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -503,9 +489,6 @@ namespace Server.Infrastructure.Migrations
                     b.Property<string>("Title")
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
-
-                    b.Property<DateTime?>("Updated")
-                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -613,25 +596,6 @@ namespace Server.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Publisher");
-                });
-
-            modelBuilder.Entity("Server.Domain.Entities.Follows", b =>
-                {
-                    b.HasOne("Server.Domain.Entities.Auth.Identity", "Followed")
-                        .WithMany()
-                        .HasForeignKey("FollowedId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Server.Domain.Entities.Auth.Identity", "Follower")
-                        .WithMany()
-                        .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.Navigation("Followed");
-
-                    b.Navigation("Follower");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Library", b =>

@@ -10,6 +10,7 @@ import AuthorBookCard from '../../components/author/AuthorBookCard';
 import Loading from '../../components/common/Loading';
 import { PaginationRequest } from '../../utils/constants';
 import { z } from 'zod';
+import StarsIcon from '@mui/icons-material/Stars';
 import { ReviewInUserProfileViewModelType } from '../../models/user/ReviewInUserProfileViewModel';
 import ExpandableText from '../../components/common/ExpandableText';
 
@@ -68,12 +69,22 @@ function UserProfile() {
               <Grid item xs={12} sm container>
                 <Grid item xs container direction="column" spacing={2}>
                   <Grid item xs>
-                    <Typography gutterBottom variant="h4" component="div">
-                      {data.userName}
-                    </Typography>
+                    <Grid item xs container flexDirection={'row'} justifyContent={'space-between'}>
+                      <Typography gutterBottom variant="h4" component="div">
+                        {data.userName}
+                      </Typography>
+                      {data.isCritic && (
+                        <Typography variant="h5">
+                          Krytyk<StarsIcon></StarsIcon>
+                        </Typography>
+                      )}
+                    </Grid>
                     <Typography variant="h6" gutterBottom>
                       <PlaceIcon></PlaceIcon>
                       {data.userLocation == null ? 'Brak adresu' : data.userLocation}
+                    </Typography>
+                    <Typography variant="subtitle1" gutterBottom>
+                      Użytkownik od: {getUserFrom(data.registeredAt)}
                     </Typography>
                     <Typography variant="body1">Przeczytane książki: {data.readBooksCount}</Typography>
                   </Grid>
@@ -220,10 +231,22 @@ function UserProfileReviews({ data, paginationProps, onPaginationPropsChange }: 
             count={Math.ceil(data.count / 5)}
             sx={{ justifySelf: 'center' }}
             size="large"
+            color="primary"
           />
         </Box>
       )}
     </Box>
+  );
+}
+
+function getUserFrom(registeredAt: string) {
+  const date = new Date(registeredAt);
+  return (
+    date.toLocaleString('pl-PL', {
+      month: 'long',
+    }) +
+    ' ' +
+    date.getFullYear()
   );
 }
 

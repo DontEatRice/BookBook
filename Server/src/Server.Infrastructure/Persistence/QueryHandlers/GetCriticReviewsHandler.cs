@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -7,22 +7,22 @@ using Server.Utils;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers;
 
-public record GetReviewsQuery(Guid BookId, string? UserId) : PaginationOptions, IRequest<PaginatedResponseViewModel<ReviewViewModel>>;
+public record GetCriticReviewsQuery(Guid BookId, string? UserId) : PaginationOptions, IRequest<PaginatedResponseViewModel<ReviewViewModel>>;
 
-internal sealed class GetReviewsHandler
-    : IRequestHandler<GetReviewsQuery, PaginatedResponseViewModel<ReviewViewModel>>
+internal sealed class GetCriticReviewsHandler
+    : IRequestHandler<GetCriticReviewsQuery, PaginatedResponseViewModel<ReviewViewModel>>
 {
     private readonly BookBookDbContext _dbContext;
     private readonly IMapper _mapper;
 
-    public GetReviewsHandler(BookBookDbContext dbContext, IMapper mapper)
+    public GetCriticReviewsHandler(BookBookDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
         _mapper = mapper;
     }
 
     public async Task<PaginatedResponseViewModel<ReviewViewModel>> Handle(
-        GetReviewsQuery request, CancellationToken cancellationToken)
+        GetCriticReviewsQuery request, CancellationToken cancellationToken)
     {
         var query = _dbContext.Reviews
             .Include(x => x.User)
@@ -31,7 +31,7 @@ internal sealed class GetReviewsHandler
         if(request.UserId is not null)
         {
             var userIdParsed = Guid.Parse(request.UserId);
-            query = query.Where(x => x.User.Id != userIdParsed);
+            query = query.Where(x => x.User.Id !=  userIdParsed);
         }
 
         query = !string.IsNullOrWhiteSpace(request.OrderByField)
@@ -39,7 +39,7 @@ internal sealed class GetReviewsHandler
             : query.OrderBy(x => x.Id);
 
         var (reviews, totalCount) = await query
-            .Where(x => x.Book.Id == request.BookId && !x.IsCriticRating)
+            .Where(x => x.Book.Id == request.BookId && x.IsCriticRating)
             .Include(x => x.User)
             .ProjectTo<ReviewViewModel>(_mapper.ConfigurationProvider)
             .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);

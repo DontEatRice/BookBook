@@ -40,4 +40,26 @@ internal class ReviewRepository : IReviewRepository
             .Include(x => x.User)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
+
+    public async Task<Review?> FirstOrDefaultByUserAndBookIdsAsync(Guid bookId, Guid userId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Reviews
+            .Include(x => x.User)
+            .Include(x => x.Book)
+            .FirstOrDefaultAsync(x => x.Book.Id == bookId && x.User.Id == userId, cancellationToken);
+    }
+
+    public async Task<int> GetReviewsCountByBookId(Guid bookId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Reviews.AsNoTracking()
+            .Where(x => x.BookId == bookId && !x.IsCriticRating)
+            .CountAsync(cancellationToken);
+    }
+
+    public async Task<int> GetCriticReviewsCountByBookId(Guid bookId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Reviews.AsNoTracking()
+            .Where(x => x.BookId == bookId && x.IsCriticRating)
+            .CountAsync(cancellationToken);
+    }
 }

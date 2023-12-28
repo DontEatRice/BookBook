@@ -4,13 +4,23 @@ import { UpdateReviewType } from '../models/UpdateReview';
 import { paginatedFetch, handleBadResponse } from '../utils/utils';
 import { PaginationRequest } from '../utils/constants';
 import { paginatedResponse } from '../utils/zodSchemas';
-import { getAuthToken } from './auth';
+import { getAuthToken, getAuthTokenOrNull } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 const ReviewSearchResponse = paginatedResponse(ReviewViewModel);
 
 export async function getReviews(bookId: string, body: PaginationRequest) {
-  const response = await paginatedFetch(base + '/Books/' + bookId + '/Reviews/search', body);
+  const response = await paginatedFetch(base + '/Books/' + bookId + '/Reviews/search', body, await getAuthTokenOrNull() ?? '');
+  const data = await response.json();
+
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+  return ReviewSearchResponse.parse(data);
+}
+
+export async function getCriticReviews(bookId: string, body: PaginationRequest) {
+  const response = await paginatedFetch(base + '/Books/' + bookId + '/Reviews-critic/search', body, await getAuthTokenOrNull() ?? '');
   const data = await response.json();
 
   if (!response.ok) {

@@ -1,6 +1,6 @@
 export type User = {
   id: string;
-  roles: string[];
+  role: string;
   token: string;
   email: string;
   libraryId?: string;

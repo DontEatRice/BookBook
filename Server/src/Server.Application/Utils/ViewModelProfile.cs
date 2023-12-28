@@ -25,7 +25,10 @@ public class ViewModelProfile : Profile
         CreateMap<Book, BookInRankingViewModel>()
             .ForMember(x => x.ReviewsCount,
                 opt => 
-                    opt.MapFrom(x => x.Reviews.Count));
+                    opt.MapFrom(x => x.Reviews.Where(x => !x.IsCriticRating).Count()))
+            .ForMember(x => x.CriticReviewsCount,
+                opt => 
+                    opt.MapFrom(x => x.Reviews.Where(x => x.IsCriticRating).Count()));
         CreateMap<LibraryBook, LibraryWithBookViewModel>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Library.Id))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Library.Name))
@@ -33,5 +36,6 @@ public class ViewModelProfile : Profile
             .ForMember(dest => dest.Latitude, opt => opt.MapFrom(src => src.Library.Latitude))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Library.Address))
             .ForMember(dest => dest.IsBookCurrentlyAvailable, opt => opt.MapFrom(src => src.Available > 0));
+        CreateMap<Identity, AdminUserViewModel>();
     }
 }

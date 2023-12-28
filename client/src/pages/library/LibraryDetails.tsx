@@ -14,7 +14,6 @@ function formatOpenHours(openHours: string | null) {
   if (openHours == null) {
     return '';
   }
-  //format w bazie to np 08:00.0000
   const splitTime = openHours.split(':');
   return `${splitTime[0]}:${splitTime[1].split('.')[0]}`;
 }

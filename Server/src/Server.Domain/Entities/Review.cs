@@ -15,11 +15,13 @@ public class Review
     public DateTime Created { get; set; }
     public DateTime? Updated { get; set; }
     public Book Book { get; set; }
+    public Guid BookId { get; set; }
     public Identity User { get; set; }
+    public Guid UserId { get; set; }
     public bool IsCriticRating { get; set; }
 
     public static Review Create(Guid id, string? title, string? description, double rating,
-        Book book, Identity user, bool isCriticRating)
+        Book book, Identity user)
         => new()
         {
             Id = id,
@@ -28,7 +30,7 @@ public class Review
             Rating = rating,
             Book = book,
             User = user,
-            IsCriticRating = isCriticRating,
+            IsCriticRating = user.IsCritic,
             Created = DateTime.Now
         };
 }

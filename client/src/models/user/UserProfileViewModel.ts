@@ -8,6 +8,8 @@ const UserProfileViewModel = z.object({
   userLastReadBooks: BookViewModel.array(),
   aboutMe: z.string().nullable(),
   readBooksCount: z.number().nullable(),
+  registeredAt: z.string(),
+  isCritic: z.boolean()
 });
 
 export default UserProfileViewModel;

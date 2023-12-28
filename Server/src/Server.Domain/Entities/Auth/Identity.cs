@@ -15,13 +15,15 @@ public class Identity
     public string? AvatarImageUrl { get; private set; }
     public Guid? LibraryId { get; private set; }
     public Library? Library { get; private set; }
-    public List<string> Roles { get; private init; }
+    public Role Role { get; private init; }
     public List<Session> Sessions { get; private init; }
     public ICollection<UserBook> UserBooks { get; private init; }
     public Address? Address { get; private set; }
     public double? Latitude { get; private set; }
     public double? Longitude { get; private set; }
     public string? AboutMe { get; private set; }
+    public bool IsCritic { get; set; }
+    public DateTime RegisteredAt { get; private set; }
     public ICollection<Identity> Followers { get; set; } = new List<Identity>();
     public ICollection<Identity> Followed { get; set; } = new List<Identity>();
 
@@ -35,12 +37,14 @@ public class Identity
             Name = name,
             AvatarImageUrl = avatarImageUrl,
             Sessions = new List<Session>(),
-            Roles = new List<string> { Role.User.GetDisplayName() },
+            Role = Role.User,
             UserBooks = new List<UserBook>(),
             Address = address,
             Latitude = latitude,
             Longitude = longitude,
-            AboutMe = ""
+            AboutMe = "",
+            IsCritic = false,
+            RegisteredAt = DateTime.Now
         };
 
         return identity;
@@ -56,10 +60,12 @@ public class Identity
             Name = name,
             Library = library,
             Sessions = new List<Session>(),
-            Roles = new List<string> { Role.Employee.GetDisplayName() },
+            Role = Role.Employee,
             Address = null,
             Latitude = null,
-            Longitude = null
+            Longitude = null,
+            IsCritic = false,
+            RegisteredAt = DateTime.Now
         };
 
         return identity;

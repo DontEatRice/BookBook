@@ -17,7 +17,7 @@ export default function AuthorizedView({ children, roles, notAuthorized }: Autho
     return alternative;
   }
   if (roles !== undefined && roles.length > 0) {
-    return roles.some((role) => user.roles.includes(role)) ? <>{children}</> : <>{alternative}</>;
+    return roles.some((role) => user.role === role) ? <>{children}</> : <>{alternative}</>;
   }
   return <>{children}</>;
 }

@@ -1,4 +1,4 @@
-import { Grid, Box, Stack, Rating } from '@mui/material';
+import { Grid, Box, Stack, Rating, Tabs, Tab } from '@mui/material';
 import { useParams } from 'react-router';
 import { AuthorViewModelType } from '../../models/author/AuthorViewModel';
 import { getBook } from '../../api/book';
@@ -12,7 +12,7 @@ import { toggleBookInUserList } from '../../api/user';
 import AuthorizedView from '../../components/auth/AuthorizedView';
 import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
-import { getReviews } from '../../api/review';
+import { getCriticReviews, getReviews } from '../../api/review';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import 'leaflet/dist/leaflet.css';
@@ -21,8 +21,10 @@ import LibrariesStack from '../../components/book/LibrariesStack';
 import { Link } from 'react-router-dom';
 import { PaginationRequest } from '../../utils/constants';
 import { Pagination } from '@mui/material';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, SyntheticEvent, useState } from 'react';
 import { imgUrl } from '../../utils/utils';
+import AddReviewForm from '../reviews/AddReviewForm';
+import ReviewPaper from '../reviews/ReviewPaper';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   return (
@@ -81,6 +83,11 @@ function BookDetails() {
     pageNumber: 0,
     pageSize: 10,
   });
+  const [criticPaginationProps, setCriticPaginationProps] = useState<PaginationRequest>({
+    pageNumber: 0,
+    pageSize: 10,
+  });
+
   const handlePageChange = (_: ChangeEvent<unknown>, newPage: number) => {
     setPaginationProps({
       ...paginationProps,
@@ -88,9 +95,27 @@ function BookDetails() {
     });
   };
 
+  const handleCriticPageChange = (_: ChangeEvent<unknown>, newPage: number) => {
+    setCriticPaginationProps({
+      ...paginationProps,
+      pageNumber: newPage - 1,
+    });
+  };
+
+  const [currentTabIndex, setCurrentTabIndex] = useState(0);
+
+  const handleTabChange = (_e: SyntheticEvent, tabIndex: number) => {
+    setCurrentTabIndex(tabIndex);
+  };
+
   const { data: reviews, status: statusReviews } = useQuery({
     queryKey: ['reviews', params.bookId ?? '', paginationProps.pageNumber],
-    queryFn: () => getReviews(params.bookId + '', { pageNumber: 0, pageSize: 50 }),
+    queryFn: () => getReviews(params.bookId + '', { ...paginationProps }),
+  });
+
+  const { data: criticReviews, status: statusCriticReviews } = useQuery({
+    queryKey: ['criticReviews', params.bookId ?? '', criticPaginationProps.pageNumber],
+    queryFn: () => getCriticReviews(params.bookId + '', { ...criticPaginationProps }),
   });
 
   return (
@@ -118,13 +143,15 @@ function BookDetails() {
             <Grid container spacing={1} marginBottom={3} padding={2}>
               <Grid item xs={12} marginBottom={2} padding={1}>
                 <Typography variant="h4">
-                  {book.averageRating == null ? 0 : book.averageRating}
-                  <Rating
-                    name="half-rating-read"
-                    value={book.averageRating == null ? 0 : book.averageRating}
-                    precision={0.25}
-                    readOnly
-                  />
+                  {book.averageRating == null ? 'Brak ocen użytkowników' : book.averageRating}
+                  {book.averageRating != null && (
+                    <Rating
+                      name="half-rating-read"
+                      value={book.averageRating == null ? 0 : book.averageRating}
+                      precision={0.25}
+                      readOnly
+                    />
+                  )}
                 </Typography>
               </Grid>
               <Grid container spacing={1}>
@@ -142,16 +169,6 @@ function BookDetails() {
                     sx={{ display: 'flex', flexDirection: 'column', padding: 2, marginBottom: 5 }}
                     container
                     spacing={2}>
-                    <Grid item>
-                      <Typography variant="subtitle1">ISBN</Typography>
-                      <Typography variant="h6" width="100%">
-                        {book.isbn}
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="subtitle1">Rok wydania</Typography>
-                      <Typography variant="h6">{book.yearPublished}</Typography>
-                    </Grid>
                     <AuthorsList authors={book.authors} />
                     <CategoriesList categories={book.bookCategories} />
                     <Grid item>
@@ -166,6 +183,16 @@ function BookDetails() {
                       <Typography variant="subtitle1">Ilość stron</Typography>
                       <Typography variant="h6">{book.pageCount}</Typography>
                     </Grid>
+                    <Grid item>
+                      <Typography variant="subtitle1">Rok wydania</Typography>
+                      <Typography variant="h6">{book.yearPublished}</Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="subtitle1">ISBN</Typography>
+                      <Typography variant="h6" width="100%">
+                        {book.isbn}
+                      </Typography>
+                    </Grid>
                   </Grid>
                 </Grid>
                 <Grid item xs={12} hidden={book.description == null ? true : false}>
@@ -177,22 +204,95 @@ function BookDetails() {
               </Grid>
             </Grid>
             <LibrariesStack bookId={params.bookId!} />
+            <AuthorizedView roles={['User']}>
+              {book.userReview == null ? (
+                <Box
+                  display={'flex'}
+                  flexDirection={'column'}
+                  alignItems={'center'}
+                  justifyContent={'center'}>
+                  <Typography variant="h5" gutterBottom>
+                    Dodaj swoją opinię
+                  </Typography>
+                  <AddReviewForm book={book}></AddReviewForm>
+                </Box>
+              ) : (
+                <Box
+                  display={'flex'}
+                  flexDirection={'column'}
+                  alignItems={'center'}
+                  justifyContent={'center'}>
+                  <Typography variant="h6" gutterBottom>
+                    Twoja ocena
+                  </Typography>
+                  <ReviewPaper book={book} review={book.userReview} />
+                </Box>
+              )}
+            </AuthorizedView>
             <Box marginBottom={3} padding={2} width={'100%'}>
-              {statusReviews == 'loading' && <LoadingTypography />}
-              {statusReviews == 'error' && 'Błąd!'}
-              {statusReviews == 'success' && (
+              {(statusReviews == 'loading' || statusCriticReviews === 'loading') && <LoadingTypography />}
+              {statusReviews == 'success' && statusCriticReviews == 'success' && (
                 <Box>
-                  <Reviews book={book} reviews={reviews.data} />
-                  {reviews.data.length > 0 && (
-                    <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>
-                      <Pagination
-                        onChange={handlePageChange}
-                        page={paginationProps.pageNumber + 1}
-                        count={Math.ceil(reviews.count / paginationProps.pageSize)}
-                        sx={{ justifySelf: 'center' }}
-                        size="large"
-                        color="primary"
-                      />
+                  <Tabs value={currentTabIndex} onChange={handleTabChange} centered>
+                    <Tab label="Opinie użytkowników" />
+                    <Tab label="Opinie krytyków" />
+                  </Tabs>
+                  {currentTabIndex === 0 && (
+                    <Box marginTop={3}>
+                      {reviews.count > 0 && (
+                        <Box textAlign={'center'}>
+                          <Typography variant="h5" gutterBottom>
+                            Średnia {book.averageRating} z {reviews.count} {getRatingText(reviews.count)}{' '}
+                            użytkowników
+                          </Typography>
+                        </Box>
+                      )}
+                      <Reviews book={book} reviews={reviews.data} />
+                      {reviews.data.length > 0 ? (
+                        <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>
+                          <Pagination
+                            onChange={handlePageChange}
+                            page={paginationProps.pageNumber + 1}
+                            count={Math.ceil(reviews.count / paginationProps.pageSize)}
+                            sx={{ justifySelf: 'center' }}
+                            size="large"
+                            color="primary"
+                          />
+                        </Box>
+                      ) : (
+                        <Typography variant="h6" textAlign={'center'}>
+                          Brak ocen użytkowników
+                        </Typography>
+                      )}
+                    </Box>
+                  )}
+                  {currentTabIndex === 1 && (
+                    <Box marginTop={3}>
+                      {criticReviews.count > 0 && (
+                        <Box textAlign={'center'}>
+                          <Typography variant="h5" gutterBottom>
+                            Średnia {book.averageCriticRating} z {criticReviews.count}{' '}
+                            {getRatingText(criticReviews.count)} krytyków
+                          </Typography>
+                        </Box>
+                      )}
+                      <Reviews book={book} reviews={criticReviews.data} />
+                      {criticReviews.data.length > 0 ? (
+                        <Box display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={3}>
+                          <Pagination
+                            onChange={handleCriticPageChange}
+                            page={criticPaginationProps.pageNumber + 1}
+                            count={Math.ceil(criticReviews.count / criticPaginationProps.pageSize)}
+                            sx={{ justifySelf: 'center' }}
+                            size="large"
+                            color="primary"
+                          />
+                        </Box>
+                      ) : (
+                        <Typography variant="h6" textAlign={'center'}>
+                          Brak ocen krytyków
+                        </Typography>
+                      )}
                     </Box>
                   )}
                 </Box>
@@ -203,6 +303,14 @@ function BookDetails() {
       </Box>
     </div>
   );
+}
+
+function getRatingText(count: number) {
+  if (count === 1) {
+    return 'oceny';
+  } else {
+    return 'ocen';
+  }
 }
 
 export default BookDetails;

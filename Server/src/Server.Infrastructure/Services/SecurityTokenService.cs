@@ -45,16 +45,17 @@ internal class SecurityTokenService : ISecurityTokenService
             new(JwtRegisteredClaimNames.Sub, identity.Id.ToString()),
             new(JwtRegisteredClaimNames.Email, identity.Email),
             new(AuthConstants.NameClaim, identity.Name ?? ""),
-            new(AuthConstants.IdClaim, identity.Id.ToString())
+            new(AuthConstants.IdClaim, identity.Id.ToString()),
+            new(AuthConstants.RoleClaim, identity.Role.ToString())
         };
-        claims.AddRange(identity.Roles.Select(role => new Claim(AuthConstants.RoleClaim, role)));
+        //claims.AddRange(identity.Roles.Select(role => new Claim(AuthConstants.RoleClaim, role)));
 
-        if ((identity.Roles.Contains(Role.Employee.GetDisplayName()) || identity.Roles.Contains(Role.User.GetDisplayName())) && identity.LibraryId is not null)
+        if ((identity.Role == Role.User || identity.Role == Role.Employee) && identity.LibraryId is not null)
         {
             claims.Add(new Claim(AuthConstants.LibraryIdClaim, identity.LibraryId?.ToString() ?? string.Empty));
         }
 
-        if (identity.Roles.Contains(Role.User.GetDisplayName()) && identity.Latitude != null)
+        if (identity.Role == Role.User && identity.Latitude != null)
         {
             claims.Add(new Claim(AuthConstants.Lat, identity.Latitude.ToString()));
             claims.Add(new Claim(AuthConstants.Lon, identity.Longitude.ToString()));

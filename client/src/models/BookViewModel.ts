@@ -2,6 +2,7 @@ import { z } from 'zod';
 import PublisherViewModel from './PublisherViewModel';
 import AuthorViewModel from './author/AuthorViewModel';
 import BookCategoryViewModel from './BookCategoryViewModel';
+import ReviewViewModel from './ReviewViewModel';
 
 const BookViewModel = z.object({
   id: z.string().uuid(),
@@ -18,6 +19,7 @@ const BookViewModel = z.object({
   authors: z.array(AuthorViewModel),
   bookCategories: z.array(BookCategoryViewModel),
   doesUserObserve: z.nullable(z.boolean()),
+  userReview: ReviewViewModel.nullable().optional()
 });
 
 export default BookViewModel;

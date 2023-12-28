@@ -12,12 +12,12 @@ public class IdentityConfiguration : IEntityTypeConfiguration<Identity>
     public void Configure(EntityTypeBuilder<Identity> builder)
     {
         builder.OwnsMany(i => i.Sessions).ToTable("sessions");
-        builder
-            .Property(x => x.Roles)
-            .HasConversion(new ValueConverter<List<string>, string>(
-                v => JsonSerializer.Serialize(v, new JsonSerializerOptions(JsonSerializerOptions.Default)),
-                v => JsonSerializer.Deserialize<List<string>>(v,
-                    new JsonSerializerOptions(JsonSerializerDefaults.General)) ?? new List<string>()));
+        //builder
+        //    .Property(x => x.Roles)
+        //    .HasConversion(new ValueConverter<List<string>, string>(
+        //        v => JsonSerializer.Serialize(v, new JsonSerializerOptions(JsonSerializerOptions.Default)),
+        //        v => JsonSerializer.Deserialize<List<string>>(v,
+        //            new JsonSerializerOptions(JsonSerializerDefaults.General)) ?? new List<string>()));
 
         builder.Property(e => e.AvatarImageUrl).HasMaxLength(300);
         builder.HasIndex(i => i.Email).IsUnique();
