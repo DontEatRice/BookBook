@@ -13,7 +13,7 @@ public class PaginatedResponseViewModel<T>
 public static class PaginatedResponseViewModel
 {
     public static PaginatedResponseViewModel<T> Create<T>(List<T> data, int count, PaginationOptions options)
-        => new PaginatedResponseViewModel<T>
+        => new()
         {
             Data = data,
             Count = count,

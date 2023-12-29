@@ -6,6 +6,7 @@ using Server.Infrastructure.Persistence.QueryHandlers;
 using Server.Utils;
 using System.Security.Claims;
 using Microsoft.Extensions.Caching.Memory;
+using Server.Infrastructure.Persistence.QueryHandlers.Reviews;
 
 namespace Server.Api.Controllers;
 

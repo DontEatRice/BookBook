@@ -6,7 +6,7 @@ import UserProfileViewModel from '../models/user/UserProfileViewModel';
 import { PaginationRequest } from '../utils/constants';
 import { handleBadResponse, paginatedFetch } from '../utils/utils';
 import { paginatedResponse } from '../utils/zodSchemas';
-import { getAuthToken } from './auth';
+import { getAuthToken, getAuthTokenOrNull } from './auth';
 
 const base = import.meta.env.VITE_API_BASE_URL;
 export const ReviewInUserProfilePaginated = paginatedResponse(ReviewInUserProfileViewModel);
@@ -42,9 +42,11 @@ export async function getUserBooks(body: PaginationRequest) {
 }
 
 export async function getUserProfile(id: string) {
+  const token = await getAuthTokenOrNull();
   const response = await fetch(base + '/user/' + id, {
     headers: new Headers({
       'Content-Type': 'application/json',
+      Authorization: token ?? '',
     }),
   });
 

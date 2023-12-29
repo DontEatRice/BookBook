@@ -10,7 +10,7 @@ import { useState } from 'react';
 import ExpandableText from '../common/ExpandableText';
 
 function AuthorInList({ author }: { author: AuthorViewModelType }) {
-  const [elevation, setElevation] = useState(3);
+  const [elevation, setElevation] = useState(1);
 
   return (
     <Paper

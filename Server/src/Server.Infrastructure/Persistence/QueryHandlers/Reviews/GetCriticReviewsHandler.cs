@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Server.Application.ViewModels;
 using Server.Utils;
 
-namespace Server.Infrastructure.Persistence.QueryHandlers;
+namespace Server.Infrastructure.Persistence.QueryHandlers.Reviews;
 
 public record GetCriticReviewsQuery(Guid BookId, string? UserId) : PaginationOptions, IRequest<PaginatedResponseViewModel<ReviewViewModel>>;
 

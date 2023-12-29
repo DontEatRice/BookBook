@@ -50,15 +50,19 @@ function ReviewPaper({ review, book }: { review: ReviewViewModelType; book: Book
         <Grid container direction={'row'} wrap="nowrap">
           <Grid item xs={1} minHeight={56} minWidth={56}>
             <Link to={'/user/' + review.user.id}>
-            <Avatar
-              src={imgUrl(review.user.avatarImageUrl, '/autor-szablon.jpg')}
-              sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }}
-            />
+              <Avatar
+                src={imgUrl(review.user.avatarImageUrl, '/autor-szablon.jpg')}
+                sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }}
+              />
             </Link>
           </Grid>
           <Grid item xs={6} marginLeft={2}>
             <Typography variant="h5">{review.title}</Typography>
-            <Typography marginBottom={2}>{review.user.name}</Typography>
+            <Link to={'/user/' + review.user.id}>
+              <Typography sx={{ '&:hover': { textDecorationLine: 'underline' } }} marginBottom={2}>
+                {review.user.name}
+              </Typography>
+            </Link>
           </Grid>
           <Grid item xs={5}>
             <Box display="flex" justifyContent="flex-end">

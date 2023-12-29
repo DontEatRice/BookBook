@@ -16,7 +16,7 @@ namespace Server.Infrastructure.Persistence.Migrations
                 table: "Reviews",
                 type: "datetime2",
                 nullable: false,
-                defaultValue: new DateTime(2023, 12, 28, 21, 37, 42, 0, DateTimeKind.Unspecified));
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "Updated",
@@ -48,37 +48,16 @@ namespace Server.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_UserId",
-                table: "Reviews",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Follows_FollowerId",
                 table: "Follows",
                 column: "FollowerId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Reviews_Identities_UserId",
-                table: "Reviews",
-                column: "UserId",
-                principalTable: "Identities",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Reviews_Identities_UserId",
-                table: "Reviews");
-
             migrationBuilder.DropTable(
                 name: "Follows");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Reviews_UserId",
-                table: "Reviews");
 
             migrationBuilder.DropColumn(
                 name: "Created",

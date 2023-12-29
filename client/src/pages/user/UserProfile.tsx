@@ -1,18 +1,35 @@
-import { useQuery } from '@tanstack/react-query';
-import { getUserProfile, getUserReviews, ReviewInUserProfilePaginated } from '../../api/user';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  followUser,
+  getUserProfile,
+  getUserReviews,
+  ReviewInUserProfilePaginated,
+  unfollowUser,
+} from '../../api/user';
 import { Link, useParams } from 'react-router-dom';
-import { Avatar, Box, Grid, Typography, Paper, Tabs, Tab, styled, Rating, Pagination } from '@mui/material';
 import { imgUrl } from '../../utils/utils';
 import LoadingTypography from '../../components/common/LoadingTypography';
 import PlaceIcon from '@mui/icons-material/Place';
 import { ChangeEvent, SyntheticEvent, useState } from 'react';
 import AuthorBookCard from '../../components/author/AuthorBookCard';
-import Loading from '../../components/common/Loading';
 import { PaginationRequest } from '../../utils/constants';
 import { z } from 'zod';
 import StarsIcon from '@mui/icons-material/Stars';
 import { ReviewInUserProfileViewModelType } from '../../models/user/ReviewInUserProfileViewModel';
 import ExpandableText from '../../components/common/ExpandableText';
+import AuthorizedView from '../../components/auth/AuthorizedView';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import Avatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Rating from '@mui/material/Rating';
+import Pagination from '@mui/material/Pagination';
+import { styled } from '@mui/material/styles';
+import { useAuth } from '../../utils/auth/useAuth';
 
 const Img = styled('img')({
   margin: 'auto',
@@ -23,10 +40,13 @@ const Img = styled('img')({
 
 function UserProfile() {
   const params = useParams();
+  const queryClient = useQueryClient();
+
   const { data, status } = useQuery({
     queryKey: ['users', params.userId],
     queryFn: () => getUserProfile(params.userId!),
   });
+  const { user } = useAuth();
 
   const [paginationProps, setPaginationProps] = useState<PaginationRequest>({ pageNumber: 0, pageSize: 5 });
   const { pageNumber } = paginationProps;
@@ -39,6 +59,30 @@ function UserProfile() {
         userId: params.userId!,
       }),
     keepPreviousData: true,
+  });
+
+  const { mutate: followUserMutate, isLoading: followUserIsLoading } = useMutation({
+    mutationFn: followUser,
+    onSuccess: () => {
+      // queryClient.invalidateQueries(['users', params.userId]);
+      queryClient.setQueryData(['users', params.userId], {
+        ...data,
+        followedByMe: true,
+        followersCount: (data?.followersCount ?? 0) + 1,
+      });
+    },
+  });
+
+  const { mutate: unfollowUserMutate, isLoading: unfollowUserIsLoading } = useMutation({
+    mutationFn: unfollowUser,
+    onSuccess: () => {
+      // queryClient.invalidateQueries(['users', params.userId]);
+      queryClient.setQueryData(['users', params.userId], {
+        ...data,
+        followedByMe: false,
+        followersCount: (data?.followersCount ?? 1) - 1,
+      });
+    },
   });
 
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
@@ -62,31 +106,66 @@ function UserProfile() {
               <Grid item>
                 <Avatar
                   alt={data.userName}
-                  src={imgUrl(data.userImageUrl, '/public/autor-szablon.jpg')}
+                  src={imgUrl(data.userImageUrl, '/autor-szablon.jpg')}
                   sx={{ width: 200, height: 200, margin: 1 }}
                 />
               </Grid>
               <Grid item xs sm container>
                 <Grid item xs container direction="column" spacing={2}>
                   <Grid item xs>
-                    <Grid item xs container flexDirection={'row'} justifyContent={'space-between'}>
-                      <Typography gutterBottom variant="h4" component="div">
+                    <Grid
+                      item
+                      xs
+                      container
+                      flexDirection={'row'}
+                      justifyContent={'space-between'}
+                      alignItems={'center'}>
+                      <Typography variant="h4" component="div" gutterBottom={!data.isCritic}>
                         {data.userName}
                       </Typography>
-                      {data.isCritic && (
-                        <Typography variant="h5">
-                          Krytyk<StarsIcon></StarsIcon>
-                        </Typography>
+                      {user?.id !== params.userId && (
+                        <AuthorizedView roles={['User']}>
+                          {data.followedByMe ? (
+                            <Button
+                              onClick={() => unfollowUserMutate(params.userId!)}
+                              disabled={unfollowUserIsLoading}>
+                              Obserwowany
+                            </Button>
+                          ) : (
+                            <Button
+                              variant={'contained'}
+                              onClick={() => followUserMutate(params.userId!)}
+                              disabled={followUserIsLoading}>
+                              Obserwuj
+                            </Button>
+                          )}
+                        </AuthorizedView>
+                      )}
+                      {user?.id === params.userId && (
+                        <Button variant="contained" component={Link} to="/account/settings">
+                          Edytuj
+                        </Button>
                       )}
                     </Grid>
+                    {data.isCritic && (
+                      <Typography variant="h5" color={'primary'} gutterBottom>
+                        Krytyk
+                        <StarsIcon />
+                      </Typography>
+                    )}
                     <Typography variant="h6" gutterBottom>
-                      <PlaceIcon></PlaceIcon>
+                      <PlaceIcon />
                       {data.userLocation == null ? 'Brak adresu' : data.userLocation}
                     </Typography>
                     <Typography variant="subtitle1" gutterBottom>
                       Użytkownik od: {getUserFrom(data.registeredAt)}
                     </Typography>
-                    <Typography variant="body1">Przeczytane książki: {data.readBooksCount}</Typography>
+                    <Typography variant="body1">
+                      Przeczytane książki: <b>{data.readBooksCount}</b>
+                    </Typography>
+                    <Typography variant="body1">
+                      Obserwujących <b>{data.followersCount.toLocaleString()}</b>
+                    </Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -95,6 +174,7 @@ function UserProfile() {
               <Tab label="O mnie" />
               <Tab label="Ostatnio przeczytane" />
               <Tab label="Recenzje" />
+              <Tab label="Obserwowani" />
             </Tabs>
             {currentTabIndex === 0 && (
               <Box sx={{ p: 3 }}>
@@ -107,7 +187,6 @@ function UserProfile() {
                     <Typography variant="h5" gutterBottom>
                       Kilka słów o mnie
                     </Typography>
-                    {/* <Typography variant="h6">{data.aboutMe}</Typography> */}
                     <Typography variant="h6">
                       <ExpandableText value={data.aboutMe} maxChars={200} />
                     </Typography>
@@ -144,7 +223,8 @@ function UserProfile() {
                 paginationProps={paginationProps}
               />
             )}
-            {currentTabIndex === 2 && userReviewsStatus == 'loading' && <Loading></Loading>}
+            {currentTabIndex === 2 && userReviewsStatus == 'loading' && <LoadingTypography />}
+            {currentTabIndex === 3 && <LoadingTypography />}
           </Paper>
         </>
       )}

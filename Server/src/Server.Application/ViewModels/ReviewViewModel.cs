@@ -8,5 +8,4 @@ public sealed class ReviewViewModel
     public double Rating { get; set; }
     public ReviewUserViewModel User { get; set; } = null!;
     public DateTime Created { get; set; }
-    public DateTime? Updated { get; set; }
 }
