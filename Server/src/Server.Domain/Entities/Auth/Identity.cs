@@ -1,4 +1,3 @@
-using Microsoft.OpenApi.Extensions;
 using Server.Domain.Entities.User;
 using Server.Domain.Exceptions;
 using Server.Utils;
@@ -114,7 +113,8 @@ public class Identity
             throw new DomainException("Session Does Not Exists", DomainErrorCodes.SessionNotExists);
         }
 
-        Sessions[Sessions.IndexOf(session)] = Session.Create(TokenHasher.Hash(newRefreshToken));
+        Sessions.Remove(session);
+        Sessions.Add(Session.Create(TokenHasher.Hash(newRefreshToken)));
     }
 
     public void Update(string name, string? avatarImageUrl, Guid? libraryId, Address? address, double? latitude, double? longitude, string? aboutMe)

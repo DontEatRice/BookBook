@@ -52,13 +52,6 @@ function AuthProvider({ children }: { children?: ReactNode }) {
     [queryClient]
   );
 
-  const handleTokenChange = useCallback(() => {
-    const token = localStorage.getItem(LocalStorageTokenKey);
-    if (token) {
-      login(token);
-    }
-  }, [login]);
-
   //odświeżenie wygasłego access tokenu
   const { refetch, data, isLoading, isError } = useQuery({
     queryFn: async () => {
@@ -95,11 +88,6 @@ function AuthProvider({ children }: { children?: ReactNode }) {
     setLoading(false);
   }, [login, isError, data, isLoading]);
 
-  useEffect(() => {
-    window.addEventListener('storage', handleTokenChange);
-    return () => window.removeEventListener('storage', handleTokenChange);
-  }, [handleTokenChange]);
-
   //wylogowanie
   const { mutate: logoutMutate } = useMutation({
     mutationFn: apiLogoutRequest,
@@ -111,6 +99,20 @@ function AuthProvider({ children }: { children?: ReactNode }) {
     queryClient.invalidateQueries();
     logoutMutate();
   }, [logoutMutate, queryClient]);
+
+  const handleTokenChange = useCallback(() => {
+    const token = localStorage.getItem(LocalStorageTokenKey);
+    if (token) {
+      login(token);
+    } else if (token === '') {
+      logout();
+    }
+  }, [login, logout]);
+
+  useEffect(() => {
+    window.addEventListener('storage', handleTokenChange);
+    return () => window.removeEventListener('storage', handleTokenChange);
+  }, [handleTokenChange]);
 
   const cachedValues = useMemo(
     () => ({

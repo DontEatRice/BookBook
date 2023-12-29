@@ -48,12 +48,17 @@ export async function getAuthTokenOrNull() {
 }
 
 export async function getAuthToken() {
-  const token = localStorage.getItem(LocalStorageTokenKey);
+  let token = localStorage.getItem(LocalStorageTokenKey);
   if (!token) {
     throw new AuthError('UNATHORIZED');
   }
   if (getJwtBody(token).exp < Date.now() / 1000) {
     const refreshResponse = await refresh();
+    token = localStorage.getItem(LocalStorageTokenKey);
+    // desperacka próba pokonania sytuacji w której zostaną wysłane 2 requesty (drugi by się wywalił i rzucił błędem)
+    if (token && getJwtBody(token).exp > Date.now() / 1000) {
+      return `Bearer ${token}`;
+    }
     if (!refreshResponse.ok) {
       localStorage.setItem(LocalStorageTokenKey, '');
       window.dispatchEvent(new Event('storage'));

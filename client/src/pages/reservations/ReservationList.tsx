@@ -11,7 +11,7 @@ import { ReservationViewModelType } from '../../models/ReservationViewModel';
 import { cancelReservation, getReservationsForUser } from '../../api/reservation';
 import { translateStatus } from '../../utils/functions/utilFunctions';
 import { useCartStore } from '../../store';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import LoadingTypography from '../../components/common/LoadingTypography';
@@ -64,10 +64,6 @@ export default function ReservationList() {
         orderDirection: paginationProps.orderDirection,
       }),
   });
-
-  useEffect(() => {
-    refetch();
-  }, [cartStore.isChanged, refetch]);
 
   const cancelThisReservation = async (reservationId: string) => {
     await cancelReservation(reservationId);
@@ -247,4 +243,3 @@ export default function ReservationList() {
     );
   }
 }
-
