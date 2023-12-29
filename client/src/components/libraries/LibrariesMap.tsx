@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useQuery } from '@tanstack/react-query';
-import LoadingTypography from '../common/LoadingTypography';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
 import { useAuth } from '../../utils/auth/useAuth';
 import LibraryInBookDetails from '../../models/LibraryInBookDetails';
