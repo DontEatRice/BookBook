@@ -1,3 +1,5 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.ViewModels;
@@ -10,10 +12,12 @@ internal sealed class GetBooksWithMostReservationsHandler
     : IRequestHandler<GetBooksWithMostReservationsQuery, ICollection<BookViewModel>>
 {
     private readonly BookBookDbContext _dbContext;
+    private readonly IMapper _mapper;
 
-    public GetBooksWithMostReservationsHandler(BookBookDbContext dbContext)
+    public GetBooksWithMostReservationsHandler(BookBookDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
+        _mapper = mapper;
     }
 
     public async Task<ICollection<BookViewModel>> Handle(
@@ -26,14 +30,17 @@ internal sealed class GetBooksWithMostReservationsHandler
             .OrderByDescending(g => g.ReservationCount)
             .Take(3)
             .ToListAsync(cancellationToken);
-
         var books = await _dbContext.Books
             .Where(x => booksWithMostReservations.Select(r => r.BookId).Contains(x.Id))
             .ToListAsync(cancellationToken);
 
         if (books.Count < 3)
         {
-            books = await _dbContext.Books.Take(3).ToListAsync(cancellationToken);
+            return await _dbContext.Books
+                .OrderBy(b => Guid.NewGuid())
+                .Take(3)
+                .ProjectTo<BookViewModel>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
         }
 
         return books.Select(b => new BookViewModel

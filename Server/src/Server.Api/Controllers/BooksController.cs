@@ -32,7 +32,7 @@ public class BooksController : ControllerBase
         if (!_memoryCache.TryGetValue(MostReservedBooksCacheKey, out IEnumerable<BookViewModel>? mostReservedBooks))
         {
             mostReservedBooks = await Mediator.Send(new GetBooksWithMostReservationsQuery());
-            var cacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(60));
+            var cacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(MaxAge));
             _memoryCache.Set(MostReservedBooksCacheKey, mostReservedBooks, cacheOptions);
         }
 
