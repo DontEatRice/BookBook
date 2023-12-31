@@ -14,6 +14,9 @@ function AdminHome() {
           <Typography variant="h5" sx={{ marginTop: 3 }}>
             Witamy w panelu administracyjnym!
           </Typography>
+          <Typography variant="h5" sx={{ marginTop: 3 }}>
+            Przejdź do odpowiedniej zakładki korzystając z menu po prawej stronie
+          </Typography>
         </Box>
       </AuthorizedView>
       <NotAuthorizedView>
