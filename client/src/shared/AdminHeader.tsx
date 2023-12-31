@@ -102,21 +102,27 @@ function AdminHeaderMenu() {
           </Typography>
           <Typography variant="body1" component="div">
             <List>
-              <ListItem disablePadding>
-                <ListItemButton component={Link} to={'/admin/authors'}>
-                  <ListItemText disableTypography>Autorzy</ListItemText>
-                </ListItemButton>
-              </ListItem>
-              <ListItem disablePadding>
-                <ListItemButton component={Link} to={'/admin/books'}>
-                  <ListItemText disableTypography>Książki</ListItemText>
-                </ListItemButton>
-              </ListItem>
-              <ListItem disablePadding>
-                <ListItemButton component={Link} to={'/admin/categories'}>
-                  <ListItemText disableTypography>Kategorie</ListItemText>
-                </ListItemButton>
-              </ListItem>
+              <AuthorizedView roles={['Admin']}>
+                <ListItem disablePadding>
+                  <ListItemButton component={Link} to={'/admin/authors'}>
+                    <ListItemText disableTypography>Autorzy</ListItemText>
+                  </ListItemButton>
+                </ListItem>
+              </AuthorizedView>
+              <AuthorizedView roles={['Admin']}>
+                <ListItem disablePadding>
+                  <ListItemButton component={Link} to={'/admin/books'}>
+                    <ListItemText disableTypography>Książki</ListItemText>
+                  </ListItemButton>
+                </ListItem>
+              </AuthorizedView>
+              <AuthorizedView roles={['Admin']}>
+                <ListItem disablePadding>
+                  <ListItemButton component={Link} to={'/admin/categories'}>
+                    <ListItemText disableTypography>Kategorie</ListItemText>
+                  </ListItemButton>
+                </ListItem>
+              </AuthorizedView>
               <AuthorizedView roles={['Admin']}>
                 <ListItem disablePadding>
                   <ListItemButton component={Link} to={'/admin/libraries'}>
