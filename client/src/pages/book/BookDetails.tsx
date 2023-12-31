@@ -195,12 +195,14 @@ function BookDetails() {
                     </Grid>
                   </Grid>
                 </Grid>
-                <Grid item xs={12} hidden={book.description == null ? true : false}>
-                  <Grid item>
-                    <Typography variant="subtitle1">Opis</Typography>
-                    <Typography variant="h6">{book.description}</Typography>
+                {book.description != null && book.description != '' && (
+                  <Grid item xs={12} hidden={book.description == null ? true : false}>
+                    <Grid item>
+                      <Typography variant="subtitle1">Opis</Typography>
+                      <Typography variant="h6">{book.description}</Typography>
+                    </Grid>
                   </Grid>
-                </Grid>
+                )}
               </Grid>
             </Grid>
             <LibrariesStack bookId={params.bookId!} />
