@@ -36,17 +36,6 @@ function AdminHeader() {
               BookBook Admin
             </Typography>
           </Link>
-          {/* <AuthorizedView>
-            <NavItem label="Autorzy" link="/admin/authors" />
-            <NavItem label="Książki" link="/admin/books" />
-            <NavItem label="Kategorie" link="/admin/categories" />
-            <NavItem label="Wydawcy" link="/admin/publishers" />
-            <NavItem label="Biblioteki" link="/admin/libraries" />
-            <NavItem label="Oferta" link="/admin/booksInLibrary" />
-            <NavItem label="Rezerwacje" link="/admin/reservations" />
-            <NavItem label="Użytkownicy" link="/admin/users" />
-            <NavItem label="Dodaj pracownika" link="/admin/add-employee" />
-          </AuthorizedView> */}
         </Grid>
         <AuthorizedView>
           <Grid item paddingY={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
@@ -108,25 +97,29 @@ function AdminHeaderMenu() {
                     <ListItemText disableTypography>Autorzy</ListItemText>
                   </ListItemButton>
                 </ListItem>
-              </AuthorizedView>
-              <AuthorizedView roles={['Admin']}>
                 <ListItem disablePadding>
                   <ListItemButton component={Link} to={'/admin/books'}>
                     <ListItemText disableTypography>Książki</ListItemText>
                   </ListItemButton>
                 </ListItem>
-              </AuthorizedView>
-              <AuthorizedView roles={['Admin']}>
                 <ListItem disablePadding>
                   <ListItemButton component={Link} to={'/admin/categories'}>
                     <ListItemText disableTypography>Kategorie</ListItemText>
                   </ListItemButton>
                 </ListItem>
-              </AuthorizedView>
-              <AuthorizedView roles={['Admin']}>
                 <ListItem disablePadding>
                   <ListItemButton component={Link} to={'/admin/libraries'}>
                     <ListItemText disableTypography>Biblioteki</ListItemText>
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton component={Link} to={'/admin/users'}>
+                    <ListItemText disableTypography>Użytkownicy</ListItemText>
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton component={Link} to={'/admin/add-employee'}>
+                    <ListItemText disableTypography>Dodaj pracownika</ListItemText>
                   </ListItemButton>
                 </ListItem>
               </AuthorizedView>
@@ -136,25 +129,9 @@ function AdminHeaderMenu() {
                     <ListItemText disableTypography>Oferta</ListItemText>
                   </ListItemButton>
                 </ListItem>
-              </AuthorizedView>
-              <AuthorizedView roles={['Employee']}>
                 <ListItem disablePadding>
                   <ListItemButton component={Link} to={'/admin/reservations'}>
                     <ListItemText disableTypography>Rezerwacje</ListItemText>
-                  </ListItemButton>
-                </ListItem>
-              </AuthorizedView>
-              <AuthorizedView roles={['Admin']}>
-                <ListItem disablePadding>
-                  <ListItemButton component={Link} to={'/admin/users'}>
-                    <ListItemText disableTypography>Użytkownicy</ListItemText>
-                  </ListItemButton>
-                </ListItem>
-              </AuthorizedView>
-              <AuthorizedView roles={['Admin']}>
-                <ListItem disablePadding>
-                  <ListItemButton component={Link} to={'/admin/add-employee'}>
-                    <ListItemText disableTypography>Dodaj pracownika</ListItemText>
                   </ListItemButton>
                 </ListItem>
               </AuthorizedView>
@@ -165,31 +142,5 @@ function AdminHeaderMenu() {
     </Box>
   );
 }
-
-// function NavItem({ label, link }: { label: string; link: string }) {
-//   const [hover, setHover] = useState(false);
-//   const theme = useTheme();
-//   if (!link.startsWith('/admin')) {
-//     link = link.startsWith('/') ? '/admin' + link : '/admin/' + link;
-//   }
-//   return (
-//     <NavLink
-//       to={link}
-//       style={({ isActive }) => {
-//         return {
-//           textDecoration: 'none',
-//           display: 'inline',
-//           marginLeft: theme.spacing(3),
-//           padding: theme.spacing(1),
-//           backgroundColor: theme.palette.grey[400],
-//           border: isActive || hover ? '2px solid black' : '2px solid transparent',
-//         };
-//       }}
-//       onMouseEnter={() => setHover(true)}
-//       onMouseLeave={() => setHover(false)}>
-//       <div style={{ display: 'inline-block', fontFamily: theme.typography.fontFamily }}>{label}</div>
-//     </NavLink>
-//   );
-// }
 
 export default AdminHeader;
