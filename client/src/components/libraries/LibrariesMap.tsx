@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useQuery } from '@tanstack/react-query';
-import LoadingTypography from '../common/LoadingTypography';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
 import { useAuth } from '../../utils/auth/useAuth';
 import LibraryInBookDetails from '../../models/LibraryInBookDetails';
@@ -89,83 +88,83 @@ export function LibrariesMap() {
 
   return (
     <div>
-      <Typography variant="h3" marginBottom={5}>
-        Nasze biblioteki
-      </Typography>
-
-      {librariesStatus == 'loading' && <LoadingTypography />}
-      {librariesStatus == 'error' && 'Błąd!'}
       {librariesStatus == 'success' && libraries.data.length > 0 && (
-        <Grid container spacing={2} marginBottom={3}>
-          <Grid item xs={5}>
-            <Stack
-              direction={'column'}
-              spacing={1}
-              style={{ overflow: 'auto', height: 500 }}
-              sx={{ backgroundColor: '#eeeeee' }}>
-              {getLibrariesWithDistanceFromUser().map((library) => (
-                <Paper
-                  key={library.library.id}
-                  elevation={2}
-                  sx={{ padding: 2, display: 'flex', justifyContent: 'space-between' }}>
-                  <div>
-                    <Link to={`/libraries/${library.library.id}`}>
-                      <Typography variant="h6">
-                        {library.library.name}
-                        {library.userLibrary && <FavoriteBorderIcon></FavoriteBorderIcon>}
-                      </Typography>
-                    </Link>
-                    <Typography>
-                      {library.library.address.street + ' ' + library.library.address.number}
-                      {library.library.address.apartment == '' ? '' : '/'}
-                      {library.library.address.apartment ?? ''}
-                    </Typography>
-                    <Typography>
-                      {library.library.address.postalCode + ' ' + library.library.address.city}
-                    </Typography>
-                  </div>
-                  <AuthorizedView>
-                    <Stack direction={'column'}>
-                      {user?.lat != undefined && (
-                        <Typography noWrap>
-                          <RoomIcon></RoomIcon>
-                          {library.distanceFromUser!.toFixed(1).toString() + ' km'}
+        <div>
+          <Typography variant="h3" marginBottom={5}>
+            Nasze biblioteki
+          </Typography>
+
+          <Grid container spacing={2} marginBottom={3}>
+            <Grid item xs={5}>
+              <Stack
+                direction={'column'}
+                spacing={1}
+                style={{ overflow: 'auto', height: 500 }}
+                sx={{ backgroundColor: '#eeeeee' }}>
+                {getLibrariesWithDistanceFromUser().map((library) => (
+                  <Paper
+                    key={library.library.id}
+                    elevation={2}
+                    sx={{ padding: 2, display: 'flex', justifyContent: 'space-between' }}>
+                    <div>
+                      <Link to={`/libraries/${library.library.id}`}>
+                        <Typography variant="h6">
+                          {library.library.name}
+                          {library.userLibrary && <FavoriteBorderIcon></FavoriteBorderIcon>}
                         </Typography>
-                      )}
-                    </Stack>
-                  </AuthorizedView>
-                </Paper>
-              ))}
-            </Stack>
+                      </Link>
+                      <Typography>
+                        {library.library.address.street + ' ' + library.library.address.number}
+                        {library.library.address.apartment == '' ? '' : '/'}
+                        {library.library.address.apartment ?? ''}
+                      </Typography>
+                      <Typography>
+                        {library.library.address.postalCode + ' ' + library.library.address.city}
+                      </Typography>
+                    </div>
+                    <AuthorizedView>
+                      <Stack direction={'column'}>
+                        {user?.lat != undefined && (
+                          <Typography noWrap>
+                            <RoomIcon></RoomIcon>
+                            {library.distanceFromUser!.toFixed(1).toString() + ' km'}
+                          </Typography>
+                        )}
+                      </Stack>
+                    </AuthorizedView>
+                  </Paper>
+                ))}
+              </Stack>
+            </Grid>
+            <Grid item xs={7}>
+              <MapContainer
+                id="map"
+                style={{ height: 500, zIndex: 0 }}
+                bounds={[
+                  [54, 23],
+                  [49, 14],
+                ]}>
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                {libraries.data.map((library) => (
+                  <Marker icon={MarkerIcon} position={[library.latitude, library.longitude]} key={library.id}>
+                    <Popup>
+                      <Link to={`/libraries/${library.id}`}>{library.name}</Link>
+                      <br />
+                      {library.address.street + ' ' + library.address.number}
+                      {library.address.apartment == '' ? '' : '/'}
+                      {library.address.apartment ?? ''}
+                      <br /> {library.address.city}
+                      <br />
+                    </Popup>
+                  </Marker>
+                ))}
+              </MapContainer>
+            </Grid>
           </Grid>
-          <Grid item xs={7}>
-            <MapContainer
-              id="map"
-              style={{ height: 500, zIndex: 0 }}
-              bounds={[
-                [54, 23],
-                [49, 14],
-              ]}>
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              {libraries.data.map((library) => (
-                <Marker icon={MarkerIcon} position={[library.latitude, library.longitude]} key={library.id}>
-                  <Popup>
-                    <Link to={`/libraries/${library.id}`}>{library.name}</Link>
-                    <br />
-                    {library.address.street + ' ' + library.address.number}
-                    {library.address.apartment == '' ? '' : '/'}
-                    {library.address.apartment ?? ''}
-                    <br /> {library.address.city}
-                    <br />
-                  </Popup>
-                </Marker>
-              ))}
-            </MapContainer>
-          </Grid>
-        </Grid>
+        </div>
       )}
       {librariesStatus == 'success' && libraries.data.length == 0 && (
         <Box
@@ -183,3 +182,4 @@ export function LibrariesMap() {
     </div>
   );
 }
+
