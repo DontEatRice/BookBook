@@ -43,6 +43,7 @@ import Settings from './pages/account/AccountSettings';
 import AdminCategoryUpdateForm from './pages/admin/AdminCategoryUpdateForm';
 import UserProfile from './pages/user/UserProfile';
 import AdminUsers from './pages/admin/AdminUsers';
+import Feed from './pages/feed/Feed';
 
 const mainTheme = createTheme({
   palette: {
@@ -136,9 +137,9 @@ function App() {
         <Route path="ranking">
           <Route index element={<BookRanking />} />
         </Route>
+        <Route path="feed" element={<Feed />} />
         <Route path="libraries">
-          <Route index element />
-          <Route path=":libraryId" element={<LibraryDetails />} />
+          <Route path=":libraryId" element={<LibraryDetails />} />R
         </Route>
       </Route>
       <Route path="/admin" element={<AdminLayout />}>

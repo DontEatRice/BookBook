@@ -6,9 +6,9 @@ using Server.Utils;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers.Reviews;
 
-public sealed record GetFeedReviewsCommand(Guid UserId) : PaginationOptions, IRequest<PaginatedResponseViewModel<ReviewViewModel>>;
+public sealed record GetFeedReviewsCommand(Guid UserId) : PaginationOptions, IRequest<PaginatedResponseViewModel<ReviewWithBookViewModel>>;
 
-internal sealed class GetFeedReviewsHandler : IRequestHandler<GetFeedReviewsCommand, PaginatedResponseViewModel<ReviewViewModel>>
+internal sealed class GetFeedReviewsHandler : IRequestHandler<GetFeedReviewsCommand, PaginatedResponseViewModel<ReviewWithBookViewModel>>
 {
     private readonly BookBookDbContext _dbContext;
     private readonly IMapper _mapper;
@@ -19,14 +19,14 @@ internal sealed class GetFeedReviewsHandler : IRequestHandler<GetFeedReviewsComm
         _mapper = mapper;
     }
 
-    public async Task<PaginatedResponseViewModel<ReviewViewModel>> Handle(GetFeedReviewsCommand request, CancellationToken cancellationToken)
+    public async Task<PaginatedResponseViewModel<ReviewWithBookViewModel>> Handle(GetFeedReviewsCommand request, CancellationToken cancellationToken)
     {
         var whoUserFollows = _dbContext.Follows.Where(x => x.FollowerId == request.UserId).Select(x => x.FollowedId);
 
         var (reviews, count) = await _dbContext.Reviews
             .Where(x => whoUserFollows.Contains(x.UserId))
             .OrderByDescending(x => x.Created)
-            .ProjectTo<ReviewViewModel>(_mapper.ConfigurationProvider)
+            .ProjectTo<ReviewWithBookViewModel>(_mapper.ConfigurationProvider)
             .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);
         
         return PaginatedResponseViewModel.Create(reviews, count, request);

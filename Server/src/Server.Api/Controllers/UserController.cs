@@ -17,6 +17,7 @@ public class UserController : ControllerBase
     {
     }
 
+    [Authorize("User")]
     [HttpPost("toggle-observe")]
     public async Task<ActionResult> ToggleBookInUserList(ToggleBookInUsersListCommand command)
     {
@@ -74,8 +75,13 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
+    [HttpPost("{id:guid}/followers")]
+    public async Task<ActionResult> GetUserFollowers(Guid id)
+    {
+        // TODO dokończyć
+    }
 
-    // [Authorize("User")]
+    [Authorize("User")]
     [HttpPost("{id:guid}/follow")]
     public async Task<ActionResult> FollowUser(Guid id)
     {
@@ -89,6 +95,7 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
+    [Authorize("User")]
     [HttpPost("{id:guid}/unfollow")]
     public async Task<ActionResult> UnfollowUser(Guid id)
     {

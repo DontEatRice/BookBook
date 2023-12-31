@@ -7,8 +7,8 @@ const ReviewViewModel = z.object({
   description: z.string().nullable(),
   rating: z.number(),
   user: ReviewUserViewModel,
+  created: z.string(),
 });
 
 export default ReviewViewModel;
 export type ReviewViewModelType = z.infer<typeof ReviewViewModel>;
-

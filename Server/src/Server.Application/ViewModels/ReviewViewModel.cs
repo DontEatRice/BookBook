@@ -1,6 +1,6 @@
 namespace Server.Application.ViewModels;
 
-public sealed class ReviewViewModel
+public class ReviewViewModel
 {
     public Guid Id { get; set; }
     public string? Title { get; set; }

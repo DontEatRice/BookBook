@@ -61,6 +61,8 @@ function AuthProvider({ children }: { children?: ReactNode }) {
       }
       return (await response.json()) as { accessToken: string };
     },
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    onError: () => {},
     queryKey: ['auth/refresh'],
     enabled: false,
   });
@@ -91,6 +93,8 @@ function AuthProvider({ children }: { children?: ReactNode }) {
   //wylogowanie
   const { mutate: logoutMutate } = useMutation({
     mutationFn: apiLogoutRequest,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    onError: () => {},
   });
   const logout = useCallback(() => {
     localStorage.setItem(LocalStorageTokenKey, '');
