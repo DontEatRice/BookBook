@@ -1,10 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   followUser,
+  getUserFollows,
   getUserProfile,
   getUserReviews,
   ReviewInUserProfilePaginated,
   unfollowUser,
+  UserInfoPaginated,
 } from '../../api/user';
 import { Link, useParams } from 'react-router-dom';
 import { imgUrl } from '../../utils/utils';
@@ -28,8 +30,10 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Rating from '@mui/material/Rating';
 import Pagination from '@mui/material/Pagination';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import { useAuth } from '../../utils/auth/useAuth';
+import { UserInfoViewModelType } from '../../models/user/UserInfoViewModel';
+import { Stack } from '@mui/material';
 
 const Img = styled('img')({
   margin: 'auto',
@@ -48,23 +52,35 @@ function UserProfile() {
   });
   const { user } = useAuth();
 
-  const [paginationProps, setPaginationProps] = useState<PaginationRequest>({ pageNumber: 0, pageSize: 5 });
-  const { pageNumber } = paginationProps;
+  const [reviewsPagingProps, setReviewsPagingProps] = useState<PaginationRequest>({
+    pageNumber: 0,
+    pageSize: 5,
+  });
+  const [followsPagingProps, setFollowsPagingProps] = useState<PaginationRequest>({
+    pageNumber: 0,
+    pageSize: 10,
+  });
+  const { pageNumber } = reviewsPagingProps;
 
   const { data: userReviews, status: userReviewsStatus } = useQuery({
     queryKey: ['userReviews', params.userId, pageNumber],
     queryFn: () =>
       getUserReviews({
-        ...paginationProps,
+        ...reviewsPagingProps,
         userId: params.userId!,
       }),
+    keepPreviousData: true,
+  });
+
+  const { data: follows, status: followsStatus } = useQuery({
+    queryKey: ['userFollows', params.userId, followsPagingProps.pageNumber],
+    queryFn: () => getUserFollows({ ...followsPagingProps, userId: params.userId! }),
     keepPreviousData: true,
   });
 
   const { mutate: followUserMutate, isLoading: followUserIsLoading } = useMutation({
     mutationFn: followUser,
     onSuccess: () => {
-      // queryClient.invalidateQueries(['users', params.userId]);
       queryClient.setQueryData(['users', params.userId], {
         ...data,
         followedByMe: true,
@@ -76,7 +92,6 @@ function UserProfile() {
   const { mutate: unfollowUserMutate, isLoading: unfollowUserIsLoading } = useMutation({
     mutationFn: unfollowUser,
     onSuccess: () => {
-      // queryClient.invalidateQueries(['users', params.userId]);
       queryClient.setQueryData(['users', params.userId], {
         ...data,
         followedByMe: false,
@@ -149,8 +164,10 @@ function UserProfile() {
                     </Grid>
                     {data.isCritic && (
                       <Typography variant="h5" color={'primary'} gutterBottom>
-                        Krytyk
-                        <StarsIcon />
+                        <Stack direction={'row'} alignItems={'center'}>
+                          <span>Krytyk</span>
+                          <StarsIcon />
+                        </Stack>
                       </Typography>
                     )}
                     <Typography variant="h6" gutterBottom>
@@ -161,7 +178,7 @@ function UserProfile() {
                       Użytkownik od: {getUserFrom(data.registeredAt)}
                     </Typography>
                     <Typography variant="body1">
-                      Przeczytane książki: <b>{data.readBooksCount}</b>
+                      Przeczytane książki <b>{data.readBooksCount}</b>
                     </Typography>
                     <Typography variant="body1">
                       Obserwujących <b>{data.followersCount.toLocaleString()}</b>
@@ -219,12 +236,19 @@ function UserProfile() {
             {currentTabIndex === 2 && userReviewsStatus == 'success' && (
               <UserProfileReviews
                 data={userReviews}
-                onPaginationPropsChange={setPaginationProps}
-                paginationProps={paginationProps}
+                onPaginationPropsChange={setReviewsPagingProps}
+                paginationProps={reviewsPagingProps}
               />
             )}
             {currentTabIndex === 2 && userReviewsStatus == 'loading' && <LoadingTypography />}
-            {currentTabIndex === 3 && <LoadingTypography />}
+            {currentTabIndex === 3 && followsStatus == 'success' && (
+              <UserFollows
+                data={follows}
+                paginationProps={followsPagingProps}
+                onPaginationPropsChange={setFollowsPagingProps}
+              />
+            )}
+            {currentTabIndex === 3 && followsStatus == 'loading' && <LoadingTypography />}
           </Paper>
         </>
       )}
@@ -271,6 +295,46 @@ function ReviewItem({ review }: { review: ReviewInUserProfileViewModelType }) {
   );
 }
 
+function FollowedUser({ user }: { user: UserInfoViewModelType }) {
+  const [elevation, setElevation] = useState(1);
+  const theme = useTheme();
+
+  return (
+    <Paper
+      elevation={elevation}
+      onMouseOver={() => setElevation(3)}
+      onMouseOut={() => setElevation(1)}
+      sx={{ padding: 2, width: '75%', mb: 2, ml: 'auto', mr: 'auto' }}>
+      <Link to={`/user/${user.id}`}>
+        <Grid container direction={'row'} wrap="nowrap">
+          <Grid item xs={1} minHeight={56} minWidth={56}>
+            <Avatar
+              src={imgUrl(user.userImageUrl, '/autor-szablon.jpg')}
+              sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }}
+            />
+          </Grid>
+          <Grid item xs marginLeft={2}>
+            <Typography variant="h5">{user.userName}</Typography>
+            {user.isCritic && (
+              <Typography color={'primary'} gutterBottom>
+                <Stack direction={'row'} alignItems={'center'}>
+                  <span>Krytyk</span>
+                  <StarsIcon />
+                </Stack>
+              </Typography>
+            )}
+          </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography marginLeft={1}>
+            <ExpandableText value={user.aboutMe ?? ''} maxChars={400} />
+          </Typography>
+        </Grid>
+      </Link>
+    </Paper>
+  );
+}
+
 type PaginatedReviewsResponse = z.infer<typeof ReviewInUserProfilePaginated>;
 interface UserProfileReviewsProps {
   data: PaginatedReviewsResponse;
@@ -305,6 +369,45 @@ function UserProfileReviews({ data, paginationProps, onPaginationPropsChange }: 
         <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
           <Pagination
             onChange={handleChangePage}
+            page={pageNumber + 1}
+            count={Math.ceil(data.count / 5)}
+            sx={{ justifySelf: 'center' }}
+            size="large"
+            color="primary"
+          />
+        </Box>
+      )}
+    </Box>
+  );
+}
+
+type PaginatedFollowsResponse = z.infer<typeof UserInfoPaginated>;
+interface UserFollowsProps {
+  data: PaginatedFollowsResponse;
+  paginationProps: PaginationRequest;
+  onPaginationPropsChange: (args: PaginationRequest) => void;
+}
+function UserFollows({ data, onPaginationPropsChange, paginationProps }: UserFollowsProps) {
+  const { pageNumber } = paginationProps;
+
+  return (
+    <Box sx={{ p: 3 }}>
+      {data.data.length == 0 && (
+        <Typography variant="h5" textAlign={'center'}>
+          Użytkownik jeszcze nikogo nie obserwuje
+        </Typography>
+      )}
+      <Grid container spacing={3} marginBottom={3}>
+        {data.data.map((user) => (
+          <Grid item xs={12} key={user.id}>
+            <FollowedUser user={user} />
+          </Grid>
+        ))}
+      </Grid>
+      {data.data.length > 0 && (
+        <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
+          <Pagination
+            onChange={(_, page) => onPaginationPropsChange({ ...paginationProps, pageNumber: page - 1 })}
             page={pageNumber + 1}
             count={Math.ceil(data.count / 5)}
             sx={{ justifySelf: 'center' }}

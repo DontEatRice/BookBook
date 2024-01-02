@@ -2,6 +2,7 @@ import BookViewModel from '../models/BookViewModel';
 import { ToggleBookInUserListType } from '../models/ToggleBookInUserList';
 import AdminUserViewModel from '../models/user/AdminUserViewModel';
 import ReviewInUserProfileViewModel from '../models/user/ReviewInUserProfileViewModel';
+import UserInfoViewModel from '../models/user/UserInfoViewModel';
 import UserProfileViewModel from '../models/user/UserProfileViewModel';
 import { PaginationRequest } from '../utils/constants';
 import { handleBadResponse, paginatedFetch } from '../utils/utils';
@@ -11,6 +12,8 @@ import { getAuthToken, getAuthTokenOrNull } from './auth';
 const base = import.meta.env.VITE_API_BASE_URL;
 export const ReviewInUserProfilePaginated = paginatedResponse(ReviewInUserProfileViewModel);
 export const UserSearchPaginated = paginatedResponse(AdminUserViewModel);
+export const UserInfoPaginated = paginatedResponse(UserInfoViewModel);
+
 const UserBooksPaginated = paginatedResponse(BookViewModel);
 
 export const toggleBookInUserList = async (toggleBook: ToggleBookInUserListType) => {
@@ -121,4 +124,21 @@ export async function unfollowUser(id: string) {
   if (!response.ok) {
     await handleBadResponse(response);
   }
+}
+
+export async function getUserFollows(args: PaginationRequest & { userId: string }) {
+  const response = await fetch(`${base}/user/${args.userId}/follows`, {
+    method: 'POST',
+    headers: new Headers({
+      'Content-Type': 'application/json',
+    }),
+    body: JSON.stringify(args),
+  });
+  if (!response.ok) {
+    await handleBadResponse(response);
+  }
+
+  const data = await response.json();
+
+  return UserInfoPaginated.parse(data);
 }

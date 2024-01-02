@@ -75,11 +75,9 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
-    [HttpPost("{id:guid}/followers")]
-    public async Task<ActionResult> GetUserFollowers(Guid id)
-    {
-        // TODO dokończyć
-    }
+    [HttpPost("{id:guid}/follows")]
+    public async Task<ActionResult> GetUserFollows(Guid id, GetUserFollowsQuery query) =>
+        Ok(await Mediator.Send(query with { UserId = id }));
 
     [Authorize("User")]
     [HttpPost("{id:guid}/follow")]

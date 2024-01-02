@@ -1,39 +1,36 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Server.Application.ViewModels;
 using Server.Utils;
 
 namespace Server.Infrastructure.Persistence.QueryHandlers.User;
 
-public sealed record GetUserFollowersQuery : PaginationOptions,
+public sealed record GetUserFollowsQuery : PaginationOptions,
     IRequest<PaginatedResponseViewModel<UserInfoViewModel>>
 {
     public Guid UserId { get; set; }
 }
 
-internal sealed class GetUserFollowersHandler : IRequestHandler<GetUserFollowersQuery, PaginatedResponseViewModel<UserInfoViewModel>>
+internal sealed class GetUserFollowsHandler : IRequestHandler<GetUserFollowsQuery, PaginatedResponseViewModel<UserInfoViewModel>>
 {
     private readonly BookBookDbContext _bookDbContext;
-    private readonly IMapper _mapper;
 
-    public GetUserFollowersHandler(BookBookDbContext bookDbContext, IMapper mapper)
+    public GetUserFollowsHandler(BookBookDbContext bookDbContext)
     {
         _bookDbContext = bookDbContext;
-        _mapper = mapper;
     }
 
-    public async Task<PaginatedResponseViewModel<UserInfoViewModel>> Handle(GetUserFollowersQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResponseViewModel<UserInfoViewModel>> Handle(GetUserFollowsQuery request, CancellationToken cancellationToken)
     {
         var (result, count) = await _bookDbContext.Follows
             .OrderBy(x => x.FollowerId)
-            .Where(x => x.FollowedId == request.UserId)
+            .Where(x => x.FollowerId == request.UserId)
             .Select(x => new UserInfoViewModel
             {
-                UserName = x.Follower.Name ?? "",
-                IsCritic = x.Follower.IsCritic,
-                UserImageUrl = x.Follower.AvatarImageUrl,
-                Id = x.FollowerId,
-                AboutMe = x.Follower.AboutMe
+                UserName = x.Followed.Name ?? "",
+                IsCritic = x.Followed.IsCritic,
+                UserImageUrl = x.Followed.AvatarImageUrl,
+                Id = x.FollowedId,
+                AboutMe = x.Followed.AboutMe
             })
             .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);
         
