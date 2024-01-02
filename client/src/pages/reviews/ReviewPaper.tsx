@@ -1,6 +1,6 @@
 import { Dialog, Typography, Rating, Avatar, Button, Paper, Grid, Box } from '@mui/material';
 import { useState } from 'react';
-import { ReviewViewModelType } from '../../models/ReviewViewModel';
+import { ReviewViewModelType } from '../../models/reviews/ReviewViewModel';
 import { useTheme } from '@mui/material/styles';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteReview } from '../../api/review';
@@ -12,6 +12,7 @@ import UpdateReviewForm from './UpdateReviewForm';
 import AuthorizedView from '../../components/auth/AuthorizedView';
 import { useAuth } from '../../utils/auth/useAuth';
 import { Link } from 'react-router-dom';
+import ExpandableText from '../../components/common/ExpandableText';
 
 function ReviewPaper({ review, book }: { review: ReviewViewModelType; book: BookViewModelType }) {
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -32,7 +33,7 @@ function ReviewPaper({ review, book }: { review: ReviewViewModelType; book: Book
 
   const mutation = useMutation({
     mutationFn: deleteReview,
-    onSuccess: async () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reviews', book.id] });
       queryClient.invalidateQueries({ queryKey: ['books', book.id] });
     },
@@ -50,15 +51,19 @@ function ReviewPaper({ review, book }: { review: ReviewViewModelType; book: Book
         <Grid container direction={'row'} wrap="nowrap">
           <Grid item xs={1} minHeight={56} minWidth={56}>
             <Link to={'/user/' + review.user.id}>
-            <Avatar
-              src={imgUrl(review.user.avatarImageUrl, '/autor-szablon.jpg')}
-              sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }}
-            />
+              <Avatar
+                src={imgUrl(review.user.avatarImageUrl, '/autor-szablon.jpg')}
+                sx={{ bgcolor: theme.palette.secondary.main, width: 56, height: 56 }}
+              />
             </Link>
           </Grid>
           <Grid item xs={6} marginLeft={2}>
             <Typography variant="h5">{review.title}</Typography>
-            <Typography marginBottom={2}>{review.user.name}</Typography>
+            <Link to={'/user/' + review.user.id}>
+              <Typography sx={{ '&:hover': { textDecorationLine: 'underline' } }} marginBottom={2}>
+                {review.user.name}
+              </Typography>
+            </Link>
           </Grid>
           <Grid item xs={5}>
             <Box display="flex" justifyContent="flex-end">
@@ -72,7 +77,9 @@ function ReviewPaper({ review, book }: { review: ReviewViewModelType; book: Book
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <Typography marginLeft={1}>{review.description}</Typography>
+          <Typography marginLeft={1}>
+            <ExpandableText value={review.description ?? ''} maxChars={300} />
+          </Typography>
         </Grid>
         {deleteError && (
           <Paper

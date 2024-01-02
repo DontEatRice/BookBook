@@ -6,6 +6,7 @@ public class ReviewViewModel
     public string? Title { get; set; }
     public string? Description { get; set; }
     public double Rating { get; set; }
-    public ReviewUserViewModel User { get; set; }
+    public ReviewUserViewModel User { get; set; } = null!;
+    public DateTime Created { get; set; }
     public bool IsCriticRating { get; set; }
 }

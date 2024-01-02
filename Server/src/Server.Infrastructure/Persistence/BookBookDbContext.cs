@@ -23,6 +23,7 @@ internal sealed class BookBookDbContext : DbContext
     public DbSet<Cart> Carts { get; set; }
     public DbSet<Reservation> Reservations { get; set; }
     public DbSet<UserBook> UserBooks { get; set; }
+    public DbSet<Follows> Follows { get; set; }
 
     public BookBookDbContext(DbContextOptions<BookBookDbContext> options) : base(options)
     {

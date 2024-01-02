@@ -9,7 +9,9 @@ const UserProfileViewModel = z.object({
   aboutMe: z.string().nullable(),
   readBooksCount: z.number().nullable(),
   registeredAt: z.string(),
-  isCritic: z.boolean()
+  isCritic: z.boolean(),
+  followedByMe: z.boolean().nullable(),
+  followersCount: z.number(),
 });
 
 export default UserProfileViewModel;

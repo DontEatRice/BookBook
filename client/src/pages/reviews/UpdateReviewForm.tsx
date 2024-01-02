@@ -1,6 +1,6 @@
 import { Rating, Box, Paper, Button } from '@mui/material';
 import TextInputField from '../../components/common/TextInputField';
-import { ReviewViewModelType } from '../../models/ReviewViewModel';
+import { ReviewViewModelType } from '../../models/reviews/ReviewViewModel';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -48,9 +48,9 @@ function UpdateReviewForm({
     mutationFn: updateReview,
     onSuccess: () => {
       queryClient.invalidateQueries(['reviews', book.id]);
-      queryClient.invalidateQueries(['criticReviews', book.id])
+      queryClient.invalidateQueries(['criticReviews', book.id]);
       queryClient.invalidateQueries(['userReviews', user?.id]);
-      queryClient.invalidateQueries(['books', book.id] );
+      queryClient.invalidateQueries(['books', book.id]);
       if (updateError == null) {
         handleClose();
       }

@@ -104,7 +104,7 @@ export function convertJwtToUser(token: string): User {
 }
 
 export const MarkerIcon = icon({
-  iconUrl: './marker-icon.png',
+  iconUrl: '/marker-icon.png',
   iconSize: [25, 41],
 });
 

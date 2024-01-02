@@ -1,7 +1,7 @@
 import { useTheme } from '@mui/material/styles';
 import { BookViewModelType } from '../../models/BookViewModel';
 import ReviewPaper from './ReviewPaper';
-import { ReviewViewModelType } from '../../models/ReviewViewModel';
+import { ReviewViewModelType } from '../../models/reviews/ReviewViewModel';
 import Stack from '@mui/material/Stack';
 
 function Reviews({ book, reviews }: { book: BookViewModelType; reviews: ReviewViewModelType[] }) {

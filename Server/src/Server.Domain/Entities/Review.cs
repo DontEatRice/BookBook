@@ -12,6 +12,8 @@ public class Review
     public string? Title { get; set; }
     public string? Description { get; set; }
     public double Rating { get; set; }
+    public DateTime Created { get; set; }
+    public DateTime? Updated { get; set; }
     public Book Book { get; set; }
     public Guid BookId { get; set; }
     public Identity User { get; set; }
@@ -28,6 +30,7 @@ public class Review
             Rating = rating,
             Book = book,
             User = user,
-            IsCriticRating = user.IsCritic
+            IsCriticRating = user.IsCritic,
+            Created = DateTime.Now
         };
 }

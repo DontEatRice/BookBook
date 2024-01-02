@@ -72,7 +72,6 @@ public class IdentityDomainService : IIdentityDomainService
     public async Task<AuthTokens> RefreshAccessTokenAsync(string oldRefreshToken, CancellationToken cancellationToken)
     {
         var (identityId, validTo) = _securityTokenService.GetIdentityIdAndExpirationTimeFromToken(oldRefreshToken);
-        // var loggedAs = _securityTokenService.GetIdentityRoleFromRefreshToken(oldRefreshToken);
 
         if (!identityId.HasValue)
         {

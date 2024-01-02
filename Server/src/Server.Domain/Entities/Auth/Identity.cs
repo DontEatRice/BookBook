@@ -1,4 +1,3 @@
-using Microsoft.OpenApi.Extensions;
 using Server.Domain.Entities.User;
 using Server.Domain.Exceptions;
 using Server.Utils;
@@ -24,6 +23,8 @@ public class Identity
     public string? AboutMe { get; private set; }
     public bool IsCritic { get; set; }
     public DateTime RegisteredAt { get; private set; }
+    public ICollection<Identity> Followers { get; set; } = new List<Identity>();
+    public ICollection<Identity> Followed { get; set; } = new List<Identity>();
 
     public static Identity Register(Guid id, string email, string password, string name, string? avatarImageUrl, Address? address, double? latitude, double? longitude)
     {
@@ -112,7 +113,8 @@ public class Identity
             throw new DomainException("Session Does Not Exists", DomainErrorCodes.SessionNotExists);
         }
 
-        Sessions[Sessions.IndexOf(session)] = Session.Create(TokenHasher.Hash(newRefreshToken));
+        Sessions.Remove(session);
+        Sessions.Add(Session.Create(TokenHasher.Hash(newRefreshToken)));
     }
 
     public void Update(string name, string? avatarImageUrl, Guid? libraryId, Address? address, double? latitude, double? longitude, string? aboutMe)

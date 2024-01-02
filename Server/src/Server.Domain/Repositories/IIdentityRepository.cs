@@ -9,4 +9,5 @@ public interface IIdentityRepository
     Task<Identity?> FirstOrDefaultByIdAsync(Guid guid, CancellationToken cancellationToken);
     Task<Identity?> FirstOrDefaultByEmailAsync(string email, CancellationToken cancellationToken);
     Task<List<Identity>> ListByIdsAsync(List<Guid> ids, CancellationToken cancellationToken);
+    Task<bool> IdentityByIdExistsAsync(Guid id, CancellationToken cancellationToken);
 }

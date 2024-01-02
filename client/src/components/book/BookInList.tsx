@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import Rating from '@mui/material/Rating';
 import Box from '@mui/material/Box';
 import { Img } from '../common/Img';
+import ExpandableText from '../common/ExpandableText';
 
 function BookInList({ book }: { book: BookViewModelType }) {
   const [elevation, setElevation] = useState(1);
@@ -45,8 +46,8 @@ function BookInList({ book }: { book: BookViewModelType }) {
                 <Typography variant="body1" color="text.secondary">
                   {book.bookCategories.map((category) => category.name).join(', ')}
                 </Typography>
-                <Typography variant="body2" noWrap>
-                  {book.description}
+                <Typography variant="body2">
+                  <ExpandableText value={book.description ?? ''} maxChars={300} />
                 </Typography>
               </Grid>
             </Grid>

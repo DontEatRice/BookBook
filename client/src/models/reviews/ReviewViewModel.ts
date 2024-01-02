@@ -8,6 +8,7 @@ const ReviewViewModel = z.object({
   rating: z.number(),
   isCriticRating: z.boolean(),
   user: ReviewUserViewModel,
+  created: z.string(),
 });
 
 export default ReviewViewModel;

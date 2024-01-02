@@ -69,7 +69,7 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
           </Link>
         </Grid>
         <Grid item xs={10} sm container>
-          <Grid item xs={10} container direction="column" spacing={3}>
+          <Grid item xs={8} container direction="column" spacing={3}>
             <Grid item xs>
               <Typography
                 gutterBottom
@@ -86,7 +86,7 @@ function BookInUserList({ book }: { book: BookViewModelType }) {
               </Typography>
             </Grid>
           </Grid>
-          <Grid item xs>
+          <Grid item xs={4} textAlign={'right'}>
             <input type="hidden" {...register('bookId')} value={book.id} />
             <Button
               onClick={handleSubmit(onClick)}

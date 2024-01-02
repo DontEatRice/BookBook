@@ -6,7 +6,7 @@ using Server.Domain.Repositories;
 
 namespace Server.Application.CommandHandlers.User;
 
-public sealed record RemoveReviewCommand(Guid Id) : IRequest;
+public sealed record RemoveReviewCommand(Guid Id, Guid UserId) : IRequest;
 
 public sealed class RemoveReviewHandler : IRequestHandler<RemoveReviewCommand>
 {
@@ -26,6 +26,11 @@ public sealed class RemoveReviewHandler : IRequestHandler<RemoveReviewCommand>
     {
         var review = await _reviewRepository.FirstOrDefaultByIdAsync(request.Id, cancellationToken) ?? 
             throw new NotFoundException("Review not found", ApplicationErrorCodes.ReviewNotFound);
+
+        if (review.UserId != request.UserId)
+        {
+            throw new NotFoundException("Review not found", ApplicationErrorCodes.ReviewNotFound);
+        }
 
         var book = await _bookRepository.FirstOrDefaultByIdAsync(review.Book.Id, cancellationToken) ?? 
             throw new NotFoundException("Book not found", ApplicationErrorCodes.BookNotFound);

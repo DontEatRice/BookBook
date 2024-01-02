@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.CommandHandlers.Admin;
 using Server.Application.CommandHandlers.User;
+using Server.Infrastructure.Persistence.QueryHandlers.Reviews;
 
 namespace Server.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize("User")]
 public class ReviewsController : ControllerBase
 {
     public ReviewsController(IMediator mediator) : base(mediator)
@@ -15,7 +17,6 @@ public class ReviewsController : ControllerBase
     }
     
     [HttpPost]
-    [Authorize]
     public async Task<ActionResult> Post(AddReviewCommand command)
     {
         var userId = GetUserIdOrThrow();
@@ -27,11 +28,10 @@ public class ReviewsController : ControllerBase
             UserId = userId
         });
 
-        return Created($"/reviews/{id}", null);
+        return Ok();
     }
     
     [HttpPut]
-    [Authorize]
     public async Task<ActionResult> Update(UpdateReviewCommand command)
     {
         var userId = GetUserIdOrThrow();
@@ -47,7 +47,15 @@ public class ReviewsController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        await Mediator.Send(new RemoveReviewCommand(id));
+        var userId = GetUserIdOrThrow();
+        await Mediator.Send(new RemoveReviewCommand(id, userId));
         return NoContent();
+    }
+
+    [HttpPost("feed/search")]
+    public async Task<ActionResult> FeedSearch(GetFeedReviewsCommand command)
+    {
+        var userId = GetUserIdOrThrow();
+        return Ok(await Mediator.Send(command with { UserId = userId }));
     }
 }

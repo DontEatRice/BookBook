@@ -16,6 +16,7 @@ function Nav() {
         <AuthorizedView roles={['User']}>
           <NavItem label="Rezerwacje" link="/reservations" />
           <NavItem label="Do przeczytania" link="/user-books" />
+          <NavItem label="Feed" link="/feed" />
         </AuthorizedView>
         <NavItem label="Ranking" link="/ranking" />
       </Flex>
