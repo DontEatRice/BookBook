@@ -8,4 +8,5 @@ public class ReviewViewModel
     public double Rating { get; set; }
     public ReviewUserViewModel User { get; set; } = null!;
     public DateTime Created { get; set; }
+    public bool IsCriticRating { get; set; }
 }
