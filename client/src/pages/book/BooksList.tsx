@@ -5,7 +5,7 @@ import { searchBooks } from '../../api/book';
 import BookInList from '../../components/book/BookInList';
 import { useQuery } from '@tanstack/react-query';
 import Grid from '@mui/material/Grid';
-import { Autocomplete, Pagination, TextField } from '@mui/material';
+import { Autocomplete, Button, InputAdornment, Pagination, TextField } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 import { getAuthors } from '../../api/author';
 import { getCategories } from '../../api/category';
@@ -13,6 +13,7 @@ import { PaginationRequest } from '../../utils/constants';
 import { getLibraries } from '../../api/library';
 import { useSearchParams } from 'react-router-dom';
 import LoadingTypography from '../../components/common/LoadingTypography';
+import ClearIcon from '@mui/icons-material/Clear';
 
 // przyklad z https://mui.com/material-ui/react-table/#sorting-amp-selecting
 
@@ -61,6 +62,10 @@ function BooksList() {
   const [libraryId, setLibraryId] = useState<string>();
   const [year, setYear] = useState<number>();
   const [yearFilter, setYearFilter] = useState<number>();
+  const clearYearQuery = () => {
+    setYear(undefined);
+    setYearFilter(undefined);
+  };
 
   const { data: authorsData } = useQuery({
     queryKey: ['authors'],
@@ -175,6 +180,19 @@ function BooksList() {
               if (e.key == 'Enter') {
                 setYearFilter(year);
               }
+            }}
+            InputProps={{
+              endAdornment: (
+                <Box>
+                  <InputAdornment position="end">
+                    {year != undefined && year.toString().length > 0 && (
+                      <Button onClick={clearYearQuery}>
+                        <ClearIcon></ClearIcon>
+                      </Button>
+                    )}
+                  </InputAdornment>
+                </Box>
+              ),
             }}
           />
         </Box>

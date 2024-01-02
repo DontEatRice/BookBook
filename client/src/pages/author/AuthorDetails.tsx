@@ -28,14 +28,14 @@ function AuthorDetails() {
             {authorData.firstName + ' ' + authorData.lastName}
           </Typography>
           <Grid container spacing={1} marginBottom={7}>
-            <Grid item xs={12} md={5}>
+            <Grid item xs={4}>
               <Avatar
                 alt={authorData.firstName + ' ' + authorData.lastName}
                 src={imgUrl(authorData.profilePictureUrl, '/autor-szablon.jpg')}
                 sx={{ width: 300, height: 300 }}
               />
             </Grid>
-            <Grid item md={6} xs={12} container spacing={2}>
+            <Grid item xs={8} container spacing={2} marginTop={3}>
               <Grid sx={{ display: 'flex', flexDirection: 'column', padding: 1 }} container>
                 <Grid item xs>
                   <Typography variant="subtitle1">Rok urodzenia:</Typography>
