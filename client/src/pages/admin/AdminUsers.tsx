@@ -47,8 +47,8 @@ interface HeadCell<T> {
 const headCells: readonly HeadCell<AdminUserViewModelType>[] = [
   { field: 'id', label: 'Id', numeric: false, sortable: false },
   { field: 'avatarImageUrl', label: 'Zdjęcie', numeric: false, sortable: false },
-  { field: 'name', label: 'Nazwa', numeric: false, sortable: false },
-  { field: 'email', label: 'E-mail', numeric: false, sortable: false },
+  { field: 'name', label: 'Nazwa', numeric: false, sortable: true },
+  { field: 'email', label: 'E-mail', numeric: false, sortable: true },
   { field: 'isCritic', label: 'Krytyk?', numeric: false, sortable: false },
 ];
 
