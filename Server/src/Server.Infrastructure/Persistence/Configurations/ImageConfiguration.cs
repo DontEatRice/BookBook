@@ -9,10 +9,13 @@ public class ImageConfiguration : IEntityTypeConfiguration<Image>
     public void Configure(EntityTypeBuilder<Image> builder)
     {
         builder.HasKey(x => x.Id);
+
         builder.Property(x => x.Etag)
             .HasMaxLength(32);
+
         builder.Property(x => x.FileName)
             .HasMaxLength(64);
+
         builder.Property(x => x.ContentType)
             .HasMaxLength(64);
     }

@@ -11,5 +11,7 @@ public class CartConfiguration : IEntityTypeConfiguration<Cart>
         builder.HasKey(x => x.Id);
 
         builder.OwnsMany(x => x.CartItems);
+
+        builder.HasIndex(x => x.UserId);
     }
 }

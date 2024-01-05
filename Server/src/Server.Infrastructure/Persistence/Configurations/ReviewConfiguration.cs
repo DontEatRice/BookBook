@@ -17,5 +17,9 @@ public class ReviewConfiguration  : IEntityTypeConfiguration<Review>
 
         builder.Property(x => x.Rating)
             .IsRequired();
+
+        builder.HasIndex(x => x.UserId);
+
+        builder.HasIndex(x => x.BookId);
     }
 }
