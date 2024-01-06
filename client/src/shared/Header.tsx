@@ -184,7 +184,7 @@ function SearchBar() {
         value={query}
         onChange={handleSearchType}
         onKeyDown={handleSearchOnEnter}
-        placeholder="Gotowy na przygodę?"
+        placeholder="Szukaj książek..."
         InputProps={{
           endAdornment: (
             <Box>
