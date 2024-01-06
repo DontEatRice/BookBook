@@ -219,7 +219,7 @@ export default function ReservationList() {
           onClose={handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description">
-          <DialogTitle id="alert-dialog-title">{'Potwierdzenie rezerwacji'}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{'Potwierdzenie anulowania'}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               Czy na pewno chcesz anulować rezerwację?

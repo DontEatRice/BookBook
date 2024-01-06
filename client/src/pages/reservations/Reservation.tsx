@@ -6,6 +6,10 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Typography,
 } from '@mui/material';
 import { translateStatus } from '../../utils/functions/utilFunctions';
@@ -15,6 +19,7 @@ import { getReservation } from '../../api/reservation';
 import LoadingTypography from '../../components/common/LoadingTypography';
 import { useState } from 'react';
 import { useCartStore } from '../../store';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 export default function Reservation({
   reservationId,
@@ -59,20 +64,34 @@ export default function Reservation({
     return (
       <Box>
         {status == 'loading' && <Typography variant="h3">Loading...</Typography>}
-        <Typography variant="h6">ID: {data.id}</Typography>
-        <Typography variant="body1">Nazwa Biblioteki: {data.library?.name}</Typography>
-        <Typography variant="body1">Status: {translateStatus(data.status)}</Typography>
-        <Typography variant="body1">
+        <Typography variant="h6" gutterBottom>
+          ID: {data.id}
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          Nazwa Biblioteki: {data.library?.name}
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          Status: {translateStatus(data.status)}
+        </Typography>
+        <Typography variant="body1" gutterBottom>
           Data Końca Rezerwacji: {new Date(data.reservationEndDate).toLocaleDateString()}
         </Typography>
         <Typography variant="h6">Książki:</Typography>
         {data.books?.map((book) => (
-          <Typography variant="body2" key={book.id}>
-            {book.title}
-          </Typography>
+          <List dense={false} disablePadding>
+            <ListItem>
+              <ListItemIcon>
+                <MenuBookIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={book.title}
+                secondary={book.authors.map((author) => author.lastName).join(', ')}
+              />
+            </ListItem>
+          </List>
         ))}
         {data.status == 'Pending' && (
-          <Button variant="contained" color="error" onClick={handleClickOpen}>
+          <Button variant="contained" color="error" onClick={handleClickOpen} sx={{ marginTop: 2 }}>
             Anuluj
           </Button>
         )}
@@ -81,13 +100,13 @@ export default function Reservation({
           onClose={handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description">
-          <DialogTitle id="alert-dialog-title">{'Potwierdzenie rezerwacji'}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{'Potwierdzenie anulowania'}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               Czy na pewno chcesz anulować rezerwację?
             </DialogContentText>
           </DialogContent>
-          <DialogActions>
+          <DialogActions style={{ justifyContent: 'space-around' }}>
             <Button onClick={handleClose} color="primary">
               Anuluj
             </Button>
@@ -106,4 +125,3 @@ export default function Reservation({
     );
   }
 }
-
