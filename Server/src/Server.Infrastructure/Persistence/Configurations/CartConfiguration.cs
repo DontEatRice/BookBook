@@ -10,6 +10,8 @@ public class CartConfiguration : IEntityTypeConfiguration<Cart>
     {
         builder.HasKey(x => x.Id);
 
+        builder.HasOne(x => x.Identity).WithOne().HasForeignKey<Cart>(x => x.UserId);
+
         builder.OwnsMany(x => x.CartItems);
 
         builder.HasIndex(x => x.UserId);

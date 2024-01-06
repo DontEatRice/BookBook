@@ -1,10 +1,14 @@
+using Server.Domain.Entities.Auth;
+
 namespace Server.Domain.Entities.Reservations;
 
 public class Reservation
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
+    public Identity Identity { get; set; }
     public Guid LibraryId { get; set; }
+    public Library Library { get; set; }
     public ICollection<ReservationBook> ReservationItems { get; private init; } = null!;
     public DateTime ReservationEndDate { get; set; }
     public ReservationStatus Status { get; set; }
