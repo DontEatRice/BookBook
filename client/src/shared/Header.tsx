@@ -28,6 +28,7 @@ function Header() {
   const matches = useMediaQuery(theme.breakpoints.up('xs'));
   const cartStore = useCartStore();
   const { logout } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -105,7 +106,10 @@ function Header() {
               item
               sm={1}
               xs={2}
-              onClick={() => logout()}
+              onClick={() => {
+                logout();
+                navigate('/');
+              }}
               paddingY={2}
               display={'flex'}
               justifyContent={'center'}
