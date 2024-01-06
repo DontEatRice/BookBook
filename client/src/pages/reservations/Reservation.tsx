@@ -91,9 +91,11 @@ export default function Reservation({
           </List>
         ))}
         {data.status == 'Pending' && (
-          <Button variant="contained" color="error" onClick={handleClickOpen} sx={{ marginTop: 2 }}>
-            Anuluj
-          </Button>
+          <Box display={'flex'} justifyContent={'space-around'}>
+            <Button variant="contained" color="error" onClick={handleClickOpen} sx={{ marginTop: 2 }}>
+              Anuluj
+            </Button>
+          </Box>
         )}
         <Dialog
           open={open}
@@ -106,7 +108,7 @@ export default function Reservation({
               Czy na pewno chcesz anulować rezerwację?
             </DialogContentText>
           </DialogContent>
-          <DialogActions style={{ justifyContent: 'space-around' }}>
+          <DialogActions>
             <Button onClick={handleClose} color="primary">
               Anuluj
             </Button>

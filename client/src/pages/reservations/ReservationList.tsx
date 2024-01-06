@@ -170,7 +170,10 @@ export default function ReservationList() {
                   <TableRow
                     key={reservation.id}
                     onClick={() => cartStore.setSelectedReservation(reservation)}
-                    sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}>
+                    title={'Szczegóły rezerwacji'}
+                    sx={{
+                      '&:hover': { backgroundColor: theme.palette.action.hover, cursor: 'pointer' },
+                    }}>
                     <TableCell>{reservation.id}</TableCell>
                     <TableCell>{reservation.library.name}</TableCell>
                     <TableCell>{translateStatus(reservation.status)}</TableCell>
