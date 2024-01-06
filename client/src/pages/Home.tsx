@@ -21,10 +21,12 @@ function Home() {
 
   const { user } = useAuth();
   return (
-    <Container sx={{ '& > *': { marginBottom: 15 } }}>
-      <Typography variant="h2">
-        Witamy w BookBook<AuthorizedView roles={['User']}> {user?.name}</AuthorizedView>!
-      </Typography>
+    <Container sx={{ '& > *': { marginBottom: 5 } }}>
+      <Box textAlign={'center'}>
+        <Typography variant="h3">
+          Witamy w BookBook<AuthorizedView roles={['User']}> {user?.name}</AuthorizedView>!
+        </Typography>
+      </Box>
       <Box>
         {searchStatus == 'loading' && <LoadingTypography />}
         {searchStatus == 'error' && (
@@ -42,7 +44,7 @@ function Home() {
 function Books({ data }: { data: MostReservedBookViewModelType[] }) {
   return (
     <div>
-      <Typography variant="h3" marginBottom={5}>
+      <Typography variant="h4" marginBottom={5}>
         Najpopularniejsze książki
       </Typography>
       <Grid container justifyContent="space-between" m={2}>
@@ -57,4 +59,3 @@ function Books({ data }: { data: MostReservedBookViewModelType[] }) {
 }
 
 export default Home;
-

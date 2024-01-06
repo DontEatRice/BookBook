@@ -30,11 +30,13 @@ function NavItem({ label, link }: { label: string; link: string }) {
     <NavLink
       to={link}
       style={({ isActive }) => ({
+        marginRight: 10,
         textDecoration: 'none',
         color: theme.palette.secondary.dark,
         backgroundColor: isActive ? 'darkOrange' : 'transparent',
+        borderRadius: isActive ? 4 : 0,
       })}>
-      <Box sx={{ p: 1, '&:hover': { backgroundColor: 'darkOrange' } }}>
+      <Box sx={{ p: 1, '&:hover': { backgroundColor: 'darkOrange', borderRadius: 1 } }}>
         <Typography variant="h6" align="center">
           {label}
         </Typography>
