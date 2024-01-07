@@ -90,7 +90,7 @@ export function LibrariesMap() {
     <div>
       {librariesStatus == 'success' && libraries.data.length > 0 && (
         <div>
-          <Typography variant="h3" marginBottom={5}>
+          <Typography variant="h4" marginBottom={5}>
             Nasze biblioteki
           </Typography>
 
@@ -182,4 +182,3 @@ export function LibrariesMap() {
     </div>
   );
 }
-

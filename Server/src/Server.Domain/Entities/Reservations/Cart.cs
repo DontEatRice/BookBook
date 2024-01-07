@@ -1,3 +1,4 @@
+using Server.Domain.Entities.Auth;
 using Server.Domain.Exceptions;
 
 namespace Server.Domain.Entities.Reservations;
@@ -6,6 +7,7 @@ public class Cart
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
+    public Identity Identity { get; set; }
     public ICollection<CartBook> CartItems { get; private init; } = null!;
 
     public static Cart Create(Guid userId) => new()

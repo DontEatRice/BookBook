@@ -127,6 +127,7 @@ function BooksInLibraryTable({
     onSuccess: (_, { libraryId }) => {
       showSuccess({ title: 'Sukces!', message: `Pomyślnie usunięto książkę z oferty.` });
       queryClient.invalidateQueries(['booksInLibrary', libraryId]);
+      queryClient.invalidateQueries(['booksToAdd', libraryId]);
     },
   });
 

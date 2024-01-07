@@ -170,7 +170,10 @@ export default function ReservationList() {
                   <TableRow
                     key={reservation.id}
                     onClick={() => cartStore.setSelectedReservation(reservation)}
-                    sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}>
+                    title={'Szczegóły rezerwacji'}
+                    sx={{
+                      '&:hover': { backgroundColor: theme.palette.action.hover, cursor: 'pointer' },
+                    }}>
                     <TableCell>{reservation.id}</TableCell>
                     <TableCell>{reservation.library.name}</TableCell>
                     <TableCell>{translateStatus(reservation.status)}</TableCell>
@@ -219,7 +222,7 @@ export default function ReservationList() {
           onClose={handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description">
-          <DialogTitle id="alert-dialog-title">{'Potwierdzenie rezerwacji'}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{'Potwierdzenie anulowania'}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               Czy na pewno chcesz anulować rezerwację?

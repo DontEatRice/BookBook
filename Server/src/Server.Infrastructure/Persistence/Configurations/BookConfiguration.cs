@@ -17,13 +17,17 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
 
         builder.Property(x => x.Title)
             .IsRequired();
+        builder.HasIndex(x => x.Title);
 
         builder.Property(x => x.YearPublished)
             .IsRequired();
+        builder.HasIndex(x => x.YearPublished);
 
         builder.Property(x => x.AverageRating);
+        builder.HasIndex(x => x.AverageRating);
 
         builder.Property(x => x.AverageCriticRating);
+        builder.HasIndex(x => x.AverageCriticRating);
 
         builder.HasMany(x => x.UserBooks).WithOne(x => x.Book).HasForeignKey(x => x.BookId);
     }

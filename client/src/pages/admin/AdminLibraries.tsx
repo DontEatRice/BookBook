@@ -72,7 +72,7 @@ function LibrariesTable({
                     backgroundColor: 'rgba(0, 0, 0, 0.1)',
                   },
                 }}
-                onClick={() => navigate(`./libraries/${library.id}`)}>
+                onClick={() => navigate(`./${library.id}`)}>
                 <TableCell>{library.name}</TableCell>
                 <TableCell>{library.address.city}</TableCell>
                 <TableCell>{library.address.street}</TableCell>

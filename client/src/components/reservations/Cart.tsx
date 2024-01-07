@@ -3,7 +3,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CartViewModelType } from '../../models/CartViewModel';
 import { useCartStore } from '../../store';
 import { getCart, removeFromCart } from '../../api/cart';
@@ -23,6 +23,7 @@ export default function Cart() {
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const [libraryId, setLibraryId] = useState('');
+  const queryClient = useQueryClient();
 
   const handleClickOpen = (id: string) => {
     setLibraryId(id);
@@ -48,23 +49,6 @@ export default function Cart() {
     cartStore.toggleIsChanged();
   };
 
-  // const handleMakeReservation = async () => {
-  //   try {
-  //     await makeReservation({ libraryId });
-  //     cartStore.toggleCart();
-  //     showSuccess({ message: 'Rezerwacja została złożona' });
-  //     setLoading(true);
-  //     await refetch();
-  //     cartStore.toggleIsChanged();
-  //     setError('');
-  //     setLoading(false);
-  //   } catch (error) {
-  //     const err = error as Error;
-  //     const errorCode = err.message.split(':')[0];
-  //     setError(translateErrorCode(errorCode));
-  //     setLoading(false);
-  //   }
-  // };
   const { mutate: makeReservationMutation } = useMutation({
     mutationFn: makeReservation,
     onSuccess: async () => {
@@ -75,6 +59,7 @@ export default function Cart() {
       cartStore.toggleIsChanged();
       setError('');
       setLoading(false);
+      queryClient.invalidateQueries(['reservationsForUser']);
     },
     onError: (e) => {
       if (e instanceof ApiResponseError) {

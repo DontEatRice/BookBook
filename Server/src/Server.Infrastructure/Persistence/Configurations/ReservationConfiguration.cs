@@ -10,6 +10,18 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
     {
         builder.HasKey(x => x.Id);
 
+        builder.HasOne(x => x.Identity).WithMany().HasForeignKey(x => x.UserId);
+
         builder.OwnsMany(x => x.ReservationItems);
+
+        builder.HasIndex(x => x.UserId);
+
+        builder.HasIndex(x => x.LibraryId);
+
+        builder.HasIndex(x => x.Status);
+
+        builder.HasIndex(x => x.CreatedAt);
+
+        builder.HasIndex(x => x.ReservationEndDate);
     }
 }

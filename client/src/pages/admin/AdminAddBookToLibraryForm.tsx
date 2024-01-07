@@ -30,6 +30,7 @@ function AdminAddBookToLibraryForm() {
     onSuccess: () => {
       navigate('..');
       queryClient.invalidateQueries({ queryKey: ['booksInLibrary', user!.libraryId!] });
+      queryClient.invalidateQueries(['booksToAdd', user!.libraryId!]);
     },
     onError: (e: Error) => {
       console.error(e);

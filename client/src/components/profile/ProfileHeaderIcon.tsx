@@ -23,7 +23,10 @@ function ProfileHeaderIcon() {
   return (
     <Box onClick={() => toggle()}>
       <Tooltip title="Twoje konto">
-        <PersonIcon sx={{ fontSize: '2rem', cursor: 'pointer' }} />
+        <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+          <PersonIcon sx={{ fontSize: '2rem', cursor: 'pointer' }} />
+          {user!.name}
+        </Box>
       </Tooltip>
       <Drawer anchor="right" open={open} onClose={() => toggle()}>
         <Box sx={{ width: '300px', p: 4 }} role="presentation">

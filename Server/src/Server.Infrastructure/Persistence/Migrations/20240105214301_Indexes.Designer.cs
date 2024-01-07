@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Server.Infrastructure.Migrations
+namespace Server.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    partial class BookBookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240105214301_Indexes")]
+    partial class Indexes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -474,8 +477,7 @@ namespace Server.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Carts");
                 });
@@ -713,12 +715,6 @@ namespace Server.Infrastructure.Migrations
 
             modelBuilder.Entity("Server.Domain.Entities.Reservations.Cart", b =>
                 {
-                    b.HasOne("Server.Domain.Entities.Auth.Identity", "Identity")
-                        .WithOne()
-                        .HasForeignKey("Server.Domain.Entities.Reservations.Cart", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.OwnsMany("Server.Domain.Entities.Reservations.CartBook", "CartItems", b1 =>
                         {
                             b1.Property<Guid>("CartId")
@@ -736,51 +732,17 @@ namespace Server.Infrastructure.Migrations
 
                             b1.HasKey("CartId", "Id");
 
-                            b1.HasIndex("BookId");
-
-                            b1.HasIndex("LibraryId");
-
                             b1.ToTable("CartBook");
-
-                            b1.HasOne("Server.Domain.Entities.Book", "Book")
-                                .WithMany()
-                                .HasForeignKey("BookId")
-                                .OnDelete(DeleteBehavior.Cascade)
-                                .IsRequired();
 
                             b1.WithOwner()
                                 .HasForeignKey("CartId");
-
-                            b1.HasOne("Server.Domain.Entities.Library", "Library")
-                                .WithMany()
-                                .HasForeignKey("LibraryId")
-                                .OnDelete(DeleteBehavior.Cascade)
-                                .IsRequired();
-
-                            b1.Navigation("Book");
-
-                            b1.Navigation("Library");
                         });
 
                     b.Navigation("CartItems");
-
-                    b.Navigation("Identity");
                 });
 
             modelBuilder.Entity("Server.Domain.Entities.Reservations.Reservation", b =>
                 {
-                    b.HasOne("Server.Domain.Entities.Library", "Library")
-                        .WithMany()
-                        .HasForeignKey("LibraryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Server.Domain.Entities.Auth.Identity", "Identity")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.OwnsMany("Server.Domain.Entities.Reservations.ReservationBook", "ReservationItems", b1 =>
                         {
                             b1.Property<Guid>("ReservationId")
@@ -795,25 +757,11 @@ namespace Server.Infrastructure.Migrations
 
                             b1.HasKey("ReservationId", "Id");
 
-                            b1.HasIndex("BookId");
-
                             b1.ToTable("ReservationBook");
-
-                            b1.HasOne("Server.Domain.Entities.Book", "Book")
-                                .WithMany()
-                                .HasForeignKey("BookId")
-                                .OnDelete(DeleteBehavior.Cascade)
-                                .IsRequired();
 
                             b1.WithOwner()
                                 .HasForeignKey("ReservationId");
-
-                            b1.Navigation("Book");
                         });
-
-                    b.Navigation("Identity");
-
-                    b.Navigation("Library");
 
                     b.Navigation("ReservationItems");
                 });

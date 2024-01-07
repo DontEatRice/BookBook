@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Server.Infrastructure.Migrations
+namespace Server.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BookBookDbContext))]
-    partial class BookBookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240106231925_Test")]
+    partial class Test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -795,20 +798,10 @@ namespace Server.Infrastructure.Migrations
 
                             b1.HasKey("ReservationId", "Id");
 
-                            b1.HasIndex("BookId");
-
                             b1.ToTable("ReservationBook");
-
-                            b1.HasOne("Server.Domain.Entities.Book", "Book")
-                                .WithMany()
-                                .HasForeignKey("BookId")
-                                .OnDelete(DeleteBehavior.Cascade)
-                                .IsRequired();
 
                             b1.WithOwner()
                                 .HasForeignKey("ReservationId");
-
-                            b1.Navigation("Book");
                         });
 
                     b.Navigation("Identity");

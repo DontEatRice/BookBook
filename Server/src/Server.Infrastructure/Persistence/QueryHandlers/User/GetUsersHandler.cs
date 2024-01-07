@@ -21,10 +21,23 @@ internal sealed class GetUsersHandler : IRequestHandler<GetUsersQuery, Paginated
     }
 
     public async Task<PaginatedResponseViewModel<AdminUserViewModel>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
-    { 
-        var (users, totalCount) = await _bookDbContext.Identities.AsNoTracking()
-            .Where(x => x.Role == Domain.Entities.Auth.Role.User)
-            .OrderBy(x => x.Id)
+    {
+        var query = _bookDbContext.Identities.AsNoTracking()
+            .Where(x => x.Role == Domain.Entities.Auth.Role.User);
+
+        if (!string.IsNullOrWhiteSpace(request.OrderByField))
+        {
+            query = request.OrderDirection == OrderDirection.Asc
+                ? query.OrderBy(request.OrderByField).ThenBy(x => x.Id)
+                : query.OrderByDescending(request.OrderByField).ThenBy(x => x.Id);
+        }
+        else
+        {
+            query = query.OrderBy(x => x.Id);
+        }
+
+
+        var (users, totalCount) = await query
             .ProjectTo<AdminUserViewModel>(_mapper.ConfigurationProvider)
             .ToListWithOffsetAsync(request.PageNumber, request.PageSize, cancellationToken);
 
