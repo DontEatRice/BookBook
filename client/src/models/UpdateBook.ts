@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { string, z } from 'zod';
 import PublisherViewModel from './PublisherViewModel';
 import BookCategoryViewModel from './BookCategoryViewModel';
 import AuthorViewModel from './author/AuthorViewModel';
@@ -21,12 +21,24 @@ const UpdateBook = z.object({
     .refine((year) => year <= new Date().getFullYear(), 'Rok wydania nie może być z przyszłości'),
   description: z.string().nullable(),
   language: z.string().min(1, 'To pole jest wymagane'),
-  pageCount: z.preprocess((a) => {
-    if (typeof a === 'number') {
-      return a;
-    }
-    return parseInt(z.string().parse(a));
-  }, z.number().positive('Wartość musi być większa niż 0').nullable()),
+  pageCount: z
+    .number()
+    .or(z.string())
+    .nullable()
+    .transform((value) => {
+      if (value == null || value == '') return null;
+      else {
+        return value;
+      }
+    })
+    .refine((value) => {
+      if (value == null) return true;
+      if (typeof value == 'number') {
+        return value > 0;
+      } else {
+        return parseInt(value) > 0;
+      }
+    }, 'Wartość musi być większa niż 0'),
   coverPictureUrl: z.string().url().optional().nullable(),
   publisher: PublisherViewModel.nullable(),
   bookCategories: BookCategoryViewModel.array().refine(
