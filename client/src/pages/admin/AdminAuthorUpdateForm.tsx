@@ -86,7 +86,7 @@ function AuthorUpdateForm({
           <Avatar
             src={fileUrl ?? imgUrl(data.profilePictureUrl)}
             alt="Zdjęcie autora"
-            sx={{ width: 250, height: 250, marginBottom: 2 }}
+            sx={{ width: 250, height: 250, marginBottom: 2, ml: 'auto', mr: 'auto' }}
           />
           {errors.avatarPicture != undefined && <span>{errors.avatarPicture.message}</span>}
           <TextInputField2 field="firstName" label="Imię" control={control} />

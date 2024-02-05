@@ -3,7 +3,20 @@ import PublisherViewModel from './PublisherViewModel';
 import BookCategoryViewModel from './BookCategoryViewModel';
 import AuthorViewModel from './author/AuthorViewModel';
 
+const ACCEPTED_FORMATS = ['image/png', 'image/jpg', 'image/jpeg'];
+
 const UpdateBook = z.object({
+  coverPicture: z
+    .custom<FileList>((v) => v == undefined || v instanceof FileList)
+    .optional()
+    .transform((val) => val?.item(0))
+    .refine((file) => file == undefined || file.size <= 1_000_000, {
+      message: 'Plik musi być mniejszy niż 1 MB.',
+    })
+    .refine(
+      (file) => file == undefined || ACCEPTED_FORMATS.includes(file.type),
+      'Akceptowane pliki to .png i .jpg'
+    ),
   isbn: z
     .string()
     .refine(
@@ -39,7 +52,7 @@ const UpdateBook = z.object({
         return parseInt(value) > 0;
       }
     }, 'Wartość musi być większa niż 0'),
-  coverPictureUrl: z.string().url().optional().nullable(),
+  coverPictureUrl: z.string().optional().nullable(),
   publisher: PublisherViewModel.nullable(),
   bookCategories: BookCategoryViewModel.array().refine(
     (categories) => categories.length > 0,
@@ -49,17 +62,6 @@ const UpdateBook = z.object({
     (authors) => authors.length > 0,
     'Książka musi mieć co najmniej jednego autora'
   ),
-  // coverPicture: z
-  //   .custom<FileList>((v) => v == undefined || v instanceof FileList)
-  //   .optional()
-  //   .transform((val) => val?.item(0))
-  //   .refine((file) => file == undefined || file.size <= 1_000_000, {
-  //     message: 'Plik musi być mniejszy niż 1 MB.',
-  //   })
-  //   .refine(
-  //     (file) => file == undefined || ACCEPTED_FORMATS.includes(file.type),
-  //     'Akceptowane pliki to .png i .jpg'
-  //   ),
 });
 
 export default UpdateBook;
