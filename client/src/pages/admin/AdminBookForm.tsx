@@ -132,7 +132,7 @@ function AdminBookForm() {
               </Box>
               {fileUrl !== null && (
                 <Box height="400px" width="275px" mb={2} mt={2}>
-                  <BookCoverImg src={fileUrl ?? '/podstawowa-ksiazka-otwarta.jpg'} alt={'Zdjęcie autora'} />
+                  <BookCoverImg src={fileUrl ?? '/podstawowa-ksiazka-otwarta.jpg'} alt={'Okładka książki'} />
                 </Box>
               )}
               {errors.coverPicture != undefined && (

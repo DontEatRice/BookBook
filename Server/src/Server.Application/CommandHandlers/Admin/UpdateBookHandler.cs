@@ -83,6 +83,7 @@ public sealed class UpdateBookHandler : IRequestHandler<UpdateBookCommand>
         book.Description = request.Description;
         book.FullText = request.ISBN + " " + request.Title + " " + request.YearPublished + " " + publisher.Name + " " +
                         string.Join(" ", authors.Select(x => x.LastName));
+        book.CoverPictureUrl = request.CoverPictureUrl;
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

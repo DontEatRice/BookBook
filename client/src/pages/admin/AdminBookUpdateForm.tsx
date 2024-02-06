@@ -1,4 +1,4 @@
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -14,8 +14,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { useParams } from 'react-router';
 import Stack from '@mui/material/Stack';
-import { useEffect, useState } from 'react';
-import { ApiResponseError } from '../../utils/utils';
+import { useEffect, useMemo, useState } from 'react';
+import { ApiResponseError, fileToUploadImage, imgUrl } from '../../utils/utils';
 import useAlert from '../../utils/alerts/useAlert';
 import UpdateBook, { UpdateBookType } from '../../models/UpdateBook';
 import { languages } from '../../utils/constants';
@@ -28,6 +28,8 @@ import { BookCategoryViewModelType } from '../../models/BookCategoryViewModel';
 import { PublisherViewModelType } from '../../models/PublisherViewModel';
 import LoadingTypography from '../../components/common/LoadingTypography';
 import Typography from '@mui/material/Typography';
+import { uploadImage } from '../../api/image';
+import { BookCoverImg } from '../../components/common/Img';
 
 const paginationDefaultRequest = {
   pageNumber: 0,
@@ -48,8 +50,15 @@ function UpdateBookForm({
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { handleError } = useAlert();
+  const { showSuccess } = useAlert();
 
-  const { handleSubmit, control, setError } = useForm<UpdateBookType>({
+  const {
+    handleSubmit,
+    control,
+    setError,
+    register,
+    formState: { errors },
+  } = useForm<UpdateBookType>({
     resolver: zodResolver(UpdateBook),
     defaultValues: {
       ...bookData,
@@ -58,7 +67,8 @@ function UpdateBookForm({
 
   const updateBookMutation = useMutation({
     mutationFn: updateBook,
-    onSuccess: () => {
+    onSuccess: (_, { book: { title } }) => {
+      showSuccess({ message: `Książka o tytule '${title}' została zaktualizowana`, title: 'Sukces' });
       queryClient.invalidateQueries(['books']);
       navigate('..');
     },
@@ -70,7 +80,34 @@ function UpdateBookForm({
       }
     },
   });
-  const onSubmit = (updatedBook: UpdateBookType) => {
+  const [fileUrl, setFileUrl] = useState<string | undefined>(undefined);
+  const watchAvatarPicture = useWatch({
+    control,
+    name: 'coverPicture',
+  });
+
+  const file = useMemo(() => {
+    if (watchAvatarPicture instanceof FileList && watchAvatarPicture.length > 0) {
+      const picture = watchAvatarPicture.item(0);
+      if (picture !== null) {
+        setFileUrl(URL.createObjectURL(picture));
+        return picture;
+      }
+    }
+    setFileUrl(undefined);
+    return null;
+  }, [watchAvatarPicture]);
+
+  const uploadImageMutation = useMutation({
+    mutationFn: uploadImage,
+  });
+
+  const onSubmit = async (updatedBook: UpdateBookType) => {
+    if (updatedBook.coverPicture) {
+      const uploadImageType = await fileToUploadImage(updatedBook.coverPicture);
+      const response = await uploadImageMutation.mutateAsync(uploadImageType);
+      updatedBook.coverPictureUrl = response;
+    }
     updateBookMutation.mutate({ id: bookData.id, book: updatedBook });
   };
 
@@ -82,6 +119,26 @@ function UpdateBookForm({
           textAlign: 'center',
         }}>
         <Paper sx={{ p: 2, width: '100%' }} elevation={3}>
+          <Box component="label" htmlFor="upload-photo" sx={{ width: '100%', display: 'inline-flex', mb: 2 }}>
+            <input
+              style={{ display: 'none' }}
+              id="upload-photo"
+              type="file"
+              accept="image/png,image/jpg,image/jpeg"
+              {...register('coverPicture')}
+            />
+            <Button variant="contained" component="span">
+              Zmień zdjęcie
+            </Button>
+            {file && <span>{file.name}</span>}
+          </Box>
+          <Box height="400px" width="275px" mb={2} mt={2} ml={'auto'} mr={'auto'}>
+            <BookCoverImg
+              src={fileUrl ?? imgUrl(bookData.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg')}
+              alt={'Okładka książki'}
+            />
+          </Box>
+          {errors.coverPicture != undefined && <span>{errors.coverPicture.message}</span>}
           <TextInputField2 field="isbn" control={control} label="ISBN" />
           <TextInputField2 control={control} field="title" label="Tytuł" />
           <NumberInputField2 field="yearPublished" control={control} label="Rok wydania" />
