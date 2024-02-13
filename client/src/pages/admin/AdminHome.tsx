@@ -9,7 +9,7 @@ import { loginWithReturnToPath } from '../../utils/utils';
 function AdminHome() {
   return (
     <>
-      <AuthorizedView>
+      <AuthorizedView roles={['Admin', 'Employee']}>
         <Box textAlign={'center'}>
           <Typography variant="h5" sx={{ marginTop: 3 }}>
             Witamy w panelu administracyjnym!
@@ -17,6 +17,13 @@ function AdminHome() {
           <Typography variant="h5" sx={{ marginTop: 3 }}>
             Przejdź do odpowiedniej zakładki korzystając z menu po prawej stronie
           </Typography>
+        </Box>
+      </AuthorizedView>
+      <AuthorizedView roles={['User']}>
+        <Box textAlign={'center'} marginTop={3}>
+          <Button variant="contained" component={Link} to={'/'}>
+            Powrót do strony głównej
+          </Button>
         </Box>
       </AuthorizedView>
       <NotAuthorizedView>
