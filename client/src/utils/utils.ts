@@ -59,8 +59,18 @@ export async function fileToUploadImage(file: File) {
 }
 
 export function getJwtBody(token: string): Claims {
-  const body = token.split('.')[1];
-  return JSON.parse(atob(body)) as Claims;
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(
+    window
+      .atob(base64)
+      .split('')
+      .map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join('')
+  );
+  return JSON.parse(jsonPayload);
 }
 
 export async function handleBadResponse(response: Response) {
