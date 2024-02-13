@@ -10,6 +10,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import NotAuthorizedView from '../components/auth/NotAuthorizedView';
 import AdminProfileHeaderIcon from '../components/profile/AdminProfileHeaderIcon';
 import MenuIcon from '@mui/icons-material/Menu';
+import HomeIcon from '@mui/icons-material/Home';
 
 function AdminHeader() {
   const { logout } = useAuth();
@@ -37,7 +38,14 @@ function AdminHeader() {
             </Typography>
           </Link>
         </Grid>
-        <AuthorizedView>
+        <AuthorizedView roles={['Admin', 'Employee']}>
+          <Grid item paddingY={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+            <Link to={'/'} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Tooltip title="Strona główna">
+                <HomeIcon sx={{ fontSize: '2rem' }} />
+              </Tooltip>
+            </Link>
+          </Grid>
           <Grid item paddingY={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
             <AdminHeaderMenu />
           </Grid>
@@ -48,7 +56,7 @@ function AdminHeader() {
             item
             onClick={() => {
               logout();
-              navigate('/admin');
+              navigate('/');
             }}
             paddingY={2}
             display={'flex'}
