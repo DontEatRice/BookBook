@@ -25,6 +25,7 @@ import { ChangeEvent, SyntheticEvent, useState } from 'react';
 import { imgUrl } from '../../utils/utils';
 import AddReviewForm from '../reviews/AddReviewForm';
 import ReviewPaper from '../reviews/ReviewPaper';
+import { Img } from '../../components/common/Img';
 
 function AuthorsList({ authors }: { authors: AuthorViewModelType[] }) {
   return (
@@ -156,13 +157,13 @@ function BookDetails() {
               </Grid>
               <Grid container spacing={1}>
                 <Grid item xs={5}>
-                  <img
-                    src={imgUrl(book.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg')}
-                    alt={book.title}
-                    width="100%"
-                    height="560px"
-                    loading="lazy"
-                  />
+                  <Box width={'100%'} height={'560px'}>
+                    <Img
+                      alt={book.title}
+                      loading="lazy"
+                      src={imgUrl(book.coverPictureUrl, '/podstawowa-ksiazka-otwarta.jpg')}
+                    />
+                  </Box>
                 </Grid>
                 <Grid item xs={7}>
                   <Grid
